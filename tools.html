@@ -3,18 +3,19 @@
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EveBorn</title>
+    <title>高效工具整理 - EveBorn</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="/theme/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="/theme/css/niu2.css" type="text/css" />
     <link rel="stylesheet" href="/theme/css/custom.css" type="text/css" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="/theme/js/niu2.js"></script>    
+    <script type="text/javascript" src="/theme/js/niu2.js"></script>
+<link rel="stylesheet" href="/theme/css/pygments/github.css" type="text/css" />    
     <script type="text/javascript">
         $(document).ready(function(){
             initGoogleCSEAnimation();
-        });
+initTocScrollAnimation();        });
     </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -51,7 +52,13 @@
            </a>
            <ul class="dropdown-menu"><li><a href="/category/linux.html"><i class="icon-folder-close"></i>linux                      (1)</a></li><li><a href="/category/source.html"><i class="icon-folder-close"></i>Source                      (1)</a></li><li><a href="/category/tools.html"><i class="icon-folder-close"></i>tools                      (1)</a></li></ul>
         </li>
-        <!--  self defined dropdown list --><!--  table of contents of page or article --></ul>
+        <!--  self defined dropdown list --><!--  table of contents of page or article --><li class="dropdown dropdown-toc">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-list-ul"></i>TOC<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#content-heading">高效工具整理</a><ul></ul></li></ul>
+            </li></ul>
         
         <!-- right nav bar -->
 		<ul class="nav navbar-nav navbar-right">
@@ -60,45 +67,28 @@
 </div>
 </div></div>
     
-    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-page"><h1 class="niu2-index-title">
-EveBorn
-</h1><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="/tools.html">高效工具整理</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-18
+    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-article"><div class="niu2-meta">
+    <span class="niu2-meta-category pull-left"><i class="icon-open-folder"></i>tools</span><span class="niu2-meta-tag pull-left">
+        <i class="icon-tag"></i><a href="/tag/tootls.html">tootls</a></span><span class="niu2-meta-date pull-right">
+        <i class="icon-calendar"></i>2016-07-18 15:18:00
     </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>tools</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="/tag/tootls.html">tootls</a></span></div><div class="niu2-article-summary">
-           <p>平时提高效率工具汇总</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="/linux.html">linux 常用命令 长期更新</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-18
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>linux</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="/tag/linux.html">linux</a></span></div><div class="niu2-article-summary">
-           <p>linux 常用命令 长期更新</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="/source everything.html">资源整理</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-18
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>Source</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="/tag/source.html">source</a><a href="/tag/everything.html">everything</a></span></div><div class="niu2-article-summary">
-           <p>平时收集的资源汇总</p>
-       </div>
-       </div></div></div>
+</div>
+<div class="clearfix visible-xs niu2-clearfix"></div><h1 id="content-heading">高效工具整理</h1><h1>win平台</h1>
+<ul>
+<li><a href="http://www.tuicool.com/articles/fy2EnqJ">2014年Windows平台软件推荐：神器小工具（骨灰级）</a></li>
+<li><a href="https://www.vagrantup.com/">vagrant</a> 虚拟机管理工具，用于搭建跨平台测试环境</li>
+</ul>
+<h1>linux平台</h1>
+<ul>
+<li>C相关工具<ul>
+<li><a href="http://www.cnblogs.com/sunyubo/archive/2010/05/05/2282170.html">Valgrind</a> 检测内存泄漏和内存违例 基于仿真技术的程序调试和分析工具，它包含一个内核──一个软件合成的CPU，和一系列的小工具，每个工具都可以完成一项任务──调试，分析，或测试等</li>
+<li>gprof 程序效率评估</li>
+</ul>
+</li>
+</ul>
+<h1>Mac</h1>
+<p><strong>穷逼，没有推荐。</strong></p>
+    </div><div id="content-comments"></div></div>
 
     <div id="body-footer" class="col-md-8 col-md-offset-2"><div class="niu2-footer">
     <hr/>

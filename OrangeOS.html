@@ -3,7 +3,7 @@
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>linux 常用命令 长期更新 - EveBorn</title>
+    <title>Orangeos基于qemu&bochs环境搭建及后续笔记 - EveBorn</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="http://nigelzhf.github.io/theme/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" type="text/css" />
@@ -50,14 +50,14 @@ initTocScrollAnimation();        });
            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="icon-folder-open"></i>Category<b class="caret"></b>
            </a>
-           <ul class="dropdown-menu"><li><a href="http://nigelzhf.github.io/category/learning.html"><i class="icon-folder-close"></i>learning                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/linux.html"><i class="icon-folder-close"></i>linux                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/source.html"><i class="icon-folder-close"></i>Source                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/tools.html"><i class="icon-folder-close"></i>tools                      (1)</a></li></ul>
+           <ul class="dropdown-menu"><li><a href="http://nigelzhf.github.io/category/learning.html"><i class="icon-folder-close"></i>learning                      (2)</a></li><li><a href="http://nigelzhf.github.io/category/linux.html"><i class="icon-folder-close"></i>linux                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/source.html"><i class="icon-folder-close"></i>Source                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/tools.html"><i class="icon-folder-close"></i>tools                      (1)</a></li></ul>
         </li>
         <!--  self defined dropdown list --><!--  table of contents of page or article --><li class="dropdown dropdown-toc">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <i class="icon-list-ul"></i>TOC<b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="#content-heading">linux 常用命令 长期更新</a><ul></ul></li></ul>
+                    <li><a href="#content-heading">Orangeos基于qemu&bochs环境搭建及后续笔记</a><ul></ul></li></ul>
             </li></ul>
         
         <!-- right nav bar -->
@@ -68,26 +68,30 @@ initTocScrollAnimation();        });
 </div></div>
     
     <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-article"><div class="niu2-meta">
-    <span class="niu2-meta-category pull-left"><i class="icon-open-folder"></i>linux</span><span class="niu2-meta-tag pull-left">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/linux.html">linux</a></span><span class="niu2-meta-date pull-right">
-        <i class="icon-calendar"></i>2010-10-10 10:10:00
+    <span class="niu2-meta-category pull-left"><i class="icon-open-folder"></i>learning</span><span class="niu2-meta-tag pull-left">
+        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/os.html">OS</a></span><span class="niu2-meta-date pull-right">
+        <i class="icon-calendar"></i>2016-07-21 11:15:00
     </span>
 </div>
-<div class="clearfix visible-xs niu2-clearfix"></div><h1 id="content-heading">linux 常用命令 长期更新</h1><h2>make</h2>
-<div class="highlight"><pre><span></span>&lt;target&gt; : &lt;prerequisites&gt;
-[tab] &lt;commands&gt;
-</pre></div>
-
-
-<h2>vagrant</h2>
-<p>测试环境搭建</p>
-<p><a href="http://rmingwang.com/vagrant-commands-and-config.html">Vagrant简介和安装配置</a></p>
-<p><a href="https://blog.smdcn.net/article/1308.html">使用Vagrant在Windows下部署开发环境</a></p>
-<h2>iftop</h2>
-<p>命令监控连接的带宽：sudo iftop -i wlan0 -B -F 45.67.89.0/24
--B 设置 Byte 为单位。默认是 bit
--F 过滤指定网段
-暂停监控显示，使用 P 按键</p>
+<div class="clearfix visible-xs niu2-clearfix"></div><h1 id="content-heading">Orangeos基于qemu&bochs环境搭建及后续笔记</h1><h1>qemu&amp;bochs环境搭建</h1>
+<p>为了宿主系统的干净，已经linux下各种工具比较方便，在这里使用ubuntu-16.04-amd64搭建环境。
+偏好： make grep</p>
+<h2>bochs</h2>
+<p>bochs用于完成书中的实验，自己移植到qemu中，继续增加其他的特性</p>
+<blockquote>
+<p>sudo apt-get install vgabios bochs bochs-x bximage</p>
+</blockquote>
+<p>验证：</p>
+<blockquote>
+<p>test</p>
+</blockquote>
+<h2>qemu</h2>
+<blockquote>
+<p>sudo apt-get install qemu</p>
+</blockquote>
+<p>没有发现如此安装有什么错误，暂时如此使用</p>
+<h1>实验笔记</h1>
+<h2>bootlorder</h2>
     </div><div id="content-comments"></div></div>
 
     <div id="body-footer" class="col-md-8 col-md-offset-2"><div class="niu2-footer">

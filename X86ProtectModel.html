@@ -3,18 +3,19 @@
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag learning - EveBorn</title>
+    <title>X86汇编基础学习：实模式切换到保护模式 - EveBorn</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="http://nigelzhf.github.io/theme/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="http://nigelzhf.github.io/theme/css/niu2.css" type="text/css" />
     <link rel="stylesheet" href="http://nigelzhf.github.io/theme/css/custom.css" type="text/css" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://nigelzhf.github.io/theme/js/niu2.js"></script>    
+    <script type="text/javascript" src="http://nigelzhf.github.io/theme/js/niu2.js"></script>
+<link rel="stylesheet" href="http://nigelzhf.github.io/theme/css/pygments/github.css" type="text/css" />    
     <script type="text/javascript">
         $(document).ready(function(){
             initGoogleCSEAnimation();
-        });
+initTocScrollAnimation();        });
     </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -51,7 +52,13 @@
            </a>
            <ul class="dropdown-menu"><li><a href="http://nigelzhf.github.io/category/cao-zuo-xi-tong.html"><i class="icon-folder-close"></i>操作系统                      (2)</a></li><li><a href="http://nigelzhf.github.io/category/learning.html"><i class="icon-folder-close"></i>learning                      (2)</a></li><li><a href="http://nigelzhf.github.io/category/linux.html"><i class="icon-folder-close"></i>linux                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/source.html"><i class="icon-folder-close"></i>Source                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/tools.html"><i class="icon-folder-close"></i>tools                      (1)</a></li><li><a href="http://nigelzhf.github.io/category/xin-xi-an-quan.html"><i class="icon-folder-close"></i>信息安全                      (1)</a></li></ul>
         </li>
-        <!--  self defined dropdown list --><!--  table of contents of page or article --></ul>
+        <!--  self defined dropdown list --><!--  table of contents of page or article --><li class="dropdown dropdown-toc">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-list-ul"></i>TOC<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#content-heading">X86汇编基础学习：实模式切换到保护模式</a><ul></ul></li></ul>
+            </li></ul>
         
         <!-- right nav bar -->
 		<ul class="nav navbar-nav navbar-right">
@@ -60,69 +67,15 @@
 </div>
 </div></div>
     
-    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-page"><h1 class="niu2-index-title">
-<i class="icon-tag icon-large"></i>learning
-</h1><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="http://nigelzhf.github.io/ELF.html">UNIX/LINUX 平台可执行文件格式：ELF</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-28
+    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-article"><div class="niu2-meta">
+    <span class="niu2-meta-category pull-left"><i class="icon-open-folder"></i>操作系统</span><span class="niu2-meta-tag pull-left">
+        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/os.html">OS</a></span><span class="niu2-meta-date pull-right">
+        <i class="icon-calendar"></i>2016-07-26 11:15:00
     </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>操作系统</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/os.html">OS</a></span></div><div class="niu2-article-summary">
-           <p>UNIX/LINUX 平台可执行文件格式：ELF分析</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="http://nigelzhf.github.io/X86ProtectModel.html">X86汇编基础学习：实模式切换到保护模式</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-26
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>操作系统</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/os.html">OS</a></span></div><div class="niu2-article-summary">
-           <p>X86汇编基础学习:实模式切换到保护模式</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="http://nigelzhf.github.io/OrangeOS.html">Orangeos基于qemu&bochs环境搭建及后续笔记</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-21
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>learning</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/os.html">OS</a></span></div><div class="niu2-article-summary">
-           <p>Orange os 基于qemu&amp;bochs环境搭建及后续笔记</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="http://nigelzhf.github.io/securitySource.html">network security source</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-21
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>信息安全</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a><a href="http://nigelzhf.github.io/tag/xin-xi-an-quan.html">信息安全</a></span></div><div class="niu2-article-summary">
-           <p>信息安全资源汇总</p>
-       </div>
-       </div><div class="niu2-index-article">
-	   <div class="niu2-index-article-title">
-           <span><a href="http://nigelzhf.github.io/csappSouece.html">CSAPP学习资源与收获</a>
-           </span>
-       </div><div class="niu2-meta-index">
-    <span class="niu2-meta-date-index">
-        <i class="icon-calendar"></i>2016-07-19
-    </span>
-    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>learning</span><span class="niu2-meta-tag-index">
-        <i class="icon-tag"></i><a href="http://nigelzhf.github.io/tag/learning.html">learning</a></span></div><div class="niu2-article-summary">
-           <p>平时收集的资源汇总</p>
-       </div>
-       </div></div></div>
+</div>
+<div class="clearfix visible-xs niu2-clearfix"></div><h1 id="content-heading">X86汇编基础学习：实模式切换到保护模式</h1><h1>Intel X86汇编基础学习之二：实模式切换到保护模式</h1>
+<p><a href="http://blog.163.com/for_log/blog/static/2162830282013154363613/">Intel X86汇编基础学习之二：实模式切换到保护模式  </a></p>
+    </div><div id="content-comments"></div></div>
 
     <div id="body-footer" class="col-md-8 col-md-offset-2"><div class="niu2-footer">
     <hr/>
@@ -134,7 +87,7 @@
 	</p>
 	<p>
 		Copyright
-2016		<a href="http://nigelzhf.github.io">Me</a>
+2010-2016		<a href="http://nigelzhf.github.io">Me</a>
 </p>
     <p class="niu2-icons"><a href="mailto: 992122833@qq.com" title="my email address">
 	            <i class="icon-envelope-alt icon-large"></i>

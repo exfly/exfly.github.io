@@ -3,19 +3,18 @@
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>linux源代码阅读&相关资源 - EveBorn</title>
+    <title>Tag data - EveBorn</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="exfly.github.io/theme/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="exfly.github.io/theme/css/niu2.css" type="text/css" />
     <link rel="stylesheet" href="exfly.github.io/theme/css/custom.css" type="text/css" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="exfly.github.io/theme/js/niu2.js"></script>
-<link rel="stylesheet" href="exfly.github.io/theme/css/pygments/github.css" type="text/css" />    
+    <script type="text/javascript" src="exfly.github.io/theme/js/niu2.js"></script>    
     <script type="text/javascript">
         $(document).ready(function(){
             initGoogleCSEAnimation();
-initTocScrollAnimation();        });
+        });
     </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -52,13 +51,7 @@ initTocScrollAnimation();        });
            </a>
            <ul class="dropdown-menu"><li><a href="exfly.github.io/category/cao-zuo-xi-tong.html"><i class="icon-folder-close"></i>操作系统                      (3)</a></li><li><a href="exfly.github.io/category/data.html"><i class="icon-folder-close"></i>data                      (1)</a></li><li><a href="exfly.github.io/category/learning.html"><i class="icon-folder-close"></i>learning                      (2)</a></li><li><a href="exfly.github.io/category/linux.html"><i class="icon-folder-close"></i>linux                      (1)</a></li><li><a href="exfly.github.io/category/linux-xue-xi.html"><i class="icon-folder-close"></i>linux 学习                      (1)</a></li><li><a href="exfly.github.io/category/source.html"><i class="icon-folder-close"></i>Source                      (1)</a></li><li><a href="exfly.github.io/category/tools.html"><i class="icon-folder-close"></i>tools                      (1)</a></li><li><a href="exfly.github.io/category/xin-xi-an-quan.html"><i class="icon-folder-close"></i>信息安全                      (1)</a></li></ul>
         </li>
-        <!--  self defined dropdown list --><!--  table of contents of page or article --><li class="dropdown dropdown-toc">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="icon-list-ul"></i>TOC<b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#content-heading">linux源代码阅读&相关资源</a><ul></ul></li></ul>
-            </li></ul>
+        <!--  self defined dropdown list --><!--  table of contents of page or article --></ul>
         
         <!-- right nav bar -->
 		<ul class="nav navbar-nav navbar-right">
@@ -67,56 +60,21 @@ initTocScrollAnimation();        });
 </div>
 </div></div>
     
-    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-article"><div class="niu2-meta">
-    <span class="niu2-meta-category pull-left"><i class="icon-open-folder"></i>linux 学习</span><span class="niu2-meta-tag pull-left">
-        <i class="icon-tag"></i><a href="exfly.github.io/tag/learning.html">learning</a><a href="exfly.github.io/tag/linux.html">linux</a><a href="exfly.github.io/tag/cao-zuo-xi-tong.html">操作系统</a><a href="exfly.github.io/tag/source.html">Source</a></span><span class="niu2-meta-date pull-right">
-        <i class="icon-calendar"></i>2016-08-17 10:10:00
+    <div id="body-content" class="col-md-8 col-md-offset-2"><div class="niu2-page"><h1 class="niu2-index-title">
+<i class="icon-tag icon-large"></i>data
+</h1><div class="niu2-index-article">
+	   <div class="niu2-index-article-title">
+           <span><a href="exfly.github.io/shiyinaxieshi.html">十一那些事</a>
+           </span>
+       </div><div class="niu2-meta-index">
+    <span class="niu2-meta-date-index">
+        <i class="icon-calendar"></i>2016-10-01
     </span>
-</div>
-<div class="clearfix visible-xs niu2-clearfix"></div><h1 id="content-heading">linux源代码阅读&相关资源</h1><h1>linux history</h1>
-<ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
-</ul>
-<h1>linux</h1>
-<p>linux采用分段+分页机制结合管理内存</p>
-<h1>linux 调试方法</h1>
-<ul>
-<li><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a></li>
-</ul>
-<div class="highlight"><pre><span></span>gdb tools/system
-target remote localhost:1234
-
-
-gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&quot;i b&quot;
-continue(c) 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register
-
-GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)
-
-cgdb    可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system
-</pre></div>
-
-
-<h1>source</h1>
-<ul>
-<li><a href="http://www.jianshu.com/p/1cea7dc5d6b7">80386保护模式的本质</a></li>
-<li><a href="http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838">Intel 80386 程序员参考手册</a></li>
-<li><a href="http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164">linux0.11内核之文件系统</a></li>
-</ul>
-    </div><div id="content-comments"></div></div>
+    <span class="niu2-meta-category-index"><i class="icon-open-folder"></i>data</span><span class="niu2-meta-tag-index">
+        <i class="icon-tag"></i><a href="exfly.github.io/tag/learning.html">learning</a><a href="exfly.github.io/tag/data.html">data</a></span></div><div class="niu2-article-summary">
+           <p>十一那些事</p>
+       </div>
+       </div></div></div>
 
     <div id="body-footer" class="col-md-8 col-md-offset-2"><div class="niu2-footer">
     <hr/>
@@ -128,7 +86,7 @@ cgdb tools/system
 	</p>
 	<p>
 		Copyright
-2010-2016		<a href="exfly.github.io">Me</a>
+2016		<a href="exfly.github.io">Me</a>
 </p>
     <p class="niu2-icons"><a href="mailto: 992122833@qq.com" title="my email address">
 	            <i class="icon-envelope-alt icon-large"></i>

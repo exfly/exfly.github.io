@@ -245,6 +245,9 @@ img {
 .navbar a:link, .navbar a:visited, .navbar a:hover, .nav a:link, .nav a:visited, .nav a:hover, .prf-container aside a {
   text-decoration: none; }
 
+body {
+  min-width: 1366px; }
+
 .navbar {
   /* @style */
   line-height: 1.7;

@@ -1,6 +1,0 @@
-*.esproj
-.DS_Store
-.codekit-cache
-.npm-debug.log
-node_modules
-.idea/**/*

@@ -5,10 +5,30 @@
     <link>https://exfly.github.io/tags/</link>
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-Hans</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
+    <lastBuildDate>Sat, 16 Sep 2017 16:52:07 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Taga</title>
+      <link>https://exfly.github.io/tags/taga/</link>
+      <pubDate>Sat, 16 Sep 2017 16:52:07 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/taga/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tagb</title>
+      <link>https://exfly.github.io/tags/tagb/</link>
+      <pubDate>Sat, 16 Sep 2017 16:52:07 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/tagb/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>算法</title>

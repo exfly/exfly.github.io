@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Taga on Exfly Blog</title>
+    <link>https://exfly.github.io/tags/taga/</link>
+    <description>Recent content in Taga on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
+    <lastBuildDate>Sat, 16 Sep 2017 16:52:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://exfly.github.io/tags/taga/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Test</title>
+      <link>https://exfly.github.io/test/</link>
+      <pubDate>Sat, 16 Sep 2017 16:52:07 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/test/</guid>
+      <description>The remaining content of your post.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -5,7 +5,8 @@
     <link>https://exfly.github.io/algorithm/</link>
     <description>Recent content in Algorithms on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-Hans</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Sat, 16 Sep 2017 16:08:44 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/algorithm/index.xml" rel="self" type="application/rss+xml" />

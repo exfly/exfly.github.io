@@ -5,7 +5,8 @@
     <link>https://exfly.github.io/</link>
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
+    <language>zh-Hans</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
     <lastBuildDate>Sat, 16 Sep 2017 15:41:18 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -27,6 +28,15 @@
       
       <guid>https://exfly.github.io/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid.</description>
+    </item>
+    
+    <item>
+      <title>Test</title>
+      <link>https://exfly.github.io/test/</link>
+      <pubDate>Sat, 16 Sep 2017 16:52:07 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/test/</guid>
+      <description>The remaining content of your post.</description>
     </item>
     
     <item>

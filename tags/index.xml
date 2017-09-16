@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Exfly Blog</title>
+    <link>https://exfly.github.io/tags/</link>
+    <description>Recent content in Tags on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    
+	<atom:link href="https://exfly.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>算法</title>
+      <link>https://exfly.github.io/tags/%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sat, 16 Sep 2017 16:08:44 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/%E7%AE%97%E6%B3%95/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

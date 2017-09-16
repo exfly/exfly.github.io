@@ -5,7 +5,9 @@
   <meta charset="utf-8" />
 
   
-  <title>Exfly Blog</title>
+  <title>
+  友链 | Exfly Blog
+</title>
 
   
   
@@ -30,7 +32,7 @@
 <meta name="generator" content="Hugo 0.27.1" />
 
 
-<link rel="canonical" href="https://exfly.github.io/" />
+<link rel="canonical" href="https://exfly.github.io/links/" />
 <link rel="alternative" href="/index.xml" title="Exfly Blog" type="application/atom+xml" />
 
 
@@ -65,6 +67,8 @@
 
 
 
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
 <link rel="stylesheet" href="/css/bundle.css" />
 
 
@@ -98,7 +102,7 @@
   <header class="site-header">
   <img class="avatar" src="/media/img/avatar.jpg" alt="Avatar">
   
-  <h1 class="title">Exfly Blog</h1>
+  <h2 class="title">Exfly Blog</h2>
   
   <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
   <button class="menu-toggle" type="button">
@@ -111,11 +115,11 @@
       
       
       
-        <li class="menu-item  is-active"><a href="/">首页</a></li>
+        <li class="menu-item "><a href="/">首页</a></li>
       
         <li class="menu-item "><a href="https://github.com/exfly/">作品</a></li>
       
-        <li class="menu-item "><a href="/links/">友链</a></li>
+        <li class="menu-item  is-active"><a href="/links/">友链</a></li>
       
         <li class="menu-item "><a href="/about/">关于</a></li>
       
@@ -180,15 +184,22 @@
   </nav>
 </header>
 
-  <section class="main post-list">
+  <section class="main links-list">
     <header class="list-header offscreen">
-      <h2 class="list-label">All Posts</h2>
+      <h2 class="list-label">友链</h2>
     </header>
     
+      <a class="link-item" href="https://chekun.me">
+        <img class="link-avatar" src="/media/links/chekun.jpg" alt="chekun&#39;s blog">
+        <h3 class="link-title">chekun&#39;s blog</h3>
+        <p class="link-description">A full-stack PHP developer</p>
+      </a>
     
-      <p>There's nothing here.<br>Create an interesting post with the command:</p>
-      <p><code>$ hugo new post/hello-world.md</code></p>
-    
+      <a class="link-item" href="http://boof.wang">
+        <img class="link-avatar" src="/media/links/wangbo.jpg" alt="Boof Wang">
+        <h3 class="link-title">Boof Wang</h3>
+        <p class="link-description">Another full-stack PHP developer</p>
+      </a>
     
   </section>
   <footer class="site-footer">
@@ -198,6 +209,14 @@
 </footer>
 
 
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
+});
+</script>
 
 <script src="/js/bundle.js"></script>
 

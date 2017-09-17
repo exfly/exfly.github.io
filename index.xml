@@ -31,12 +31,46 @@
     </item>
     
     <item>
+      <title>oneplus one 刷Kali Linux NetHunter</title>
+      <link>https://exfly.github.io/post/sercurity/2017.09.17-black-phone/</link>
+      <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/sercurity/2017.09.17-black-phone/</guid>
+      <description>&lt;p&gt;看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>各种排序算法实现方法</title>
       <link>https://exfly.github.io/post/algorithm/sort/</link>
       <pubDate>Sat, 16 Sep 2017 16:08:44 +0800</pubDate>
       
       <guid>https://exfly.github.io/post/algorithm/sort/</guid>
       <description>&lt;p&gt;总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>2016年终总结，未来规划</title>
+      <link>https://exfly.github.io/post/diary/2017.01.01-2016-holiday-summary/</link>
+      <pubDate>Sun, 01 Jan 2017 14:24:40 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/diary/2017.01.01-2016-holiday-summary/</guid>
+      <description>&lt;p&gt;对2016年全年的总结，并为未来做一些安排。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux0.11源码学习环境配置与相关资源汇总</title>
+      <link>https://exfly.github.io/post/linux/linux0.11-read-code/</link>
+      <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/linux/linux0.11-read-code/</guid>
+      <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

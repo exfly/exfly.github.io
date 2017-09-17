@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>安全 on Exfly Blog</title>
+    <link>https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in 安全 on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
+    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate>
+    
+	<atom:link href="https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>oneplus one 刷Kali Linux NetHunter</title>
+      <link>https://exfly.github.io/post/sercurity/2017.09.17-black-phone/</link>
+      <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/sercurity/2017.09.17-black-phone/</guid>
+      <description>&lt;p&gt;看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

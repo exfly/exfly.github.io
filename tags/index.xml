@@ -7,9 +7,55 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
+    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kali</title>
+      <link>https://exfly.github.io/tags/kali/</link>
+      <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/kali/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://exfly.github.io/tags/linux/</link>
+      <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>刷机</title>
+      <link>https://exfly.github.io/tags/%E5%88%B7%E6%9C%BA/</link>
+      <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/%E5%88%B7%E6%9C%BA/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>安全</title>
+      <link>https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>总结</title>
+      <link>https://exfly.github.io/tags/%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 01 Jan 2017 14:24:40 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/%E6%80%BB%E7%BB%93/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>算法</title>
@@ -17,6 +63,15 @@
       <pubDate>Sat, 16 Sep 2017 16:08:44 +0800</pubDate>
       
       <guid>https://exfly.github.io/tags/%E7%AE%97%E6%B3%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>资源</title>
+      <link>https://exfly.github.io/tags/%E8%B5%84%E6%BA%90/</link>
+      <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/%E8%B5%84%E6%BA%90/</guid>
       <description></description>
     </item>
     

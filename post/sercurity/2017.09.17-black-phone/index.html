@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>oneplus one 刷Kali Linux NetHunter</title>
+
+  
+  
+
+
+
+
+  
+  <meta name="author" content="Exfly" />
+  <meta name="description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+
+" />
+
+  
+  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="oneplus one 刷Kali Linux NetHunter" />
+    <meta name="twitter:description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+
+" />
+    <meta name="twitter:image" content="https://exfly.github.io/media/img/nethunter-onePlus-300x280.png" />
+  
+
+
+
+
+<meta name="generator" content="Hugo 0.24.1" />
+
+
+<link rel="canonical" href="https://exfly.github.io/post/sercurity/2017.09.17-black-phone/" />
+<link rel="alternative" href="https://exfly.github.io/index.xml" title="Exfly Blog" type="application/atom+xml" />
+
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Exfly Blog" />
+<meta name="msapplication-tooltip" content="Exfly Blog" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+<link rel="icon" href="https://exfly.github.io/img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://exfly.github.io/img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://exfly.github.io/img/favicon-32x32.png" />
+<link rel="icon" sizes="192x192" href="https://exfly.github.io/img/touch-icon-android.png" />
+<link rel="apple-touch-icon" href="https://exfly.github.io/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="https://exfly.github.io/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="https://exfly.github.io/css/bundle.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="https://exfly.github.io/media/img/avatar.jpg" alt="Avatar">
+  
+  <h2 class="title">Exfly Blog</h2>
+  
+  <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item  is-active"><a href="https://exfly.github.io/">首页</a></li>
+      
+        <li class="menu-item "><a href="https://github.com/exfly/">作品</a></li>
+      
+        <li class="menu-item "><a href="https://exfly.github.io/links/">友链</a></li>
+      
+        <li class="menu-item "><a href="https://exfly.github.io/about/">关于</a></li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+
+      
+      <li class="social-item">
+        <a href="//github.com/exfly" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="//www.zhihu.com/people/992122833" title="Zhihu"><span class="icon icon-zhihu"></span></a>
+      </li>
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="https://exfly.github.io/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">oneplus one 刷Kali Linux NetHunter</h1>
+      <p class="post-meta">@Exfly · Sep 17, 2017 · 1 min read</p>
+    </header>
+    <article class="post-content"><p>看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>
+
+<p></p>
+
+<h2 id="一">一</h2>
+
+<p>使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如<a href="http://www.oneplusbbs.com/thread-942394-1-1.html">二清、三清、四清</a>等等。如下一步一步的说如何刷。</p>
+
+<h2 id="二">二</h2>
+
+<h3 id="刷机四步走">刷机四步走</h3>
+
+<h4 id="第一步-仔细阅读-官方wiki-https-github-com-offensive-security-kali-nethunter-wiki"><strong>第一步</strong>， 仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a></h4>
+
+<p>仔细研读仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>，可以减少刷机过程中各种坑。</p>
+
+<h4 id="第二步-刷-twrp-oneplus1-https-dl-twrp-me-bacon"><strong>第二步</strong>， 刷<a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a></h4>
+
+<p>一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&rdquo;预配置&rdquo;在 Windows 下，也可以参考&rdquo;<a href="http://www.wugfresh.com/brt/">Bacon Root Toolkit</a>&ldquo;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。</p>
+
+<h4 id="第三步-下载最新的-nethunter-并进入twrp的recovery模式刷入kali"><strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali</h4>
+
+<pre><code>kernel-nethunter-[device]-[os]-*.zip
+nethunter-generic-[arch]-kalifs-*.zip
+</code></pre>
+
+<p>对于oneplus1手机来说，其对应的[arch]为armhf。
+随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。</p>
+
+<h4 id="第四步-都刷顺利后-开机进入kali-用已经-预装-上的-supersu-app-来完成之后一系列的-root授权即可"><strong>第四步</strong>，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。</h4>
+
+<h2 id="三">三</h2>
+
+<p>如果安装Kali Linux NetHunter,需要下载的文件如下：</p>
+
+<ul>
+<li><a href="#">CM13.0</a></li>
+<li><a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
+<li><a href="http://www.wugfresh.com/brt/">brt</a>：oneplus的解锁、root工具</li>
+<li><a href="https://build.nethunter.com/nightly/">Kali Linux NetHunter</a>：如果刷其他系统，可能需要的文件如下：</li>
+<li><a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
+<li><a href="https://lineageos.org/">lineageos rom</a>：cm的重生</li>
+<li><a href="http://www.supersu.com/download">supersu</a>：root工具</li>
+</ul>
+
+<h2 id="四">四</h2>
+
+<p>Enjoy！</p>
+
+<h2 id="最后">最后</h2>
+
+<p>安装了Kali Linux NetHunter，手机便有了完整的python环境。剩下的，你懂的。</p></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="https://exfly.github.io/tags/%E5%AE%89%E5%85%A8"><span class="tag">安全</span></a></li>
+        
+          <li><a href="https://exfly.github.io/tags/kali"><span class="tag">Kali</span></a></li>
+        
+          <li><a href="https://exfly.github.io/tags/%E5%88%B7%E6%9C%BA"><span class="tag">刷机</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        © This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.
+      </p>
+    </footer>
+    
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017 Exfly Blog</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
+});
+</script>
+
+<script src="https://exfly.github.io/js/bundle.js"></script>
+
+
+
+
+  </body>
+</html>

@@ -27,7 +27,8 @@
       <pubDate>Sat, 16 Sep 2017 14:38:23 +0800</pubDate>
       
       <guid>https://exfly.github.io/about/</guid>
-      <description>ExFly Keep It Simple &amp;amp; Stupid.</description>
+      <description>ExFly Keep It Simple &amp;amp; Stupid.
+Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。</description>
     </item>
     
     <item>
@@ -36,7 +37,7 @@
       <pubDate>Tue, 19 Dec 2017 10:21:19 +0800</pubDate>
       
       <guid>https://exfly.github.io/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
-      <description>&lt;p&gt;分享自己的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用&lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系。&lt;/p&gt;
+      <description>&lt;p&gt;分享自己的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用&lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

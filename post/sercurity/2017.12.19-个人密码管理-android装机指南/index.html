@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 
   
-  <title>oneplus one 刷Kali Linux NetHunter</title>
+  <title>个人密码管理&#43;Android装机指南</title>
 
   
   
@@ -15,7 +15,7 @@
 
   
   <meta name="author" content="Exfly" />
-  <meta name="description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+  <meta name="description" content="不久前听了余弦大大的知乎分享之后，感觉为了自己的信息安全应该做点什么。所以自己模拟着构建了自己的一套隐私保护体系。这里分享一下买新手机后自己手机里安装的软件，最主要的是自己构建的密码管理体系:keepass&#43;坚果云&#43;keepass2Android
 
 " />
 
@@ -23,11 +23,11 @@
   
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@gohugoio" />
-    <meta name="twitter:title" content="oneplus one 刷Kali Linux NetHunter" />
-    <meta name="twitter:description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+    <meta name="twitter:title" content="个人密码管理&#43;Android装机指南" />
+    <meta name="twitter:description" content="不久前听了余弦大大的知乎分享之后，感觉为了自己的信息安全应该做点什么。所以自己模拟着构建了自己的一套隐私保护体系。这里分享一下买新手机后自己手机里安装的软件，最主要的是自己构建的密码管理体系:keepass&#43;坚果云&#43;keepass2Android
 
 " />
-    <meta name="twitter:image" content="https://exfly.github.io/media/img/2017.09.17-black-phone/nethunter-onePlus-300x280.png" />
+    <meta name="twitter:image" content="https://exfly.github.io/media/img/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-Android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/keepass.png" />
   
 
 
@@ -36,7 +36,7 @@
 <meta name="generator" content="Hugo 0.24.1" />
 
 
-<link rel="canonical" href="https://exfly.github.io/post/sercurity/2017.09.17-black-phone/" />
+<link rel="canonical" href="https://exfly.github.io/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/" />
 <link rel="alternative" href="https://exfly.github.io/index.xml" title="Exfly Blog" type="application/atom+xml" />
 
 
@@ -192,71 +192,79 @@
 
   <section class="main post-detail">
     <header class="post-header">
-      <h1 class="post-title">oneplus one 刷Kali Linux NetHunter</h1>
-      <p class="post-meta">@Exfly · Sep 17, 2017 · 1 min read</p>
+      <h1 class="post-title">个人密码管理&#43;Android装机指南</h1>
+      <p class="post-meta">@Exfly · Dec 19, 2017 · 1 min read</p>
     </header>
-    <article class="post-content"><p>看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
-这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>
+    <article class="post-content"><p>不久前听了余弦大大的知乎分享之后，感觉为了自己的信息安全应该做点什么。所以自己模拟着构建了自己的一套隐私保护体系。这里分享一下买新手机后自己手机里安装的软件，最主要的是自己构建的密码管理体系:<a href="https://keepass.info/">keepass</a>+<a href="https://www.jianguoyun.com/">坚果云</a>+<a href="https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk">keepass2Android</a></p>
 
 <p></p>
 
-<h2 id="一">一</h2>
+<h1 id="个人密码管理">个人密码管理</h1>
 
-<p>使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如<a href="http://www.oneplusbbs.com/thread-942394-1-1.html">二清、三清、四清</a>等等。如下一步一步的说如何刷。</p>
-
-<h2 id="二">二</h2>
-
-<h3 id="刷机四步走">刷机四步走</h3>
-
-<h4 id="第一步-仔细阅读-官方wiki-https-github-com-offensive-security-kali-nethunter-wiki"><strong>第一步</strong>， 仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a></h4>
-
-<p>仔细研读仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>，可以减少刷机过程中各种坑。</p>
-
-<h4 id="第二步-刷-twrp-oneplus1-https-dl-twrp-me-bacon"><strong>第二步</strong>， 刷<a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a></h4>
-
-<p>一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&rdquo;预配置&rdquo;在 Windows 下，也可以参考&rdquo;<a href="http://www.wugfresh.com/brt/">Bacon Root Toolkit</a>&ldquo;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。</p>
-
-<h4 id="第三步-下载最新的-nethunter-并进入twrp的recovery模式刷入kali"><strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali</h4>
-
-<pre><code>kernel-nethunter-[device]-[os]-*.zip
-nethunter-generic-[arch]-kalifs-*.zip
-</code></pre>
-
-<p>对于oneplus1手机来说，其对应的[arch]为armhf。
-随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。</p>
-
-<h4 id="第四步-都刷顺利后-开机进入kali-用已经-预装-上的-supersu-app-来完成之后一系列的-root授权即可"><strong>第四步</strong>，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。</h4>
-
-<h2 id="三">三</h2>
-
-<p>如果安装Kali Linux NetHunter,需要下载的文件如下：</p>
+<h2 id="准备">准备</h2>
 
 <ul>
-<li><a href="#">CM13.0</a></li>
-<li><a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
-<li><a href="http://www.wugfresh.com/brt/">brt</a>：oneplus的解锁、root工具</li>
-<li><a href="https://build.nethunter.com/nightly/">Kali Linux NetHunter</a>：如果刷其他系统，可能需要的文件如下：</li>
-<li><a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
-<li><a href="https://lineageos.org/">lineageos rom</a>：cm的重生</li>
-<li><a href="http://www.supersu.com/download">supersu</a>：root工具</li>
+<li>win:<a href="https://keepass.info/">keepass</a></li>
+<li>自助云存储:<a href="https://www.jianguoyun.com/">坚果云</a>账号</li>
+<li>Android:<a href="https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk">keepass2Android</a></li>
 </ul>
 
-<h2 id="四">四</h2>
+<h2 id="开始">开始</h2>
 
-<p>Enjoy！</p>
+<p>工具准备好就开始吧，按如下步骤：</p>
+
+<ol>
+<li>电脑端keepass本地建一个密码文件（需要一个主密码，以后可以修改，<strong>主密码一定要复杂</strong>），后上传到坚果云里，（这时候就可以删除本地的密码文件了）；</li>
+<li>坚果云中配置第三方应用授权。（坚果云记得开二步验证，这样每次登陆需要微信接收验证码才可以登陆，更安全一些）；</li>
+<li>电脑keepass打开url，以及Android手机keepass2Android打开url；</li>
+<li>完。</li>
+</ol>
+
+<p>具体如何创建请看这个<a href="http://www.itbulu.com/webdav-keepass.html">链接</a>，
+如我这般建密码维护基本不会出现问题。</p>
+
+<p>到这里密码管理体系基本完成了。可是对于一个新手机，用好久就会卡，很卡，超级卡，为了解决这个问题，就要耍一些小手段，具体如下。</p>
+
+<h1 id="android装机指南">Android装机指南</h1>
+
+<h2 id="准备-1">准备</h2>
+
+<ul>
+<li><a href="https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk">容器</a>开源产品，基于virtualapp框架，有点像Docker；又是双开工具，他自己有自己的运行环境；又可以说是Android下的免安装应用的运行平台。之后会告诉你怎么用，超级棒</li>
+<li><a href="https://www.coolapk.com/">酷安</a>应用商店</li>
+<li><a href="https://apkpure.com/">apkpure.com</a>下载中国下载不了的应用，有一个没被墙的网址，下载好app后，app不需要vpn，懂了没？域名没找到，懒得找了。google商店里所有的应用这里都可以下，自己想像吧</li>
+</ul>
+
+<h2 id="开始-1">开始</h2>
+
+<p>先截个图，看一看
+<img src="https://exfly.github.io/media/img/2017.12.19-个人密码管理-Android装机指南/container.jpg" alt="container" /></p>
+
+<p>最屌炸天的是，我把淘宝、王者荣耀和吃鸡都放到容器了，而且完全没有性能损失</p>
+
+<p><strong>基本思路</strong>：把必须装到手机里的（比如支付宝，微信等）装到手机里，非必需（比如淘宝，百度云等），都装容器里。</p>
+
+<p>类比真机，软件需要有一个执行环境和临时文件，容器里的软件文件都存到了/virtual中的。</p>
+
+<p><strong>使用思路</strong>：平时把可以放到容器中的软件放到里边，不用的时候直接关闭容器，容器里所有的软件会关闭。这样就防止软件的后台自动启动，浪费内存，手机越用越慢的现象。</p>
+
+<p>具体看我平时常用的一些软件，我把他们分为主机（就是安装到真机中）和容器中的。地址分别如下</p>
+
+<ul>
+<li><a href="https://www.coolapk.com/album/4893177">真机</a></li>
+<li><a href="https://www.coolapk.com/album/4893175">容器</a></li>
+</ul>
 
 <h2 id="最后">最后</h2>
 
-<p>安装了Kali Linux NetHunter，手机便有了完整的python环境。剩下的，你懂的。</p></article>
+<p>有什么问题请直接在我的酷安@我，或者邮箱我：exflycat@gmail.com。</p>
+
+<p>Enjoy!!!</p></article>
     <footer class="post-footer">
       
       <ul class="post-tags">
         
           <li><a href="https://exfly.github.io/tags/%E5%AE%89%E5%85%A8"><span class="tag">安全</span></a></li>
-        
-          <li><a href="https://exfly.github.io/tags/kali"><span class="tag">Kali</span></a></li>
-        
-          <li><a href="https://exfly.github.io/tags/%E5%88%B7%E6%9C%BA"><span class="tag">刷机</span></a></li>
         
       </ul>
       

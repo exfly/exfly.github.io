@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>© This post is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License，please give source if you likes to quote or reproduce.</copyright>
-    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 19 Dec 2017 10:21:19 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>个人密码管理&#43;Android装机指南</title>
+      <link>https://exfly.github.io/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Tue, 19 Dec 2017 10:21:19 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
+      <description>&lt;p&gt;不久前听了余弦大大的知乎分享之后，感觉为了自己的信息安全应该做点什么。所以自己模拟着构建了自己的一套隐私保护体系。这里分享一下买新手机后自己手机里安装的软件，最主要的是自己构建的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>oneplus one 刷Kali Linux NetHunter</title>

@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 30 Oct 2016 14:17:49 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 10 Jan 2018 11:24:31 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Vim学习</title>
+      <link>https://exfly.github.io/post/tools/vim/</link>
+      <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/tools/vim/</guid>
+      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Linux0.11源码学习环境配置与相关资源汇总</title>

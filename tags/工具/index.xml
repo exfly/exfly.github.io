@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>工具 on Exfly Blog</title>
+    <link>https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/</link>
+    <description>Recent content in 工具 on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>©2017 by Exfly. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 10 Jan 2018 11:24:31 +0800</lastBuildDate>
+    
+	<atom:link href="https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Vim学习</title>
+      <link>https://exfly.github.io/post/tools/vim/</link>
+      <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/tools/vim/</guid>
+      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

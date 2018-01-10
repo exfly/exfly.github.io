@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>https://exfly.github.io/post/tools/vim/</loc>
+    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://exfly.github.io/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</loc>
     <lastmod>2017-12-19T10:21:19+08:00</lastmod>
   </url>
@@ -56,13 +61,13 @@
   
   <url>
     <loc>https://exfly.github.io/tags/linux/</loc>
-    <lastmod>2016-10-30T14:17:49+08:00</lastmod>
+    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://exfly.github.io/post/</loc>
-    <lastmod>2017-12-19T10:21:19+08:00</lastmod>
+    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -81,6 +86,12 @@
   <url>
     <loc>https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/</loc>
     <lastmod>2017-12-19T10:21:19+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -13,6 +13,7 @@
 
 
 
+
   
   <meta name="author" content="Exfly" />
   <meta name="description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
@@ -30,10 +31,19 @@
     <meta name="twitter:image" content="https://exfly.github.io/media/img/2017.09.17-black-phone/nethunter-onePlus-300x280.png" />
   
 
+  
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="oneplus one 刷Kali Linux NetHunter" />
+  <meta property="og:description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+
+" />
+  <meta property="og:url" content="https://exfly.github.io/post/sercurity/2017.09.17-black-phone/" />
+  <meta property="og:image" content="https://exfly.github.io/media/img/2017.09.17-black-phone/nethunter-onePlus-300x280.png" />
 
 
 
-<meta name="generator" content="Hugo 0.24.1" />
+
+<meta name="generator" content="Hugo 0.27.1" />
 
 
 <link rel="canonical" href="https://exfly.github.io/post/sercurity/2017.09.17-black-phone/" />
@@ -121,13 +131,35 @@
       
       
       
-        <li class="menu-item  is-active"><a href="https://exfly.github.io/">首页</a></li>
+        <li class="menu-item
+            
+            
+            
+              is-active
+            ">
+            <a href="https://exfly.github.io/">首页</a>
+          </li>
       
-        <li class="menu-item "><a href="https://github.com/exfly/">作品</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
       
-        <li class="menu-item "><a href="https://exfly.github.io/links/">友链</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://exfly.github.io/links/">友链</a>
+          </li>
       
-        <li class="menu-item "><a href="https://exfly.github.io/about/">关于</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://exfly.github.io/about/">关于</a>
+          </li>
       
     </ul>
   </nav>
@@ -261,7 +293,7 @@ nethunter-generic-[arch]-kalifs-*.zip
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>114</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.This post was published <strong>139</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
       </p>
     </footer>
     
@@ -279,9 +311,25 @@ nethunter-generic-[arch]-kalifs-*.zip
 <script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
 <script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
-});
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\[','\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
 </script>
 
 <script src="https://exfly.github.io/js/bundle.js"></script>

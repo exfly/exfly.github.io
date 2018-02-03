@@ -5,7 +5,9 @@
   <meta charset="utf-8" />
 
   
-  <title>Linux0.11源码学习环境配置与相关资源汇总</title>
+  <title>
+  Tags | Exfly Blog
+</title>
 
   
   
@@ -16,29 +18,21 @@
 
   
   <meta name="author" content="Exfly" />
-  <meta name="description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
-
-" />
+  <meta name="description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
 
   
-  
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@gohugoio" />
-    <meta name="twitter:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-    <meta name="twitter:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
-
-" />
-    <meta name="twitter:image" content="https://exfly.github.io/media/img/linux0.11readcode/linux.jpg" />
-  
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@gohugoio" />
+  <meta name="twitter:title" content="Exfly Blog" />
+  <meta name="twitter:description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
+  <meta name="twitter:image" content="https://exfly.github.io/img/avatar.jpg" />
 
   
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-  <meta property="og:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
-
-" />
-  <meta property="og:url" content="https://exfly.github.io/post/linux/linux0.11-read-code/" />
-  <meta property="og:image" content="https://exfly.github.io/media/img/linux0.11readcode/linux.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Exfly Blog" />
+  <meta property="og:description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
+  <meta property="og:url" content="https://exfly.github.io/categories/" />
+  <meta property="og:image" content="https://exfly.github.io/img/avatar.jpg" />
 
 
 
@@ -46,7 +40,7 @@
 <meta name="generator" content="Hugo 0.27.1" />
 
 
-<link rel="canonical" href="https://exfly.github.io/post/linux/linux0.11-read-code/" />
+<link rel="canonical" href="https://exfly.github.io/categories/" />
 <link rel="alternative" href="https://exfly.github.io/index.xml" title="Exfly Blog" type="application/atom+xml" />
 
 
@@ -110,8 +104,6 @@
     <div class="suspension">
       <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
       
-        
-      
     </div>
     
     
@@ -134,8 +126,6 @@
         <li class="menu-item
             
             
-            
-              is-active
             ">
             <a href="https://exfly.github.io/">首页</a>
           </li>
@@ -222,90 +212,14 @@
   </nav>
 </header>
 
-  <section class="main post-detail">
+  <section class="main post-detail terms-list">
     <header class="post-header">
-      <h1 class="post-title">Linux0.11源码学习环境配置与相关资源汇总</h1>
-      <p class="post-meta">@Exfly · Oct 30, 2016 · 1 min read</p>
+      <h1 class="post-title">Categories</h1>
     </header>
-    <article class="post-content"><p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
-
-<p></p>
-
-<h1 id="linux-history">linux history</h1>
-
-<ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
-</ul>
-
-<h1 id="linux">linux</h1>
-
-<p>linux采用分段+分页机制结合管理内存</p>
-
-<h1 id="linux-调试方法">linux 调试方法</h1>
-
-<ul>
-<li><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a>
-```
-gdb tools/system
-target remote localhost:1234</li>
-</ul>
-
-<p>gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&rdquo;i b&rdquo;
-continue&copy; 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register</p>
-
-<p>GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)</p>
-
-<p>cgdb    可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system* <a href="http://labrick.cc/2015/08/13/linux-0-11-boot/">linux-0.11启动过程描述</a>
-* <a href="http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml">Linux0.11启动过程</a>
-* <a href="http://www.jianshu.com/p/1cea7dc5d6b7">80386保护模式的本质</a>
-* <a href="http://luodw.cc/2016/02/17/address/">linux虚拟地址到线性地址的转化</a>
-* <a href="http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分段机制-linux回避了分段机制</a>
-* <a href="http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分页机制/</a>
-* <a href="http://www.voidcn.com/blog/will130/article/p-5705051.html">逻辑地址、线性地址、物理地址和虚拟地址</a>
-* <a href="http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838">Intel 80386 程序员参考手册</a>
-* <a href="http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164">linux0.11内核之文件系统</a>
-```</p>
-
-<h1 id="source">source</h1>
-
-<h1 id="80386内存访问公式">80386内存访问公式</h1>
-
-<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
-
-<p>48bit = 16 + 32
-16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
-32线性地址 -&gt; 物理地址</p></article>
-    <footer class="post-footer">
+    <div class="tags-cloud">
       
-      <ul class="post-tags">
-        
-          <li><a href="https://exfly.github.io/tags/linux"><span class="tag">Linux</span></a></li>
-        
-          <li><a href="https://exfly.github.io/tags/%E8%B5%84%E6%BA%90"><span class="tag">资源</span></a></li>
-        
-      </ul>
       
-      <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>461</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
-      </p>
-    </footer>
-    
-      
-    
+    </div>
   </section>
   <footer class="site-footer">
   <p>© 2017-2018 Exfly Blog</p>

@@ -15,6 +15,7 @@
 
 
 
+
   
   <meta name="author" content="Exfly" />
   <meta name="description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
@@ -26,10 +27,17 @@
   <meta name="twitter:description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
   <meta name="twitter:image" content="https://exfly.github.io/img/avatar.jpg" />
 
+  
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Exfly Blog" />
+  <meta property="og:description" content="Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。" />
+  <meta property="og:url" content="https://exfly.github.io/about/" />
+  <meta property="og:image" content="https://exfly.github.io/img/avatar.jpg" />
 
 
 
-<meta name="generator" content="Hugo 0.24.1" />
+
+<meta name="generator" content="Hugo 0.27.1" />
 
 
 <link rel="canonical" href="https://exfly.github.io/about/" />
@@ -115,13 +123,35 @@
       
       
       
-        <li class="menu-item "><a href="https://exfly.github.io/">首页</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://exfly.github.io/">首页</a>
+          </li>
       
-        <li class="menu-item "><a href="https://github.com/exfly/">作品</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
       
-        <li class="menu-item "><a href="https://exfly.github.io/links/">友链</a></li>
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://exfly.github.io/links/">友链</a>
+          </li>
       
-        <li class="menu-item  is-active"><a href="https://exfly.github.io/about/">关于</a></li>
+        <li class="menu-item
+            
+              is-active
+            
+            
+            ">
+            <a href="https://exfly.github.io/about/">关于</a>
+          </li>
       
     </ul>
   </nav>
@@ -208,9 +238,25 @@ Keep It Simple &amp; Stupid.</p>
 <script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
 <script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}
-});
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\[','\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
 </script>
 
 <script src="https://exfly.github.io/js/bundle.js"></script>

@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Thu, 01 Feb 2018 14:24:40 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 14 Feb 2018 11:04:36 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>使用gensim训练word2vec模型--中文维基百科语料</title>
+      <link>https://exfly.github.io/post/algorithm/wiki_zh_practice_word2vec/</link>
+      <pubDate>Wed, 14 Feb 2018 11:04:36 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/algorithm/wiki_zh_practice_word2vec/</guid>
+      <description>&lt;p&gt;文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>2017年终总结，未来规划</title>

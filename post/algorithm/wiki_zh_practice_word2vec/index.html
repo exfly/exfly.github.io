@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 
   
-  <title>2016年终总结，未来规划</title>
+  <title>使用gensim训练word2vec模型--中文维基百科语料</title>
 
   
   
@@ -16,7 +16,7 @@
 
   
   <meta name="author" content="Exfly" />
-  <meta name="description" content="对2016年全年的总结，并为未来做一些安排。
+  <meta name="description" content="文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程
 
 " />
 
@@ -24,21 +24,21 @@
   
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@gohugoio" />
-    <meta name="twitter:title" content="2016年终总结，未来规划" />
-    <meta name="twitter:description" content="对2016年全年的总结，并为未来做一些安排。
+    <meta name="twitter:title" content="使用gensim训练word2vec模型--中文维基百科语料" />
+    <meta name="twitter:description" content="文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程
 
 " />
-    <meta name="twitter:image" content="https://exfly.github.io/media/img/2017.01.01_2016HolidaySummary/2016.jpg" />
+    <meta name="twitter:image" content="https://exfly.github.io/media/img/Algorithm/wiki_zh_practice_Word2Vec/avatar.jpg" />
   
 
   
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="2016年终总结，未来规划" />
-  <meta property="og:description" content="对2016年全年的总结，并为未来做一些安排。
+  <meta property="og:title" content="使用gensim训练word2vec模型--中文维基百科语料" />
+  <meta property="og:description" content="文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程
 
 " />
-  <meta property="og:url" content="https://exfly.github.io/post/diary/2017.01.01-2016-holiday-summary/" />
-  <meta property="og:image" content="https://exfly.github.io/media/img/2017.01.01_2016HolidaySummary/2016.jpg" />
+  <meta property="og:url" content="https://exfly.github.io/post/algorithm/wiki_zh_practice_word2vec/" />
+  <meta property="og:image" content="https://exfly.github.io/media/img/Algorithm/wiki_zh_practice_Word2Vec/avatar.jpg" />
 
 
 
@@ -46,7 +46,7 @@
 <meta name="generator" content="Hugo 0.27.1" />
 
 
-<link rel="canonical" href="https://exfly.github.io/post/diary/2017.01.01-2016-holiday-summary/" />
+<link rel="canonical" href="https://exfly.github.io/post/algorithm/wiki_zh_practice_word2vec/" />
 <link rel="alternative" href="https://exfly.github.io/index.xml" title="Exfly Blog" type="application/atom+xml" />
 
 
@@ -224,52 +224,106 @@
 
   <section class="main post-detail">
     <header class="post-header">
-      <h1 class="post-title">2016年终总结，未来规划</h1>
-      <p class="post-meta">@Exfly · Jan 1, 2017 · 1 min read</p>
+      <h1 class="post-title">使用gensim训练word2vec模型--中文维基百科语料</h1>
+      <p class="post-meta">@Exfly · Feb 14, 2018 · 1 min read</p>
     </header>
-    <article class="post-content"><p>对2016年全年的总结，并为未来做一些安排。</p>
+    <article class="post-content"><p>文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程</p>
 
 <p></p>
 
-<h1 id="年前一天-依旧忙碌">年前一天，依旧忙碌</h1>
+<h1 id="准备">准备</h1>
 
-<h2 id="往事">往事</h2>
+<ul>
+<li>中文维基百科预料：<a href="https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-pages-articles.xml.bz2">zhwiki-latest-pages-articles.xml.bz2</a></li>
+<li><a href="#">python3</a></li>
+<li><a href="https://github.com/ExFly/wiki_zh_word2vec.git">wiki_zh_word2vec</a></li>
+<li>繁体转简体：<a href="https://bintray.com/package/files/byvoid/opencc/OpenCC">opencc</a>一定要下*-win32.7z,win64的在我电脑上无法运行。如果使用我的<a href="https://github.com/ExFly/wiki_zh_word2vec.git">wiki_zh_word2vec</a>,则项目中包含可以直接使用的opencc</li>
+</ul>
 
-<p>14年十月至今天，从0到1的转变。
-开始的时候，不断的学习各种软件的使用，像什么PS之类的东西玩了个遍，总感觉这些东西都是别人做出来的东西，便生出自己也搞出一些想这类软件。然而继续的瞎搞。
-不知什么时候，知道通过学习c可以做出来好多有意思的小玩意，比如贪吃蛇，便开始学习高级语言。
-之后，知道原来学习计算机，需要系统的学习计算机的理论知识，从此入坑，一发不可收拾。
-网易云课堂是自己计算机启蒙课程。跟着上边的课程学了好久，懂了计算机需要如何入门。学了导论、计组、C语言、算法和数据结构、操作系统、计算机网络、数据库原理等等。自己找视频看了Linux，读了鸟哥的linux书，甚至直接吧自己的电脑系统换成了Ubuntu/linuxmint，真正体会到Linux该如何使用。
-假期用Flask完成了动态网站，部署到服务器里一段时间，后来因为网站太简单，给撤了。
-后来深入web，用了两个月的时间，把前端学了一下，同时完成了自己第一个网页。学了Tornado,重构了几次Project Generator，也算初步掌握全栈开发。同学科研训练，找了一个Tornado开源项目，改成了论坛系统，还帮这个项目修了几个bug。
-学了些东西。</p>
+<h1 id="todo">TODO</h1>
 
-<h2 id="如今">如今</h2>
+<h2 id="依赖准备">依赖准备</h2>
 
-<p>如今，趁着假期，也是准备考研前的最后一个可以自由支配的假期，准备了些东西回来学。每天完成一个汇编的项目，( <a href="https://github.com/ExFly/CsLearning/tree/master/Language/ASM/holiday">假期汇编</a> )。准备好好学学数据结构和算法导论.</p>
+<ul>
+<li>下载<a href="https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-pages-articles.xml.bz2">中文维基百科预料</a></li>
+<li>git clone <a href="https://github.com/ExFly/wiki_zh_word2vec.git">https://github.com/ExFly/wiki_zh_word2vec.git</a></li>
+<li>将zhwiki-latest-pages-articles.xml.bz2放到build文件夹下</li>
+<li>cd path/to/wiki_zh_word2vec</li>
+<li>pip install pipenv</li>
+<li>pipenv install &ndash;dev</li>
+</ul>
 
-<h2 id="越努力越迷茫">越努力越迷茫</h2>
+<h2 id="将xml的wiki数据转换为text格式">将XML的Wiki数据转换为text格式</h2>
 
-<p>越努力，知道的越多，不知到的更多。为了选择自己的技术方向，越接触越不知道该学什么，越着急，越急躁。
-同时还有一些其他的事让我烦心。慢慢来吧，急不来。</p>
+<ul>
+<li>pipenv run python 1_process.py build/zhwiki-latest-pages-articles.xml.bz2 build/wiki.zh.txt</li>
+</ul>
 
-<h2 id="未来">未来</h2>
+<p>31分钟运行完成282855篇文章，得到一个931M的txt文件</p>
 
-<p>以后该怎么如何进步？</p>
+<h2 id="中文繁体替换成简体">中文繁体替换成简体</h2>
 
-<h2 id="其他">其他</h2>
+<ul>
+<li>opencc-1.0.1-win32/opencc -i build/wiki.zh.txt -o build/wiki.zh.simp.txt -c opencc-1.0.1-win32/t2s.json</li>
+</ul>
 
-<p>继续学习，共勉！</p></article>
+<p>大约使用了15分钟</p>
+
+<h2 id="结巴分词">结巴分词</h2>
+
+<ul>
+<li>pipenv run python 2_jieba_participle.py</li>
+</ul>
+
+<p>大约使用了30分钟</p>
+
+<h2 id="word2vec模型训练">Word2Vec模型训练</h2>
+
+<ul>
+<li>pipenv run python 3_train_word2vec_model.py</li>
+</ul>
+
+<p>大约使用了30分钟，且全程cpu使用率达到90%+</p>
+
+<h2 id="模型测试">模型测试</h2>
+
+<ul>
+<li>pipenv run python 4_model_match.py</li>
+</ul>
+d:\Project\wiki_zh_word2vec (develop)
+λ pipenv run python 4_model_match.py
+国际足球 0.5256255865097046
+足球队 0.5234458446502686
+篮球 0.5108680725097656
+足球运动 0.5033905506134033
+国家足球队 0.494105726480484
+足球比赛 0.4919792115688324
+男子篮球 0.48382389545440674
+足球联赛 0.4837716817855835
+体育 0.4835757911205292
+football 0.47945135831832886
+
+<h2 id="查看结果">查看结果</h2>
+
+<p>可以使用linux的head或者tail命令查看运行的结果。
+* head -n 100 wiki.zh.simp.txt &gt; wiki.zh.simp_head_100.txt,直接查看wiki.zh.simp_head_100.txt即可
+* 没有head命令，可以安装<a href="https://github.com/bmatzelle/gow/releases">gow</a>，或者直接下载<a href="http://cmder.net/">cmder</a>,进入就可以使用head命令了</p>
+
+<h1 id="结果">结果</h1>
+
+<ul>
+<li>至此，使用python对中文wiki语料的词向量建模就全部结束了，wiki.zh.text.vector中是每个词对应的词向量，可以在此基础上作文本特征的提取以及分类。所有代码都已上传至<a href="https://github.com/ExFly/wiki_zh_word2vec">本人GitHub</a>中，欢迎指教！</li>
+<li>感谢<a href="https://github.com/AimeeLee77/wiki_zh_word2vec">AimeeLee77</a>,其代码为Python2，我的项目<a href="https://github.com/ExFly/wiki_zh_word2vec.git">exfly/wiki_zh_word2vec</a>已经完全迁移到python3,并向<a href="https://github.com/AimeeLee77/wiki_zh_word2vec">AimeeLee77</a>提交了pull request</li>
+<li><a href="https://github.com/ExFly/wiki_zh_word2vec.git">wiki_zh_word2vec</a></li>
+</ul></article>
     <footer class="post-footer">
       
       <ul class="post-tags">
         
-          <li><a href="https://exfly.github.io/tags/%E6%80%BB%E7%BB%93"><span class="tag">总结</span></a></li>
-        
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>408</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.
       </p>
     </footer>
     

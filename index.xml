@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐</title>
+      <link>https://exfly.github.io/post/tools/wox_everything/</link>
+      <pubDate>Sat, 24 Feb 2018 19:15:55 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/tools/wox_everything/</guid>
+      <description>&lt;p&gt;文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>使用gensim训练word2vec模型--中文维基百科语料</title>
       <link>https://exfly.github.io/post/algorithm/wiki_zh_practice_word2vec/</link>
       <pubDate>Wed, 14 Feb 2018 11:04:36 +0800</pubDate>

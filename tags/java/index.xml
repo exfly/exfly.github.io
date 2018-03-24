@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on Exfly Blog</title>
+    <link>https://exfly.github.io/tags/java/</link>
+    <description>Recent content in Java on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>©2017 by Exfly. All rights reserved.</copyright>
+    <lastBuildDate>Sat, 24 Mar 2018 10:33:11 +0800</lastBuildDate>
+    
+	<atom:link href="https://exfly.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Collections知识整理</title>
+      <link>https://exfly.github.io/post/java/collectionslearn/</link>
+      <pubDate>Sat, 24 Mar 2018 10:33:11 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/post/java/collectionslearn/</guid>
+      <description>&lt;p&gt;文章简介：学Java Collections集合，对其中一些知识进行整理&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

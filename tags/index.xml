@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 24 Mar 2018 10:33:11 +0800</lastBuildDate>
     
 	<atom:link href="https://exfly.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java</title>
+      <link>https://exfly.github.io/tags/java/</link>
+      <pubDate>Sat, 24 Mar 2018 10:33:11 +0800</pubDate>
+      
+      <guid>https://exfly.github.io/tags/java/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Kali</title>

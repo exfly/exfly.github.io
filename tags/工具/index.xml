@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>工具 on Exfly Blog</title>
-    <link>https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/</link>
+    <link>/tags/%E5%B7%A5%E5%85%B7/</link>
     <description>Recent content in 工具 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
     <lastBuildDate>Sat, 24 Feb 2018 19:15:55 +0800</lastBuildDate>
     
-	<atom:link href="https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐</title>
-      <link>https://exfly.github.io/post/tools/wox_everything/</link>
+      <link>/post/tools/wox_everything/</link>
       <pubDate>Sat, 24 Feb 2018 19:15:55 +0800</pubDate>
       
-      <guid>https://exfly.github.io/post/tools/wox_everything/</guid>
+      <guid>/post/tools/wox_everything/</guid>
       <description>&lt;p&gt;文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -25,10 +25,10 @@
     
     <item>
       <title>Vim学习</title>
-      <link>https://exfly.github.io/post/tools/vim/</link>
+      <link>/post/tools/vim/</link>
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
       
-      <guid>https://exfly.github.io/post/tools/vim/</guid>
+      <guid>/post/tools/vim/</guid>
       <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

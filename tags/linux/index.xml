@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on Exfly Blog</title>
-    <link>https://exfly.github.io/tags/linux/</link>
+    <link>/tags/linux/</link>
     <description>Recent content in Linux on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
     <lastBuildDate>Wed, 10 Jan 2018 11:24:31 +0800</lastBuildDate>
     
-	<atom:link href="https://exfly.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Vim学习</title>
-      <link>https://exfly.github.io/post/tools/vim/</link>
+      <link>/post/tools/vim/</link>
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
       
-      <guid>https://exfly.github.io/post/tools/vim/</guid>
+      <guid>/post/tools/vim/</guid>
       <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
@@ -25,10 +25,10 @@
     
     <item>
       <title>Linux0.11源码学习环境配置与相关资源汇总</title>
-      <link>https://exfly.github.io/post/linux/linux0.11-read-code/</link>
+      <link>/post/linux/linux0.11-read-code/</link>
       <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
       
-      <guid>https://exfly.github.io/post/linux/linux0.11-read-code/</guid>
+      <guid>/post/linux/linux0.11-read-code/</guid>
       <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

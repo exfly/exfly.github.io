@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>算法 on Exfly Blog</title>
-    <link>https://exfly.github.io/tags/%E7%AE%97%E6%B3%95/</link>
+    <link>/tags/%E7%AE%97%E6%B3%95/</link>
     <description>Recent content in 算法 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
     <lastBuildDate>Sat, 16 Sep 2017 16:08:44 +0800</lastBuildDate>
     
-	<atom:link href="https://exfly.github.io/tags/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>各种排序算法实现方法</title>
-      <link>https://exfly.github.io/post/algorithm/sort/</link>
+      <link>/post/algorithm/sort/</link>
       <pubDate>Sat, 16 Sep 2017 16:08:44 +0800</pubDate>
       
-      <guid>https://exfly.github.io/post/algorithm/sort/</guid>
+      <guid>/post/algorithm/sort/</guid>
       <description>&lt;p&gt;总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>

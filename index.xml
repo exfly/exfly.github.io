@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>微服务设计笔记 脑图</title>
+      <link>/post/architecture/microservicedesign/</link>
+      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
+      
+      <guid>/post/architecture/microservicedesign/</guid>
+      <description>&lt;p&gt;读《微服务设计》，制作的脑图&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Spring Beans的装配规则总结</title>
       <link>/post/java/spring/beans/</link>
       <pubDate>Sun, 20 May 2018 16:49:06 +0800</pubDate>

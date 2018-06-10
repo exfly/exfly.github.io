@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 24 Mar 2018 10:33:11 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 10 Jun 2018 22:50:19 +0800</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Architecture</title>
+      <link>/tags/architecture/</link>
+      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
+      
+      <guid>/tags/architecture/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Java</title>
@@ -81,6 +90,15 @@
       <pubDate>Sat, 24 Feb 2018 19:15:55 +0800</pubDate>
       
       <guid>/tags/%E5%B7%A5%E5%85%B7/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>微服务</title>
+      <link>/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
+      
+      <guid>/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</guid>
       <description></description>
     </item>
     

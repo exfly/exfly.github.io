@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>/post/lua/openresty_awesome/</loc>
+    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/architecture/microservicedesign/</loc>
     <lastmod>2018-06-10T22:50:19+08:00</lastmod>
   </url>
@@ -108,8 +113,20 @@
   </url>
   
   <url>
+    <loc>/tags/lua/</loc>
+    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/openresty/</loc>
+    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/post/</loc>
-    <lastmod>2018-06-10T22:50:19+08:00</lastmod>
+    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
     <priority>0</priority>
   </url>
   

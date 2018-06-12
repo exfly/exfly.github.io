@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>OpenResty最佳实践</title>
+      <link>/post/lua/openresty_awesome/</link>
+      <pubDate>Tue, 12 Jun 2018 16:01:38 +0800</pubDate>
+      
+      <guid>/post/lua/openresty_awesome/</guid>
+      <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>微服务设计笔记 脑图</title>
       <link>/post/architecture/microservicedesign/</link>
       <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>

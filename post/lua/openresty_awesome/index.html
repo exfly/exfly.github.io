@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>OpenResty最佳实践</title>
+
+  
+  
+
+
+
+
+
+  
+  <meta name="author" content="Exfly" />
+  <meta name="description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。
+
+" />
+
+  
+  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="OpenResty最佳实践" />
+    <meta name="twitter:description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。
+
+" />
+    <meta name="twitter:image" content="/media/img/Lua/openresty_awesome/icon.jpg" />
+  
+
+  
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenResty最佳实践" />
+  <meta property="og:description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。
+
+" />
+  <meta property="og:url" content="/post/lua/openresty_awesome/" />
+  <meta property="og:image" content="/media/img/Lua/openresty_awesome/icon.jpg" />
+
+
+
+
+<meta name="generator" content="Hugo 0.27.1" />
+
+
+<link rel="canonical" href="/post/lua/openresty_awesome/" />
+<link rel="alternative" href="/index.xml" title="Exfly Blog" type="application/atom+xml" />
+
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Exfly Blog" />
+<meta name="msapplication-tooltip" content="Exfly Blog" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+<link rel="icon" href="/img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+<link rel="icon" sizes="192x192" href="/img/touch-icon-android.png" />
+<link rel="apple-touch-icon" href="/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="/css/bundle.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="/media/img/avatar.jpg" alt="Avatar">
+  
+  <h2 class="title">Exfly Blog</h2>
+  
+  <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+            
+            
+            
+              is-active
+            ">
+            <a href="/">首页</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/links/">友链</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/about/">关于</a>
+          </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+
+      
+      <li class="social-item">
+        <a href="//github.com/exfly" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="//www.zhihu.com/people/992122833" title="Zhihu"><span class="icon icon-zhihu"></span></a>
+      </li>
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">OpenResty最佳实践</h1>
+      <p class="post-meta">@Exfly · Jun 12, 2018 · 2 min read</p>
+    </header>
+    <article class="post-content"><p>如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。</p>
+
+<p></p>
+
+<h1 id="简介">简介</h1>
+
+<p>openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。
+结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。</p>
+
+<h1 id="openresty安装">OpenResty安装</h1>
+
+<p>对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span></span>./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/openresty <span class="se">\</span>
+ --add-module<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/third/naxsi-0.55.3/naxsi_src <span class="se">\</span>
+ --add-module<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/third/nginx-goodies-nginx-sticky-module-ng <span class="se">\</span>
+ --with-pcre<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/pcre-8.41 <span class="se">\</span>
+ --with-openssl<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/openssl-1.0.2k <span class="se">\</span>
+ --with-zlib<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/zlib-1.2.11 <span class="se">\</span>
+ --with-http_v2_module <span class="se">\</span>
+ --with-http_sub_module <span class="se">\</span>
+ --with-http_stub_status_module <span class="se">\</span>
+ --with-http_realip_module <span class="se">\</span>
+ --with-cc-opt<span class="o">=</span>-O2 <span class="se">\</span>
+ --with-luajit
+</code></pre></div>
+
+<ul>
+<li><a href="http://blog.51cto.com/1992tao/1865611">这里</a>是一个比较好的 nginx的笔记，可以过一遍</li>
+<li>我在学习的时候，看了这本书<a href="#">深入理解Nginx模块开发与架构解析</a>,毕竟讲的比较系统，可以借鉴一下</li>
+<li>有问题，知乎，搜索引擎</li>
+</ul>
+
+<h1 id="lua面向对象">lua面向对象</h1>
+
+<p>lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。<a href="https://blog.codingnow.com/2006/06/oo_lua.html">Lua 中实现面向对象</a>。具体怎么用，看您心情。
+这里要说一下lua中<a href="https://www.kancloud.cn/digest/luanote/119940">.运算和:的区别</a>，a=10;a.fun(a, arg) 等价于 a:fun(arg)，其实就是:可以省略self参数。</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="kd">local</span> <span class="n">_class</span><span class="o">=</span><span class="p">{}</span>
+<span class="kr">function</span> <span class="nf">class</span><span class="p">(</span><span class="n">super</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">class_type</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">ctor</span><span class="o">=</span><span class="kc">false</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">super</span><span class="o">=</span><span class="n">super</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">new</span><span class="o">=</span><span class="kr">function</span><span class="p">(...)</span> 
+            <span class="kd">local</span> <span class="n">obj</span><span class="o">=</span><span class="p">{}</span>
+            <span class="kr">do</span>
+                <span class="kd">local</span> <span class="n">create</span>
+                <span class="n">create</span> <span class="o">=</span> <span class="kr">function</span><span class="p">(</span><span class="n">c</span><span class="p">,...)</span>
+                    <span class="kr">if</span> <span class="n">c</span><span class="p">.</span><span class="n">super</span> <span class="kr">then</span>
+                        <span class="n">create</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">super</span><span class="p">,...)</span>
+                    <span class="kr">end</span>
+                    <span class="kr">if</span> <span class="n">c</span><span class="p">.</span><span class="n">ctor</span> <span class="kr">then</span>
+                        <span class="n">c</span><span class="p">.</span><span class="n">ctor</span><span class="p">(</span><span class="n">obj</span><span class="p">,...)</span>
+                    <span class="kr">end</span>
+                <span class="kr">end</span>
+                <span class="n">create</span><span class="p">(</span><span class="n">class_type</span><span class="p">,...)</span>
+            <span class="kr">end</span>
+            <span class="nb">setmetatable</span><span class="p">(</span><span class="n">obj</span><span class="p">,{</span> <span class="n">__index</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span> <span class="p">})</span>
+            <span class="kr">return</span> <span class="n">obj</span>
+        <span class="kr">end</span>
+    <span class="kd">local</span> <span class="n">vtbl</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span><span class="o">=</span><span class="n">vtbl</span>
+ 
+    <span class="nb">setmetatable</span><span class="p">(</span><span class="n">class_type</span><span class="p">,{</span><span class="n">__newindex</span><span class="o">=</span>
+        <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span>
+        <span class="kr">end</span>
+    <span class="p">})</span>
+    <span class="kr">if</span> <span class="n">super</span> <span class="kr">then</span>
+        <span class="nb">setmetatable</span><span class="p">(</span><span class="n">vtbl</span><span class="p">,{</span><span class="n">__index</span><span class="o">=</span>
+            <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+                <span class="kd">local</span> <span class="n">ret</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">super</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+                <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">ret</span>
+                <span class="kr">return</span> <span class="n">ret</span>
+            <span class="kr">end</span>
+        <span class="p">})</span>
+    <span class="kr">end</span>
+ 
+    <span class="kr">return</span> <span class="n">class_type</span>
+<span class="kr">end</span>
+</code></pre></div>
+
+<h1 id="基本编码规范-设计">基本编码规范 设计</h1>
+
+<p><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/web/code_style.html">可以参考OpenResty的最佳实践</a>，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。</p>
+
+<h1 id="单元测试">单元测试</h1>
+
+<ul>
+<li><strong>重点</strong> 如下方法请在命令行中使用类似<code>curl localhost/unittest</code>进行测试，浏览器中看会很痛苦</li>
+<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/test/unittest.html">OpenResty最佳实践-单元测试</a>给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。</li>
+</ul>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="c1">-- file: unittest.lua</span>
+<span class="kd">local</span> <span class="n">_M</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="kd">local</span> <span class="n">csrf_test</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;test.test_csrf&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">tmp_test</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;test.tmp_test&quot;</span><span class="p">)</span>
+<span class="kr">function</span> <span class="nc">_M</span><span class="p">:</span><span class="nf">run_unittest</span><span class="p">()</span>
+    <span class="n">csrf_test</span><span class="p">:</span><span class="n">run</span><span class="p">()</span>
+<span class="kr">end</span>
+<span class="kr">return</span> <span class="n">_M</span>
+
+<span class="c1">-- file: test_csrf.lua</span>
+<span class="kd">local</span> <span class="n">iresty_test</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;resty.iresty_test&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">json</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">config</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">csrf_config</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;csrf_config&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">token</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">tabletls</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s2">&quot;tabletls&quot;</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">iresty_test</span><span class="p">.</span><span class="n">new</span><span class="p">({</span><span class="n">unit_name</span><span class="o">=</span><span class="s2">&quot;test_csrf&quot;</span><span class="p">})</span>
+
+<span class="kd">local</span> <span class="kr">function</span> <span class="nf">assert_eq</span><span class="p">(</span><span class="n">wanted</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">wanted</span> <span class="o">~=</span> <span class="n">real</span> <span class="kr">then</span>
+        <span class="nb">error</span><span class="p">(</span><span class="n">msg</span> <span class="ow">or</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">-- 请注意参数 2</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+<span class="kd">local</span> <span class="kr">function</span> <span class="nf">assert_not_eq</span><span class="p">(</span><span class="n">wanted</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">wanted</span> <span class="o">==</span> <span class="n">real</span> <span class="kr">then</span>
+        <span class="nb">error</span><span class="p">(</span><span class="n">msg</span> <span class="ow">or</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+<span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">test_geturl</span><span class="p">()</span>
+    <span class="n">assert_eq</span><span class="p">(</span><span class="s2">&quot;/unittest&quot;</span><span class="p">,</span> <span class="n">ngx</span><span class="p">.</span><span class="n">var</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&quot;the unittest url changed&quot;</span><span class="p">)</span>
+<span class="kr">end</span>
+<span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">run_unittest</span><span class="p">()</span>
+    <span class="n">tb</span><span class="p">:</span><span class="n">run</span><span class="p">()</span>
+<span class="kr">end</span>
+<span class="kr">return</span> <span class="n">tb</span>
+</code></pre></div>
+
+<ul>
+<li>如上有一个很有意思的地方，<code>error(msg or &quot;error&quot;, 2)</code>,其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号）</li>
+<li>性能测试 代码覆盖率 API测试等，都可以去<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/">OpenResty最佳实践</a>中找，配置很简单。</li>
+</ul>
+
+<h1 id="远程调试-openresty">远程调试 OpenResty</h1>
+
+<ul>
+<li>对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力多好日志和调试的平衡吧。</li>
+<li>此调试方法适用于 win linux osx</li>
+<li>先贴这里用到的luaIDE地址：<a href="https://github.com/pkulchenko/ZeroBraneStudio">ZeroBraneStudio</a></li>
+<li>如下为安装步骤：</li>
+<li>下载这个项目，<a href="https://github.com/pkulchenko/ZeroBraneStudio/archive/master.zip">ZeroBraneStudio</a>，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】</li>
+<li>启动ZBS，Project -&gt; Start Debugger Server</li>
+<li>复制<ZBS>/lualibs/mobdebug/mobdebug.lua -&gt; nginx lua path,</li>
+<li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
+<li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
+<li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
+
+<li><p>创建需要调试的lua文件</p>
+
+<pre><code>require('mobdebug').start('192.168.1.22')
+local name = ngx.var.arg_name or &quot;Anonymous&quot;
+ngx.say(&quot;Hello, &quot;, name, &quot;!&quot;)
+ngx.say(&quot;Done debugging.&quot;)
+require('mobdebug').done()
+</code></pre>
+
+<p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p></li>
+
+<li><p>在ide中打开需要调试的如上lua文件</p></li>
+
+<li><p>Project -&gt; Project Directory -&gt; Set From Current File。</p></li>
+
+<li><p>此时，打开浏览器，访问需要此文件处理的链接</p></li>
+
+<li><p>此时开始调试</p></li>
+
+<li><p>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</p></li>
+
+<li><p>如上流程没有截图，或者没有说清楚，可以来<a href="https://lua.ren/topic/126/">这里</a></p></li>
+</ul>
+
+<h1 id="nginx一些技巧">nginx一些技巧</h1>
+
+<ul>
+<li>看我配置的nginx.conf
+<code>
+lua_package_path '$prefix/lua_script/?.lua;;';
+</code></li>
+<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></li>
+</ul>
+
+<h1 id="资料">资料</h1>
+
+<ul>
+<li><a href="http://agentzh.org/">章亦春</a></li>
+<li><a href="https://openresty.org/">OpenResty</a></li>
+<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices">OpenResty最佳实践</a></li>
+<li><a href="https://www.codingnow.com/2000/download/lua_manual.html">Lua 5.1 参考手册</a></li>
+<li><a href="http://cloudwu.github.io/lua53doc/contents.html">Lua 5.3 参考手册</a></li>
+<li><a href="https://github.com/cloudwu">云风 github</a></li>
+<li><a href="https://github.com/LewisJEllis/awesome-lua">awesome-lua</a></li>
+<li><a href="https://github.com/bungle/awesome-resty">awesome-resty</a></li>
+<li><a href="https://github.com/fcambus/nginx-resources">Nginx-Lua-OpenResty-Resources</a>A collection of resources covering Nginx, Nginx + Lua, OpenResty and Tengine</li>
+</ul></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/lua"><span class="tag">Lua</span></a></li>
+        
+          <li><a href="/tags/openresty"><span class="tag">OpenResty</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        ©2017 by Exfly. All rights reserved.
+      </p>
+    </footer>
+    
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017-2018 Exfly Blog</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\[','\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+<script src="/js/bundle.js"></script>
+
+
+
+
+  </body>
+</html>

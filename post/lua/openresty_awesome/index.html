@@ -263,68 +263,67 @@
 
 <ul>
 <li>下载地址 <a href="http://luarocks.github.io/luarocks/releases/">http://luarocks.github.io/luarocks/releases/</a></li>
-<li>编译安装
-```sh
-./configure &ndash;prefix=$HOME/openresty/luajit <br />
-&ndash;with-lua=$HOME/openresty/luajit <br />
-&ndash;lua-suffix=jit <br />
-&ndash;with-lua-include=$HOME/openresty/luajit/include/luajit-2.1</li>
+<li>编译安装</li>
 </ul>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span></span>./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit <span class="se">\</span>
+    --with-lua<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit <span class="se">\</span>
+    --lua-suffix<span class="o">=</span>jit <span class="se">\</span>
+    --with-lua-include<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit/include/luajit-2.1
 
-<p>&ndash;prefix 设定 luarocks 的安装目录
-&ndash;with-lua 则是系统中安装的 lua 的根目录
-&ndash;lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit
-&ndash;with-lua-include 设置 lua 引入一些头文件头文件的目录
-make build &amp;&amp; make install</p>
+--prefix 设定 luarocks 的安装目录
+--with-lua 则是系统中安装的 lua 的根目录
+--lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit
+--with-lua-include 设置 lua 引入一些头文件头文件的目录
+make build <span class="o">&amp;&amp;</span> make install
+</code></pre></div>
 
-<pre><code>
-# lua面向对象
-lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。[Lua 中实现面向对象](https://blog.codingnow.com/2006/06/oo_lua.html)。
-这里要说一下lua中[.运算和:的区别](https://www.kancloud.cn/digest/luanote/119940)，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是`:`可以省略self参数。
-```lua
-local _class={}
-function class(super)
-    local class_type={}
-    class_type.ctor=false
-    class_type.super=super
-    class_type.new=function(...) 
-            local obj={}
-            do
-                local create
-                create = function(c,...)
-                    if c.super then
-                        create(c.super,...)
-                    end
-                    if c.ctor then
-                        c.ctor(obj,...)
-                    end
-                end
-                create(class_type,...)
-            end
-            setmetatable(obj,{ __index=_class[class_type] })
-            return obj
-        end
-    local vtbl={}
-    _class[class_type]=vtbl
+<h1 id="lua面向对象">lua面向对象</h1>
+
+<p>lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。<a href="https://blog.codingnow.com/2006/06/oo_lua.html">Lua 中实现面向对象</a>。
+这里要说一下lua中<a href="https://www.kancloud.cn/digest/luanote/119940">.运算和:的区别</a>，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是<code>:</code>可以省略self参数。</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span></span><span class="kd">local</span> <span class="n">_class</span><span class="o">=</span><span class="p">{}</span>
+<span class="kr">function</span> <span class="nf">class</span><span class="p">(</span><span class="n">super</span><span class="p">)</span>
+    <span class="kd">local</span> <span class="n">class_type</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">ctor</span><span class="o">=</span><span class="kc">false</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">super</span><span class="o">=</span><span class="n">super</span>
+    <span class="n">class_type</span><span class="p">.</span><span class="n">new</span><span class="o">=</span><span class="kr">function</span><span class="p">(...)</span> 
+            <span class="kd">local</span> <span class="n">obj</span><span class="o">=</span><span class="p">{}</span>
+            <span class="kr">do</span>
+                <span class="kd">local</span> <span class="n">create</span>
+                <span class="n">create</span> <span class="o">=</span> <span class="kr">function</span><span class="p">(</span><span class="n">c</span><span class="p">,...)</span>
+                    <span class="kr">if</span> <span class="n">c</span><span class="p">.</span><span class="n">super</span> <span class="kr">then</span>
+                        <span class="n">create</span><span class="p">(</span><span class="n">c</span><span class="p">.</span><span class="n">super</span><span class="p">,...)</span>
+                    <span class="kr">end</span>
+                    <span class="kr">if</span> <span class="n">c</span><span class="p">.</span><span class="n">ctor</span> <span class="kr">then</span>
+                        <span class="n">c</span><span class="p">.</span><span class="n">ctor</span><span class="p">(</span><span class="n">obj</span><span class="p">,...)</span>
+                    <span class="kr">end</span>
+                <span class="kr">end</span>
+                <span class="n">create</span><span class="p">(</span><span class="n">class_type</span><span class="p">,...)</span>
+            <span class="kr">end</span>
+            <span class="nb">setmetatable</span><span class="p">(</span><span class="n">obj</span><span class="p">,{</span> <span class="n">__index</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span> <span class="p">})</span>
+            <span class="kr">return</span> <span class="n">obj</span>
+        <span class="kr">end</span>
+    <span class="kd">local</span> <span class="n">vtbl</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span><span class="o">=</span><span class="n">vtbl</span>
  
-    setmetatable(class_type,{__newindex=
-        function(t,k,v)
-            vtbl[k]=v
-        end
-    })
-    if super then
-        setmetatable(vtbl,{__index=
-            function(t,k)
-                local ret=_class[super][k]
-                vtbl[k]=ret
-                return ret
-            end
-        })
-    end
+    <span class="nb">setmetatable</span><span class="p">(</span><span class="n">class_type</span><span class="p">,{</span><span class="n">__newindex</span><span class="o">=</span>
+        <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span>
+        <span class="kr">end</span>
+    <span class="p">})</span>
+    <span class="kr">if</span> <span class="n">super</span> <span class="kr">then</span>
+        <span class="nb">setmetatable</span><span class="p">(</span><span class="n">vtbl</span><span class="p">,{</span><span class="n">__index</span><span class="o">=</span>
+            <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+                <span class="kd">local</span> <span class="n">ret</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">super</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+                <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">ret</span>
+                <span class="kr">return</span> <span class="n">ret</span>
+            <span class="kr">end</span>
+        <span class="p">})</span>
+    <span class="kr">end</span>
  
-    return class_type
-end
-</code></pre>
+    <span class="kr">return</span> <span class="n">class_type</span>
+<span class="kr">end</span>
+</code></pre></div>
 
 <h1 id="基本编码规范-设计">基本编码规范 设计</h1>
 
@@ -395,8 +394,8 @@ end
 <li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
 <li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
 <li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
-
-<li><p>创建需要调试的lua文件</p>
+<li>创建需要调试的lua文件</li>
+</ul>
 
 <pre><code>require('mobdebug').start('192.168.1.22')
 local name = ngx.var.arg_name or &quot;Anonymous&quot;
@@ -405,20 +404,16 @@ ngx.say(&quot;Done debugging.&quot;)
 require('mobdebug').done()
 </code></pre>
 
-<p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p></li>
+<p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
 
-<li><p>在ide中打开需要调试的如上lua文件</p></li>
-
-<li><p>Project -&gt; Project Directory -&gt; Set From Current File。</p></li>
-
-<li><p>此时，打开浏览器，访问需要此文件处理的链接</p></li>
-
-<li><p>此时开始调试
-<img src="/media/img/Lua/openresty_awesome/debug.png" alt="ZeroBrane Studio调试OpenResty" /></p></li>
-
-<li><p>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</p></li>
-
-<li><p>如上流程没有截图，或者没有说清楚，可以来<a href="http://ju.outofmemory.cn/entry/326200">这里</a></p></li>
+<ul>
+<li>在ide中打开需要调试的如上lua文件</li>
+<li>Project -&gt; Project Directory -&gt; Set From Current File。</li>
+<li>此时，打开浏览器，访问需要此文件处理的链接</li>
+<li>此时开始调试
+<img src="/media/img/Lua/openresty_awesome/debug.png" alt="ZeroBrane Studio调试OpenResty" /></li>
+<li>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</li>
+<li>如上流程没有截图，或者没有说清楚，可以来<a href="http://ju.outofmemory.cn/entry/326200">这里</a></li>
 </ul>
 
 <h1 id="nginx一些技巧">nginx一些技巧</h1>

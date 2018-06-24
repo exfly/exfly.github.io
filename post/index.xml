@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 12 Jun 2018 16:01:38 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 24 Jun 2018 17:38:17 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Gradle和Maven使用方法总结</title>
+      <link>/post/java/gradle_maven/</link>
+      <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
+      
+      <guid>/post/java/gradle_maven/</guid>
+      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>OpenResty最佳实践</title>

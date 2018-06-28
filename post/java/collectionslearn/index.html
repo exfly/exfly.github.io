@@ -43,7 +43,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.27.1" />
+<meta name="generator" content="Hugo 0.42.1" />
 
 
 <link rel="canonical" href="/post/java/collectionslearn/" />
@@ -83,7 +83,7 @@
 
 <link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
 
-<link rel="stylesheet" href="/css/bundle.css" />
+<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
 
 
   
@@ -240,29 +240,27 @@
 <h2 id="使用例子">使用例子</h2>
 
 <h3 id="iterator">Iterator</h3>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testIterator</span><span class="o">(){</span>
-        <span class="c1">//创建一个集合 </span>
-        <span class="n">Collection</span> <span class="n">books</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">();</span> 
-        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;轻量级J2EE企业应用实战&quot;</span><span class="o">);</span> 
-        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;Struts2权威指南&quot;</span><span class="o">);</span> 
-        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;基于J2EE的Ajax宝典&quot;</span><span class="o">);</span> 
-        <span class="c1">//获取books集合对应的迭代器 </span>
-        <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">it</span> <span class="o">=</span> <span class="n">books</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> 
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testIterator</span><span class="o">(){</span>
+        <span class="c1">//创建一个集合 
+</span><span class="c1"></span>        <span class="n">Collection</span> <span class="n">books</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">();</span> 
+        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;轻量级J2EE企业应用实战&#34;</span><span class="o">);</span> 
+        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;Struts2权威指南&#34;</span><span class="o">);</span> 
+        <span class="n">books</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;基于J2EE的Ajax宝典&#34;</span><span class="o">);</span> 
+        <span class="c1">//获取books集合对应的迭代器 
+</span><span class="c1"></span>        <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">it</span> <span class="o">=</span> <span class="n">books</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span> 
         <span class="k">while</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span> 
             <span class="n">String</span> <span class="n">book</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">next</span><span class="o">();</span> 
             <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">book</span><span class="o">);</span> 
-            <span class="k">if</span> <span class="o">(</span><span class="n">book</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;Struts2权威指南&quot;</span><span class="o">))</span> <span class="o">{</span> 
+            <span class="k">if</span> <span class="o">(</span><span class="n">book</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;Struts2权威指南&#34;</span><span class="o">))</span> <span class="o">{</span> 
                 <span class="n">it</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
-                <span class="c1">//使用Iterator迭代过程中，不可修改集合元素,下面代码引发异常</span>
-                <span class="c1">//books.remove(book); </span>
-            <span class="o">}</span> 
-            <span class="c1">//对book变量赋值，不会改变集合元素本身 </span>
-            <span class="n">book</span> <span class="o">=</span> <span class="s">&quot;测试字符串&quot;</span><span class="o">;</span> 
+                <span class="c1">//使用Iterator迭代过程中，不可修改集合元素,下面代码引发异常
+</span><span class="c1"></span>                <span class="c1">//books.remove(book); 
+</span><span class="c1"></span>            <span class="o">}</span> 
+            <span class="c1">//对book变量赋值，不会改变集合元素本身 
+</span><span class="c1"></span>            <span class="n">book</span> <span class="o">=</span> <span class="s">&#34;测试字符串&#34;</span><span class="o">;</span> 
         <span class="o">}</span> 
         <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">books</span><span class="o">);</span>
-    <span class="o">}</span>
-</code></pre></div>
-
+    <span class="o">}</span></code></pre></div>
 <h3 id="list">List</h3>
 
 <p>实现List接口的常用类有LinkedList，ArrayList</p>
@@ -384,7 +382,7 @@ b c d e
   MathJax.Hub.Config({
     tex2jax: {
       inlineMath: [['$','$'], ['\\(','\\)']],
-      displayMath: [['$$','$$'], ['\[','\]']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
       processEscapes: true,
       processEnvironments: true,
       skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
@@ -402,7 +400,7 @@ b c d e
   });
 </script>
 
-<script src="/js/bundle.js"></script>
+<script src="/js/bundle.d1288006cf.js"></script>
 
 
 

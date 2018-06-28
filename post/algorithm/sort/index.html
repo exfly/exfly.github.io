@@ -43,7 +43,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.27.1" />
+<meta name="generator" content="Hugo 0.42.1" />
 
 
 <link rel="canonical" href="/post/algorithm/sort/" />
@@ -83,7 +83,7 @@
 
 <link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
 
-<link rel="stylesheet" href="/css/bundle.css" />
+<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
 
 
   
@@ -245,7 +245,7 @@
 <h1 id="冒泡排序">冒泡排序</h1>
 
 <h2 id="伪代码">伪代码</h2>
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="kd">function</span> <span class="nx">bubble_sort</span> <span class="p">(</span><span class="nx">array</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">function</span> <span class="nx">bubble_sort</span> <span class="p">(</span><span class="nx">array</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span><span class="p">;</span>
     <span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="nx">from</span> <span class="mi">0</span> <span class="nx">to</span> <span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">){</span>
         <span class="k">for</span><span class="p">(</span><span class="nx">j</span> <span class="nx">from</span> <span class="mi">0</span> <span class="nx">to</span> <span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="nx">i</span><span class="p">){</span>
@@ -265,41 +265,34 @@
     <span class="nx">i循环结束</span> 
 <span class="nx">函数结束</span>
 </code></pre></div>
-
 <h2 id="python实现">python实现</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">bubble</span><span class="p">(</span><span class="n">List</span><span class="p">):</span>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">bubble</span><span class="p">(</span><span class="n">List</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">List</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">List</span>
-</code></pre></div>
-
+    <span class="k">return</span> <span class="n">List</span></code></pre></div>
 <h1 id="插入排序">插入排序</h1>
 
 <h2 id="python实现-1">python实现</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">insert_sort</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">insert_sort</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
     <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">lst</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">lst</span>
-</code></pre></div>
-
+    <span class="k">return</span> <span class="n">lst</span></code></pre></div>
 <h1 id="快速排序">快速排序</h1>
 
 <h2 id="python实现-2">python实现</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span></span><span class="k">def</span> <span class="nf">quicksort</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">quicksort</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">return</span>  <span class="n">quicksort</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">quicksort</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-</code></pre></div>
-
+    <span class="k">return</span>  <span class="n">quicksort</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">quicksort</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span></code></pre></div>
 <h2 id="c语言实现">C语言实现</h2>
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span></span><span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">){</span>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">arr</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">low</span><span class="p">,</span> <span class="kt">int</span> <span class="n">high</span><span class="p">){</span>
     <span class="kt">int</span> <span class="n">key</span><span class="p">;</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">low</span><span class="p">];</span>
     <span class="k">while</span><span class="p">(</span><span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">){</span>
@@ -323,9 +316,7 @@
         <span class="n">quick_sort</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">end</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">return</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div>
-
+<span class="p">}</span></code></pre></div>
 <h1 id="归并排序">归并排序</h1>
 
 <h2 id="python实现-3">python实现</h2>
@@ -397,7 +388,7 @@ def merge_sort(lst):
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>281</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.This post was published <strong>285</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
       </p>
     </footer>
     
@@ -418,7 +409,7 @@ def merge_sort(lst):
   MathJax.Hub.Config({
     tex2jax: {
       inlineMath: [['$','$'], ['\\(','\\)']],
-      displayMath: [['$$','$$'], ['\[','\]']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
       processEscapes: true,
       processEnvironments: true,
       skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
@@ -436,7 +427,7 @@ def merge_sort(lst):
   });
 </script>
 
-<script src="/js/bundle.js"></script>
+<script src="/js/bundle.d1288006cf.js"></script>
 
 
 

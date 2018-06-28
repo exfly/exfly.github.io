@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 10 Jun 2018 22:50:19 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 28 Jun 2018 16:34:49 +0800</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,9 +15,18 @@
     <item>
       <title>Architecture</title>
       <link>/tags/architecture/</link>
-      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
+      <pubDate>Thu, 28 Jun 2018 16:34:49 +0800</pubDate>
       
       <guid>/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Distributed</title>
+      <link>/tags/distributed/</link>
+      <pubDate>Thu, 28 Jun 2018 16:34:49 +0800</pubDate>
+      
+      <guid>/tags/distributed/</guid>
       <description></description>
     </item>
     

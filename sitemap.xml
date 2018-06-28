@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>/post/architecture/eventuallyconsistent/</loc>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/java/gradle_maven/</loc>
     <lastmod>2018-06-24T17:38:17+08:00</lastmod>
   </url>
@@ -84,12 +89,18 @@
   
   <url>
     <loc>/tags/architecture/</loc>
-    <lastmod>2018-06-10T22:50:19+08:00</lastmod>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/distributed/</loc>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -131,7 +142,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-06-24T17:38:17+08:00</lastmod>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -149,7 +160,7 @@
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2018-06-10T22:50:19+08:00</lastmod>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
   </url>
   

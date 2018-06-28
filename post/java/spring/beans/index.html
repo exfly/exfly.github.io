@@ -43,7 +43,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.27.1" />
+<meta name="generator" content="Hugo 0.42.1" />
 
 
 <link rel="canonical" href="/post/java/spring/beans/" />
@@ -83,7 +83,7 @@
 
 <link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
 
-<link rel="stylesheet" href="/css/bundle.css" />
+<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
 
 
   
@@ -250,18 +250,18 @@
 
 <p>手动装配可以通过声明xml文件和java配置文件两种手段。在这两种方式中，更加推荐使用java配置的方式。两种配置不是相互替代的关系，一般将业务相关的配置放到java配置中，对于非业务，如数据库等，可以放到xml中。
 通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。@Bean(name= {&ldquo;sayAndPlayServiceNewName&rdquo;, &ldquo;sayAndPlayService&rdquo;})</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SayAndPlayService</span> <span class="o">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SayAndPlayService</span> <span class="o">{</span>
     <span class="n">String</span> <span class="nf">say</span><span class="o">();</span>
     <span class="n">String</span> <span class="nf">play</span><span class="o">();</span>
 <span class="o">}</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PeopleSayAndPlayServiceImpl</span> <span class="kd">implements</span> <span class="n">SayAndPlayService</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">String</span> <span class="nf">say</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">&quot;People Service implements say.&quot;</span><span class="o">;</span>
+        <span class="k">return</span> <span class="s">&#34;People Service implements say.&#34;</span><span class="o">;</span>
     <span class="o">}</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">String</span> <span class="nf">play</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">&quot;People Service implements play.&quot;</span><span class="o">;</span>
+        <span class="k">return</span> <span class="s">&#34;People Service implements play.&#34;</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
@@ -280,28 +280,26 @@
     <span class="kd">private</span> <span class="n">SayAndPlayService</span> <span class="n">service</span><span class="o">;</span>
     <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testTestOneAutowiredService</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;People Service implements say.&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">say</span><span class="o">());</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&#34;People Service implements say.&#34;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">say</span><span class="o">());</span>
     <span class="o">}</span>
     <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAnnotationConfigAppContext</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">exfly</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">SimpleManualwireConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-        <span class="n">SayAndPlayService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">SayAndPlayService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&quot;sayAndPlayService&quot;</span><span class="o">);</span>
-        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;People Service implements say.&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">say</span><span class="o">());</span>
+        <span class="n">SayAndPlayService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">SayAndPlayService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;sayAndPlayService&#34;</span><span class="o">);</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&#34;People Service implements say.&#34;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">say</span><span class="o">());</span>
     <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div>
-
+<span class="o">}</span></code></pre></div>
 <h2 id="自动装配">自动装配</h2>
 
 <p>使用@ComponentScan可以自动扫描，@ComponentScan告诉Spring 哪个packages 的用注解标识的类 会被spring自动扫描并且装入bean容器。自动扫描，会扫描相应包以及子包，并为所有bean生成name，name命名规则为其类首字母变小写，如interface UserService被唯一的UserServiceImpl实现，则经过扫描，bean被声明为name为userServiceImpl。如果接口被多各类实现，需要转到下文<strong>消除歧义</strong>部分进行了解。</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SpeakService</span> <span class="o">{</span>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SpeakService</span> <span class="o">{</span>
     <span class="n">String</span> <span class="nf">speak</span><span class="o">();</span>
 <span class="o">}</span>
 <span class="nd">@Service</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PeopleSpeakServiceImpl</span> <span class="kd">implements</span> <span class="n">SpeakService</span> <span class="o">{</span>
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">String</span> <span class="nf">speak</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">return</span> <span class="s">&quot;People speak&quot;</span><span class="o">;</span>
+        <span class="k">return</span> <span class="s">&#34;People speak&#34;</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
@@ -315,25 +313,23 @@
     <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAnnotationConfigAppContextAutoScan</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">exfly</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">SimpleConfigScanConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-        <span class="n">SpeakService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">SpeakService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&quot;peopleSpeakServiceImpl&quot;</span><span class="o">);</span>
-        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;People speak&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">speak</span><span class="o">());</span>
+        <span class="n">SpeakService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">(</span><span class="n">SpeakService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;peopleSpeakServiceImpl&#34;</span><span class="o">);</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&#34;People speak&#34;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">speak</span><span class="o">());</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="c1">//如果希望使用@Autowired自动装配，</span>
-<span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="c1">//如果希望使用@Autowired自动装配，
+</span><span class="c1"></span><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="nd">@ContextConfiguration</span><span class="o">(</span><span class="n">classes</span><span class="o">=</span> <span class="o">{</span><span class="n">org</span><span class="o">.</span><span class="na">exfly</span><span class="o">.</span><span class="na">demo</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">SimpleConfigScanConfig</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleAutoScanTest</span> <span class="o">{</span>
-    <span class="nd">@Autowired</span> <span class="c1">//根据类型进行自动注入</span>
-    <span class="kd">private</span> <span class="n">SpeakService</span> <span class="n">sservice</span><span class="o">;</span>
+    <span class="nd">@Autowired</span> <span class="c1">//根据类型进行自动注入
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="n">SpeakService</span> <span class="n">sservice</span><span class="o">;</span>
     
     <span class="nd">@Test</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testAnnotationConfigAppContextAutoScanAutoWire</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;People speak&quot;</span><span class="o">,</span> <span class="n">sservice</span><span class="o">.</span><span class="na">speak</span><span class="o">());</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&#34;People speak&#34;</span><span class="o">,</span> <span class="n">sservice</span><span class="o">.</span><span class="na">speak</span><span class="o">());</span>
     <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div>
-
+<span class="o">}</span></code></pre></div>
 <h3 id="autowired">@Autowired</h3>
 
 <p>可以在属性、构造方法、set函数中进行自动注入</p>
@@ -342,32 +338,30 @@
 
 <p>通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。如果使用@Bean(name= {&ldquo;sayAndPlayServiceNewName&rdquo;, &ldquo;sayAndPlayService&rdquo;})对bean进行命名，可以用不同的名字取用（在@Autowired处再加一个@Qualifier(&ldquo;sayAndPlayServiceNewName&rdquo;)）;
 如果使用@ComponentScan，相应的Bean定义需要使用Component等进行注解，同时使用@Qualifier(&ldquo;BeanId&rdquo;)限定符，如下</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Configuration</span>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Configuration</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleManualwireConfig</span> <span class="o">{</span>
-    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span><span class="o">={</span><span class="s">&quot;sayAndPlayServiceNewName&quot;</span><span class="o">,</span> <span class="s">&quot;sayAndPlayService&quot;</span><span class="o">})</span>
+    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span><span class="o">={</span><span class="s">&#34;sayAndPlayServiceNewName&#34;</span><span class="o">,</span> <span class="s">&#34;sayAndPlayService&#34;</span><span class="o">})</span>
     <span class="kd">public</span> <span class="n">SayAndPlayService</span> <span class="nf">sayAndPlayService</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="k">new</span> <span class="n">PeopleSayAndPlayServiceImpl</span><span class="o">();</span>
     <span class="o">}</span>   
 <span class="o">}</span>
 
 <span class="nd">@Service</span>
-<span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;peopleSayServ&quot;</span><span class="o">)</span>
+<span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&#34;peopleSayServ&#34;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PeopleSayServiceImpl</span> <span class="kd">implements</span> <span class="n">SayService</span> <span class="o">{}</span>
 
-<span class="c1">//or</span>
-<span class="nd">@Service</span><span class="o">(</span><span class="s">&quot;peopleSayServ&quot;</span><span class="o">)</span>
+<span class="c1">//or
+</span><span class="c1"></span><span class="nd">@Service</span><span class="o">(</span><span class="s">&#34;peopleSayServ&#34;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">PeopleSayServiceImpl</span> <span class="kd">implements</span> <span class="n">SayService</span> <span class="o">{}</span>
 
-<span class="c1">//如何使用</span>
-<span class="nd">@Autowired</span>
-<span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&quot;peopleSayServ&quot;</span><span class="o">)</span>
-<span class="n">SayService</span> <span class="n">service</span><span class="o">;</span>
-</code></pre></div>
-
+<span class="c1">//如何使用
+</span><span class="c1"></span><span class="nd">@Autowired</span>
+<span class="nd">@Qualifier</span><span class="o">(</span><span class="s">&#34;peopleSayServ&#34;</span><span class="o">)</span>
+<span class="n">SayService</span> <span class="n">service</span><span class="o">;</span></code></pre></div>
 <h2 id="条件生效">条件生效</h2>
 
 <p>如下的解释：在当前上下文中，如果Conditional注解中的MagitExistsCondition.matches方法返回true，则当前bean：magicBean生效。@Profile和springboot自动配置都是基于此种原理实现的。</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Bean</span>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Bean</span>
 <span class="nd">@Conditional</span><span class="o">(</span><span class="n">MagitExistsCondition</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">public</span> <span class="n">MagicBean</span> <span class="nf">magicBean</span><span class="o">(){</span>
     <span class="k">return</span> <span class="k">new</span> <span class="n">MagitBean</span><span class="o">();</span>
@@ -375,11 +369,9 @@
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MagitExistsCondition</span>  <span class="kd">implements</span> <span class="n">Condition</span> <span class="o">{</span>
     <span class="kt">boolean</span> <span class="nf">matches</span><span class="o">(</span><span class="n">ConditionContext</span> <span class="n">ctxt</span><span class="o">,</span> <span class="n">AnnotatedTypeMetadat</span> <span class="n">metadate</span><span class="o">){</span>
         <span class="n">Environment</span> <span class="n">env</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="na">getEnvironment</span><span class="o">();</span>
-        <span class="k">return</span> <span class="n">env</span><span class="o">.</span><span class="na">containsProperty</span><span class="o">(</span><span class="s">&quot;magic&quot;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">env</span><span class="o">.</span><span class="na">containsProperty</span><span class="o">(</span><span class="s">&#34;magic&#34;</span><span class="o">);</span>
     <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div>
-
+<span class="o">}</span></code></pre></div>
 <h2 id="profile">@Profile</h2>
 
 <h2 id="bean作用域">bean作用域</h2>
@@ -392,11 +384,9 @@
 </ul>
 
 <p>使用@Scope进行配置即可</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Component</span>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Component</span>
 <span class="nd">@Scope</span><span class="o">(</span><span class="n">ConfigurableBeanFactory</span><span class="o">.</span><span class="na">SCOPE_PROTOTYPE</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Notepad</span><span class="o">{}</span>
-</code></pre></div>
-
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Notepad</span><span class="o">{}</span></code></pre></div>
 <h2 id="运行时值注入">运行时值注入</h2>
 
 <p>以后补充</p>
@@ -436,7 +426,7 @@
   MathJax.Hub.Config({
     tex2jax: {
       inlineMath: [['$','$'], ['\\(','\\)']],
-      displayMath: [['$$','$$'], ['\[','\]']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
       processEscapes: true,
       processEnvironments: true,
       skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
@@ -454,7 +444,7 @@
   });
 </script>
 
-<script src="/js/bundle.js"></script>
+<script src="/js/bundle.d1288006cf.js"></script>
 
 
 

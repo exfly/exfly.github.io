@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>分布式数据的最终一致性</title>
+
+  
+  
+
+
+
+
+
+  
+  <meta name="author" content="Author Name" />
+  <meta name="description" content="单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？
+
+" />
+
+  
+  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="分布式数据的最终一致性" />
+    <meta name="twitter:description" content="单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？
+
+" />
+    <meta name="twitter:image" content="/media/img/icon/logo43.svg" />
+  
+
+  
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="分布式数据的最终一致性" />
+  <meta property="og:description" content="单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？
+
+" />
+  <meta property="og:url" content="/post/architecture/eventuallyconsistent/" />
+  <meta property="og:image" content="/media/img/icon/logo43.svg" />
+
+
+
+
+<meta name="generator" content="Hugo 0.42.1" />
+
+
+<link rel="canonical" href="/post/architecture/eventuallyconsistent/" />
+<link rel="alternative" href="/index.xml" title="Exfly Blog" type="application/atom+xml" />
+
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Exfly Blog" />
+<meta name="msapplication-tooltip" content="Exfly Blog" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+<link rel="icon" href="/img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+<link rel="icon" sizes="192x192" href="/img/touch-icon-android.png" />
+<link rel="apple-touch-icon" href="/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="/media/img/avatar.jpg" alt="Avatar">
+  
+  <h2 class="title">Exfly Blog</h2>
+  
+  <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+            
+            
+            
+              is-active
+            ">
+            <a href="/">首页</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/links/">友链</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/about/">关于</a>
+          </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+
+      
+      <li class="social-item">
+        <a href="//github.com/exfly" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="//www.zhihu.com/people/992122833" title="Zhihu"><span class="icon icon-zhihu"></span></a>
+      </li>
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">分布式数据的最终一致性</h1>
+      <p class="post-meta">@Author Name · Jun 28, 2018 · 1 min read</p>
+    </header>
+    <article class="post-content"><p>单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？</p>
+
+<p></p>
+
+<h1 id="简介">简介</h1>
+
+<p>由于自己刚刚接触，自己理解的也不深。在这里，把我整理的一些资料汇总下来。</p>
+
+<h1 id="微服务架构">微服务架构</h1>
+
+<p>微服务架构将单应用放在多个相互独立的服务，这个每个服务能够持续独立的开发和部署，难题是数据该如何存储？</p>
+
+<h2 id="多个应用使用同一数据库">多个应用使用同一数据库</h2>
+
+<p><img src="/media/img/architecture/EventuallyConsistent/1server1db.jpeg" alt="" />
+传统的单体应用一般采用的是数据库提供的事务一致性，通过数据库提供的提交以及回滚机制来保证相关操作的ACID，这些操作要么同时成功，要么同时失败。各个服务看到数据库中的数据是一致的，同时数据库的操作也是相互隔离的，最后数据也是在数据库中持久存储的。这样的架构不具备横向扩展能力，服务之间的耦合程度也比较高，会存在单点故障。</p>
+
+<h2 id="典型微服务架构">典型微服务架构</h2>
+
+<p><img src="/media/img/architecture/EventuallyConsistent/micservice.jpeg" alt="" />
+在微服务架构中， 有一个database per service的模式， 这个模式就是每一个服务一个数据库。 这样可以保证微服务独立开发，独立演进，独立部署， 独立团队。</p>
+
+<p>由于一个应用是由一组相互协作的微服务所组成，在分布式环境下由于各个服务访问的数据是相互分离的， 服务之间不能靠数据库来保证事务一致性。 这就需要在应用层面提供一个协调机制，来保证一组事务执行要么成功，要么失败。</p>
+
+<h1 id="cap定律">CAP定律</h1>
+
+<p>一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。</p>
+
+<p>通过CAP理论，我们知道无法同时满足一致性、可用性和分区容错性这三个特性，那要舍弃哪个呢？</p>
+
+<p>CA without P：如果不要求P（不允许分区），则C（强一致性）和A（可用性）是可以保证的。但其实分区不是你想不想的问题，而是始终会存在，因此CA的系统更多的是允许分区后各子系统依然保持CA。</p>
+
+<p>CP without A：如果不要求A（可用），相当于每个请求都需要在Server之间强一致，而P（分区）会导致同步时间无限延长，如此CP也是可以保证的。很多传统的数据库分布式事务都属于这种模式。</p>
+
+<p>AP wihtout C：要高可用并允许分区，则需放弃一致性。一旦分区发生，节点之间可能会失去联系，为了高可用，每个节点只能用本地数据提供服务，而这样会导致全局数据的不一致性。现在众多的NoSQL都属于此类。</p>
+
+<p>对于多数大型互联网应用的场景，主机众多、部署分散，而且现在的集群规模越来越大，所以节点故障、网络故障是常态，而且要保证服务可用性达到N个9，即保证P和A，舍弃C（退而求其次保证最终一致性）。虽然某些地方会影响客户体验，但没达到造成用户流程的严重程度。</p>
+
+<p>对于涉及到钱财这样不能有一丝让步的场景，C必须保证。网络发生故障宁可停止服务，这是保证CA，舍弃P。貌似这几年国内银行业发生了不下10起事故，但影响面不大，报到也不多，广大群众知道的少。还有一种是保证CP，舍弃A。例如网络故障事只读不写。</p>
+
+<h2 id="常用的解决方法">常用的解决方法</h2>
+
+<p><a href="http://www.infoq.com/cn/articles/solution-of-distributed-system-transaction-consistency">这里</a>总结了一些分布式数据一致性的解决方法。分布式事务保证强一致性，但为了保证数据的一致性，放弃了一些系统性能。另一种保证最终一致性，放弃了时时数据的一致性，但处理效率最好。</p>
+
+<p><a href="https://github.com/JoeCao/JoeCao.github.io/issues/5">这里有一些例子</a>如何解决的。</p>
+
+<h2 id="base">BASE</h2>
+
+<p><a href="https://www.cnblogs.com/birdstudio/p/7373057.html">这里</a>实验了一个基于BASE协议的最终一致性demo。注意，这里使用到了Kafka，需要自己在本地开Kafka服务。</p>
+
+<h2 id="其他资料">其他资料</h2>
+
+<ul>
+<li>书：大规模分布式存储系统：原理解析与架构实现</li>
+<li>书：微服务设计</li>
+<li><a href="https://zhuanlan.zhihu.com/p/25933039">分布式事务？No, 最终一致性</a></li>
+<li><a href="https://coding.imooc.com/class/chapter/237.html">分布式事务实践 -花钱的，作为目录使用</a></li>
+<li><a href="https://github.com/JoeCao/JoeCao.github.io/issues/5">多研究些架构，少谈些框架（3）&ndash; 微服务和事件驱动</a></li>
+<li><a href="https://blog.csdn.net/lovesomnus/article/details/51785108">消息中间件（一）分布式系统事务一致性解决方案大对比，谁最好使？</a></li>
+<li><a href="https://servicecomb.incubator.apache.org/cn/docs/distributed-transactions-saga-implementation/">Saga分布式事务解决方案与实践</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/25346771">解决业务代码里的分布式事务一致性问题</a></li>
+<li><a href="https://coding.imooc.com/class/chapter/237.html#Anchor">分布式事务实践</a></li>
+<li><strong>实战</strong><a href="https://www.cnblogs.com/birdstudio/p/7373057.html">基于Kafka消息驱动最终一致事务（二）</a></li>
+</ul></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/architecture"><span class="tag">Architecture</span></a></li>
+        
+          <li><a href="/tags/distributed"><span class="tag">Distributed</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        ©2017 by Exfly. All rights reserved.
+      </p>
+    </footer>
+    
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017-2018 Exfly Blog</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+<script src="/js/bundle.d1288006cf.js"></script>
+
+
+
+
+  </body>
+</html>

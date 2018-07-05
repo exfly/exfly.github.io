@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>/post/bigdata/sparkstream/</loc>
+    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/architecture/eventuallyconsistent/</loc>
     <lastmod>2018-06-28T16:34:49+08:00</lastmod>
   </url>
@@ -88,12 +93,14 @@
   </url>
   
   <url>
-    <loc>/google3f6a41a65043bc41/</loc>
+    <loc>/tags/architecture/</loc>
+    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
-    <loc>/tags/architecture/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
+    <loc>/tags/bigdata/</loc>
+    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -146,7 +153,13 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
+    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/spark/</loc>
+    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -159,6 +172,12 @@
   <url>
     <loc>/tags/ssm/</loc>
     <lastmod>2018-05-20T16:49:06+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/stream/</loc>
+    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
     <priority>0</priority>
   </url>
   

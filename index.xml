@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>SparkStream等相关产品选型以及Spark安装与简单使用</title>
+      <link>/post/bigdata/sparkstream/</link>
+      <pubDate>Wed, 04 Jul 2018 17:36:24 +0800</pubDate>
+      
+      <guid>/post/bigdata/sparkstream/</guid>
+      <description>&lt;p&gt;比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>分布式数据的最终一致性</title>
       <link>/post/architecture/eventuallyconsistent/</link>
       <pubDate>Thu, 28 Jun 2018 16:34:49 +0800</pubDate>
@@ -195,15 +206,6 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
       <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>/google3f6a41a65043bc41/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/google3f6a41a65043bc41/</guid>
-      <description>google-site-verification: google3f6a41a65043bc41.</description>
     </item>
     
   </channel>

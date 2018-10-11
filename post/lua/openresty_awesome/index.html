@@ -43,12 +43,10 @@
 
 
 
-<meta name="generator" content="Hugo 0.42.1" />
+<meta name="generator" content="Hugo 0.45.1" />
 
 
 <link rel="canonical" href="/post/lua/openresty_awesome/" />
-<link rel="alternative" href="/index.xml" title="Exfly Blog" type="application/atom+xml" />
-
 
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -83,7 +81,7 @@
 
 <link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
 
-<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
+<link rel="stylesheet" href="/css/bundle.39b0201f87.css" />
 
 
   
@@ -224,7 +222,7 @@
       
 
       <li class="social-item">
-        <a href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+        <a rel="alternate" type="application/rss+xml" href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
       </li>
 
     </ul>
@@ -371,7 +369,7 @@ make build <span class="o">&amp;&amp;</span> make install</code></pre></div>
     <span class="kr">end</span>
 <span class="kr">end</span>
 <span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">test_geturl</span><span class="p">()</span>
-    <span class="n">assert_eq</span><span class="p">(</span><span class="s2">&#34;/unittest&#34;</span><span class="p">,</span> <span class="n">ngx.var</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;the unittest url changed&#34;</span><span class="p">)</span>
+	<span class="n">assert_eq</span><span class="p">(</span><span class="s2">&#34;/unittest&#34;</span><span class="p">,</span> <span class="n">ngx.var</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;the unittest url changed&#34;</span><span class="p">)</span>
 <span class="kr">end</span>
 <span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">run_unittest</span><span class="p">()</span>
     <span class="n">tb</span><span class="p">:</span><span class="n">run</span><span class="p">()</span>
@@ -451,7 +449,7 @@ lua_package_path '$prefix/lua_script/?.lua;;';
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.
+        ©2017 by Exfly. All rights reserved.This post was published <strong>120</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
       </p>
     </footer>
     
@@ -504,7 +502,7 @@ lua_package_path '$prefix/lua_script/?.lua;;';
   });
 </script>
 
-<script src="/js/bundle.d1288006cf.js"></script>
+<script src="/js/bundle.2b14fb9283.js"></script>
 
 
 

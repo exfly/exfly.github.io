@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Taga on Exfly Blog</title>
+    <link>/tags/taga/</link>
+    <description>Recent content in Taga on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>©2017 by Exfly. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 11 Oct 2018 12:55:03 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/taga/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Realize代码分析</title>
+      <link>/post/tools/realize/</link>
+      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
+      
+      <guid>/post/tools/realize/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

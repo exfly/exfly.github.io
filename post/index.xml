@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Wed, 04 Jul 2018 17:36:24 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 11 Oct 2018 12:55:03 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Realize代码分析</title>
+      <link>/post/tools/realize/</link>
+      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
+      
+      <guid>/post/tools/realize/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>SparkStream等相关产品选型以及Spark安装与简单使用</title>

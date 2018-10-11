@@ -43,12 +43,10 @@
 
 
 
-<meta name="generator" content="Hugo 0.42.1" />
+<meta name="generator" content="Hugo 0.45.1" />
 
 
 <link rel="canonical" href="/post/algorithm/sort/" />
-<link rel="alternative" href="/index.xml" title="Exfly Blog" type="application/atom+xml" />
-
 
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -83,7 +81,7 @@
 
 <link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
 
-<link rel="stylesheet" href="/css/bundle.ff02473a9a.css" />
+<link rel="stylesheet" href="/css/bundle.39b0201f87.css" />
 
 
   
@@ -224,7 +222,7 @@
       
 
       <li class="social-item">
-        <a href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+        <a rel="alternate" type="application/rss+xml" href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
       </li>
 
     </ul>
@@ -354,17 +352,17 @@ def merge_sort(lst):
 <h2 id="c实现">C实现</h2>
 
 <pre><code>void counting_sort(int *ini_arr, int *sorted_arr, int n) {
-    int *count_arr = (int *) malloc(sizeof(int) * 100);
-    int i, j, k;
-    for (k = 0; k &lt; 100; k++)
-        count_arr[k] = 0;
-    for (i = 0; i &lt; n; i++)
-        count_arr[ini_arr[i]]++;
-    for (k = 1; k &lt; 100; k++)
-        count_arr[k] += count_arr[k - 1];
-    for (j = n; j &gt; 0; j--)
-        sorted_arr[--count_arr[ini_arr[j - 1]]] = ini_arr[j - 1];
-    free(count_arr);
+	int *count_arr = (int *) malloc(sizeof(int) * 100);
+	int i, j, k;
+	for (k = 0; k &lt; 100; k++)
+		count_arr[k] = 0;
+	for (i = 0; i &lt; n; i++)
+		count_arr[ini_arr[i]]++;
+	for (k = 1; k &lt; 100; k++)
+		count_arr[k] += count_arr[k - 1];
+	for (j = n; j &gt; 0; j--)
+		sorted_arr[--count_arr[ini_arr[j - 1]]] = ini_arr[j - 1];
+	free(count_arr);
 }
 </code></pre>
 
@@ -382,7 +380,7 @@ def merge_sort(lst):
             left=middle+1;  
         }
         else {
-            return middle;
+        	return middle;
         }
     }
     return -1;  
@@ -397,7 +395,7 @@ def merge_sort(lst):
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>291</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.This post was published <strong>389</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
       </p>
     </footer>
     
@@ -450,7 +448,7 @@ def merge_sort(lst):
   });
 </script>
 
-<script src="/js/bundle.d1288006cf.js"></script>
+<script src="/js/bundle.2b14fb9283.js"></script>
 
 
 

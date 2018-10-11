@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Realize代码分析</title>
+
+  
+  
+
+
+
+
+
+  
+  <meta name="author" content="exfly" />
+  <meta name="description" content="realize 代码分析
+
+" />
+
+  
+  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="Realize代码分析" />
+    <meta name="twitter:description" content="realize 代码分析
+
+" />
+    <meta name="twitter:image" content="/media/img/icon/logo43.svg" />
+  
+
+  
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Realize代码分析" />
+  <meta property="og:description" content="realize 代码分析
+
+" />
+  <meta property="og:url" content="/post/tools/realize/" />
+  <meta property="og:image" content="/media/img/icon/logo43.svg" />
+
+
+
+
+<meta name="generator" content="Hugo 0.45.1" />
+
+
+<link rel="canonical" href="/post/tools/realize/" />
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Exfly Blog" />
+<meta name="msapplication-tooltip" content="Exfly Blog" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+<link rel="icon" href="/img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+<link rel="icon" sizes="192x192" href="/img/touch-icon-android.png" />
+<link rel="apple-touch-icon" href="/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="/css/bundle.39b0201f87.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+        <a title="Go to comments" class="to-comment" href="#SOHUCS"><span class="icon icon-comment"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="/media/img/avatar.jpg" alt="Avatar">
+  
+  <h2 class="title">Exfly Blog</h2>
+  
+  <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+            
+            
+            
+              is-active
+            ">
+            <a href="/">首页</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/links/">友链</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/tags/">标签</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/about/">关于</a>
+          </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+
+      
+      <li class="social-item">
+        <a href="//github.com/exfly" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="//www.zhihu.com/people/992122833" title="Zhihu"><span class="icon icon-zhihu"></span></a>
+      </li>
+
+      
+
+      
+
+      <li class="social-item">
+        <a rel="alternate" type="application/rss+xml" href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">Realize代码分析</h1>
+      <p class="post-meta">@exfly · Oct 11, 2018 · 1 min read</p>
+    </header>
+    <article class="post-content"><p><a href="https://github.com/oxequa/realize">realize</a> 代码分析</p>
+
+<p></p>
+
+<h1 id="realize">Realize</h1>
+
+<p><a href="https://github.com/oxequa/realize">realize</a> 是 Go 写的 workfloaw 工具，可以配置自己的工作流。项目在修改之后需要进行编译、测试，可以还有其他的一系列流程需要走，可以使用 realize 进行自动化。抽点时间研究了一下源码。这里总结一下思路，不是很完整的解释，简单说一下思路。</p>
+
+<h2 id="原理">原理</h2>
+
+<p>从 Linux 2.6.13 内核开始，Linux 就推出了 inotify，允许监控程序打开一个独立文件描述符，并针对事件集监控一个或者多个文件，例如打开、关闭、移动/重命名、删除、创建或者改变属性。glib 对对此进行了封装<a href="https://github.com/lattera/glibc/blob/master/sysdeps/unix/sysv/linux/sys/inotify.h">glib/inotify.h</a>,同时各个操作系统都有对应的实现，win 下的 ReadDirectoryChangesW，mac 下的 FSEvents。同时 go 下已经有写好的封装库<a href="https://github.com/fsnotify/fsnotify">fsnotify/fsnotify</a>，对不同的平台进行了封装。</p>
+
+<p>简单来讲，内核为应用程序提供了系统级文件修改事件的监视器。当文件进行修改后，会通知应用程序监视的文件已经修改了，之后有realize进行事件的处理即可。</p>
+
+<p>比较有意思的是，yaml文件的marshal和unmarshal。之后可以研究一下。</p>
+
+<h2 id="核心代码">核心代码</h2>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// github.com/oxequa/realize/realize/projects.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">Project</span><span class="p">)</span> <span class="nx">Watch</span><span class="p">(</span><span class="nx">wg</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+	<span class="c1">// change channel
+</span><span class="c1"></span>	<span class="nx">p</span><span class="p">.</span><span class="nx">stop</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">)</span>
+	<span class="c1">// init a new watcher
+</span><span class="c1"></span>	<span class="nx">p</span><span class="p">.</span><span class="nx">watcher</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">NewFileWatcher</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">parent</span><span class="p">.</span><span class="nx">Settings</span><span class="p">.</span><span class="nx">Legacy</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nb">close</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+		<span class="nx">p</span><span class="p">.</span><span class="nx">watcher</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="c1">// before start checks
+</span><span class="c1"></span>	<span class="nx">p</span><span class="p">.</span><span class="nx">Before</span><span class="p">()</span>
+	<span class="c1">// start watcher
+</span><span class="c1"></span>	<span class="k">go</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Reload</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+<span class="nx">L</span><span class="p">:</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="k">select</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="nx">event</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">p</span><span class="p">.</span><span class="nx">watcher</span><span class="p">.</span><span class="nx">Events</span><span class="p">():</span>
+			<span class="k">if</span> <span class="nx">p</span><span class="p">.</span><span class="nx">parent</span><span class="p">.</span><span class="nx">Settings</span><span class="p">.</span><span class="nx">Recovery</span><span class="p">.</span><span class="nx">Events</span> <span class="p">{</span>
+				<span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&#34;File:&#34;</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="s">&#34;LastFile:&#34;</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nx">file</span><span class="p">,</span> <span class="s">&#34;Time:&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">(),</span> <span class="s">&#34;LastTime:&#34;</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nx">time</span><span class="p">)</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Truncate</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">).</span><span class="nx">After</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+				<span class="c1">// switch event type
+</span><span class="c1"></span>				<span class="k">switch</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Op</span> <span class="p">{</span>
+				<span class="k">case</span> <span class="nx">fsnotify</span><span class="p">.</span><span class="nx">Chmod</span><span class="p">:</span>
+				<span class="k">case</span> <span class="nx">fsnotify</span><span class="p">.</span><span class="nx">Remove</span><span class="p">:</span>
+					<span class="nx">p</span><span class="p">.</span><span class="nx">watcher</span><span class="p">.</span><span class="nx">Remove</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+					<span class="k">if</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Validate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">ext</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+						<span class="c1">// stop and restart
+</span><span class="c1"></span>						<span class="nb">close</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+						<span class="nx">p</span><span class="p">.</span><span class="nx">stop</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">)</span>
+						<span class="nx">p</span><span class="p">.</span><span class="nx">Change</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span>
+						<span class="k">go</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Reload</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+					<span class="p">}</span>
+				<span class="k">default</span><span class="p">:</span>
+					<span class="k">if</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Validate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">fi</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nx">Stat</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+						<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+							<span class="k">continue</span>
+						<span class="p">}</span>
+						<span class="k">if</span> <span class="nx">fi</span><span class="p">.</span><span class="nx">IsDir</span><span class="p">()</span> <span class="p">{</span>
+							<span class="nx">filepath</span><span class="p">.</span><span class="nx">Walk</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">walk</span><span class="p">)</span>
+						<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+							<span class="c1">// stop and restart
+</span><span class="c1"></span>							<span class="nb">close</span><span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+							<span class="nx">p</span><span class="p">.</span><span class="nx">stop</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">)</span>
+							<span class="nx">p</span><span class="p">.</span><span class="nx">Change</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span>
+							<span class="k">go</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Reload</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span> <span class="nx">p</span><span class="p">.</span><span class="nx">stop</span><span class="p">)</span>
+							<span class="nx">p</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nx">time</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">Truncate</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+							<span class="nx">p</span><span class="p">.</span><span class="nx">last</span><span class="p">.</span><span class="nx">file</span> <span class="p">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Name</span>
+						<span class="p">}</span>
+					<span class="p">}</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="k">case</span> <span class="nx">err</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">p</span><span class="p">.</span><span class="nx">watcher</span><span class="p">.</span><span class="nx">Errors</span><span class="p">():</span>
+			<span class="nx">p</span><span class="p">.</span><span class="nx">Err</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">p</span><span class="p">.</span><span class="nx">exit</span><span class="p">:</span>
+			<span class="nx">p</span><span class="p">.</span><span class="nx">After</span><span class="p">()</span>
+			<span class="k">break</span> <span class="nx">L</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nx">Done</span><span class="p">()</span>
+<span class="p">}</span></code></pre></div>
+<h1 id="reference">Reference</h1>
+
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-inotify/index.html">用 inotify 监控 Linux 文件系统事件</a></li>
+<li><a href="https://github.com/oxequa/realize">oxequa/realize</a></li>
+<li><a href="https://github.com/fsnotify/fsnotify">fsnotify/fsnotify</a></li>
+</ul></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/taga"><span class="tag">TagA</span></a></li>
+        
+          <li><a href="/tags/tagb"><span class="tag">TagB</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        ©2017 by Exfly. All rights reserved.
+      </p>
+    </footer>
+    
+      
+      <div id="cyReward" role="cylabs" data-use="reward"></div>
+      <script src="//changyan.itc.cn/js/lib/jquery.js"></script>
+      <script src="//changyan.sohu.com/js/changyan.labs.https.js?appid=cytHpQ1g5"></script>
+      <div id="SOHUCS" sid="/post/tools/realize/" ></div>
+      <script>
+      (function(){
+      var appid = 'cytHpQ1g5';
+      var conf = 'prod_25a912a7aeeea832a5ce492ebefe1bac';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017-2018 Exfly Blog</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+    <p><a href="http://www.miitbeian.gov.cn" title="Check ICP info" target="_blank">苏ICP备16005986号-2</a></p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+<script src="/js/bundle.2b14fb9283.js"></script>
+
+
+
+
+  </body>
+</html>

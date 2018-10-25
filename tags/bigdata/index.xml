@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Wed, 04 Jul 2018 17:36:24 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 25 Oct 2018 17:07:58 +0800</lastBuildDate>
     
 	<atom:link href="/tags/bigdata/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>技术变革</title>
+      <link>/post/architecture/itabstract/</link>
+      <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>
+      
+      <guid>/post/architecture/itabstract/</guid>
+      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>SparkStream等相关产品选型以及Spark安装与简单使用</title>

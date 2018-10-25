@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>技术变革</title>
+      <link>/post/architecture/itabstract/</link>
+      <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>
+      
+      <guid>/post/architecture/itabstract/</guid>
+      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Realize代码分析</title>
       <link>/post/tools/realize/</link>
       <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>

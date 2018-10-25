@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 
   
-  <title>Linux0.11源码学习环境配置与相关资源汇总</title>
+  <title>技术变革</title>
 
   
   
@@ -15,8 +15,8 @@
 
 
   
-  <meta name="author" content="Exfly" />
-  <meta name="description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+  <meta name="author" content="exfly" />
+  <meta name="description" content="总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器
 
 " />
 
@@ -24,21 +24,21 @@
   
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@gohugoio" />
-    <meta name="twitter:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-    <meta name="twitter:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+    <meta name="twitter:title" content="技术变革" />
+    <meta name="twitter:description" content="总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器
 
 " />
-    <meta name="twitter:image" content="/media/img/linux0.11readcode/linux.jpg" />
+    <meta name="twitter:image" content="/media/img/architecture/kubernetes-logo.svg" />
   
 
   
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-  <meta property="og:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+  <meta property="og:title" content="技术变革" />
+  <meta property="og:description" content="总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器
 
 " />
-  <meta property="og:url" content="/post/linux/linux0.11-read-code/" />
-  <meta property="og:image" content="/media/img/linux0.11readcode/linux.jpg" />
+  <meta property="og:url" content="/post/architecture/itabstract/" />
+  <meta property="og:image" content="/media/img/architecture/kubernetes-logo.svg" />
 
 
 
@@ -46,7 +46,7 @@
 <meta name="generator" content="Hugo 0.45.1" />
 
 
-<link rel="canonical" href="/post/linux/linux0.11-read-code/" />
+<link rel="canonical" href="/post/architecture/itabstract/" />
 
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -231,83 +231,36 @@
 
   <section class="main post-detail">
     <header class="post-header">
-      <h1 class="post-title">Linux0.11源码学习环境配置与相关资源汇总</h1>
-      <p class="post-meta">@Exfly · Oct 30, 2016 · 1 min read</p>
+      <h1 class="post-title">技术变革</h1>
+      <p class="post-meta">@exfly · Oct 25, 2018 · 1 min read</p>
     </header>
-    <article class="post-content"><p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
+    <article class="post-content"><p>总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器</p>
 
 <p></p>
 
-<h1 id="linux-history">linux history</h1>
+<p>从使用到的技术来说，如今各大网站平台趋向于使用经过长期检验过的技术，包括不限于动态网站技术、数据库技术、高速缓存技术、负载均衡、分布式相关技术。</p>
 
-<ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
-</ul>
+<p>首先<strong>动态网站技术</strong>，开始没有动态网站时期，大部分 BBS 使用基于 Telnet 协议为基础的 BBS 进行交流。HTTP 协议的出现，使得 BS 架构的网站能够展现多媒体等信息如视频、音乐等。起初 HTTP 协议一般仅展示一些静态数据，其表现能力不强，不能更好的动态的为用户交互。之后动态网站技术如 CGI 的出现，使得网站拥有的更加丰富的交互功能。经过数十年的技术积累，动态网站技术已经能够支撑起现如今的大部分信息的获取。</p>
 
-<h1 id="linux">linux</h1>
+<p>其次是<strong>存储技术</strong>。开始的时候数据仅仅使用本地文件进行存储。文件的读写效率很高，但是需要程序员重复的使用操作系统提供的较底层的操作来操作文件，对程序员的要求太大。而且对这种结构化的数据来说，可以使用相同的模式进行操作。所以有了数据库关系系统，尤其关系型数据库。从此，对于一些结构化的数据只需要使用 SQL 这种数据操作语言，就可以很方便的操作数据，而真正的数据管理维护工作由数据库管理系统进行维护，人可以通过配置数据库，使数据库获得更好的性能。当用户量很大时候，单机响应出现瓶颈，单台数据库不能够满足这样的请求。可以通过复制的方式，将相同的数据复制到多台机器上，多台机器为用户提供数据，对于读操作进行扩展。对于读多写少的网站，这种方式基本可以实现线性的性能提升。数据量再大一些，使用分库分表方式，把一份数据切片，分布到多台机器上提高性能。进而使用复制与分库分表的方式，进一步压榨单机的性能潜力。单机数据库很强大，但数据量达到一定的数量级，数据库的性能完全不能满足需求。大数据时代，数据量达到 PB、TB 级别。而每一块硬盘仅仅几 T，单机完全不可能将所有的数据都存储下来。如上分库分表的方式基本已经不能完全解决如上的问题，所以出现了分布式数据库，比如 MySQL Cluster 等通过两阶段提交等方式，维护线上数据的强一致性，分布式存储系统，比如 Google 研发的 GFS，现如今正火热的 HDFS 等，基本可以满足海量数据的存储。</p>
 
-<p>linux采用分段+分页机制结合管理内存</p>
+<p>高速<strong>缓存技术</strong>，如一些场景重复读的场景，数据库的查询很昂贵，如何减少数据库的访问次数？使用类似 Redis 的缓存。redis 的数据全部存储在内存中，内存的速度远远超过数据库的查询速度。维护 redis 中的缓存数据一致性，防止缓存穿透、缓存击穿、缓存雪崩的问题，以及如何正确的使用缓存等一系列问题，现如今已经基本有了很好的解决办法。</p>
 
-<h1 id="linux-调试方法">linux 调试方法</h1>
+<p><strong>负载均衡</strong>与<strong>反向代理</strong>，传统中使用 nginx 作为网关，接受的请求分发到多台服务器中，一定程度上分担单台服务器的压力。</p>
 
-<ul>
-<li><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a>
-```
-gdb tools/system
-target remote localhost:1234</li>
-</ul>
-
-<p>gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&rdquo;i b&rdquo;
-continue&copy; 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register</p>
-
-<p>GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)</p>
-
-<p>cgdb	可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system* <a href="http://labrick.cc/2015/08/13/linux-0-11-boot/">linux-0.11启动过程描述</a>
-* <a href="http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml">Linux0.11启动过程</a>
-* <a href="http://www.jianshu.com/p/1cea7dc5d6b7">80386保护模式的本质</a>
-* <a href="http://luodw.cc/2016/02/17/address/">linux虚拟地址到线性地址的转化</a>
-* <a href="http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分段机制-linux回避了分段机制</a>
-* <a href="http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分页机制/</a>
-* <a href="http://www.voidcn.com/blog/will130/article/p-5705051.html">逻辑地址、线性地址、物理地址和虚拟地址</a>
-* <a href="http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838">Intel 80386 程序员参考手册</a>
-* <a href="http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164">linux0.11内核之文件系统</a>
-```</p>
-
-<h1 id="source">source</h1>
-
-<h1 id="80386内存访问公式">80386内存访问公式</h1>
-
-<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
-
-<p>48bit = 16 + 32
-16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
-32线性地址 -&gt; 物理地址</p></article>
+<p>对于<strong>分布式技术</strong>。首先是 Google 研发并使用的 GFS 以及搭建在 GFS 基础上的 BigTable，以及 MapReduce 算法，使得分布式存储与分布式计算成为了可能。对应的开源版本为 HDFS、Hadoop、Spark 等一系列分布式基础设施。存储的分布式，也对应着应用部署的分布式，也就是现如今使用比较广泛的微服务（将一个整体的应用拆分成不同的服务，服务之间分别开发和部署，通过统一的接口进行协作）。微服务部署少则几个，多则成百上千，如此多的服务需要开发部署工作量巨大。同时很常见的问题是开发环境可以正常工作，上线却无法工作。这个问题现如今的解决办法是使用 docker。首先 docker 是一种使用 Linux 内核提供的 cgroup 和 namespace 功能，它可以将计算机的资源进行隔离。使用场景是通过容器编排工具，将服务所依赖的资源通过配置文件进行定义，由编排工具统一对所有的服务进行启动部署。现如今实质上的容器编排标准 Kubernetes，已经被不限于 Google、百度、阿里巴巴、京东等使用。对于 Google 等基本实现容器化、Kubernetes 化。</p></article>
     <footer class="post-footer">
       
       <ul class="post-tags">
         
-          <li><a href="/tags/linux"><span class="tag">Linux</span></a></li>
+          <li><a href="/tags/bigdata"><span class="tag">Bigdata</span></a></li>
         
-          <li><a href="/tags/%E8%B5%84%E6%BA%90"><span class="tag">资源</span></a></li>
+          <li><a href="/tags/%E6%80%BB%E7%BB%93"><span class="tag">总结</span></a></li>
         
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>725</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.
       </p>
     </footer>
     
@@ -315,7 +268,7 @@ cgdb tools/system* <a href="http://labrick.cc/2015/08/13/linux-0-11-boot/">linux
       <div id="cyReward" role="cylabs" data-use="reward"></div>
       <script src="//changyan.itc.cn/js/lib/jquery.js"></script>
       <script src="//changyan.sohu.com/js/changyan.labs.https.js?appid=cytHpQ1g5"></script>
-      <div id="SOHUCS" sid="/post/linux/linux0.11-read-code/" ></div>
+      <div id="SOHUCS" sid="/post/architecture/itabstract/" ></div>
       <script>
       (function(){
       var appid = 'cytHpQ1g5';

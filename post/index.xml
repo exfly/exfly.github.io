@@ -7,10 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Thu, 11 Oct 2018 12:55:03 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 25 Oct 2018 17:07:58 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>技术变革</title>
+      <link>/post/architecture/itabstract/</link>
+      <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>
+      
+      <guid>/post/architecture/itabstract/</guid>
+      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Realize代码分析</title>

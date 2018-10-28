@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>前后端分离架构的Vue环境搭建指南</title>
+
+  
+  
+
+
+
+
+
+  
+  <meta name="author" content="Author Name" />
+  <meta name="description" content="使用 Vue 前后端&#43;Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境
+
+" />
+
+  
+  
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@gohugoio" />
+    <meta name="twitter:title" content="前后端分离架构的Vue环境搭建指南" />
+    <meta name="twitter:description" content="使用 Vue 前后端&#43;Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境
+
+" />
+    <meta name="twitter:image" content="/media/img/frontend/vue-logo.png" />
+  
+
+  
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="前后端分离架构的Vue环境搭建指南" />
+  <meta property="og:description" content="使用 Vue 前后端&#43;Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境
+
+" />
+  <meta property="og:url" content="/post/frontend/front-end-separation-architecture-environment-construction/" />
+  <meta property="og:image" content="/media/img/frontend/vue-logo.png" />
+
+
+
+
+<meta name="generator" content="Hugo 0.45.1" />
+
+
+<link rel="canonical" href="/post/frontend/front-end-separation-architecture-environment-construction/" />
+
+<meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="format-detection" content="telephone=no,email=no,adress=no" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+
+
+<meta name="robots" content="index,follow" />
+<meta name="referrer" content="origin-when-cross-origin" />
+
+
+
+
+
+
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Exfly Blog" />
+<meta name="msapplication-tooltip" content="Exfly Blog" />
+<meta name='msapplication-navbutton-color' content="#5fbf5e" />
+<meta name="msapplication-TileColor" content="#5fbf5e" />
+<meta name="msapplication-TileImage" content="/img/tile-image-windows.png" />
+<link rel="icon" href="/img/favicon.ico" />
+<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
+<link rel="icon" sizes="192x192" href="/img/touch-icon-android.png" />
+<link rel="apple-touch-icon" href="/img/touch-icon-apple.png" />
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#5fbf5e" />
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/video.js/6.2.8/alt/video-js-cdn.min.css" />
+
+<link rel="stylesheet" href="/css/bundle.39b0201f87.css" />
+
+
+  
+  <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/video.js/6.2.8/ie8/videojs-ie8.min.js"></script>
+  <![endif]-->
+
+<!--[if lte IE 11]>
+    <script src="//cdn.bootcss.com/classlist/1.1.20170427/classList.min.js"></script>
+  <![endif]-->
+
+
+<script src="//cdn.bootcss.com/object-fit-images/3.2.3/ofi.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/smooth-scroll/12.1.4/js/smooth-scroll.polyfills.min.js"></script>
+
+
+</head>
+  <body>
+    
+    <div class="suspension">
+      <a title="Go to top" class="to-top is-hide"><span class="icon icon-up"></span></a>
+      
+        
+        <a title="Go to comments" class="to-comment" href="#SOHUCS"><span class="icon icon-comment"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <img class="avatar" src="/media/img/avatar.jpg" alt="Avatar">
+  
+  <h2 class="title">Exfly Blog</h2>
+  
+  <p class="subtitle">~ Keep It Simple &amp; Stupid ~</p>
+  <button class="menu-toggle" type="button">
+    <span class="icon icon-menu"></span>
+  </button>
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+            
+            
+            
+              is-active
+            ">
+            <a href="/">首页</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="https://github.com/exfly/">作品</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/links/">友链</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/tags/">标签</a>
+          </li>
+      
+        <li class="menu-item
+            
+            
+            ">
+            <a href="/about/">关于</a>
+          </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list">
+
+      
+
+      
+      <li class="social-item">
+        <a href="//github.com/exfly" title="GitHub"><span class="icon icon-github"></span></a>
+      </li>
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      <li class="social-item">
+        <a href="//www.zhihu.com/people/992122833" title="Zhihu"><span class="icon icon-zhihu"></span></a>
+      </li>
+
+      
+
+      
+
+      <li class="social-item">
+        <a rel="alternate" type="application/rss+xml" href="/index.xml"><span class="icon icon-rss" title="RSS"></span></a>
+      </li>
+
+    </ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    <header class="post-header">
+      <h1 class="post-title">前后端分离架构的Vue环境搭建指南</h1>
+      <p class="post-meta">@Author Name · Oct 28, 2018 · 2 min read</p>
+    </header>
+    <article class="post-content"><p>使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境</p>
+
+<p></p>
+
+<h1 id="web-研发模式演变">Web 研发模式演变</h1>
+
+<p>最近研究一下前后端的开发模式，看到一个很好的入门路径<a href="https://github.com/kamranahmedse/developer-roadmap">developer-roadmap: frontend backend DevOps</a>,可以看一下，效果还是不错的。</p>
+
+<p>之前看到一个说<a href="https://github.com/lifesinger/blog/issues/184">web 研发演进</a>这里总结一下。</p>
+
+<p>很久之前，前后端的分工是，前端从设计师那里拿到设计图纸，转化静态页面模板，由后端工程师进行数据库设计等一系列设计之后，套前端给的模板。如上也即后端渲染。</p>
+
+<p>但是这样的流程，所有工作的 Block 在后端，想进一步提高研发速度，应该如何分工？到如今给出的答案是基于 Nodejs 的前后端分离架构。这时前后端分工是这样的：</p>
+
+<h2 id="前端的工作">前端的工作</h2>
+
+<ul>
+<li>UI 设计</li>
+<li>前端路由设计</li>
+<li>处理浏览器层的展现逻辑</li>
+</ul>
+
+<p>通过 CSS 渲染样式，通过 JavaScript 添加交互功能，HTML 的生成也可以放在这层，具体看应用场景</p>
+
+<h2 id="后端的工作">后端的工作</h2>
+
+<ul>
+<li>业务逻辑和 API 的设计和实现</li>
+<li>数据库设计和维护</li>
+<li>后端缓存设计</li>
+</ul>
+
+<h2 id="前后端分离下协作体系">前后端分离下协作体系</h2>
+
+<p>前后端分离下的协作方式一般是，前后端各司其职，互不影响。</p>
+
+<p>首先，对于后端来说，后端的主要工作依然是传统的数据库设计、业务逻辑设计，但不需要套模板了，而是为前端提供数据接口</p>
+
+<p>其次，对于前端来说，前端的主要工作是，前端的 ui，以及获取数据，在前端渲染。</p>
+
+<p>工作流程是，先进行 API 设计。前后端一起设计数据接口以及数据返回的格式，现在比较常见的是 json 数据。可以根据接口生成一些 mock 用的 json 数据文件，供前端开发使用。后端根据这个 API 规范实现真正的接口。两端分别并行开发。开发结束时候联调，打通前后端之后进行调试。</p>
+
+<p>具体，可以看一下<a href="https://github.com/genify/ita1024/blob/master/%E7%BD%91%E6%98%93%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E5%AE%9E%E8%B7%B5.md">网易前后端分离实践</a>.</p>
+
+<h1 id="基于-vue-前后端分离环境搭建">基于 Vue 前后端分离环境搭建</h1>
+
+<p>这里对前后端分离 Vue 的开发环境进行演示。思路是，前后端分离，后端可以设置 cookie，前端可以接收到配置的 cookie</p>
+
+<h3 id="node-环境安装">node 环境安装</h3>
+
+<p>安装方法见<a href="http://www.runoob.com/nodejs/nodejs-install-setup.html">这里</a></p>
+
+<h3 id="vue-安装">Vue 安装</h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">npm config <span class="nb">set</span> registry <span class="s1">&#39;https://registry.npm.taobao.org&#39;</span>
+npm install -g @vue/cli
+vue init webpack demo
+<span class="nb">cd</span> demo
+npm dev run</code></pre></div>
+<p>即可在浏览器中看到效果，熟悉的 vue 页面</p>
+
+<h3 id="安装-axios-实现前后端交互-并实现后端设置-cookie-在前端可以生效">安装 axios，实现前后端交互，并实现后端设置 cookie，在前端可以生效</h3>
+
+<p>安装 axios</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">npm install axios</code></pre></div>
+<p>修改/src/components/HelloWorld.vue 中对应的 srcipt</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+<span class="k">import</span> <span class="nx">axios</span> <span class="nx">from</span> <span class="s1">&#39;axios&#39;</span>
+
+<span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/sc&#39;</span><span class="p">)</span> <span class="c1">// 使用ajax
+</span><span class="c1"></span><span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;HelloWorld&#39;</span><span class="p">,</span>
+  <span class="nx">data</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="nx">msg</span><span class="o">:</span> <span class="s1">&#39;Welcome to Your Vue.js App&#39;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div>
+<p>最终完成的时候，访问 &lsquo;/&lsquo;，可以看到 cookie 添加了一个 kv 对。现在暂时看不到效果，因为接口后端没有实现。</p>
+
+<p>后端接口实现,这里使用的 go，具体 go 编译器的安装方法<a href="https://golang.org/doc/install#install">见这里</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;log&#34;</span>
+	<span class="s">&#34;net/http&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">LoggingMiddleware</span><span class="p">(</span><span class="nx">next</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span><span class="p">)</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Handler</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&#34;-&gt;&#34;</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">)</span>
+		<span class="nx">next</span><span class="p">.</span><span class="nx">ServeHTTP</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&#34;&lt;-&#34;</span><span class="p">)</span>
+	<span class="p">})</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">http</span><span class="p">.</span><span class="nx">Handle</span><span class="p">(</span><span class="s">&#34;/sc&#34;</span><span class="p">,</span> <span class="nx">LoggingMiddleware</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">HandlerFunc</span><span class="p">(</span><span class="nx">indexHandler</span><span class="p">)))</span>
+	<span class="nx">port</span> <span class="o">:=</span> <span class="s">&#34;:8081&#34;</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&#34;starting on http://localhost&#34;</span> <span class="o">+</span> <span class="nx">port</span><span class="p">)</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nx">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">ListenAndServe</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="kc">nil</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">indexHandler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">expire</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Now</span><span class="p">().</span><span class="nx">AddDate</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">cookie</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">Cookie</span><span class="p">{</span><span class="nx">Name</span><span class="p">:</span> <span class="s">&#34;csrftoken&#34;</span><span class="p">,</span> <span class="nx">Value</span><span class="p">:</span> <span class="nx">expire</span><span class="p">.</span><span class="nx">String</span><span class="p">(),</span> <span class="nx">Expires</span><span class="p">:</span> <span class="nx">expire</span><span class="p">}</span>
+	<span class="nx">http</span><span class="p">.</span><span class="nx">SetCookie</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">cookie</span><span class="p">)</span>
+<span class="p">}</span></code></pre></div>
+<p>此时前后端都已经实现了，但是因为前端开在了端口 8080，后端开在了 8081，涉及到跨域，相互没法访问。需要配置一下 webpack 的配置才可以。</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="c1">// 修改一下文件/config/index.js: 13 line
+</span><span class="c1"></span><span class="nx">proxyTable</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;/&#39;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8081&#39;</span><span class="p">,</span>
+    <span class="nx">changeOrigin</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+<span class="p">},</span>
+</code></pre></div>
+<p>之后，开启前后端服务：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">npm dev run
+go run server.go</code></pre></div>
+<p>之后访问前端页面，localhost:8080，按 F12 -&gt; Application -&gt; Cookies， 即可看到每次刷新都会改变的 csrftoken 的 cookie</p>
+
+<p><img src="/media/img/frontend/setcookie-front-back-sep.png" alt="前后度分离结果，设置了cookie" /></p>
+
+<h1 id="后记">后记</h1>
+
+<p>既然在前后端分离后的后端可以配置cookie，其他的所有操作都可以进行了。进一步可以实现其他的操作。如上。</p>
+
+<h2 id="引用">引用</h2>
+
+<ul>
+<li><a href="https://github.com/kamranahmedse/developer-roadmap">developer-roadmap: frontend backend DevOps</a></li>
+<li><a href="https://github.com/lifesinger/blog/issues/184">web 研发演进</a></li>
+<li><a href="https://github.com/genify/ita1024/blob/master/%E7%BD%91%E6%98%93%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E5%AE%9E%E8%B7%B5.md">网易前后端分离实践</a></li>
+</ul></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB"><span class="tag">前后端分离</span></a></li>
+        
+          <li><a href="/tags/vue"><span class="tag">Vue</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        ©2017 by Exfly. All rights reserved.
+      </p>
+    </footer>
+    
+      
+      <div id="cyReward" role="cylabs" data-use="reward"></div>
+      <script src="//changyan.itc.cn/js/lib/jquery.js"></script>
+      <script src="//changyan.sohu.com/js/changyan.labs.https.js?appid=cytHpQ1g5"></script>
+      <div id="SOHUCS" sid="/post/frontend/front-end-separation-architecture-environment-construction/" ></div>
+      <script>
+      (function(){
+      var appid = 'cytHpQ1g5';
+      var conf = 'prod_25a912a7aeeea832a5ce492ebefe1bac';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+      
+    
+  </section>
+  <footer class="site-footer">
+  <p>© 2017-2018 Exfly Blog</p>
+  <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/laozhu/hugo-nuo" target="_blank">Nuo</a>.</p>
+  
+    <p><a href="http://www.miitbeian.gov.cn" title="Check ICP info" target="_blank">苏ICP备16005986号-2</a></p>
+  
+</footer>
+
+
+
+<script async src="//cdn.bootcss.com/video.js/6.2.8/alt/video.novtt.min.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+<script src="/js/bundle.2b14fb9283.js"></script>
+
+
+
+
+  </body>
+</html>

@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>前后端分离架构的Vue环境搭建指南</title>
+      <link>/post/frontend/front-end-separation-architecture-environment-construction/</link>
+      <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>
+      
+      <guid>/post/frontend/front-end-separation-architecture-environment-construction/</guid>
+      <description>&lt;p&gt;使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>技术变革</title>
       <link>/post/architecture/itabstract/</link>
       <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>

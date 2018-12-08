@@ -32,6 +32,17 @@ Exfly，专注计算机技术，具备基本的操作系统、计算机网络、
     </item>
     
     <item>
+      <title>WSL(windows subsystem for linux) win子系统</title>
+      <link>/post/tools/wsl/</link>
+      <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
+      
+      <guid>/post/tools/wsl/</guid>
+      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>前后端分离架构的Vue环境搭建指南</title>
       <link>/post/frontend/front-end-separation-architecture-environment-construction/</link>
       <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>

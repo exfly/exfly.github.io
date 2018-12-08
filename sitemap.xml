@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>/post/tools/wsl/</loc>
+    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/frontend/front-end-separation-architecture-environment-construction/</loc>
     <lastmod>2018-10-28T09:47:12+08:00</lastmod>
   </url>
@@ -137,6 +142,12 @@
   </url>
   
   <url>
+    <loc>/tags/go/</loc>
+    <lastmod>2018-10-11T12:55:03+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/java/</loc>
     <lastmod>2018-06-24T17:38:17+08:00</lastmod>
     <priority>0</priority>
@@ -168,7 +179,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-10-28T09:47:12+08:00</lastmod>
+    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -197,18 +208,6 @@
   </url>
   
   <url>
-    <loc>/tags/taga/</loc>
-    <lastmod>2018-10-11T12:55:03+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/tagb/</loc>
-    <lastmod>2018-10-11T12:55:03+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/</loc>
     <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
@@ -217,6 +216,12 @@
   <url>
     <loc>/tags/vue/</loc>
     <lastmod>2018-10-28T09:47:12+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/wsl/</loc>
+    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -240,7 +245,7 @@
   
   <url>
     <loc>/tags/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2018-02-24T19:15:55+08:00</lastmod>
+    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
     <priority>0</priority>
   </url>
   

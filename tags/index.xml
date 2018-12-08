@@ -40,6 +40,15 @@
     </item>
     
     <item>
+      <title>Go</title>
+      <link>/tags/go/</link>
+      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
+      
+      <guid>/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Java</title>
       <link>/tags/java/</link>
       <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
@@ -121,29 +130,20 @@
     </item>
     
     <item>
-      <title>Taga</title>
-      <link>/tags/taga/</link>
-      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
-      
-      <guid>/tags/taga/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Tagb</title>
-      <link>/tags/tagb/</link>
-      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
-      
-      <guid>/tags/tagb/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Vue</title>
       <link>/tags/vue/</link>
       <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>
       
       <guid>/tags/vue/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Wsl</title>
+      <link>/tags/wsl/</link>
+      <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
+      
+      <guid>/tags/wsl/</guid>
       <description></description>
     </item>
     
@@ -177,7 +177,7 @@
     <item>
       <title>工具</title>
       <link>/tags/%E5%B7%A5%E5%85%B7/</link>
-      <pubDate>Sat, 24 Feb 2018 19:15:55 +0800</pubDate>
+      <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
       
       <guid>/tags/%E5%B7%A5%E5%85%B7/</guid>
       <description></description>

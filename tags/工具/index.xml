@@ -7,10 +7,32 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>©2017 by Exfly. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 24 Feb 2018 19:15:55 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 08 Dec 2018 16:00:59 +0800</lastBuildDate>
     
 	<atom:link href="/tags/%E5%B7%A5%E5%85%B7/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>WSL(windows subsystem for linux) win子系统</title>
+      <link>/post/tools/wsl/</link>
+      <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
+      
+      <guid>/post/tools/wsl/</guid>
+      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Realize代码分析</title>
+      <link>/post/tools/realize/</link>
+      <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
+      
+      <guid>/post/tools/realize/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐</title>

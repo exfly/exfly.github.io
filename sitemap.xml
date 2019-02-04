@@ -13,6 +13,11 @@
   </url>
   
   <url>
+    <loc>/post/java/openapi/</loc>
+    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/tools/wsl/</loc>
     <lastmod>2018-12-08T16:00:59+08:00</lastmod>
   </url>
@@ -130,6 +135,12 @@
   </url>
   
   <url>
+    <loc>/tags/codegen/</loc>
+    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/distributed/</loc>
     <lastmod>2018-06-28T16:34:49+08:00</lastmod>
     <priority>0</priority>
@@ -172,6 +183,12 @@
   </url>
   
   <url>
+    <loc>/tags/openapi/</loc>
+    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/openresty/</loc>
     <lastmod>2018-06-12T16:01:38+08:00</lastmod>
     <priority>0</priority>
@@ -179,7 +196,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
+    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
     <priority>0</priority>
   </url>
   

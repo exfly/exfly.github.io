@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 
   
-  <title>Linux0.11源码学习环境配置与相关资源汇总</title>
+  <title>Openapi</title>
 
   
   
@@ -15,8 +15,8 @@
 
 
   
-  <meta name="author" content="Exfly" />
-  <meta name="description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+  <meta name="author" content="Author Name" />
+  <meta name="description" content="swagger and openapi 代码生成和文档自动生成一些体会
 
 " />
 
@@ -24,21 +24,21 @@
   
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@gohugoio" />
-    <meta name="twitter:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-    <meta name="twitter:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+    <meta name="twitter:title" content="Openapi" />
+    <meta name="twitter:description" content="swagger and openapi 代码生成和文档自动生成一些体会
 
 " />
-    <meta name="twitter:image" content="/media/img/linux0.11readcode/linux.jpg" />
+    <meta name="twitter:image" content="/media/img/Java/openapi/Swagger-logo.png" />
   
 
   
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
-  <meta property="og:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+  <meta property="og:title" content="Openapi" />
+  <meta property="og:description" content="swagger and openapi 代码生成和文档自动生成一些体会
 
 " />
-  <meta property="og:url" content="/post/linux/linux0.11-read-code/" />
-  <meta property="og:image" content="/media/img/linux0.11readcode/linux.jpg" />
+  <meta property="og:url" content="/post/java/openapi/" />
+  <meta property="og:image" content="/media/img/Java/openapi/Swagger-logo.png" />
 
 
 
@@ -46,7 +46,7 @@
 <meta name="generator" content="Hugo 0.45.1" />
 
 
-<link rel="canonical" href="/post/linux/linux0.11-read-code/" />
+<link rel="canonical" href="/post/java/openapi/" />
 
 <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -231,83 +231,58 @@
 
   <section class="main post-detail">
     <header class="post-header">
-      <h1 class="post-title">Linux0.11源码学习环境配置与相关资源汇总</h1>
-      <p class="post-meta">@Exfly · Oct 30, 2016 · 1 min read</p>
+      <h1 class="post-title">Openapi</h1>
+      <p class="post-meta">@Author Name · Feb 4, 2019 · 1 min read</p>
     </header>
-    <article class="post-content"><p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
+    <article class="post-content"><p>swagger and openapi 代码生成和文档自动生成一些体会</p>
 
 <p></p>
 
-<h1 id="linux-history">linux history</h1>
+<h1 id="说在前面">说在前面</h1>
+
+<p>平时使用<a href="https://gqlgen.com">gqlgen</a>，一般的 workflow 是先写 graphql 的 schema，然后 code generate 对应的 model 和 api 的实现的空接口，自己对应实现对应的 resolver 即可。使用起来很流程。最近调研一下 java 下类似的工具。找到在 java 下 star 最多的项目<a href="https://github.com/graphql-java/graphql-java">graphql-java</a>，但并不是这里讨论的。
+这里讨论的是基于 spring 的 openapi 的实现和 code generate 方案。</p>
+
+<h1 id="基于-openapi-的-code-generate-方案">基于 openapi 的 code generate 方案</h1>
+
+<p>首先简单介绍一下 openapi，他是语言无关的 restful 描述语言，可以使用 yaml 进行编写接口文档，通过 generate，生成不同语言的 client 和 server。<a href="https://swagger.io/docs/specification/about/">这里</a>有官方的简介。自己比较关注的语言是 python、java、go、rust，js。</p>
+
+<p>踩到的一些坑，这里简单试用了一下generate java。首先，maven下有对应的openapi的plugin，<a href="https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md">openapi-generator-maven-plugin</a>, 但每次compile都会进行generate，并不是我所希望的，所以这里使用了基于docker的使用方案。代码见<a href="https://github.com/gorgestar/isn/tree/v0.0.1">exfly:gorgestar/isn</a>,使用<a href="https://github.com/gorgestar/isn/blob/v0.0.1/generator.sh">generator.sh</a>生成对应的代码，配置文件可以看<a href="https://github.com/gorgestar/isn/blob/v0.0.1/generator.json">generator.json</a>，</p>
+
+<p>我的使用策略是，先修改<a href="https://github.com/gorgestar/isn/blob/v0.0.1/src/main/resources/openapi.yaml">openapi.yaml</a>，创建或者修改restful api，然后 <code>bash ./generator.sh</code>，生成对应接口默认空实现，之后由我们对应的实现接口即可。</p>
+
+<p>一些自己没有进行操作的方案：</p>
 
 <ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
+<li>如何保证api和接口文档一致：可以对应的使用swagger的api-doc json进行转换为yaml，对原本手写的<code>openapi.yaml</code>进行比较，确认文档的一致性</li>
+<li>这个版本的generate每次都会将所有的文件覆盖，需要编辑<a href="https://github.com/gorgestar/isn/blob/v0.0.1/.openapi-generator-ignore">.openapi-generator-ignore</a>，类似gitignore的东西，类比修改即可。被忽略的文件，即使被删除，也不会自动生成对应文件，生成逻辑看起来比较傻。</li>
 </ul>
 
-<h1 id="linux">linux</h1>
-
-<p>linux采用分段+分页机制结合管理内存</p>
-
-<h1 id="linux-调试方法">linux 调试方法</h1>
+<h1 id="其他资源">其他资源</h1>
 
 <ul>
-<li><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a>
-```
-gdb tools/system
-target remote localhost:1234</li>
-</ul>
+<li><a href="https://github.com/gorgestar/isn">exfly:gorgestar/isn</a>,本文项目代码</li>
+<li><a href="https://swagger.io/">swagger</a></li>
+<li><a href="https://raml.org/">raml</a></li>
+<li><a href="https://github.com/OAI/OpenAPI-Specification">OpenAPI-Specification</a></li>
+<li><a href="https://github.com/OpenAPITools/openapi-generator">openapi-generator</a></li>
 
-<p>gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&rdquo;i b&rdquo;
-continue&copy; 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register</p>
+<li><p><a href="https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md">openapi generator maven plugin</a></p></li>
 
-<p>GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)</p>
-
-<p>cgdb	可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system* <a href="http://labrick.cc/2015/08/13/linux-0-11-boot/">linux-0.11启动过程描述</a>
-* <a href="http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml">Linux0.11启动过程</a>
-* <a href="http://www.jianshu.com/p/1cea7dc5d6b7">80386保护模式的本质</a>
-* <a href="http://luodw.cc/2016/02/17/address/">linux虚拟地址到线性地址的转化</a>
-* <a href="http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分段机制-linux回避了分段机制</a>
-* <a href="http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/">Linux内存寻址之分页机制/</a>
-* <a href="http://www.voidcn.com/blog/will130/article/p-5705051.html">逻辑地址、线性地址、物理地址和虚拟地址</a>
-* <a href="http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838">Intel 80386 程序员参考手册</a>
-* <a href="http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164">linux0.11内核之文件系统</a>
-```</p>
-
-<h1 id="source">source</h1>
-
-<h1 id="80386内存访问公式">80386内存访问公式</h1>
-
-<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
-
-<p>48bit = 16 + 32
-16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
-32线性地址 -&gt; 物理地址</p></article>
+<li><p><a href="https://spring.io/projects/spring-restdocs">spring rest docs</a></p></li>
+</ul></article>
     <footer class="post-footer">
       
       <ul class="post-tags">
         
-          <li><a href="/tags/linux"><span class="tag">Linux</span></a></li>
+          <li><a href="/tags/openapi"><span class="tag">Openapi</span></a></li>
         
-          <li><a href="/tags/%E8%B5%84%E6%BA%90"><span class="tag">资源</span></a></li>
+          <li><a href="/tags/codegen"><span class="tag">Codegen</span></a></li>
         
       </ul>
       
       <p class="post-copyright">
-        ©2017 by Exfly. All rights reserved.This post was published <strong>827</strong> days ago, content in the post may be inaccurate, even wrong now, please take risk yourself.
+        ©2017 by Exfly. All rights reserved.
       </p>
     </footer>
     
@@ -315,7 +290,7 @@ cgdb tools/system* <a href="http://labrick.cc/2015/08/13/linux-0-11-boot/">linux
       <div id="cyReward" role="cylabs" data-use="reward"></div>
       <script src="//changyan.itc.cn/js/lib/jquery.js"></script>
       <script src="//changyan.sohu.com/js/changyan.labs.https.js?appid=cytHpQ1g5"></script>
-      <div id="SOHUCS" sid="/post/linux/linux0.11-read-code/" ></div>
+      <div id="SOHUCS" sid="/post/java/openapi/" ></div>
       <script>
       (function(){
       var appid = 'cytHpQ1g5';

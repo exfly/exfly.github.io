@@ -5,8 +5,7 @@
     <link>/tags/go/</link>
     <description>Recent content in Go on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
-    <copyright>©2017 by Exfly. All rights reserved.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Thu, 11 Oct 2018 12:55:03 +0800</lastBuildDate>
     
 	<atom:link href="/tags/go/index.xml" rel="self" type="application/rss+xml" />

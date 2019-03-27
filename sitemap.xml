@@ -1,293 +1,480 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <url>
-    <loc>/links/</loc>
-    <lastmod>2017-09-16T15:41:18+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/about/</loc>
-    <lastmod>2017-09-16T14:38:23+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/java/openapi/</loc>
-    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/tools/wsl/</loc>
-    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/frontend/front-end-separation-architecture-environment-construction/</loc>
-    <lastmod>2018-10-28T09:47:12+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/architecture/itabstract/</loc>
-    <lastmod>2018-10-25T17:07:58+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/tools/realize/</loc>
-    <lastmod>2018-10-11T12:55:03+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/bigdata/sparkstream/</loc>
-    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/architecture/eventuallyconsistent/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/java/gradle_maven/</loc>
-    <lastmod>2018-06-24T17:38:17+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/lua/openresty_awesome/</loc>
-    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/architecture/microservicedesign/</loc>
-    <lastmod>2018-06-10T22:50:19+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/java/spring/beans/</loc>
-    <lastmod>2018-05-20T16:49:06+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/java/collectionslearn/</loc>
-    <lastmod>2018-03-24T10:33:11+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/tools/wox_everything/</loc>
-    <lastmod>2018-02-24T19:15:55+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/algorithm/wiki_zh_practice_word2vec/</loc>
-    <lastmod>2018-02-14T11:04:36+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/diary/2018.02.01-2017-holiday-summary/</loc>
-    <lastmod>2018-02-01T14:24:40+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/tools/vim/</loc>
-    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</loc>
-    <lastmod>2017-12-19T10:21:19+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/sercurity/2017.09.17-black-phone/</loc>
-    <lastmod>2017-09-17T14:35:34+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/algorithm/sort/</loc>
-    <lastmod>2017-09-16T16:08:44+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/diary/2017.01.01-2016-holiday-summary/</loc>
-    <lastmod>2017-01-01T14:24:40+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/linux/linux0.11-read-code/</loc>
-    <lastmod>2016-10-30T14:17:49+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/architecture/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/bigdata/</loc>
-    <lastmod>2018-10-25T17:07:58+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/codegen/</loc>
-    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/distributed/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2017-09-16T15:41:18+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/go/</loc>
-    <lastmod>2018-10-11T12:55:03+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/java/</loc>
-    <lastmod>2018-06-24T17:38:17+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/kali/</loc>
-    <lastmod>2017-09-17T14:35:34+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/linux/</loc>
-    <lastmod>2018-01-10T11:24:31+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/lua/</loc>
-    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/openapi/</loc>
-    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/openresty/</loc>
-    <lastmod>2018-06-12T16:01:38+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2019-02-04T13:41:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/spark/</loc>
-    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/spring/</loc>
-    <lastmod>2018-05-20T16:49:06+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/ssm/</loc>
-    <lastmod>2018-05-20T16:49:06+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/stream/</loc>
-    <lastmod>2018-07-04T17:36:24+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2018-06-28T16:34:49+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/vue/</loc>
-    <lastmod>2018-10-28T09:47:12+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/wsl/</loc>
-    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%88%B7%E6%9C%BA/</loc>
-    <lastmod>2017-09-17T14:35:34+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/</loc>
-    <lastmod>2018-10-28T09:47:12+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%AE%89%E5%85%A8/</loc>
-    <lastmod>2017-12-19T10:21:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2018-12-08T16:00:59+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
-    <lastmod>2018-06-10T22:50:19+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2018-10-25T17:07:58+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2017-09-16T16:08:44+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/%E8%B5%84%E6%BA%90/</loc>
-    <lastmod>2016-10-30T14:17:49+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-</urlset>
+<search>
+    
+     <entry>
+        <title>Openapi</title>
+        <url>/post/java/openapi/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>openapi</tag><tag>codegen</tag>
+        </tags>
+        <content type="html"> swagger and openapi 代码生成和文档自动生成一些体会
+
+说在前面 平时使用gqlgen，一般的 workflow 是先写 graphql 的 schema，然后 code generate 对应的 model 和 api 的实现的空接口，自己对应实现对应的 resolver 即可。使用起来很流程。最近调研一下 java 下类似的工具。找到在 java 下 star 最多的项目graphql-java，但并不是这里讨论的。 这里讨论的是基于 spring 的 openapi 的实现和 code generate 方案。
+基于 openapi 的 code generate 方案 首先简单介绍一下 openapi，他是语言无关的 restful 描述语言，可以使用 yaml 进行编写接口文档，通过 generate，生成不同语言的 client 和 server。这里有官方的简介。自己比较关注的语言是 python、java、go、rust，js。
+踩到的一些坑，这里简单试用了一下generate java。首先，maven下有对应的openapi的plugin，openapi-generator-maven-plugin, 但每次compile都会进行generate，并不是我所希望的，所以这里使用了基于docker的使用方案。代码见exfly:gorgestar/isn,使用generator.sh生成对应的代码，配置文件可以看generator.json，
+我的使用策略是，先修改openapi.yaml，创建或者修改restful api，然后 bash ./generator.sh，生成对应接口默认空实现，之后由我们对应的实现接口即可。
+一些自己没有进行操作的方案：
+ 如何保证api和接口文档一致：可以对应的使用swagger的api-doc json进行转换为yaml，对原本手写的openapi.yaml进行比较，确认文档的一致性 这个版本的generate每次都会将所有的文件覆盖，需要编辑.openapi-generator-ignore，类似gitignore的东西，类比修改即可。被忽略的文件，即使被删除，也不会自动生成对应文件，生成逻辑看起来比较傻。  其他资源  exfly:gorgestar/isn,本文项目代码 swagger raml OpenAPI-Specification openapi-generator openapi generator maven plugin
+ spring rest docs
+ </content>
+    </entry>
+    
+     <entry>
+        <title>WSL(windows subsystem for linux) win子系统</title>
+        <url>/post/tools/wsl/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>工具</tag><tag>wsl</tag>
+        </tags>
+        <content type="html"> win 子系统安装与 cmder&#43;zsh 开发环境搭建
+
+说在前面 这里只展示可以做到什么程度，具体怎么做，网上教程很多，后边会贴出自己感觉比较好的网址
+大致操作思路 先在 windows 下打开 win subsystem for linux 功能，之后去 win store 中下载对应的 linux 发行版.之后就是打开对应的 linux 发行版的 bash、配置 zsh 了，详细步骤见这里。具体 zsh 怎么折腾，可以看一下这里
+贴一张自己配置之后，使用 zsh 和 tmux 之后的截图 给我的体验是，基本可以满足大部分日常开发工作
+其他  win 下的 CDEF 盘被挂载到/mnt下，为了方便使用，可以将他们ln -s /mnt/d $HOME/windir，这样方便自己使用 因为之前安装过 vscode，可以直接使用code filename 打开系统中的文件 类似 jdk 这种需要在 subsystem 中重新安装才可以在 wsl 中使用 图中使用的 Cmder 是非常远古的版本，所以请忽略 cmd 之前的框  链接  Windows10 终端优化方案：Ubuntu 子系统&#43;cmder&#43;oh-my-zsh  </content>
+    </entry>
+    
+     <entry>
+        <title>前后端分离架构的Vue环境搭建指南</title>
+        <url>/post/frontend/front-end-separation-architecture-environment-construction/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>前后端分离</tag><tag>Vue</tag>
+        </tags>
+        <content type="html"> 使用 Vue 前后端&#43;Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境
+
+原文地址
+Web 研发模式演变 最近研究一下前后端的开发模式，看到一个很好的入门路径developer-roadmap: frontend backend DevOps,可以看一下，效果还是不错的。
+之前看到一个说web 研发演进这里总结一下。
+很久之前，前后端的分工是，前端从设计师那里拿到设计图纸，转化静态页面模板，由后端工程师进行数据库设计等一系列设计之后，套前端给的模板。如上也即后端渲染。
+但是这样的流程，所有工作的 Block 在后端，想进一步提高研发速度，应该如何分工？到如今给出的答案是基于 Nodejs 的前后端分离架构。这时前后端分工是这样的：
+前端的工作  UI 设计 前端路由设计 处理浏览器层的展现逻辑  通过 CSS 渲染样式，通过 JavaScript 添加交互功能，HTML 的生成也可以放在这层，具体看应用场景
+后端的工作  业务逻辑和 API 的设计和实现 数据库设计和维护 后端缓存设计  前后端分离下协作体系 前后端分离下的协作方式一般是，前后端各司其职，互不影响。
+首先，对于后端来说，后端的主要工作依然是传统的数据库设计、业务逻辑设计，但不需要套模板了，而是为前端提供数据接口
+其次，对于前端来说，前端的主要工作是，前端的 ui，以及获取数据，在前端渲染。
+工作流程是，先进行 API 设计。前后端一起设计数据接口以及数据返回的格式，现在比较常见的是 json 数据。可以根据接口生成一些 mock 用的 json 数据文件，供前端开发使用。后端根据这个 API 规范实现真正的接口。两端分别并行开发。开发结束时候联调，打通前后端之后进行调试。
+具体，可以看一下网易前后端分离实践.
+基于 Vue 前后端分离环境搭建 这里对前后端分离 Vue 的开发环境进行演示。思路是，前后端分离，后端可以设置 cookie，前端可以接收到配置的 cookie
+node 环境安装 安装方法见这里
+Vue 安装 npm config set registry &amp;#39;https://registry.npm.taobao.org&amp;#39; npm install -g @vue/cli vue init webpack demo cd demo npm dev run 即可在浏览器中看到效果，熟悉的 vue 页面
+安装 axios，实现前后端交互，并实现后端设置 cookie，在前端可以生效 安装 axios
+npm install axios 修改/src/components/HelloWorld.vue 中对应的 srcipt
+&amp;lt;script&amp;gt; import axios from &amp;#39;axios&amp;#39; axios.get(&amp;#39;/sc&amp;#39;) // 使用ajax export default { name: &amp;#39;HelloWorld&amp;#39;, data () { return { msg: &amp;#39;Welcome to Your Vue.js App&amp;#39; } } } &amp;lt;/script&amp;gt;  最终完成的时候，访问 &amp;lsquo;/&amp;lsquo;，可以看到 cookie 添加了一个 kv 对。现在暂时看不到效果，因为接口后端没有实现。
+后端接口实现,这里使用的 go，具体 go 编译器的安装方法见这里
+package main import ( &amp;#34;log&amp;#34; &amp;#34;net/http&amp;#34; &amp;#34;time&amp;#34; ) func LoggingMiddleware(next http.Handler) http.Handler { return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { log.Println(&amp;#34;-&amp;gt;&amp;#34;, r.URL) next.ServeHTTP(w, r) log.Println(&amp;#34;&amp;lt;-&amp;#34;) }) } func main() { http.Handle(&amp;#34;/sc&amp;#34;, LoggingMiddleware(http.HandlerFunc(indexHandler))) port := &amp;#34;:8081&amp;#34; log.Println(&amp;#34;starting on http://localhost&amp;#34; &#43; port) log.Fatal(http.ListenAndServe(port, nil)) } func indexHandler(w http.ResponseWriter, req *http.Request) { expire := time.Now().AddDate(0, 0, 1) cookie := http.Cookie{Name: &amp;#34;csrftoken&amp;#34;, Value: expire.String(), Expires: expire} http.SetCookie(w, &amp;amp;cookie) } 此时前后端都已经实现了，但是因为前端开在了端口 8080，后端开在了 8081，涉及到跨域，相互没法访问。需要配置一下 webpack 的配置才可以。
+// 修改一下文件/config/index.js: 13 line proxyTable: { &amp;#39;/&amp;#39;: { target: &amp;#39;http://localhost:8081&amp;#39;, changeOrigin: true } },  之后，开启前后端服务：
+npm dev run go run server.go 之后访问前端页面，localhost:8080，按 F12 -&amp;gt; Application -&amp;gt; Cookies， 即可看到每次刷新都会改变的 csrftoken 的 cookie
+最终的网站见ExFly/FrontBackSep
+后记 既然在前后端分离后的后端可以配置cookie，其他的所有操作都可以进行了。进一步可以实现其他的操作。如上。
+引用  developer-roadmap: frontend backend DevOps web 研发演进 网易前后端分离实践 </content>
+    </entry>
+    
+     <entry>
+        <title>技术变革</title>
+        <url>/post/architecture/itabstract/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>bigdata</tag><tag>总结</tag>
+        </tags>
+        <content type="html"> 总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器
+
+从使用到的技术来说，如今各大网站平台趋向于使用经过长期检验过的技术，包括不限于动态网站技术、数据库技术、高速缓存技术、负载均衡、分布式相关技术。
+首先动态网站技术，开始没有动态网站时期，大部分 BBS 使用基于 Telnet 协议为基础的 BBS 进行交流。HTTP 协议的出现，使得 BS 架构的网站能够展现多媒体等信息如视频、音乐等。起初 HTTP 协议一般仅展示一些静态数据，其表现能力不强，不能更好的动态的为用户交互。之后动态网站技术如 CGI 的出现，使得网站拥有的更加丰富的交互功能。经过数十年的技术积累，动态网站技术已经能够支撑起现如今的大部分信息的获取。
+其次是存储技术。开始的时候数据仅仅使用本地文件进行存储。文件的读写效率很高，但是需要程序员重复的使用操作系统提供的较底层的操作来操作文件，对程序员的要求太大。而且对这种结构化的数据来说，可以使用相同的模式进行操作。所以有了数据库关系系统，尤其关系型数据库。从此，对于一些结构化的数据只需要使用 SQL 这种数据操作语言，就可以很方便的操作数据，而真正的数据管理维护工作由数据库管理系统进行维护，人可以通过配置数据库，使数据库获得更好的性能。当用户量很大时候，单机响应出现瓶颈，单台数据库不能够满足这样的请求。可以通过复制的方式，将相同的数据复制到多台机器上，多台机器为用户提供数据，对于读操作进行扩展。对于读多写少的网站，这种方式基本可以实现线性的性能提升。数据量再大一些，使用分库分表方式，把一份数据切片，分布到多台机器上提高性能。进而使用复制与分库分表的方式，进一步压榨单机的性能潜力。单机数据库很强大，但数据量达到一定的数量级，数据库的性能完全不能满足需求。大数据时代，数据量达到 PB、TB 级别。而每一块硬盘仅仅几 T，单机完全不可能将所有的数据都存储下来。如上分库分表的方式基本已经不能完全解决如上的问题，所以出现了分布式数据库，比如 MySQL Cluster 等通过两阶段提交等方式，维护线上数据的强一致性，分布式存储系统，比如 Google 研发的 GFS，现如今正火热的 HDFS 等，基本可以满足海量数据的存储。
+高速缓存技术，如一些场景重复读的场景，数据库的查询很昂贵，如何减少数据库的访问次数？使用类似 Redis 的缓存。redis 的数据全部存储在内存中，内存的速度远远超过数据库的查询速度。维护 redis 中的缓存数据一致性，防止缓存穿透、缓存击穿、缓存雪崩的问题，以及如何正确的使用缓存等一系列问题，现如今已经基本有了很好的解决办法。
+负载均衡与反向代理，传统中使用 nginx 作为网关，接受的请求分发到多台服务器中，一定程度上分担单台服务器的压力。
+对于分布式技术。首先是 Google 研发并使用的 GFS 以及搭建在 GFS 基础上的 BigTable，以及 MapReduce 算法，使得分布式存储与分布式计算成为了可能。对应的开源版本为 HDFS、Hadoop、Spark 等一系列分布式基础设施。存储的分布式，也对应着应用部署的分布式，也就是现如今使用比较广泛的微服务（将一个整体的应用拆分成不同的服务，服务之间分别开发和部署，通过统一的接口进行协作）。微服务部署少则几个，多则成百上千，如此多的服务需要开发部署工作量巨大。同时很常见的问题是开发环境可以正常工作，上线却无法工作。这个问题现如今的解决办法是使用 docker。首先 docker 是一种使用 Linux 内核提供的 cgroup 和 namespace 功能，它可以将计算机的资源进行隔离。使用场景是通过容器编排工具，将服务所依赖的资源通过配置文件进行定义，由编排工具统一对所有的服务进行启动部署。现如今实质上的容器编排标准 Kubernetes，已经被不限于 Google、百度、阿里巴巴、京东等使用。对于 Google 等基本实现容器化、Kubernetes 化。
+</content>
+    </entry>
+    
+     <entry>
+        <title>Realize代码分析</title>
+        <url>/post/tools/realize/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>工具</tag><tag>Go</tag>
+        </tags>
+        <content type="html"> realize 代码分析
+
+Realize realize 是 Go 写的 workfloaw 工具，可以配置自己的工作流。项目在修改之后需要进行编译、测试，可以还有其他的一系列流程需要走，可以使用 realize 进行自动化。抽点时间研究了一下源码。这里总结一下思路，不是很完整的解释，简单说一下思路。
+原理 从 Linux 2.6.13 内核开始，Linux 就推出了 inotify，允许监控程序打开一个独立文件描述符，并针对事件集监控一个或者多个文件，例如打开、关闭、移动/重命名、删除、创建或者改变属性。glib 对对此进行了封装glib/inotify.h,同时各个操作系统都有对应的实现，win 下的 ReadDirectoryChangesW，mac 下的 FSEvents。同时 go 下已经有写好的封装库fsnotify/fsnotify，对不同的平台进行了封装。
+简单来讲，内核为应用程序提供了系统级文件修改事件的监视器。当文件进行修改后，会通知应用程序监视的文件已经修改了，之后有realize进行事件的处理即可。
+比较有意思的是，yaml文件的marshal和unmarshal。之后可以研究一下。
+核心代码 // github.com/oxequa/realize/realize/projects.go func (p *Project) Watch(wg *sync.WaitGroup) { var err error // change channel 	p.stop = make(chan bool) // init a new watcher 	p.watcher, err = NewFileWatcher(p.parent.Settings.Legacy) if err != nil { log.Fatal(err) } defer func() { close(p.stop) p.watcher.Close() }() // before start checks 	p.Before() // start watcher 	go p.Reload(&amp;#34;&amp;#34;, p.stop) L: for { select { case event := &amp;lt;-p.watcher.Events(): if p.parent.Settings.Recovery.Events { log.Println(&amp;#34;File:&amp;#34;, event.Name, &amp;#34;LastFile:&amp;#34;, p.last.file, &amp;#34;Time:&amp;#34;, time.Now(), &amp;#34;LastTime:&amp;#34;, p.last.time) } if time.Now().Truncate(time.Second).After(p.last.time) { // switch event type 	switch event.Op { case fsnotify.Chmod: case fsnotify.Remove: p.watcher.Remove(event.Name) if p.Validate(event.Name, false) &amp;amp;&amp;amp; ext(event.Name) != &amp;#34;&amp;#34; { // stop and restart 	close(p.stop) p.stop = make(chan bool) p.Change(event) go p.Reload(&amp;#34;&amp;#34;, p.stop) } default: if p.Validate(event.Name, true) { fi, err := os.Stat(event.Name) if err != nil { continue } if fi.IsDir() { filepath.Walk(event.Name, p.walk) } else { // stop and restart 	close(p.stop) p.stop = make(chan bool) p.Change(event) go p.Reload(event.Name, p.stop) p.last.time = time.Now().Truncate(time.Second) p.last.file = event.Name } } } } case err := &amp;lt;-p.watcher.Errors(): p.Err(err) case &amp;lt;-p.exit: p.After() break L } } wg.Done() } Reference  用 inotify 监控 Linux 文件系统事件 oxequa/realize fsnotify/fsnotify </content>
+    </entry>
+    
+     <entry>
+        <title>SparkStream等相关产品选型以及Spark安装与简单使用</title>
+        <url>/post/bigdata/sparkstream/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>BigData</tag><tag>Spark</tag><tag>Stream</tag>
+        </tags>
+        <content type="html"> 比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法
+
+各产品比较 Samza Samza 是一个分布式的流式数据处理框架（streaming processing），Linkedin 开源的产品， 它是基于 Kafka 消息队列来实现类实时的流式数据处理的。更为准确的说法是，Samza 是通过模块化的形式来使用 Apache Kafka 的，因此可以构架在其他消息队列框架上，但出发点和默认实现是基于 Apache Kafka。
+本质上说，Samza 是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。
+总的来说，Samza 与 Storm 相比，传输上完全基于 Apache Kafka，集群管理基于 Hadoop YARN，即 Samza 只负责处理这一块具体业务，再加上基于 RocksDB 的状态管理。由于受限于 Kafka 和 YARN，所以它的拓扑结构不够灵活。
+Storm Storm 框架与其他大数据解决方案的不同之处，在于它的处理方式。Apcahe Hadoop 本质上来说是一个批处理系统，即目标应用模式是针对离线分析为主。数据被引入Hadoop的分布式文件系统 (HDFS)，并被均匀地分发到各个节点进行处理，HDFS 的数据平衡规则可以参照本文作者发表于IBM的文章《HDFS数据平衡规则及实验介绍》，进行深入了解。当处理完成时，结果数据返回到HDFS，然后可以供处理发起者使用。Storm则支持创建拓扑结构来转换没有终点的数据流。不同于Hadoop作业，这些转换从不会自动停止，它们会持续处理到达的数据，即Storm的流式实时处理方式。
+Spark Streaming Spark Streaming 类似于 Apache Storm，用于流式数据的处理。根据其官方文档介绍，Spark Streaming 有高吞吐量和容错能力强这两个特点。Spark Streaming 支持的数据输入源很多，例如：Kafka、Flume、Twitter、ZeroMQ 和简单的 TCP 套接字等等。数据输入后可以用 Spark 的高度抽象原语如：map、reduce、join、window 等进行运算。而结果也能保存在很多地方，如 HDFS，数据库等。另外 Spark Streaming 也能和 MLlib（机器学习）以及 Graphx 完美融合。
+在 Spark Streaming中，处理数据的单位是一批而不是单条，而数据采集却是逐条进行的，因此 Spark Streaming系统需要设置间隔使得数据汇总到一定的量后再一并操作，这个间隔就是批处理间隔。批处理间隔（0.2s-2s）是 Spark Streaming 的核心概念和关键参数，它决定了 Spark Streaming 提交作业的频率和数据处理的延迟，同时也影响着数据处理的吞吐量和性能。
+Kafka Sreeam Kafka Streams是一个用于处理和分析数据的客户端库。它先把存储在Kafka中的数据进行处理和分析，然后将最终所得的数据结果回写到Kafka或发送到外部系统去。它建立在一些非常重要的流式处理概念之上，例如适当区分事件时间和处理时间、窗口支持，以及应用程序状态的简单（高效）管理。同时，它也基于Kafka中的许多概念，例如通过划分主题进行扩展。此外，由于这个原因，它作为一个轻量级的库可以集成到应用程序中去。这个应用程序可以根据需要独立运行、在应用程序服务器中运行、作为Docker容器，或通过资源管理器（如Mesos）进行操作。
+Kafka Sreeam直接解决了流式处理中的很多困难问题:毫秒级延迟的逐个事件处理。有状态的处理，包括分布式连接和聚合。方便的DSL。使用类似DataFlow的模型对无序数据进行窗口化。具有快速故障切换的分布式处理和容错能力。无停机滚动部署。
+主要比较Spark Stream和Storm和选择    比较项 SparkStream Storm     血统 UC Berkeley AMP lab Twitter   开源时间 2011.05 2011.09   依赖环境 Java Zookeeper Java Python   开发语言 Scala Java Clojure   支持语言 Scala Java Python R Any   硬盘IO 少 一般   集群支持 超过1000节点 好   吞吐量 好 较好   使用公司 intel 腾讯 淘宝 中移动 Goole 淘宝 百度 Twitter 雅虎   适用场景 较大数据块&amp;amp;需要高时效性的小批量计算 实时小数据块的分析计算   延时 准实时：一次处理一个即将到达的事件 实时：处理在一定的时间内（时间间隔可自己设置）在窗口中收到的一批事件   容错 在批处理级别进行跟踪处理，因此即使发生节点故障等故障，也可以有效地保证每个小批量都能够被精确处理一次 每个单独的记录必须在其通过系统时被跟踪，因此Storm仅保证每个记录至少被处理一次，但是从故障中恢复期间允许出现重复。 这意味着可变状态可能不正确地更新了两次    1.处理模型以及延迟
+虽然这两个框架都提供可扩展性(Scalability)和可容错性(Fault Tolerance),但是它们的处理模型从根本上说是不一样的。Storm处理的是每次传入的一个事件，而Spark Streaming是处理某个时间段窗口内的事件流。因此，Storm处理一个事件可以达到亚秒级的延迟，而Spark Streaming则有秒级的延迟。
+2.容错和数据保证
+在容错数据保证方面的权衡方面，Spark Streaming提供了更好的支持容错状态计算。在Storm中，当每条单独的记录通过系统时必须被跟踪，所以Storm能够至少保证每条记录将被处理一次，但是在从错误中恢复过来时候允许出现重复记录，这意味着可变状态可能不正确地被更新两次。而Spark Streaming只需要在批处理级别对记录进行跟踪处理，因此可以有效地保证每条记录将完全被处理一次，即便一个节点发生故障。虽然Storm的 Trident library库也提供了完全一次处理的功能。但是它依赖于事务更新状态，而这个过程是很慢的，并且通常必须由用户实现。
+简而言之,如果你需要亚秒级的延迟，Storm是一个不错的选择，而且没有数据丢失。如果你需要有状态的计算，而且要完全保证每个事件只被处理一次，Spark Streaming则更好。Spark Streaming编程逻辑也可能更容易，因为它类似于批处理程序，特别是在你使用批次(尽管是很小的)时。
+3.实现和编程API
+Storm主要是由Clojure语言实现，Spark Streaming是由Scala实现。如果你想看看这两个框架是如何实现的或者你想自定义一些东西你就得记住这一点。Storm是由BackType和 Twitter开发，而Spark Streaming是在UC Berkeley开发的。
+Storm提供了Java API，同时也支持其他语言的API。 Spark Streaming支持Scala和Java语言(其实也支持Python)。另外Spark Streaming的一个很棒的特性就是它是在Spark框架上运行的。这样你就可以想使用其他批处理代码一样来写Spark Streaming程序，或者是在Spark中交互查询。这就减少了单独编写流批量处理程序和历史数据处理程序。
+4.生产支持
+Storm已经出现好多年了，而且自从2011年开始就在Twitter内部生产环境中使用，还有其他一些公司。而Spark Streaming是一个新的项目，并且在2013年仅仅被Sharethrough使用(据作者了解)。
+Storm是 Hortonworks Hadoop数据平台中流处理的解决方案，而Spark Streaming出现在 MapR的分布式平台和Cloudera的企业数据平台中。除此之外，Databricks是为Spark提供技术支持的公司，包括了Spark Streaming。
+5.集群管理集成
+尽管两个系统都运行在它们自己的集群上，Storm也能运行在Mesos，而Spark Streaming能运行在YARN 和 Mesos上。
+ 这里总结了Kafka Stream-Spark Streaming-Storm流式计算框架比较选型的相关资料。
+这里由更多的相关产品的差异比较资源：
+ Storm介绍 Spark Streaming vs. Kafka Stream 哪个更适合你？ 大数据框架对比：Hadoop、Storm、Samza、Spark和Flink  Spark Streaming与Storm的对比分析 Storm和Spark Streaming的横向比较 Spark Streaming和Storm如何选择？搭建流式实时计算平台，广告日志实时花费 Spark Streaming 新手指南  Spark 介绍 Spark生态 Spark官网简单介绍了spark的的优势。
+这里非常详细了介绍Spark生态、各大厂应用场景、Spark基本原理。
+Spark 和 Spark Stream的安装和使用 Spark介绍 Spark Streaming 是 Spark Core API 的扩展, 它支持弹性的, 高吞吐的, 容错的实时数据流的处理. 数据可以通过多种数据源获取, 例如 Kafka, Flume, Kinesis 以及 TCP sockets, 也可以通过例如 map, reduce, join, window 等的高级函数组成的复杂算法处理. 最终, 处理后的数据可以输出到文件系统, 数据库以及实时仪表盘中.事实上,你还可以在 data streams（数据流）上使用机器学习以及图计算 算法
+在内部, 它工作原理如下, Spark Streaming 接收实时输入数据流并将数据切分成多个 batch（批）数据, 然后由 Spark 引擎处理它们以生成最终的 stream of results in batches（分批流结果）.
+Spark Streaming 提供了一个名为 discretized stream 或 DStream 的高级抽象, 它代表一个连续的数据流. DStream 可以从数据源的输入数据流创建, 例如 Kafka, Flume 以及 Kinesis, 或者在其他 DStream 上进行高层次的操作以创建. 在内部, 一个 DStream 是通过一系列的 RDDs 来表示.
+你可以使用 Scala , Java 或者 Python（Spark 1.2 版本后引进）来编写 Spark Streaming 程序.
+这里是一篇官方编程指南
+Spark安装 方式1 wget http://mirror.bit.edu.cn/apache/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz tar -xzf spark-2.3.1-bin-hadoop2.7.tgz # 运行一个例子 cd spark-2.3.1-bin-hadoop2.7 ./bin/run-example SparkPi 方式二 推荐这种方式这里总结了自己搭建各种开发环境的就自动化安装脚本。第一次安装会比较麻烦，之后实现一条命令自动安装。需要vagrant&amp;amp;virtual。有一些依赖docker
+git clone https://github.com/ExFly/ComputSciLab.git cd ComputSciLab vagrant up vagrant ssh cd /vagrant/Java source install-small.sh cd /vagrant/Spark ./install.sh cd /vagrant/.softwenv/spark-2.3.1-bin-hadoop2.7 ./bin/run-example SparkPi 结果图：
+spark集群 找到一个中文的文档,可以看一下，部署很简单
+总结 如上
+</content>
+    </entry>
+    
+     <entry>
+        <title>分布式数据的最终一致性</title>
+        <url>/post/architecture/eventuallyconsistent/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Architecture</tag><tag>Distributed</tag>
+        </tags>
+        <content type="html"> 单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？
+
+简介 由于自己刚刚接触，自己理解的也不深。在这里，把我整理的一些资料汇总下来。
+微服务架构 微服务架构将单应用放在多个相互独立的服务，这个每个服务能够持续独立的开发和部署，难题是数据该如何存储？
+多个应用使用同一数据库 传统的单体应用一般采用的是数据库提供的事务一致性，通过数据库提供的提交以及回滚机制来保证相关操作的ACID，这些操作要么同时成功，要么同时失败。各个服务看到数据库中的数据是一致的，同时数据库的操作也是相互隔离的，最后数据也是在数据库中持久存储的。这样的架构不具备横向扩展能力，服务之间的耦合程度也比较高，会存在单点故障。
+典型微服务架构 在微服务架构中， 有一个database per service的模式， 这个模式就是每一个服务一个数据库。 这样可以保证微服务独立开发，独立演进，独立部署， 独立团队。
+由于一个应用是由一组相互协作的微服务所组成，在分布式环境下由于各个服务访问的数据是相互分离的， 服务之间不能靠数据库来保证事务一致性。 这就需要在应用层面提供一个协调机制，来保证一组事务执行要么成功，要么失败。
+CAP定律 一个分布式系统最多只能同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance）这三项中的两项。
+通过CAP理论，我们知道无法同时满足一致性、可用性和分区容错性这三个特性，那要舍弃哪个呢？
+CA without P：如果不要求P（不允许分区），则C（强一致性）和A（可用性）是可以保证的。但其实分区不是你想不想的问题，而是始终会存在，因此CA的系统更多的是允许分区后各子系统依然保持CA。
+CP without A：如果不要求A（可用），相当于每个请求都需要在Server之间强一致，而P（分区）会导致同步时间无限延长，如此CP也是可以保证的。很多传统的数据库分布式事务都属于这种模式。
+AP wihtout C：要高可用并允许分区，则需放弃一致性。一旦分区发生，节点之间可能会失去联系，为了高可用，每个节点只能用本地数据提供服务，而这样会导致全局数据的不一致性。现在众多的NoSQL都属于此类。
+对于多数大型互联网应用的场景，主机众多、部署分散，而且现在的集群规模越来越大，所以节点故障、网络故障是常态，而且要保证服务可用性达到N个9，即保证P和A，舍弃C（退而求其次保证最终一致性）。虽然某些地方会影响客户体验，但没达到造成用户流程的严重程度。
+对于涉及到钱财这样不能有一丝让步的场景，C必须保证。网络发生故障宁可停止服务，这是保证CA，舍弃P。貌似这几年国内银行业发生了不下10起事故，但影响面不大，报到也不多，广大群众知道的少。还有一种是保证CP，舍弃A。例如网络故障事只读不写。
+常用的解决方法 这里总结了一些分布式数据一致性的解决方法。分布式事务保证强一致性，但为了保证数据的一致性，放弃了一些系统性能。另一种保证最终一致性，放弃了时时数据的一致性，但处理效率最好。
+这里有一些例子如何解决的。
+BASE 这里实验了一个基于BASE协议的最终一致性demo。注意，这里使用到了Kafka，需要自己在本地开Kafka服务。
+其他资料  书：大规模分布式存储系统：原理解析与架构实现 书：微服务设计 分布式事务？No, 最终一致性 分布式事务实践 -花钱的，作为目录使用 多研究些架构，少谈些框架（3）&amp;ndash; 微服务和事件驱动 消息中间件（一）分布式系统事务一致性解决方案大对比，谁最好使？ Saga分布式事务解决方案与实践 解决业务代码里的分布式事务一致性问题 分布式事务实践 实战基于Kafka消息驱动最终一致事务（二） </content>
+    </entry>
+    
+     <entry>
+        <title>Gradle和Maven使用方法总结</title>
+        <url>/post/java/gradle_maven/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Java</tag>
+        </tags>
+        <content type="html"> 文章简介： 1.总结gradle和maven正确使用方法 2.开箱即用maven&amp;amp;gradle同时支持的项目配置。
+Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！
+
+说在前面 Gradle和Maven都是项目自动构建工具，编译源代码只是整个过程的一个方面，更重要的是，你要把你的软件发布到生产环境中来产生商业价值，所以，你要运行测试，构建分布、分析代码质量、甚至为不同目标环境提供不同版本，然后部署。整个过程进行自动化操作是很有必要的。
+整个过程可以分成以下几个步骤：
+ 编译源代码 运行单元测试和集成测试 执行静态代码分析、生成分析报告 创建发布版本 部署到目标环境 部署传递过程 执行冒烟测试和自动功能测试  两者都是项目工具，但是maven使用的最多，Gradle是后起之秀，想spring等都是使用gradle构建的。Gradle抛弃了Maven的基于XML的繁琐配置，采用了领域特定语言Groovy的配置，大大简化了构建代码的行数。
+比如maven要 这么写
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-core&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${spring.version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; gradle这么写
+compile(&amp;#39;org.springframework:spring-core:2.5.6&amp;#39;) 详细的Gradle和Maven比较看这里讲的很好了。gradle官方也对两个工具进行了比较。
+我们可以使用其中一个，或者两个一起使用！！！这是可行的，当然前提是，有一个人在整个过程中维护相同功能的两份配置。实际上并不难。抽一个周末空余时间，自己把这两个都熟悉了一下，整理了一套Gradle&amp;amp;Maven日常开发中常用的包和插件的集合，作为项目的开始。比较通用，所以需要根据公司或个人项目实际情况*加入私服*的配置，以及你想使用的*jar包*，如此简单。如果使用过程中遇到什么问题，请联系我。别忘了，帮我star一下。
+接下来涉及到的内容：
+ maven 正确使用方法 gradle正确使用方法 gradle项目和maven项目相互转化 一个项目同时支持maven和gradle配置：一个好的开始  maven 正确使用方法 maven版本不相同问题 我们大部分时候使用IDE进行项目开发的时候，大部分时候会直接使用IDE创建MAVEN项目，这是正确的。可是，您有没有发现，大家合作的时候，由于maven版本不相同，哪怕是3.5.1和3.5.2的区别，都会引发一场血案！我的可以正常打开项目，而其他人却会出现问题。除了IDE下载包损坏外，就是maven的版本不相同。其实通过一些工具，已经可以让这种情况不在发生，那就是Wrapper。请看如下图(图没配错，maven的wrapper和gradle的wrapper流程上完全相同)
+前提条件：
+ 项目创建者系统中已经由maven的命令 其他人没有要求，mvn可有可无（原因之后说）  具体如何做：
+ 项目创建者执行 mvn -N io.takari:maven:wrapper -Dmaven=3.5.3  此时，项目目录会生成mvnw.cmd和mvnw，之后的所有操作都是基于此，也就是说，项目开发者不需要由任何依赖，除了jdk-_!!!  项目创建者执行 mvnw archetype:generate  此步是自动生成项目目录结构。同时，项目管理者需要搭建好基础的代码框架。之后可以开发了  项目开发者  mvnw.cmd compiler:compile mvnw.cmd exec:java -Dexec.mainClass=&amp;quot;org.exfly.LombokL.LombokLApplication&amp;quot; -q mvn.cmd clean mvn.cmd test 。。。   注意:
+ 当第一次执行mvnw.cmd时候，会自动下载对应版本的Maven，maven的$HOME/.m2/wrapper/dists/&amp;lt;version&amp;gt;/下。 初网络问题，如果出现错误，依赖包已经下好，只需要到1所说的位置去掉后缀.pack，重新运行即可。  使用dependencyManagement集中管理版本依赖  dependencyManagement这里已经很好的解释如何做。同时可以借鉴springboot-parent  多模块项目管理方法  多模块项目的POM重构 通过parent的方式，将多模块依赖集中管理，  如何更好的使用maven进行项目管理 几点建议  尽量使用wapper多 使用dependencyManagement集中管理版本依赖 bin下有mvn和mvnDebug(运行mvn时开始debug) M2_HOME maven主程序的安装目录 ~/.m2 本地包下载位置 http代理  setting.xml中的proxies  MAVEN_OPTS  运行mvn时候相当于运行java命令，MAVEN_OPTS可以配置为任何java的命令参数  设置MAVEN_OPTS环境变量 配置用户范围settings.xml  %M2_HOME%/conf/settings.xml 为全局配置文件 ~/.m2/settings.xml 为用户配置文件  不要使用IDE内嵌的Maven，应该配置IDE中为自己安装的maven 显示声明所有用到的依赖  我的maven常用命令笔记 我的maven常用命令笔记
+gradle正确使用方法 理由同上节，直接说使用方法。可以对照我的笔记查看。
+ gradle init &amp;ndash;type java-library  这里自动生成gradlew，并创建项目目录结构  之后所有命令使用gradlew即可  gradle项目和maven项目相互转化 gradle和maven可以相互转化，意味着，我们可以使用gradle为主的开发，之后导出为maven项目，供生产环境使用。前提，你足够了解gradle和maven。
+maven -&amp;gt; gradle  cd /path/to/mavenproject gradle init gradle wrapper  gradle -&amp;gt; maven  cd /path/to/gradleproject gradlew install  将项目转换为maven和gradle项目后，目录结构如下： 之后，我们习惯使用mavnw或者gradlew，都可以。如此，做到了共存。
+一个项目同时支持maven和gradle配置：一个好的开始 抽时间，做了常用jar包和插件整合包，一个项目同时支持maven和gradle。
+共同的依赖：
+ 内容包括： 日志、通用工具库、单元测试、代码质量度量、文档生成等 jar: slf4j、logback、lombok、guava、junit、mockito  配置中整合的工具：
+ 代码质量分析报告工具：pmd、findbugs、checkstyle、jdepend 单元测试报告工具、javadoc、依赖管理、项目信息汇总等可视化信息  maven具体内容
+ maven-compiler-plugin、maven-javadoc-plugin、cobertura-maven-plugin、maven-checkstyle-plugin、findbugs-maven-plugin、maven-pmd-plugin、jdepend-maven-plugin、maven-jar-plugin、maven-surefire-plugin、maven-surefire-report-plugin  gradle具体内容
+ java、maven、checkstyle、pmd、findbugs、jdepend、eclipse、idea、javadoc  首先maven配置见此文件
+其次gradle配置见此文件
+资料汇总  完整的整合项目，支持maven和gradle，点我下载 我的Gradle笔记，点我查看 我的maven笔记，点我查看 </content>
+    </entry>
+    
+     <entry>
+        <title>OpenResty最佳实践</title>
+        <url>/post/lua/openresty_awesome/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Lua</tag><tag>OpenResty</tag>
+        </tags>
+        <content type="html"> 如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。
+
+简介 openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。 结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。
+OpenResty安装 对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib，并根据我的配置进行修改相应参数
+./configure --prefix=$HOME/openresty \  --add-module=$HOME/openresty/setupfile/third/naxsi-0.55.3/naxsi_src \  --add-module=$HOME/openresty/setupfile/third/nginx-goodies-nginx-sticky-module-ng \  --with-pcre=$HOME/openresty/setupfile/depency/pcre-8.41 \  --with-openssl=$HOME/openresty/setupfile/depency/openssl-1.0.2k \  --with-zlib=$HOME/openresty/setupfile/depency/zlib-1.2.11 \  --with-http_v2_module \  --with-http_sub_module \  --with-http_stub_status_module \  --with-http_realip_module \  --with-cc-opt=-O2 \  --with-luajit  这里是一个比较好的 nginx的笔记，可以过一遍 我在学习的时候，看了这本书深入理解Nginx模块开发与架构解析,毕竟讲的比较系统，可以借鉴一下 有问题，知乎，搜索引擎  安装luarocks  下载地址 http://luarocks.github.io/luarocks/releases/ 编译安装  ./configure --prefix=$HOME/openresty/luajit \  --with-lua=$HOME/openresty/luajit \  --lua-suffix=jit \  --with-lua-include=$HOME/openresty/luajit/include/luajit-2.1 --prefix 设定 luarocks 的安装目录 --with-lua 则是系统中安装的 lua 的根目录 --lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit --with-lua-include 设置 lua 引入一些头文件头文件的目录 make build &amp;amp;&amp;amp; make install lua面向对象 lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。Lua 中实现面向对象。 这里要说一下lua中.运算和:的区别，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是:可以省略self参数。
+local _class={} function class(super) local class_type={} class_type.ctor=false class_type.super=super class_type.new=function(...) local obj={} do local create create = function(c,...) if c.super then create(c.super,...) end if c.ctor then c.ctor(obj,...) end end create(class_type,...) end setmetatable(obj,{ __index=_class[class_type] }) return obj end local vtbl={} _class[class_type]=vtbl setmetatable(class_type,{__newindex= function(t,k,v) vtbl[k]=v end }) if super then setmetatable(vtbl,{__index= function(t,k) local ret=_class[super][k] vtbl[k]=ret return ret end }) end return class_type end 基本编码规范 设计 可以参考OpenResty的最佳实践，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。
+包管理 lua下有两个包管理系统，LuaDist和LuaRocks
+单元测试  重点 如下方法请在命令行中使用类似curl localhost/unittest进行测试，浏览器中看会很痛苦 OpenResty最佳实践-单元测试给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。  -- file: unittest.lua local _M = {} local csrf_test = require(&amp;#34;test.test_csrf&amp;#34;) local tmp_test = require(&amp;#34;test.tmp_test&amp;#34;) function _M:run_unittest() csrf_test:run() end return _M -- file: test_csrf.lua local iresty_test = require(&amp;#34;resty.iresty_test&amp;#34;) local json = require(&amp;#34;json&amp;#34;) local config = require(&amp;#34;config&amp;#34;) local csrf_config = require(&amp;#34;csrf_config&amp;#34;) local token = require(&amp;#34;token&amp;#34;) local tabletls = require(&amp;#34;tabletls&amp;#34;) local tb = iresty_test.new({unit_name=&amp;#34;test_csrf&amp;#34;}) local function assert_eq(wanted, real, msg) if wanted ~= real then error(msg or &amp;#34;error&amp;#34;, 2) -- 请注意参数 2 end end local function assert_not_eq(wanted, real, msg) if wanted == real then error(msg or &amp;#34;error&amp;#34;, 2) end end function tb:test_geturl() assert_eq(&amp;#34;/unittest&amp;#34;, ngx.var.uri, &amp;#34;the unittest url changed&amp;#34;) end function tb:run_unittest() tb:run() end return tb  如上有一个很有意思的地方，error(msg or &amp;quot;error&amp;quot;, 2),其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号） 性能测试 代码覆盖率 API测试等，都可以去OpenResty最佳实践中找，配置很简单。  远程调试 OpenResty  对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。 此调试方法适用于 win linux osx 先贴这里用到的luaIDE地址：ZeroBraneStudio 如下为安装步骤： 下载这个项目，ZeroBraneStudio，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】 启动ZBS，Project -&amp;gt; Start Debugger Server 复制/lualibs/mobdebug/mobdebug.lua -&amp;gt; nginx lua path, 复制/lualibs/socket.lua -&amp;gt; nginx lua path， 复制/bin/clibs/socket/core -&amp;gt; socket设为nginx lua cpath（调试时候，使用的是require(&amp;ldquo;socket.core&amp;rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，） nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可 创建需要调试的lua文件  require(&amp;#39;mobdebug&amp;#39;).start(&amp;#39;192.168.1.22&amp;#39;) local name = ngx.var.arg_name or &amp;#34;Anonymous&amp;#34; ngx.say(&amp;#34;Hello, &amp;#34;, name, &amp;#34;!&amp;#34;) ngx.say(&amp;#34;Done debugging.&amp;#34;) require(&amp;#39;mobdebug&amp;#39;).done() 注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）
+ 在ide中打开需要调试的如上lua文件 Project -&amp;gt; Project Directory -&amp;gt; Set From Current File。 此时，打开浏览器，访问需要此文件处理的链接 此时开始调试  注：在最下侧有Remote console，在这里可以执行任何ngx lua语句 如上流程没有截图，或者没有说清楚，可以来这里  nginx一些技巧  看我配置的nginx.conf  lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;  我的笔记  资料  章亦春 OpenResty OpenResty最佳实践 Lua 5.1 参考手册 Lua 5.3 参考手册 云风 github awesome-lua awesome-resty Nginx-Lua-OpenResty-ResourcesA collection of resources covering Nginx, Nginx &#43; Lua, OpenResty and Tengine </content>
+    </entry>
+    
+     <entry>
+        <title>微服务设计笔记 脑图</title>
+        <url>/post/architecture/microservicedesign/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Architecture</tag><tag>微服务</tag><tag>Distributed</tag>
+        </tags>
+        <content type="html"> 读《微服务设计》，制作的脑图
+
+脑图如下：  脑图地址 </content>
+    </entry>
+    
+     <entry>
+        <title>Spring Beans的装配规则总结</title>
+        <url>/post/java/spring/beans/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Spring</tag><tag>SSM</tag>
+        </tags>
+        <content type="html"> 文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。
+
+目录  手动装配  使用@Bean  自动装配 使用@ComponentScan 自动装配的歧义性 条件生效 Bean profile bean作用域  手动装配 手动装配可以通过声明xml文件和java配置文件两种手段。在这两种方式中，更加推荐使用java配置的方式。两种配置不是相互替代的关系，一般将业务相关的配置放到java配置中，对于非业务，如数据库等，可以放到xml中。 通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。@Bean(name= {&amp;ldquo;sayAndPlayServiceNewName&amp;rdquo;, &amp;ldquo;sayAndPlayService&amp;rdquo;})
+public interface SayAndPlayService { String say(); String play(); } public class PeopleSayAndPlayServiceImpl implements SayAndPlayService { @Override public String say() { return &amp;#34;People Service implements say.&amp;#34;; } @Override public String play() { return &amp;#34;People Service implements play.&amp;#34;; } } @Configuration public class SimpleManualwireConfig { @Bean public SayAndPlayService sayAndPlayService() { return new PeopleSayAndPlayServiceImpl(); } } @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleManualwireConfig.class}) public class SimpleBeanManualwireTest { @Autowired private SayAndPlayService service; @Test public void testTestOneAutowiredService() { Assert.assertEquals(&amp;#34;People Service implements say.&amp;#34;, service.say()); } @Test public void testAnnotationConfigAppContext() { ApplicationContext context = new AnnotationConfigApplicationContext(org.exfly.demo.config.SimpleManualwireConfig.class); SayAndPlayService service = (SayAndPlayService) context.getBean(&amp;#34;sayAndPlayService&amp;#34;); Assert.assertEquals(&amp;#34;People Service implements say.&amp;#34;, service.say()); } } 自动装配 使用@ComponentScan可以自动扫描，@ComponentScan告诉Spring 哪个packages 的用注解标识的类 会被spring自动扫描并且装入bean容器。自动扫描，会扫描相应包以及子包，并为所有bean生成name，name命名规则为其类首字母变小写，如interface UserService被唯一的UserServiceImpl实现，则经过扫描，bean被声明为name为userServiceImpl。如果接口被多各类实现，需要转到下文消除歧义部分进行了解。
+public interface SpeakService { String speak(); } @Service public class PeopleSpeakServiceImpl implements SpeakService { @Override public String speak() { return &amp;#34;People speak&amp;#34;; } } @Configuration @ComponentScan(basePackageClasses={org.exfly.demo.service.SpeakService.class}) public class SimpleConfigScanConfig {} @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleManualwireConfig.class}) public class SimpleBeanManualwireTest { @Test public void testAnnotationConfigAppContextAutoScan() { ApplicationContext context = new AnnotationConfigApplicationContext(org.exfly.demo.config.SimpleConfigScanConfig.class); SpeakService service = (SpeakService) context.getBean(&amp;#34;peopleSpeakServiceImpl&amp;#34;); Assert.assertEquals(&amp;#34;People speak&amp;#34;, service.speak()); } } //如果希望使用@Autowired自动装配， @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleConfigScanConfig.class}) public class SimpleAutoScanTest { @Autowired //根据类型进行自动注入 	private SpeakService sservice; @Test public void testAnnotationConfigAppContextAutoScanAutoWire() { Assert.assertEquals(&amp;#34;People speak&amp;#34;, sservice.speak()); } } @Autowired 可以在属性、构造方法、set函数中进行自动注入
+消除歧义 通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。如果使用@Bean(name= {&amp;ldquo;sayAndPlayServiceNewName&amp;rdquo;, &amp;ldquo;sayAndPlayService&amp;rdquo;})对bean进行命名，可以用不同的名字取用（在@Autowired处再加一个@Qualifier(&amp;ldquo;sayAndPlayServiceNewName&amp;rdquo;)）; 如果使用@ComponentScan，相应的Bean定义需要使用Component等进行注解，同时使用@Qualifier(&amp;ldquo;BeanId&amp;rdquo;)限定符，如下
+@Configuration public class SimpleManualwireConfig { @Bean(name={&amp;#34;sayAndPlayServiceNewName&amp;#34;, &amp;#34;sayAndPlayService&amp;#34;}) public SayAndPlayService sayAndPlayService() { return new PeopleSayAndPlayServiceImpl(); }	} @Service @Qualifier(&amp;#34;peopleSayServ&amp;#34;) public class PeopleSayServiceImpl implements SayService {} //or @Service(&amp;#34;peopleSayServ&amp;#34;) public class PeopleSayServiceImpl implements SayService {} //如何使用 @Autowired @Qualifier(&amp;#34;peopleSayServ&amp;#34;) SayService service; 条件生效 如下的解释：在当前上下文中，如果Conditional注解中的MagitExistsCondition.matches方法返回true，则当前bean：magicBean生效。@Profile和springboot自动配置都是基于此种原理实现的。
+@Bean @Conditional(MagitExistsCondition.class) public MagicBean magicBean(){ return new MagitBean(); } public class MagitExistsCondition implements Condition { boolean matches(ConditionContext ctxt, AnnotatedTypeMetadat metadate){ Environment env = ctxt.getEnvironment(); return env.containsProperty(&amp;#34;magic&amp;#34;); } } @Profile bean作用域  Singleton 默认 只创建一个实例 Prototype 每次创建新的实例 Session 每个会话创建一个实例 Request 每个请求创建一个实例  使用@Scope进行配置即可
+@Component @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) public class Notepad{} 运行时值注入 以后补充
+其他 项目代码
+</content>
+    </entry>
+    
+     <entry>
+        <title>Collections知识整理</title>
+        <url>/post/java/collectionslearn/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Java</tag>
+        </tags>
+        <content type="html"> 文章简介：学Java Collections集合，对其中一些知识进行整理
+
+Collections结构 使用例子 Iterator public void testIterator(){ //创建一个集合  Collection books = new HashSet(); books.add(&amp;#34;轻量级J2EE企业应用实战&amp;#34;); books.add(&amp;#34;Struts2权威指南&amp;#34;); books.add(&amp;#34;基于J2EE的Ajax宝典&amp;#34;); //获取books集合对应的迭代器  Iterator&amp;lt;String&amp;gt; it = books.iterator(); while(it.hasNext()) { String book = it.next(); System.out.println(book); if (book.equals(&amp;#34;Struts2权威指南&amp;#34;)) { it.remove(); //使用Iterator迭代过程中，不可修改集合元素,下面代码引发异常  //books.remove(book);  } //对book变量赋值，不会改变集合元素本身  book = &amp;#34;测试字符串&amp;#34;; } System.out.println(books); } List 实现List接口的常用类有LinkedList，ArrayList
+List&amp;lt;String&amp;gt; list = new LinkedList&amp;lt;&amp;gt;(); Set Set接口有以下几种实现：
+ HashSet : 为快速查找设计的Set，主要的特点是：不能存放重复元素，而且采用散列的存储方法，所以没有顺序。这里所说的没有顺序是指元素插入的顺序与输出的顺序不一致。 TreeSet : 保存次序的Set, 底层为树结构。使用它可以从Set中提取有序的序列。 LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。  Set&amp;lt;String&amp;gt; hs = new HashSet&amp;lt;&amp;gt;(); Map Map接口有以下几种实现： HashMap、LinkedHashMap、HashTable和TreeMap
+Map&amp;lt;String, String&amp;gt; m1 = new HashMap&amp;lt;&amp;gt;(); m1.put(&amp;#34;Zara&amp;#34;, &amp;#34;8&amp;#34;); m1.get(&amp;#34;Zara&amp;#34;); // 8 m1.containsKey(&amp;#34;Zara&amp;#34;); // true  Java8的HashMap详解（存储结构，功能实现，扩容优化，线程安全，遍历方法）  Queue Queue&amp;lt;String&amp;gt; queue = new LinkedList&amp;lt;String&amp;gt;(); //添加元素 queue.offer(&amp;#34;a&amp;#34;); queue.offer(&amp;#34;b&amp;#34;); queue.offer(&amp;#34;c&amp;#34;); queue.offer(&amp;#34;d&amp;#34;); queue.offer(&amp;#34;e&amp;#34;); for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;poll=&amp;#34;&#43;queue.poll()); //返回第一个元素，并在队列中删除 for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;element=&amp;#34;&#43;queue.element()); //返回第一个元素 for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;peek=&amp;#34;&#43;queue.peek()); //返回第一个元素 for(String q : queue){ System.out.println(q); } /* a b c d e === poll=a b c d e === element=b b c d e === peek=b b c d e */ 转成线程安全 List&amp;lt;String&amp;gt; list = Collections.synchronizedList(new LinkedList&amp;lt;&amp;gt;()); 资源  官方 Collections Api reference Java集合框架面试题 比较细致的讲解 面试整理-Java综合高级篇（吐血整理） 最全的BAT大厂面试题整理 </content>
+    </entry>
+    
+     <entry>
+        <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐</title>
+        <url>/post/tools/wox_everything/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>工具</tag>
+        </tags>
+        <content type="html"> 文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt&#43;空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。
+
+软件准备  everything wox  介绍一些软件的特性  直接使用搜索引擎搜索 可以搜索软件，直接回车即可运行 搜索文件、文件夹，回车后使用系统默认软件打开 配置系统命令，可以直接运行(类似Win&#43;R) 通过插件可以实现单词翻译等功能  安装方法 链接中有具体的使用方法。我更喜欢绿色软件，下载下来直接可以使用。
+安装之后 看一下使用效果： 引用  Wox一款国产开源的快捷启动器辅助工具神器 具体怎么配置可以看这个 wox程序开源地址 </content>
+    </entry>
+    
+     <entry>
+        <title>使用gensim训练word2vec模型--中文维基百科语料</title>
+        <url>/post/algorithm/wiki_zh_practice_word2vec/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> 文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程
+
+准备  中文维基百科预料：zhwiki-latest-pages-articles.xml.bz2 python3 wiki_zh_word2vec 繁体转简体：opencc一定要下*-win32.7z,win64的在我电脑上无法运行。如果使用我的wiki_zh_word2vec,则项目中包含可以直接使用的opencc  TODO 依赖准备  下载中文维基百科预料 git clone https://github.com/ExFly/wiki_zh_word2vec.git 将zhwiki-latest-pages-articles.xml.bz2放到build文件夹下 cd path/to/wiki_zh_word2vec pip install pipenv pipenv install &amp;ndash;dev  将XML的Wiki数据转换为text格式  pipenv run python 1_process.py build/zhwiki-latest-pages-articles.xml.bz2 build/wiki.zh.txt  31分钟运行完成282855篇文章，得到一个931M的txt文件
+中文繁体替换成简体  opencc-1.0.1-win32/opencc -i build/wiki.zh.txt -o build/wiki.zh.simp.txt -c opencc-1.0.1-win32/t2s.json  大约使用了15分钟
+结巴分词  pipenv run python 2_jieba_participle.py  大约使用了30分钟
+Word2Vec模型训练  pipenv run python 3_train_word2vec_model.py  大约使用了30分钟，且全程cpu使用率达到90%&#43;
+模型测试  pipenv run python 4_model_match.py  d:\Project\wiki_zh_word2vec(develop) λ pipenv run python 4_model_match.py 国际足球 0.5256255865097046 足球队 0.5234458446502686 篮球 0.5108680725097656 足球运动 0.5033905506134033 国家足球队 0.494105726480484 足球比赛 0.4919792115688324 男子篮球 0.48382389545440674 足球联赛 0.4837716817855835 体育 0.4835757911205292 football 0.47945135831832886 查看结果 可以使用linux的head或者tail命令查看运行的结果。 * head -n 100 wiki.zh.simp.txt &amp;gt; wiki.zh.simp_head_100.txt,直接查看wiki.zh.simp_head_100.txt即可 * 没有head命令，可以安装gow，或者直接下载cmder,进入就可以使用head命令了
+结果  至此，使用python对中文wiki语料的词向量建模就全部结束了，wiki.zh.text.vector中是每个词对应的词向量，可以在此基础上作文本特征的提取以及分类。所有代码都已上传至本人GitHub中，欢迎指教！ 感谢AimeeLee77,其代码为Python2，我的项目exfly/wiki_zh_word2vec已经完全迁移到python3,并向AimeeLee77提交了pull request wiki_zh_word2vec </content>
+    </entry>
+    
+     <entry>
+        <title>2017年终总结，未来规划</title>
+        <url>/post/diary/2018.02.01-2017-holiday-summary/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>总结</tag>
+        </tags>
+        <content type="html"> 对2017年全年的总结，并为未来做一些安排。
+
+年前一天，依旧忙碌 往事 如今 未来 以后该怎么如何进步？
+其他 继续学习，共勉！
+</content>
+    </entry>
+    
+     <entry>
+        <title>Vim学习</title>
+        <url>/post/tools/vim/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>linux</tag><tag>工具</tag>
+        </tags>
+        <content type="html"> 学习vim基本使用的笔记
+
+引言 想学一下Vim的键位，结合sublime text和vscode的vim插件加快编码速度编码
+正文 资源 使用方法  Vim 简体中文  cheatsheet  vim_cheat_sheet vim_表格形式 vim_脑图形式 vim_中文形式    </content>
+    </entry>
+    
+     <entry>
+        <title>个人密码管理&#43;Android装机指南</title>
+        <url>/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>安全</tag>
+        </tags>
+        <content type="html"> 分享自己的密码管理体系:keepass&#43;坚果云&#43;keepass2Android，以及使用容器，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。
+
+个人密码管理 准备  win:keepass 自助云存储:坚果云账号 Android:keepass2Android  开始 工具准备好就开始吧，按如下步骤：
+ 电脑端keepass本地建一个密码文件（需要一个主密码，以后可以修改，主密码一定要复杂），后上传到坚果云里，（这时候就可以删除本地的密码文件了）； 坚果云中配置第三方应用授权。（坚果云记得开二步验证，这样每次登陆需要微信接收验证码才可以登陆，更安全一些）； 电脑keepass打开url，以及Android手机keepass2Android打开url； 完。  具体如何创建请看这个链接， 如我这般建密码维护基本不会出现问题。
+到这里密码管理体系基本完成了。可是对于一个新手机，用好久就会卡，很卡，超级卡，为了解决这个问题，就要耍一些小手段，具体如下。
+Android装机指南 准备  容器开源产品，基于virtualapp框架，有点像Docker；又是双开工具，他自己有自己的运行环境；又可以说是Android下的免安装应用的运行平台。之后会告诉你怎么用，超级棒 酷安应用商店 apkpure.com下载中国下载不了的应用，有一个没被墙的网址，下载好app后，app不需要vpn，懂了没？域名没找到，懒得找了。google商店里所有的应用这里都可以下，自己想像吧  开始 先截个图，看一看 最屌炸天的是，我把淘宝、王者荣耀和吃鸡都放到容器了，而且完全没有性能损失
+基本思路：把必须装到手机里的（比如支付宝，微信等）装到手机里，非必需（比如淘宝，百度云等），都装容器里。
+类比真机，软件需要有一个执行环境和临时文件，容器里的软件文件都存到了/virtual中的。
+使用思路：平时把可以放到容器中的软件放到里边，不用的时候直接关闭容器，容器里所有的软件会关闭。这样就防止软件的后台自动启动，浪费内存，手机越用越慢的现象。
+具体看我平时常用的一些软件，我把他们分为主机（就是安装到真机中）和容器中的。地址分别如下
+ 真机 容器  最后 有什么问题请直接在我的酷安@我，或者邮箱我：exflycat@gmail.com。
+Enjoy!!!
+</content>
+    </entry>
+    
+     <entry>
+        <title>oneplus one 刷Kali Linux NetHunter</title>
+        <url>/post/sercurity/2017.09.17-black-phone/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>安全</tag><tag>kali</tag><tag>刷机</tag>
+        </tags>
+        <content type="html"> 看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
+
+一 使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如二清、三清、四清等等。如下一步一步的说如何刷。
+二 刷机四步走 第一步， 仔细阅读官方Wiki 仔细研读仔细阅读官方Wiki，可以减少刷机过程中各种坑。
+第二步， 刷TWRP-oneplus1 一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&amp;rdquo;预配置&amp;rdquo;在 Windows 下，也可以参考&amp;rdquo;Bacon Root Toolkit&amp;ldquo;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。
+第三步，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali kernel-nethunter-[device]-[os]-*.zip nethunter-generic-[arch]-kalifs-*.zip 对于oneplus1手机来说，其对应的[arch]为armhf。 随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。
+第四步，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。 三 如果安装Kali Linux NetHunter,需要下载的文件如下：
+ CM13.0 TWRP：第三方recovery brt：oneplus的解锁、root工具 Kali Linux NetHunter：如果刷其他系统，可能需要的文件如下： TWRP：第三方recovery lineageos rom：cm的重生 supersu：root工具  四 Enjoy！
+最后 安装了Kali Linux NetHunter，手机便有了完整的python环境。剩下的，你懂的。
+</content>
+    </entry>
+    
+     <entry>
+        <title>各种排序算法实现方法</title>
+        <url>/post/algorithm/sort/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>算法</tag>
+        </tags>
+        <content type="html"> 总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。
+
+Source  排序算法比较-wiki visualgo 排序算法的动态图 排序算法复杂度   冒泡排序 伪代码 function bubble_sort (array, length) { var i, j; for(i from 0 to length-1){ for(j from 0 to length-1-i){ if (array[j] &amp;gt; array[j&#43;1]) swap(array[j], array[j&#43;1]) } } } 函数 冒泡排序 输入 一个数组名称为array 其长度为length i 从 0 到 (length - 1) j 从 0 到 (length - 1 - i) 如果 array[j] &amp;gt; array[j &#43; 1] 交换 array[j] 和 array[j &#43; 1] 的值 如果结束 j循环结束 i循环结束 函数结束  python实现 def bubble(List): for j in range(len(List)-1,0,-1): for i in range(0, j): if List[i] &amp;gt; List[i&#43;1]: List[i], List[i&#43;1] = List[i&#43;1], List[i] return List 插入排序 python实现 def insert_sort(lst): n=len(lst) if n==1: return lst for i in range(1,n): for j in range(i,0,-1): if lst[j] &amp;lt; lst[j-1]: lst[j], lst[j-1] = lst[j-1], lst[j] return lst 快速排序 python实现 def quicksort(a): if len(a) == 1: return a[0] if len(a) &amp;lt; 1: return 0 return quicksort([x for x in a[1:] if x &amp;lt; a[0]]), [a[0]], quicksort([x for x in a[1:] if x &amp;gt; a[0]]) C语言实现 int partition(int arr[], int low, int high){ int key; key = arr[low]; while(low &amp;lt; high){ while(low &amp;lt; high &amp;amp;&amp;amp; arr[high]&amp;gt;= key ) high--; if(low &amp;lt; high) arr[low&#43;&#43;] = arr[high]; while( low &amp;lt; high &amp;amp;&amp;amp; arr[low]&amp;lt;=key ) low&#43;&#43;; if(low &amp;lt; high) arr[high--] = arr[low]; } arr[low] = key; return low; } void quick_sort(int arr[], int start, int end){ int pos; if (start &amp;lt; end){ pos = partition(arr, start, end); quick_sort(arr,start,pos-1); quick_sort(arr,pos&#43;1,end); } return; } 归并排序 python实现 from collections import deque def merge_sort(lst): if len(lst) &amp;lt;= 1: return lst def merge(left, right): merged,left,right = deque(),deque(left),deque(right) while left and right: merged.append(left.popleft() if left[0] &amp;lt;= right[0] else right.popleft()) # deque popleft is also O(1) merged.extend(right if right else left) return list(merged) middle = int(len(lst) // 2) left = merge_sort(lst[:middle]) right = merge_sort(lst[middle:]) return merge(left, right) 计数排序 C实现 void counting_sort(int *ini_arr, int *sorted_arr, int n) { int *count_arr = (int *) malloc(sizeof(int) * 100); int i, j, k; for (k = 0; k &amp;lt; 100; k&#43;&#43;) count_arr[k] = 0; for (i = 0; i &amp;lt; n; i&#43;&#43;) count_arr[ini_arr[i]]&#43;&#43;; for (k = 1; k &amp;lt; 100; k&#43;&#43;) count_arr[k] &#43;= count_arr[k - 1]; for (j = n; j &amp;gt; 0; j--) sorted_arr[--count_arr[ini_arr[j - 1]]] = ini_arr[j - 1]; free(count_arr); } 二分查找 int binary_search(int array[],int n,int value){ int left=0; int right=n-1; while (left&amp;lt;=right){ int middle=left &#43; ((right-left)&amp;gt;&amp;gt;1); //防止溢出，移位也更高效。同时，每次循环都需要更新。 if (array[middle] &amp;gt; value) { right =middle-1; } else if(array[middle] &amp;lt; value) { left=middle&#43;1; } else { return middle; } } return -1; } </content>
+    </entry>
+    
+     <entry>
+        <title>2016年终总结，未来规划</title>
+        <url>/post/diary/2017.01.01-2016-holiday-summary/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>总结</tag>
+        </tags>
+        <content type="html"> 对2016年全年的总结，并为未来做一些安排。
+
+年前一天，依旧忙碌 往事 14年十月至今天，从0到1的转变。 开始的时候，不断的学习各种软件的使用，像什么PS之类的东西玩了个遍，总感觉这些东西都是别人做出来的东西，便生出自己也搞出一些想这类软件。然而继续的瞎搞。 不知什么时候，知道通过学习c可以做出来好多有意思的小玩意，比如贪吃蛇，便开始学习高级语言。 之后，知道原来学习计算机，需要系统的学习计算机的理论知识，从此入坑，一发不可收拾。 网易云课堂是自己计算机启蒙课程。跟着上边的课程学了好久，懂了计算机需要如何入门。学了导论、计组、C语言、算法和数据结构、操作系统、计算机网络、数据库原理等等。自己找视频看了Linux，读了鸟哥的linux书，甚至直接吧自己的电脑系统换成了Ubuntu/linuxmint，真正体会到Linux该如何使用。 假期用Flask完成了动态网站，部署到服务器里一段时间，后来因为网站太简单，给撤了。 后来深入web，用了两个月的时间，把前端学了一下，同时完成了自己第一个网页。学了Tornado,重构了几次Project Generator，也算初步掌握全栈开发。同学科研训练，找了一个Tornado开源项目，改成了论坛系统，还帮这个项目修了几个bug。 学了些东西。
+如今 如今，趁着假期，也是准备考研前的最后一个可以自由支配的假期，准备了些东西回来学。每天完成一个汇编的项目，( 假期汇编 )。准备好好学学数据结构和算法导论.
+越努力越迷茫 越努力，知道的越多，不知到的更多。为了选择自己的技术方向，越接触越不知道该学什么，越着急，越急躁。 同时还有一些其他的事让我烦心。慢慢来吧，急不来。
+未来 以后该怎么如何进步？
+其他 继续学习，共勉！
+</content>
+    </entry>
+    
+     <entry>
+        <title>Linux0.11源码学习环境配置与相关资源汇总</title>
+        <url>/post/linux/linux0.11-read-code/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>Linux</tag><tag>资源</tag>
+        </tags>
+        <content type="html"> 记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
+
+linux history  linux 0.11 linux 0.95 实现虚拟文件系统 linux 0.96 实现网络接口  linux linux采用分段&#43;分页机制结合管理内存
+linux 调试方法  linux0.11 调试方法 ``` gdb tools/system target remote localhost:1234  gdb常用命令 b: 下中斷點 info b :u 列出目前中断点，也可简写成&amp;rdquo;i b&amp;rdquo; continue&amp;copy; 继续执行直到下一个中断点或结束 list(l): 列出目前上下文 step(s): 单步 (会进入 funciton) next(n) : 单步 (不会进入 funciton) until(u) 跳离一个 while for 循环 print(p): 显示某变量，如 p str info register(i r) : 显示 CPU 的 register
+GDB 打印出内存中的內容，格式為 x/nyz，其中 n: 要印出的數量 y: 显示的格式，可为C( char), d(整数), x(hex) z: 单位，可为 b(byte), h(16bit), w(32bit)
+cgdb	可显示为上半部分为代码，下半部分命令部分 cgdb tools/system* linux-0.11启动过程描述 * Linux0.11启动过程 * 80386保护模式的本质 * linux虚拟地址到线性地址的转化 * Linux内存寻址之分段机制-linux回避了分段机制 * Linux内存寻址之分页机制/ * 逻辑地址、线性地址、物理地址和虚拟地址 * Intel 80386 程序员参考手册 * linux0.11内核之文件系统 ```
+source 80386内存访问公式 32位线性地址 = 段基地址(32位) &#43; 段内偏移(32位)
+48bit = 16 &#43; 32 16位地段选择子 &#43; 32虚拟地址 -&amp;gt; 32线性地址 32线性地址 -&amp;gt; 物理地址
+</content>
+    </entry>
+    
+     <entry>
+        <title>Posts</title>
+        <url>/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
+    </entry>
+    
+</search>

@@ -5,8 +5,7 @@
     <link>/</link>
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
-    <copyright>©2017 by Exfly. All rights reserved.</copyright>
+    <language>zh-CN</language>
     <lastBuildDate>Sat, 16 Sep 2017 15:41:18 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
@@ -27,8 +26,7 @@
       <pubDate>Sat, 16 Sep 2017 14:38:23 +0800</pubDate>
       
       <guid>/about/</guid>
-      <description>ExFly Keep It Simple &amp;amp; Stupid.
-Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析知识，了解Linux基本的服务器维护，了解数据库的基本维护，了解基本的网络安全，坚信技术改变世界，希望在计算机行业有一席之地。</description>
+      <description>ExFly Keep It Simple &amp;amp; Stupid. Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析</description>
     </item>
     
     <item>

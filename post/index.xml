@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 04 Feb 2019 13:41:19 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 21 Apr 2019 12:56:32 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Contribute to Opensource</title>
+      <link>/post/contribute-to-opensource/</link>
+      <pubDate>Sun, 21 Apr 2019 12:56:32 +0800</pubDate>
+      
+      <guid>/post/contribute-to-opensource/</guid>
+      <description>&lt;p&gt;文章简介：如何参与开源项目。在这里分享一些思路和开源资源。&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Openapi</title>

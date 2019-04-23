@@ -2,6 +2,26 @@
 <search>
     
      <entry>
+        <title>docker init</title>
+        <url>/post/docker/init/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>docker</tag><tag>container</tag>
+        </tags>
+        <content type="html"> 文章简介：介绍 docker 开发环境搭建
+
+docker 官方的贡献引导: moby/docs/contributing/README.md
+步骤 moby/docs/contributing/set-up-dev-env.md完整的描述了开发环境如何搭建
+开发环境搭建  因为网络问题，需要尽快的提速安装 dev 环境，需要配置 Dockerfile 中的配置 APT_MIRROR=mirrors.163.com 运行make --just-print BIND_DIR=. shell简单的看一下 make 都做了那些事情  运行make BIND_DIR=. shell开始安装开发环境
+  编译 上一节已经进入 docker 中，可以开始编译 dockerd
+ hack/make.sh binary make installcopy binary to container&amp;rsquo;s /usr/local/bin/ dockerd -D &amp;amp;  日常工作流  修改代码 hack/make.sh binary install-binary  调试 调试 makefile make --just-print BIND_DIR=. shell
+调试 shell bash -x hack/make.sh binary
+</content>
+    </entry>
+    
+     <entry>
         <title>Contribute to Opensource</title>
         <url>/post/contribute-to-opensource/</url>
         <categories>

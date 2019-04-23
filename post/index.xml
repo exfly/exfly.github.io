@@ -6,10 +6,21 @@
     <description>Recent content in Posts on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 21 Apr 2019 12:56:32 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 Apr 2019 12:48:28 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>docker init</title>
+      <link>/post/docker/init/</link>
+      <pubDate>Tue, 23 Apr 2019 12:48:28 +0800</pubDate>
+      
+      <guid>/post/docker/init/</guid>
+      <description>&lt;p&gt;文章简介：介绍 docker 开发环境搭建&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Contribute to Opensource</title>

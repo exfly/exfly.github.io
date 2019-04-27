@@ -137,7 +137,7 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">309 字 ~1分钟</span>
+<span class="leancloud-visitors-count">756 字 ~2分钟</span>
 </span>
       </div>
     </header>
@@ -171,6 +171,113 @@
 <li>当需要限制 Docker 容器运行资源或执行用户指令等操作时，则通过 execdriver 来完成。</li>
 <li>libcontainer 是一项独立的容器管理包，networkdriver 以及 execdriver 都是通过 libcontainer 来实现具体对容器进行的操作。</li>
 </ul>
+
+<h2 id="docker-run-执行流程分析"><code>docker run</code>执行流程分析</h2>
+
+<p>整体执行流程：</p>
+
+<p>代码 <code>lanything/code-read</code> forked <code>moby/moby</code>, <code>lanything/cli</code> forked <code>docker/cli</code></p>
+
+<ul>
+<li><code>docker/cli</code> cli/command/container/run.go#runContainer</li>
+<li><code>docker/cli</code> cli/command/container/create.go#createContainer 调用 <code>ContainerCreate</code></li>
+<li><code>moby/moby</code> api/server/router/container/container.go#initRoutes.postContainersCreate</li>
+<li><code>moby/moby</code> api/server/router/container/container_routes.go#postContainersCreate</li>
+<li><code>moby/moby</code> daemon/create.go#ContainerCreate</li>
+</ul>
+
+<h3 id="containercreate">containerCreate</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">daemon</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Daemon</span>) <span style="color:#a6e22e">containerCreate</span>(<span style="color:#a6e22e">opts</span> <span style="color:#a6e22e">createOpts</span>) (<span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">start</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>()
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Config</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{}, <span style="color:#a6e22e">errdefs</span>.<span style="color:#a6e22e">InvalidParameter</span>(<span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;Config cannot be empty in order to create a container&#34;</span>))
+	}
+
+	<span style="color:#a6e22e">os</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">GOOS</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Config</span>.<span style="color:#a6e22e">Image</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> {
+		<span style="color:#a6e22e">img</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">imageService</span>.<span style="color:#a6e22e">GetImage</span>(<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Config</span>.<span style="color:#a6e22e">Image</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#a6e22e">os</span> = <span style="color:#a6e22e">img</span>.<span style="color:#a6e22e">OS</span>
+		}
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#75715e">// This mean scratch. On Windows, we can safely assume that this is a linux
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// container. On other platforms, it&#39;s the host OS (which it already is)
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">GOOS</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;windows&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">system</span>.<span style="color:#a6e22e">LCOWSupported</span>() {
+			<span style="color:#a6e22e">os</span> = <span style="color:#e6db74">&#34;linux&#34;</span>
+		}
+	}
+
+	<span style="color:#a6e22e">warnings</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">verifyContainerSettings</span>(<span style="color:#a6e22e">os</span>, <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">HostConfig</span>, <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">Config</span>, <span style="color:#66d9ef">false</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#a6e22e">errdefs</span>.<span style="color:#a6e22e">InvalidParameter</span>(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">verifyNetworkingConfig</span>(<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">NetworkingConfig</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#a6e22e">errdefs</span>.<span style="color:#a6e22e">InvalidParameter</span>(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">HostConfig</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">HostConfig</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">HostConfig</span>{}
+	}
+	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">adaptContainerSettings</span>(<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">HostConfig</span>, <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">params</span>.<span style="color:#a6e22e">AdjustCPUShares</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#a6e22e">errdefs</span>.<span style="color:#a6e22e">InvalidParameter</span>(<span style="color:#a6e22e">err</span>)
+	}
+
+	<span style="color:#a6e22e">container</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">create</span>(<span style="color:#a6e22e">opts</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#a6e22e">err</span>
+	}
+	<span style="color:#a6e22e">containerActions</span>.<span style="color:#a6e22e">WithValues</span>(<span style="color:#e6db74">&#34;create&#34;</span>).<span style="color:#a6e22e">UpdateSince</span>(<span style="color:#a6e22e">start</span>)
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">warnings</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">warnings</span> = make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">0</span>) <span style="color:#75715e">// Create an empty slice to avoid https://github.com/moby/moby/issues/38222
+</span><span style="color:#75715e"></span>	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">ID</span>, <span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#66d9ef">nil</span>
+}</code></pre></div>
+<h3 id="getimages">GetImages</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// GetImage returns an image corresponding to the image referred to by refOrID.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">i</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ImageService</span>) <span style="color:#a6e22e">GetImage</span>(<span style="color:#a6e22e">refOrID</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Image</span>, <span style="color:#66d9ef">error</span>) {
+	<span style="color:#a6e22e">ref</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reference</span>.<span style="color:#a6e22e">ParseAnyReference</span>(<span style="color:#a6e22e">refOrID</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">errdefs</span>.<span style="color:#a6e22e">InvalidParameter</span>(<span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#a6e22e">namedRef</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ref</span>.(<span style="color:#a6e22e">reference</span>.<span style="color:#a6e22e">Named</span>)
+	<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+		<span style="color:#a6e22e">digested</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ref</span>.(<span style="color:#a6e22e">reference</span>.<span style="color:#a6e22e">Digested</span>)
+		<span style="color:#66d9ef">if</span> !<span style="color:#a6e22e">ok</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrImageDoesNotExist</span>{<span style="color:#a6e22e">ref</span>}
+		}
+		<span style="color:#a6e22e">id</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">IDFromDigest</span>(<span style="color:#a6e22e">digested</span>.<span style="color:#a6e22e">Digest</span>())
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">img</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">imageStore</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">id</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">img</span>, <span style="color:#66d9ef">nil</span>
+		}
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrImageDoesNotExist</span>{<span style="color:#a6e22e">ref</span>}
+	}
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">digest</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">referenceStore</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">namedRef</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#75715e">// Search the image stores to get the operating system, defaulting to host OS.
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">id</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">IDFromDigest</span>(<span style="color:#a6e22e">digest</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">img</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">imageStore</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">id</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">img</span>, <span style="color:#66d9ef">nil</span>
+		}
+	}
+
+	<span style="color:#75715e">// Search based on ID
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">imageStore</span>.<span style="color:#a6e22e">Search</span>(<span style="color:#a6e22e">refOrID</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">img</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.<span style="color:#a6e22e">imageStore</span>.<span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">id</span>)
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrImageDoesNotExist</span>{<span style="color:#a6e22e">ref</span>}
+		}
+		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">img</span>, <span style="color:#66d9ef">nil</span>
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrImageDoesNotExist</span>{<span style="color:#a6e22e">ref</span>}
+}</code></pre></div>
+<p><code>ImageService.imageStore</code> 在<code>moby</code>daemon/daemon.go#NewDaemon中有设置
+<code>ImageService.imageStore</code> 在<code>moby</code>image/store.go#NewImageStore有初始化</p>
     </div>
     <footer class="post-footer">
      

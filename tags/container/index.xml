@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>docker 源码阅读：开发环境搭建 &#43; docker源码分析</title>
-      <link>/post/docker/init/</link>
+      <title>Docker 源码阅读: 开发环境搭建</title>
+      <link>/post/docker/docker-source-dev-install/</link>
       <pubDate>Tue, 23 Apr 2019 12:48:28 +0800</pubDate>
       
-      <guid>/post/docker/init/</guid>
-      <description>&lt;p&gt;文章简介：介绍 docker 开发环境搭建&lt;/p&gt;
+      <guid>/post/docker/docker-source-dev-install/</guid>
+      <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

@@ -2,23 +2,18 @@
 <search>
     
      <entry>
-        <title>docker源码分析</title>
-        <url>/post/docker/docker-source-code/</url>
+        <title>Docker 源码阅读: Docker Run</title>
+        <url>/post/docker/docker-run/</url>
         <categories>
           
         </categories>
         <tags>
-          
+          <tag>docker</tag><tag>源码</tag>
         </tags>
-        <content type="html"> 文章简介：docker代码结构，docker run代码分析
+        <content type="html"> 文章简介：通过分析 docker run 命令，理解 Docker 的工作原理
 
-docker 全局架构 模块 DockerClient DockerDaemon DockerRegistry Graph Driver libcontainer DockerContainer
-libcontainer 涉及大量 linux 内核特性，包括 namespaces,cgroups,capabilities
-各部分关联 通信方式 tcp://host:port unix://path_to_socket fd://socketfd
-from here
- 用户是使用 Docker Client 与 Docker Daemon 建立通信，并发送请求给后者。 Docker Daemon 作为 Docker 架构中的主体部分，首先提供 Server 的功能使其可以接受 Docker Client 的请求； Engine 执行 Docker 内部的一系列工作，每一项工作都是以一个 Job 的形式的存在。 Job 的运行过程中，当需要容器镜像时，则从 Docker Registry 中下载镜像，并通过镜像管理驱动 graphdriver 将下载镜像以 Graph 的形式存储； 当需要为 Docker 创建网络环境时，通过网络管理驱动 networkdriver 创建并配置 Docker 容器网络环境； 当需要限制 Docker 容器运行资源或执行用户指令等操作时，则通过 execdriver 来完成。 libcontainer 是一项独立的容器管理包，networkdriver 以及 execdriver 都是通过 libcontainer 来实现具体对容器进行的操作。  具体的可以看这里，已经介绍的很清楚。
 docker run执行流程分析 整体执行流程: 从本地镜像中寻找是否存在命令指定镜像，如果存在则正常返回，执行接下来流程。如果不存在镜像，deamon 返回错误，由 cli 重新发起 pull 请求，之后重试。
-总体描述  createContainer ContainerStart  代码 lanything/code-read forked moby/moby, lanything/cli forked docker/cli
+总体描述  createContainer cli 通过 rest 接口请求 dockerd 创建容器，dockerd 设置基础配置后记录创建的容器 ContainerStart cli 通过 rest 接口请求 dockerd 运行容器，dockerd 使用 rpc 链接 containnerd 进行运行容器  代码 lanything/code-read forked moby/moby, lanything/cli forked docker/cli
 createContainer  docker/cli cli/command/container/run.go#NewRunCommand docker/cli cli/command/container/run.go#runContainer  // cli/command/container/create.go#createContainer func createContainer(ctx context.Context, dockerCli command.Cli, containerConfig *containerConfig, opts *createOptions) (*container.ContainerCreateCreatedBody, error) { config := containerConfig.Config hostConfig := containerConfig.HostConfig networkingConfig := containerConfig.NetworkingConfig stderr := dockerCli.Err() warnOnOomKillDisable(*hostConfig, stderr) warnOnLocalhostDNS(*hostConfig, stderr) var ( trustedRef reference.Canonical namedRef reference.Named ) containerIDFile, err := newCIDFile(hostConfig.ContainerIDFile) if err != nil { return nil, err } defer containerIDFile.Close() ref, err := reference.ParseAnyReference(config.Image) if err != nil { return nil, err } if named, ok := ref.(reference.Named); ok { namedRef = reference.TagNameOnly(named) if taggedRef, ok := namedRef.(reference.NamedTagged); ok &amp;amp;&amp;amp; !opts.untrusted { var err error trustedRef, err = image.TrustedReference(ctx, dockerCli, taggedRef, nil) if err != nil { return nil, err } config.Image = reference.FamiliarString(trustedRef) } } //create the container 	response, err := dockerCli.Client().ContainerCreate(ctx, config, hostConfig, networkingConfig, opts.name) //if image not found try to pull it 	if err != nil { if apiclient.IsErrNotFound(err) &amp;amp;&amp;amp; namedRef != nil { fmt.Fprintf(stderr, &amp;#34;Unable to find image &amp;#39;%s&amp;#39; locally\n&amp;#34;, reference.FamiliarString(namedRef)) // we don&amp;#39;t want to write to stdout anything apart from container.ID 	if err := pullImage(ctx, dockerCli, config.Image, opts.platform, stderr); err != nil { return nil, err } if taggedRef, ok := namedRef.(reference.NamedTagged); ok &amp;amp;&amp;amp; trustedRef != nil { if err := image.TagTrusted(ctx, dockerCli, trustedRef, taggedRef); err != nil { return nil, err } } // Retry 	var retryErr error response, retryErr = dockerCli.Client().ContainerCreate(ctx, config, hostConfig, networkingConfig, opts.name) if retryErr != nil { return nil, retryErr } } else { return nil, err } } for _, warning := range response.Warnings { fmt.Fprintf(stderr, &amp;#34;WARNING: %s\n&amp;#34;, warning) } err = containerIDFile.Write(response.ID) return &amp;amp;response, err }  docker/cli cli/command/container/create.go#createContainer 调用 ContainerCreate moby/moby api/server/router/container/container.go#initRoutes.postContainersCreate moby/moby api/server/router/container/container_routes.go#postContainersCreate moby/moby daemon/create.go#ContainerCreate  containerCreate // `moby/moby` daemon/create.go#containerCreate func (daemon *Daemon) containerCreate(opts createOpts) (containertypes.ContainerCreateCreatedBody, error) { start := time.Now() if opts.params.Config == nil { return containertypes.ContainerCreateCreatedBody{}, errdefs.InvalidParameter(errors.New(&amp;#34;Config cannot be empty in order to create a container&amp;#34;)) } os := runtime.GOOS if opts.params.Config.Image != &amp;#34;&amp;#34; { img, err := daemon.imageService.GetImage(opts.params.Config.Image) if err == nil { os = img.OS } } else { // This mean scratch. On Windows, we can safely assume that this is a linux 	// container. On other platforms, it&amp;#39;s the host OS (which it already is) 	if runtime.GOOS == &amp;#34;windows&amp;#34; &amp;amp;&amp;amp; system.LCOWSupported() { os = &amp;#34;linux&amp;#34; } } warnings, err := daemon.verifyContainerSettings(os, opts.params.HostConfig, opts.params.Config, false) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } err = verifyNetworkingConfig(opts.params.NetworkingConfig) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } if opts.params.HostConfig == nil { opts.params.HostConfig = &amp;amp;containertypes.HostConfig{} } err = daemon.adaptContainerSettings(opts.params.HostConfig, opts.params.AdjustCPUShares) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } container, err := daemon.create(opts) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, err } containerActions.WithValues(&amp;#34;create&amp;#34;).UpdateSince(start) if warnings == nil { warnings = make([]string, 0) // Create an empty slice to avoid https://github.com/moby/moby/issues/38222 	} return containertypes.ContainerCreateCreatedBody{ID: container.ID, Warnings: warnings}, nil } GetImages // GetImage returns an image corresponding to the image referred to by refOrID. func (i *ImageService) GetImage(refOrID string) (*image.Image, error) { ref, err := reference.ParseAnyReference(refOrID) if err != nil { return nil, errdefs.InvalidParameter(err) } namedRef, ok := ref.(reference.Named) if !ok { digested, ok := ref.(reference.Digested) if !ok { return nil, ErrImageDoesNotExist{ref} } id := image.IDFromDigest(digested.Digest()) if img, err := i.imageStore.Get(id); err == nil { return img, nil } return nil, ErrImageDoesNotExist{ref} } if digest, err := i.referenceStore.Get(namedRef); err == nil { // Search the image stores to get the operating system, defaulting to host OS. 	id := image.IDFromDigest(digest) if img, err := i.imageStore.Get(id); err == nil { return img, nil } } // Search based on ID 	if id, err := i.imageStore.Search(refOrID); err == nil { img, err := i.imageStore.Get(id) if err != nil { return nil, ErrImageDoesNotExist{ref} } return img, nil } return nil, ErrImageDoesNotExist{ref} } ImageService.imageStore 在mobydaemon/daemon.go#NewDaemon 中有设置 ImageService.imageStore 在mobyimage/store.go#NewImageStore 有初始化
 ContainerStart moby daemon/start.go#ContainerStart
 func (daemon *Daemon) ContainerStart(name string, hostConfig *containertypes.HostConfig, checkpoint string, checkpointDir string) error { if checkpoint != &amp;#34;&amp;#34; &amp;amp;&amp;amp; !daemon.HasExperimental() { return errdefs.InvalidParameter(errors.New(&amp;#34;checkpoint is only supported in experimental mode&amp;#34;)) } container, err := daemon.GetContainer(name) if err != nil { return err } validateState := func() error { container.Lock() defer container.Unlock() if container.Paused { return errdefs.Conflict(errors.New(&amp;#34;cannot start a paused container, try unpause instead&amp;#34;)) } if container.Running { return containerNotModifiedError{running: true} } if container.RemovalInProgress || container.Dead { return errdefs.Conflict(errors.New(&amp;#34;container is marked for removal and cannot be started&amp;#34;)) } return nil } if err := validateState(); err != nil { return err } // Windows does not have the backwards compatibility issue here. 	if runtime.GOOS != &amp;#34;windows&amp;#34; { // This is kept for backward compatibility - hostconfig should be passed when 	// creating a container, not during start. 	if hostConfig != nil { logrus.Warn(&amp;#34;DEPRECATED: Setting host configuration options when the container starts is deprecated and has been removed in Docker 1.12&amp;#34;) oldNetworkMode := container.HostConfig.NetworkMode if err := daemon.setSecurityOptions(container, hostConfig); err != nil { return errdefs.InvalidParameter(err) } if err := daemon.mergeAndVerifyLogConfig(&amp;amp;hostConfig.LogConfig); err != nil { return errdefs.InvalidParameter(err) } if err := daemon.setHostConfig(container, hostConfig); err != nil { return errdefs.InvalidParameter(err) } newNetworkMode := container.HostConfig.NetworkMode if string(oldNetworkMode) != string(newNetworkMode) { // if user has change the network mode on starting, clean up the 	// old networks. It is a deprecated feature and has been removed in Docker 1.12 	container.NetworkSettings.Networks = nil if err := container.CheckpointTo(daemon.containersReplica); err != nil { return errdefs.System(err) } } container.InitDNSHostConfig() } } else { if hostConfig != nil { return errdefs.InvalidParameter(errors.New(&amp;#34;Supplying a hostconfig on start is not supported. It should be supplied on create&amp;#34;)) } } // check if hostConfig is in line with the current system settings. 	// It may happen cgroups are umounted or the like. 	if _, err = daemon.verifyContainerSettings(container.OS, container.HostConfig, nil, false); err != nil { return errdefs.InvalidParameter(err) } // Adapt for old containers in case we have updates in this function and 	// old containers never have chance to call the new function in create stage. 	if hostConfig != nil { if err := daemon.adaptContainerSettings(container.HostConfig, false); err != nil { return errdefs.InvalidParameter(err) } } return daemon.containerStart(container, checkpoint, checkpointDir, true) } moby daemon/start.go#containerStart
@@ -28,13 +23,13 @@ func (daemon *Daemon) ContainerStart(name string, hostConfig *containertypes.Hos
     </entry>
     
      <entry>
-        <title>docker 源码阅读：开发环境搭建 &#43; docker源码分析</title>
-        <url>/post/docker/init/</url>
+        <title>Docker 源码阅读: 开发环境搭建</title>
+        <url>/post/docker/docker-source-dev-install/</url>
         <categories>
           
         </categories>
         <tags>
-          <tag>docker</tag><tag>container</tag>
+          <tag>docker</tag><tag>container</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：介绍 docker 开发环境搭建
 
@@ -45,6 +40,48 @@ docker 官方的贡献引导: moby/docs/contributing/README.md
  hack/make.sh binary make installcopy binary to container&amp;rsquo;s /usr/local/bin/ dockerd -D &amp;amp;  日常工作流  修改代码 hack/make.sh binary install-binary  调试 调试 makefile make --just-print BIND_DIR=. shell
 调试 shell bash -x hack/make.sh binary
 </content>
+    </entry>
+    
+     <entry>
+        <title>Docker 源码阅读: Docker架构介绍</title>
+        <url>/post/docker/docker-architecture/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>docker</tag><tag>源码</tag>
+        </tags>
+        <content type="html"> 文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的
+
+Docker? 我们可以使用 Docker 做什么 快速，一致地交付您的应用程序
+Docker 允许开发人员使用提供应用程序和服务的本地容器在标准化环境中工作，从而简化了开发生命周期。 容器非常适合持续集成和持续交付（CI / CD）工作流程。
+docker 全局架构 CLI 使用 Docker REST API 通过脚本或直接 CLI 命令控制 Docker 守护程序或与 Docker 守护程序交互。 许多其他 Docker 应用程序使用底层 API 和 CLI。
+Docker daemon 创建和管理 Docker 对象，例如 images，containers，networks 和 volumes。
+The Docker daemon Docker daemon（dockerd）监听 Docker API 请求并管理 Docker 对象，例如 images，containers，networks 和 volumes。 Docker daemon 还可以与其他守护程序通信以管理 Docker 服务。
+ Note: 例如 dockerd 通过 rest 接口与 containnerd 进行交互，containerd 与 runc 通过 grpc 进行通信
+ The Docker client Docker 客户端（docker）是许多 Docker 用户与 Docker 交互的主要方式。 当您使用诸如 docker run 之类的命令时，客户端会将这些命令发送到 dockerd，dockerd 将其执行。 docker (CLI) 命令调用 REST 风格的 Docker API。 Docker 客户端可以与多个守护进程通信。
+ Note: docker 可以通过配置环境变量 DOCKER_HOST或者修改配置变量，或者命令行参数的方式连接 dockerd
+ Docker registries Docker registry 存储 Docker 镜像。 Docker Hub 是任何人都可以使用的公共注册中心，Docker 配置为默认在 Docker Hub 上查找 images。 您甚至可以运行自己的私人 registry。 如果您使用 Docker Datacenter（DDC），它包含 Docker Trusted Registry（DTR）。
+ Note: 可以通过配置不同的 Docker registry 作为 images 下载源，比如公司内部搭建 registry 私服，在平时 CI/CD 中提高工作速度。
+ Docker objects 使用 Docker 时，您正在创建和使用 images，containers，networks 和 volumes，plugins 和其他对象。 本节简要介绍其中一些对象。
+IMAGES images 是一个只读模板，其中包含有关创建 Docker 容器的说明。 通常，images 基于另一个 images，并带有一些额外的自定义。 例如，您可以构建基于 ubuntu images 的 images，但安装 Apache Web 服务器和应用程序，以及运行应用程序所需的配置详细信息。
+您可以创建自己的 images，也可以只使用其他人创建的 images 并在 registries 中发布。 要构建自己的 images，可以使用简单的语法创建 Dockerfile，以定义创建 images 并运行 images 所需的步骤。 Dockerfile 中的每条指令都在 images 中创建一个 layer。 更改 Dockerfile 并重建 images 时，仅重建已更改的那些层。 与其他虚拟化技术相比，这是使 images 如此轻量，小巧和快速的部分原因。
+ Note: 比较详细的工作原理可以看下文 Union file systems部分
+ CONTAINERS CONTAINERS 是 images 的可运行实例。 您可以使用 Docker API 或 CLI 创建，启动，停止，移动或删除容器。 您可以将容器连接到一个或多个网络，将存储连接到它，甚至可以根据其当前状态创建新 images。
+默认情况下，CONTAINERS 与其他 CONTAINERS 及其主机相对隔离。 您可以控制 CONTAINERS 的网络，存储或其他基础子系统与其他 CONTAINERS 或主机的隔离程度。
+CONTAINERS 由其 images 以及您在创建或启动时为其提供的任何配置选项定义。 删除 containers 后，对其状态的任何未存储在持久存储中的更改都将消失。
+SERVICES services 允许您跨多个 Docker 守护程序扩展容器，这些守护程序一起作为具有多个管理器和工作程序的群组一起工作。 swarm 的每个成员都是 Docker 守护程序，守护进程都使用 Docker API 进行通信。 服务允许您定义所需的状态，例如在任何给定时间必须可用的服务的副本数。 默认情况下，服务在所有工作节点之间进行负载平衡。 对于消费者来说，Docker 服务似乎是一个单独的应用程序。 Docker Engine 支持 Docker 1.12 及更高版本中的 swarm 模式。
+Docker 底层技术 Docker 是用 Go 编写的，它利用 Linux 内核的几个功能来提供其功能。使用到的内核特性包括 namespaces、cgroups、Union file systems
+namespaces Docker 使用称为 namespaces 的技术来提供称为容器的隔离工作空间。 运行容器时，Docker 会为该容器创建一组 namespaces。
+这些 namespaces 提供了一层隔离。 容器的每个方面都在一个单独的命名空间中运行，其访问权限仅限于该 namespaces。
+Docker Engine 在 Linux 上使用以下命名空间：
+ pid 命名空间：进程隔离（PID：进程 ID）。 net 命名空间：管理网络接口（NET：Networking）。 ipc 名称空间：管理对 IPC 资源的访问（IPC：进程间通信）。 mnt 名称空间：管理文件系统挂载点（MNT：Mount）。 uts 命名空间：隔离内核和版本标识符。 （悉尼科技大学：Unix 分时系统）。  cgroups Linux 上的 Docker Engine 还依赖于另一种称为控制组（cgroups）的技术。 cgroup 将应用程序限制为特定的资源集。 cgroups 允许 Docker Engine 将可用的硬件资源共享给容器，并可选择强制执行限制和约束。 例如，您可以限制特定容器的可用内存。
+Union file systems 联合文件系统或 UnionFS 是通过创建 layers 来操作的文件系统，使它们非常轻量和快速。 Docker Engine 使用 UnionFS 为容器提供构建块。 Docker Engine 可以使用多种 UnionFS 变体，包括 AUFS，btrfs，vfs 和 DeviceMapper。
+ Note: Docker 默认为 overylay2
+ Container format Docker Engine 将 namespaces，cgroups 和 UnionFS 组合成一个称为容器格式的包装器。 默认容器格式是 libcontainer。 将来，Docker 可以通过与 BSD Jails 或 Solaris Zones 等技术集成来支持其他容器格式。
+ Note: 如上部分翻译自 docker overview，同时添加自己本人理解。
+ moby 等代码的依赖介绍，相关调用方式，架构 Docker 从一个单一的软件转移到一组独立的组件和项目。
+Docker 如何运行容器？  Docker 引擎创建 images， 把 images 传递给 containerd， containerd 调用 containerd-shim， containerd-shim 使用 runC 来运行 container， containerd-shim 允许运行时（在本例中为 runC）在启动容器后退出  这个模型的两个主要好处是  deamon 运行较少的容器 能够在不破坏正在运行的容器的情况下重启或升级引擎  related link  moby libnetwork containerd runc </content>
     </entry>
     
      <entry>

@@ -6,10 +6,21 @@
     <description>Recent content in 源码 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 29 Apr 2019 12:46:21 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 May 2019 08:41:00 +0800</lastBuildDate>
     
 	<atom:link href="/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Docker 源码阅读: Docker Build</title>
+      <link>/post/docker/docker-build/</link>
+      <pubDate>Sun, 05 May 2019 08:41:00 +0800</pubDate>
+      
+      <guid>/post/docker/docker-build/</guid>
+      <description>&lt;p&gt;文章简介：docker build 源码阅读&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Docker 源码阅读: Docker Run</title>

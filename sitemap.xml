@@ -2,6 +2,21 @@
 <search>
     
      <entry>
+        <title>Docker 源码阅读: Docker Build</title>
+        <url>/post/docker/docker-build/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>docker</tag><tag>源码</tag>
+        </tags>
+        <content type="html"> 文章简介：docker build 源码阅读
+
+阅读源码顺序  api/server/router/build/build_routes.go#postBuild api/server/backend/build/backend.go#Build builder/builder-next/builder.go#Build builder/dockerfile/builder.go#Build builder/dockerfile/builder.go#dispatchDockerfileWithCancellation builder/dockerfile/evaluator.go#dispatch，在这里，有所有命令的执行方式，可以仔细研究一下  在dispatch中有 dockerfile 支持的指令，如RUN等。以 RUN 为例，dockerd 会读取 CLI 发来的 dockerfile，解析后。如果为 RUN，则会启动一个新的 container,然后在容器中执行，执行结束后将当前层 commit，继续执行下一个指令.
+其他  从 v18.09开始，docker build 依赖于 buildkit </content>
+    </entry>
+    
+     <entry>
         <title>Docker 源码阅读: Docker Run</title>
         <url>/post/docker/docker-run/</url>
         <categories>

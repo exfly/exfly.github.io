@@ -4,20 +4,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Wsl - Exfly Blog</title>
+    <title>Docker 源码阅读: 目录 - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Wsl">
+    <meta property="og:title" content="Docker 源码阅读: 目录">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Wsl - Exfly Blog" />
+    <meta name="title" content="Docker 源码阅读: 目录 - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
-    <link rel="alternate" href="/tags/wsl/index.xml" title="Exfly Blog" type="application/rss+xml" />
+    
     <link rel="shortcut icon" href="/img/favicon.ico" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <link rel="apple-touch-icon-precomposed" href="/img/apple-touch-icon.png" />
     <link href="/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-    
+    <link href="/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
     <link href="/css/main.css" rel="stylesheet" type="text/css" />
     <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" id="hexo.configuration">
@@ -25,13 +25,13 @@
   var CONFIG = {
     scheme: 'Pisces',
     sidebar: {"position":"left","display":"post"},
-    fancybox: false, 
+     fancybox: true, 
     motion: true
   };
 </script>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-<div class="container one-collumn sidebar-position-left   ">
+<div class="container one-collumn sidebar-position-left page-home  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -112,68 +112,114 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-<section id="posts" class="posts-collapse">
-<div class="collection-title">
-    <h2 >Wsl
-    <small>标签</small>
-    </h2>
-</div>
-
-<div class="collection-title">
-  <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
-</div>
-
-  <article class="post post-type-normal }}" itemscope itemtype="http://schema.org/Article">
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
-      <h1 class="post-title">
-        <a class="post-title-link" href="/post/tools/wsl/" itemprop="url">
-            <span itemprop="name">WSL(windows subsystem for linux) win子系统</span>
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="/post/docker/docker-contents/" itemprop="url">
+        Docker 源码阅读: 目录
         </a>
       </h1>
-
       <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-12-08"
-              content="12-08" >
-          12-08
-        </time>
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-04-22">
+    2019-04-22
+</time>
+</span> 
+      
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">58 字 ~1分钟</span>
+</span>
       </div>
     </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>文章简介：资料汇总以及源码阅读目录</p>
+
+<p></p>
+
+<h1 id="contents">Contents</h1>
+
+<h1 id="资料汇总">资料汇总</h1>
+
+<ul>
+<li><a href="http://merrigrove.blogspot.com/2015/10/visualizing-docker-containers-and-images.html">Visualizing Docker Containers and Images</a>容器、镜像可视化</li>
+<li><a href="https://draveness.me/docker">Docker 核心技术与实现原理</a></li>
+<li><a href="https://github.com/zeromake/docker-debug/">docker-debug</a></li>
+</ul>
+
+<h1 id="related-links">related links</h1>
+
+<ul>
+<li><a href="http://merrigrove.blogspot.com/2015/10/visualizing-docker-containers-and-images.html">Visualizing Docker Containers and Images</a></li>
+</ul>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="/tags/docker" rel="tag" title="docker">#docker#</a>
+    
+    <a href="/tags/%e6%ba%90%e7%a0%81" rel="tag" title="源码">#源码#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="/post/contribute-to-opensource/" rel="next" title="Contribute to Opensource">
+        <i class="fa fa-chevron-left"></i> Contribute to Opensource
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="/post/docker/docker-architecture/" rel="prev" title="Docker 源码阅读: Docker架构介绍">
+        Docker 源码阅读: Docker架构介绍 <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    
+    
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Docker 源码阅读: 目录
+        <br />作者：<a target="_blank" href="/">exfly</a>
+        <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
   </article>
-
-
- </section>
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-<nav class="pagination">
-    
-    
-        
-        
-          <span class="page-number current">1</span>
-        
-        
-    
-    
-</nav>
-
+</section>
 
           </div>
         </div>
@@ -223,13 +269,6 @@
     </div>
 </nav>
       
-<div class="feed-link motion-element">
-<a href="/tags/wsl/index.xml" rel="alternate" type="application/rss+xml" target="_blank">
-    <i class="fa fa-rss"></i>
-    RSS 订阅
-</a>
-</div>
-
       
 <div class="links-of-author motion-element">
     
@@ -309,16 +348,18 @@
 <script type="text/javascript" src="/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
 <script src="/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
 
+<script src="/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
 <script type="text/javascript" src="/js/utils.js"></script>
 <script type="text/javascript" src="/js/motion.js"></script>
 <script type="text/javascript" src="/js/affix.js"></script>
 <script type="text/javascript" src="/js/schemes/pisces.js"></script>
 
-<script type="text/javascript" src="/js/bootstrap.js"></script>
+<script type="text/javascript" src="/js/scrollspy.js"></script>
+<script type="text/javascript" src="/js/post-details.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>
 
-<script type="text/javascript" id="motion.page.archive">
-  $('.archive-year').velocity('transition.slideLeftIn');
-</script>
+<script type="text/javascript" src="/js/bootstrap.js"></script>
 
 <script type="text/javascript" src="/js/search.js"></script>
 </body>

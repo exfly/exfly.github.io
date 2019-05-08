@@ -2,6 +2,26 @@
 <search>
     
      <entry>
+        <title>Docker 源码阅读: Docker Volume</title>
+        <url>/post/docker/docker-volume/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>docker</tag><tag>源码</tag>
+        </tags>
+        <content type="html"> 文章简介：描述 docker volume 的原理
+
+docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层通过类似 aufs 或者 overlay2 将多个层联合到一起，mount 成新的目录，在通过 namespaces 将新的文件目录 chroot 进入新启动的进程，达到文件隔离的目的。
+ 对于读请求，由于写实复制技术，会直接读取底层文件 对于写请求，会先将文件复制到读写层，然后进行修改文件 对于删除，没有真正删除文件，只是讲文件标记删除，没有真正删除下层文件。  命令  docker volume create volume-for-test可以创建新的 volume
+ docker volume ls 查看新创建的 volume
+ docker volume inspect volume-for-test
+ docker run -d --name devtest --mount source=volume-for-test,target=/app alpine /bin/sh
+ docker inspect &amp;lt;container_id&amp;gt;| grap Mounts 可以看到刚刚 mount 进去的 volume /var/lib/docker/volumes/volume-for-test/_data
+  related links  Manage data in Docker Use volumes docker 存储基础 </content>
+    </entry>
+    
+     <entry>
         <title>Docker 源码阅读: Docker Build</title>
         <url>/post/docker/docker-build/</url>
         <categories>
@@ -96,7 +116,23 @@ Union file systems 联合文件系统或 UnionFS 是通过创建 layers 来操�
  Container format Docker Engine 将 namespaces，cgroups 和 UnionFS 组合成一个称为容器格式的包装器。 默认容器格式是 libcontainer。 将来，Docker 可以通过与 BSD Jails 或 Solaris Zones 等技术集成来支持其他容器格式。
  Note: 如上部分翻译自 docker overview，同时添加自己本人理解。
  moby 等代码的依赖介绍，相关调用方式，架构 Docker 从一个单一的软件转移到一组独立的组件和项目。
-Docker 如何运行容器？  Docker 引擎创建 images， 把 images 传递给 containerd， containerd 调用 containerd-shim， containerd-shim 使用 runC 来运行 container， containerd-shim 允许运行时（在本例中为 runC）在启动容器后退出  这个模型的两个主要好处是  deamon 运行较少的容器 能够在不破坏正在运行的容器的情况下重启或升级引擎  related link  moby libnetwork containerd runc </content>
+Docker 如何运行容器？  Docker 引擎创建 images， 把 images 传递给 containerd， containerd 调用 containerd-shim， containerd-shim 使用 runC 来运行 container， containerd-shim 允许运行时（在本例中为 runC）在启动容器后退出  这个模型的两个主要好处是  deamon 运行较少的容器 能够在不破坏正在运行的容器的情况下重启或升级引擎  related link  moby libnetwork containerd runc
+ Visualizing Docker Containers and Images
+ </content>
+    </entry>
+    
+     <entry>
+        <title>Docker 源码阅读: 目录</title>
+        <url>/post/docker/docker-contents/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>docker</tag><tag>源码</tag>
+        </tags>
+        <content type="html"> 文章简介：资料汇总以及源码阅读目录
+
+Contents 资料汇总  Visualizing Docker Containers and Images容器、镜像可视化 Docker 核心技术与实现原理 docker-debug  related links  Visualizing Docker Containers and Images </content>
     </entry>
     
      <entry>

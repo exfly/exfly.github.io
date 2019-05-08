@@ -6,10 +6,21 @@
     <description>Recent content in 源码 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 05 May 2019 08:41:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 May 2019 08:43:53 +0800</lastBuildDate>
     
 	<atom:link href="/tags/%E6%BA%90%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Docker 源码阅读: Docker Volume</title>
+      <link>/post/docker/docker-volume/</link>
+      <pubDate>Sun, 05 May 2019 08:43:53 +0800</pubDate>
+      
+      <guid>/post/docker/docker-volume/</guid>
+      <description>&lt;p&gt;文章简介：描述 docker volume 的原理&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Docker 源码阅读: Docker Build</title>
@@ -51,6 +62,17 @@
       
       <guid>/post/docker/docker-architecture/</guid>
       <description>&lt;p&gt;文章简介：&lt;code&gt;docker&lt;/code&gt;基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Docker 源码阅读: 目录</title>
+      <link>/post/docker/docker-contents/</link>
+      <pubDate>Mon, 22 Apr 2019 21:35:45 +0800</pubDate>
+      
+      <guid>/post/docker/docker-contents/</guid>
+      <description>&lt;p&gt;文章简介：资料汇总以及源码阅读目录&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

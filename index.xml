@@ -17,7 +17,7 @@
       <pubDate>Sat, 16 Sep 2017 15:41:18 +0800</pubDate>
       
       <guid>/links/</guid>
-      <description></description>
+      <description>draveness Draveness&amp;rsquo;s Blog面向信仰编程 docker k8s 胡伟煌 胡伟煌 k8s</description>
     </item>
     
     <item>
@@ -27,6 +27,17 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Exfly，专注计算机技术，具备基本的操作系统、计算机网络、数据结构和算法的知识，擅长python后端，爬虫，掌握一定的数据分析</description>
+    </item>
+    
+    <item>
+      <title>Docker 源码阅读: Docker Volume</title>
+      <link>/post/docker/docker-volume/</link>
+      <pubDate>Sun, 05 May 2019 08:43:53 +0800</pubDate>
+      
+      <guid>/post/docker/docker-volume/</guid>
+      <description>&lt;p&gt;文章简介：描述 docker volume 的原理&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -69,6 +80,17 @@
       
       <guid>/post/docker/docker-architecture/</guid>
       <description>&lt;p&gt;文章简介：&lt;code&gt;docker&lt;/code&gt;基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Docker 源码阅读: 目录</title>
+      <link>/post/docker/docker-contents/</link>
+      <pubDate>Mon, 22 Apr 2019 21:35:45 +0800</pubDate>
+      
+      <guid>/post/docker/docker-contents/</guid>
+      <description>&lt;p&gt;文章简介：资料汇总以及源码阅读目录&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

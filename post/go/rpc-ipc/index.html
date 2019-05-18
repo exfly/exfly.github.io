@@ -1,0 +1,441 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown - Exfly Blog</title>
+    <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
+    
+    <meta property="og:title" content="Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown">
+    <meta property="og:site_name" content="Exfly Blog">
+    <meta property="og:image" content="/img/author.jpg"> 
+    <meta name="title" content="Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown - Exfly Blog" />
+    <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
+    
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="/img/apple-touch-icon.png" />
+    <link href="/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+    <link href="/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    <link href="/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+     fancybox: true, 
+    motion: true
+  };
+</script>
+</head>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<div class="container one-collumn sidebar-position-left page-home  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-meta  custom-logo ">
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Exfly Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">一指流沙，程序年华</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+      
+      
+        <li class="menu-item ">
+          <a href="/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="/tags/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="/post/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="/links/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-"></i> <br />友链
+          </a>
+        </li>
+      
+        <li class="menu-item ">
+          <a href="/about/" rel="section">
+              <i class="menu-item-icon fa fa-fw fa-"></i> <br />关于
+          </a>
+        </li>
+      
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger"> <i class="menu-item-icon fa fa-search fa-fw"></i> <br /> 搜索</a>
+      </li>
+    </ul>
+    <div class="site-search">
+      <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+    </div>
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+<section id="posts" class="posts-expand">
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link" href="/post/go/rpc-ipc/" itemprop="url">
+        Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown
+        </a>
+      </h1>
+      <div class="post-meta">
+      <span class="post-time">
+<span class="post-meta-item-icon">
+    <i class="fa fa-calendar-o"></i>
+</span>
+<span class="post-meta-item-text">时间：</span>
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-05">
+    2019-05-05
+</time>
+</span> 
+      
+       <span>
+&nbsp; | &nbsp;
+<span class="post-meta-item-icon">
+    <i class="fa fa-eye"></i>
+</span>
+<span class="post-meta-item-text">阅读：</span>
+<span class="leancloud-visitors-count">702 字 ~2分钟</span>
+</span>
+      </div>
+    </header>
+    <div class="post-body" itemprop="articleBody">
+    <p>文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互</p>
+
+<p>代码见 <a href="https://github.com/exfly/cslab/tree/master/Code/Go/go-ipc">exfly/go-ipc</a></p>
+
+<h1 id="引言">引言</h1>
+
+<p>为什么要写这篇文章。最近看了一些 Docker 源码。dockerd 的架构长<a href="/post/docker/docker-architecture/">这个样子</a>。 一条 docker 命令的执行，比如<code>docker run</code>，是先由 containerd 执行，containerd 也同样不是真正运行容器，他会将执行请求发给 runc，有 runc 真正去执行。dockerd、containderd、runc 分别是三个可执行文件，他们是通过 管道（IPC）以及 rest、RPC 进行交互的。</p>
+
+<p>为了展示三者交互方式是如何进行的，这里写一个简单的 demo 来解释。</p>
+
+<h1 id="正文">正文</h1>
+
+<h2 id="rpc">RPC</h2>
+
+<p>首先说一下 RPC。Go 标准库便有<code>net/rpc</code>，写一个 Go 的 rpc 很简单：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Task</span> []<span style="color:#66d9ef">string</span>
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Todo</span> {<span style="color:#a6e22e">ID</span> <span style="color:#66d9ef">string</span>}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Task</span>) <span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">reply</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Todo</span>) <span style="color:#66d9ef">error</span> {
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">reply</span>=<span style="color:#a6e22e">Todo</span>{<span style="color:#a6e22e">ID</span>:<span style="color:#a6e22e">id</span>}
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">task</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Task</span>)
+	<span style="color:#75715e">// Publish the receivers methods
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">task</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Format of service Task isn&#39;t correct. &#34;</span>, <span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#75715e">// Register a HTTP handler
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">HandleHTTP</span>()
+	<span style="color:#a6e22e">listener</span>, <span style="color:#a6e22e">e</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;unix&#34;</span>, <span style="color:#e6db74">&#34;rpc.sock&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Listen error: &#34;</span>, <span style="color:#a6e22e">e</span>)
+	}
+    <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">listener</span>, <span style="color:#66d9ef">nil</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Error serving: &#34;</span>, <span style="color:#a6e22e">err</span>)
+    }
+}</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// client
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">DialHTTP</span>(<span style="color:#e6db74">&#34;unix&#34;</span>, <span style="color:#e6db74">&#34;rpc.sock&#34;</span>)
+<span style="color:#a6e22e">reply</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">TODO</span>{}
+<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;Task.Get&#34;</span>, <span style="color:#e6db74">&#34;new_id&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">reply</span>)</code></pre></div>
+<h2 id="如何进行进程间通信-ipc-呢">如何进行进程间通信 IPC 呢</h2>
+
+<p>首先 linux 下的 FIFO（有名管道）是什么样子的</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkfifo tpipe
+ll
+<span style="color:#75715e"># total 8</span>
+<span style="color:#75715e"># drwx------  2 vagrant vagrant 4096 May 18 17:28 ./</span>
+<span style="color:#75715e"># drwxrwxrwt 10 root    root    4096 May 18 17:28 ../</span>
+<span style="color:#75715e"># prw-rw-r--  1 vagrant vagrant    0 May 18 17:28 tpipe|</span>
+
+<span style="color:#75715e"># 现在一个terminal</span>
+cat tpipe
+<span style="color:#75715e"># 另一个terminal</span>
+echo tttttttttt &gt; tpipe</code></pre></div>
+<p>此时第一个 terminal 会输出 tttttttttt，另一个命令行会返回</p>
+
+<p>在 Go 中应该如何使用</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rpcSvrCmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">conf</span>.<span style="color:#a6e22e">RPCSvrBinPath</span>)
+<span style="color:#a6e22e">rpcSvrStdinPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StdinPipe</span>()
+<span style="color:#a6e22e">rpcSvrStdoutPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StdoutPipe</span>()
+<span style="color:#a6e22e">rpcSvrStderrPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StderrPipe</span>()
+<span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">Start</span>()</code></pre></div>
+<p>如此即可获得子进程的各种 FIFO</p>
+
+<h1 id="完整例子">完整例子</h1>
+
+<p>代码见 <a href="https://github.com/exfly/cslab/tree/master/Code/Go/go-ipc">exfly/go-ipc</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make task rpc <span style="color:#f92672">&amp;&amp;</span> ./bin/task
+<span style="color:#75715e"># ▶ running gofmt…</span>
+<span style="color:#75715e"># ▶ running golint…</span>
+<span style="color:#75715e"># ▶ building executable…</span>
+<span style="color:#75715e"># ▶ building executable…</span>
+<span style="color:#75715e"># 2019/05/19 01:33:12 sleep 1s to wait rpc server startup</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:12 Serving RPC server on {unix rpc.sock}</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 Finish App:  {Finish App Started}</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:13 stop the server</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:13 deleted socket file: rpc.sock</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 pipe rpc_srv_stderr has Closed</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 pipe rpc_srv_stdout has Closed</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 stop subproc ./bin/task-rpc success</span></code></pre></div>
+<p>当前更新主要以发布代码为主，没有详细解释，详细见代码。</p>
+    </div>
+    <footer class="post-footer">
+     
+ 
+<div class="post-tags">     
+     
+    <a href="/tags/go" rel="tag" title="go">#go#</a>
+    
+    <a href="/tags/ipc" rel="tag" title="IPC">#IPC#</a>
+    
+    <a href="/tags/rpc" rel="tag" title="RPC">#RPC#</a>
+    
+</div>
+
+
+
+     <div class="post-nav">
+    <div class="post-nav-next post-nav-item">
+    
+        <a href="/about/" rel="next" title="关于">
+        <i class="fa fa-chevron-left"></i> 关于
+        </a>
+    
+    </div>
+
+    <div class="post-nav-prev post-nav-item">
+    
+        <a href="/post/docker/docker-volume/" rel="prev" title="Docker 源码阅读: Docker Volume">
+        Docker 源码阅读: Docker Volume <i class="fa fa-chevron-right"></i>
+        </a>
+    
+    </div>
+</div>
+      
+     <div class="post-nav">
+<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
+    <div style="float:left;margin-top:0px;">
+    
+    
+    </div>
+    <div>
+        <p style="margin-top:0px;">
+            标题：Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown
+        <br />作者：<a target="_blank" href="/">exfly</a>
+        <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
+        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
+     
+     
+     
+
+
+
+
+    </footer>
+  </article>
+</section>
+
+          </div>
+        </div>
+        <div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+<aside id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+        src="/media/img/avatar.jpg"
+        alt="exfly" />
+    <p class="site-author-name" itemprop="name">exfly</p>
+    <p class="site-description motion-element" itemprop="description"> 
+        Programmer &amp; Architect</p>
+</div>
+      <nav class="site-state motion-element">
+    <div class="site-state-item site-state-posts">
+      <a href="/post/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">    
+        <a href="/categories/">      
+         
+        <span class="site-state-item-count">0</span>
+        
+        <span class="site-state-item-name">分类</span>
+        
+        </a>
+    </div>
+
+    <div class="site-state-item site-state-tags">
+        <a href="/tags/">
+         
+        <span class="site-state-item-count">30</span>
+        
+        <span class="site-state-item-name">标签</span>
+        </a>
+    </div>
+</nav>
+      
+      
+<div class="links-of-author motion-element">
+    
+        <span class="links-of-author-item">
+        <a href="https://github.com/exfly/" target="_blank" title="GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            GitHub
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://facebook.com/exflyg/" target="_blank" title="Facebook">
+            <i class="fa fa-fw fa-facebook"></i>
+            Facebook
+        </a>
+        </span>
+    
+        <span class="links-of-author-item">
+        <a href="https://twitter.com/exflyg" target="_blank" title="Twitter">
+            <i class="fa fa-fw fa-twitter"></i>
+            Twitter
+        </a>
+        </span>
+    
+</div>
+
+      
+      <div class="links-of-blogroll motion-element inline">
+<script type="text/javascript" src="//ra.revolvermaps.com/0/0/8.js?i=0kdicqvb6pu&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33" async="async"></script>
+</div>
+
+    </section>
+    
+  </div>
+</aside>
+
+      </div>
+    </main>
+   
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  <span itemprop="copyrightYear">  &copy; 
+  2009 - 2019</span>
+  <span class="with-love"><i class="fa fa-heart"></i></span>
+  <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
+</div>
+<div class="powered-by">
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+</div>
+<div class="theme-info">
+  Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT
+  </a>
+</div>
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+      <span id="scrollpercent"><span>0</span>%</span>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+<script type="text/javascript" src="/js/vendor/jquery/index.js?v=2.1.3"></script>
+<script type="text/javascript" src="/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script> 
+<script type="text/javascript" src="/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+<script type="text/javascript" src="/js/vendor/velocity/velocity.min.js?v=1.2.1"></script>
+<script type="text/javascript" src="/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+
+<script src="/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script type="text/javascript" src="/js/utils.js"></script>
+<script type="text/javascript" src="/js/motion.js"></script>
+<script type="text/javascript" src="/js/affix.js"></script>
+<script type="text/javascript" src="/js/schemes/pisces.js"></script>
+
+<script type="text/javascript" src="/js/scrollspy.js"></script>
+<script type="text/javascript" src="/js/post-details.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>
+
+<script type="text/javascript" src="/js/bootstrap.js"></script>
+
+<script type="text/javascript" src="/js/search.js"></script>
+</body>
+</html>

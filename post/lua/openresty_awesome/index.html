@@ -144,8 +144,6 @@
     <div class="post-body" itemprop="articleBody">
     <p>如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。</p>
 
-<p></p>
-
 <h1 id="简介">简介</h1>
 
 <p>openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。
@@ -301,13 +299,15 @@ make build <span style="color:#f92672">&amp;&amp;</span> make install</code></pr
 <li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
 <li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
 <li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
-<li>创建需要调试的lua文件</li>
-</ul>
+
+<li><p>创建需要调试的lua文件</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">require(&#39;mobdebug&#39;).start(&#39;192.168.1.22&#39;)
 local name = ngx.var.arg_name or &#34;Anonymous&#34;
 ngx.say(&#34;Hello, &#34;, name, &#34;!&#34;)
 ngx.say(&#34;Done debugging.&#34;)
-require(&#39;mobdebug&#39;).done()</pre></div>
+require(&#39;mobdebug&#39;).done()</pre></div></li>
+</ul>
+
 <p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
 
 <ul>
@@ -323,11 +323,10 @@ require(&#39;mobdebug&#39;).done()</pre></div>
 <h1 id="nginx一些技巧">nginx一些技巧</h1>
 
 <ul>
-<li>看我配置的nginx.conf
-<code>
-lua_package_path '$prefix/lua_script/?.lua;;';
-</code></li>
-<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></li>
+<li><p>看我配置的nginx.conf</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;</pre></div></li>
+
+<li><p><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></p></li>
 </ul>
 
 <h1 id="资料">资料</h1>
@@ -360,16 +359,16 @@ lua_package_path '$prefix/lua_script/?.lua;;';
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/architecture/microservicedesign/" rel="next" title="微服务设计笔记 脑图">
-        <i class="fa fa-chevron-left"></i> 微服务设计笔记 脑图
+        <a href="/post/java/gradle_maven/" rel="next" title="Gradle和Maven使用方法总结">
+        <i class="fa fa-chevron-left"></i> Gradle和Maven使用方法总结
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/java/gradle_maven/" rel="prev" title="Gradle和Maven使用方法总结">
-        Gradle和Maven使用方法总结 <i class="fa fa-chevron-right"></i>
+        <a href="/post/architecture/microservicedesign/" rel="prev" title="微服务设计笔记 脑图">
+        微服务设计笔记 脑图 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -499,7 +498,7 @@ lua_package_path '$prefix/lua_script/?.lua;;';
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.45.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

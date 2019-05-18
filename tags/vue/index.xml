@@ -17,9 +17,7 @@
       <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>
       
       <guid>/post/frontend/front-end-separation-architecture-environment-construction/</guid>
-      <description>&lt;p&gt;使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境&lt;/p&gt;</description>
     </item>
     
   </channel>

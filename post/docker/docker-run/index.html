@@ -144,8 +144,6 @@
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：通过分析 <code>docker run</code> 命令，理解 Docker 的工作原理</p>
 
-<p></p>
-
 <h1 id="docker-run-执行流程分析"><code>docker run</code>执行流程分析</h1>
 
 <p>整体执行流程: 从本地镜像中寻找是否存在命令指定镜像，如果存在则正常返回，执行接下来流程。如果不存在镜像，deamon 返回错误，由 cli 重新发起 pull 请求，之后重试。</p>
@@ -588,16 +586,16 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/docker/docker-source-dev-install/" rel="next" title="Docker 源码阅读: 开发环境搭建">
-        <i class="fa fa-chevron-left"></i> Docker 源码阅读: 开发环境搭建
+        <a href="/post/docker/docker-build/" rel="next" title="Docker 源码阅读: Docker Build">
+        <i class="fa fa-chevron-left"></i> Docker 源码阅读: Docker Build
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/docker/docker-build/" rel="prev" title="Docker 源码阅读: Docker Build">
-        Docker 源码阅读: Docker Build <i class="fa fa-chevron-right"></i>
+        <a href="/post/docker/docker-source-dev-install/" rel="prev" title="Docker 源码阅读: 开发环境搭建">
+        Docker 源码阅读: 开发环境搭建 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -727,7 +725,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.45.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

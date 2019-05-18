@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Linux on Exfly Blog</title>
+    <title>linux on Exfly Blog</title>
     <link>/tags/linux/</link>
-    <description>Recent content in Linux on Exfly Blog</description>
+    <description>Recent content in linux on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Wed, 10 Jan 2018 11:24:31 +0800</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
       
       <guid>/post/tools/vim/</guid>
-      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,9 +26,7 @@
       <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
       
       <guid>/post/linux/linux0.11-read-code/</guid>
-      <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;</description>
     </item>
     
   </channel>

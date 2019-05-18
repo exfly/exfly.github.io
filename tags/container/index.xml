@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Container on Exfly Blog</title>
+    <title>container on Exfly Blog</title>
     <link>/tags/container/</link>
-    <description>Recent content in Container on Exfly Blog</description>
+    <description>Recent content in container on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 23 Apr 2019 12:48:28 +0800</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Tue, 23 Apr 2019 12:48:28 +0800</pubDate>
       
       <guid>/post/docker/docker-source-dev-install/</guid>
-      <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;</description>
     </item>
     
   </channel>

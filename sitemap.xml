@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <search>
     
      <entry>
@@ -11,7 +10,6 @@
           <tag>docker</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：描述 docker volume 的原理
-
 docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层通过类似 aufs 或者 overlay2 将多个层联合到一起，mount 成新的目录，在通过 namespaces 将新的文件目录 chroot 进入新启动的进程，达到文件隔离的目的。
  对于读请求，由于写实复制技术，会直接读取底层文件 对于写请求，会先将文件复制到读写层，然后进行修改文件 对于删除，没有真正删除文件，只是讲文件标记删除，没有真正删除下层文件。  命令  docker volume create volume-for-test可以创建新的 volume
  docker volume ls 查看新创建的 volume
@@ -19,6 +17,18 @@ docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层�
  docker run -d --name devtest --mount source=volume-for-test,target=/app alpine /bin/sh
  docker inspect &amp;lt;container_id&amp;gt;| grap Mounts 可以看到刚刚 mount 进去的 volume /var/lib/docker/volumes/volume-for-test/_data
   related links  Manage data in Docker Use volumes docker 存储基础 </content>
+    </entry>
+    
+     <entry>
+        <title>Posts</title>
+        <url>/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
     </entry>
     
      <entry>
@@ -31,7 +41,6 @@ docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层�
           <tag>docker</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：docker build 源码阅读
-
 阅读源码顺序  api/server/router/build/build_routes.go#postBuild api/server/backend/build/backend.go#Build builder/builder-next/builder.go#Build builder/dockerfile/builder.go#Build builder/dockerfile/builder.go#dispatchDockerfileWithCancellation builder/dockerfile/evaluator.go#dispatch，在这里，有所有命令的执行方式，可以仔细研究一下  在dispatch中有 dockerfile 支持的指令，如RUN等。以 RUN 为例，dockerd 会读取 CLI 发来的 dockerfile，解析后。如果为 RUN，则会启动一个新的 container,然后在容器中执行，执行结束后将当前层 commit，继续执行下一个指令.
 其他  从 v18.09开始，docker build 依赖于 buildkit </content>
     </entry>
@@ -46,7 +55,6 @@ docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层�
           <tag>docker</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：通过分析 docker run 命令，理解 Docker 的工作原理
-
 docker run执行流程分析 整体执行流程: 从本地镜像中寻找是否存在命令指定镜像，如果存在则正常返回，执行接下来流程。如果不存在镜像，deamon 返回错误，由 cli 重新发起 pull 请求，之后重试。
 总体描述  createContainer cli 通过 rest 接口请求 dockerd 创建容器，dockerd 设置基础配置后记录创建的容器 ContainerStart cli 通过 rest 接口请求 dockerd 运行容器，dockerd 使用 rpc 链接 containnerd 进行运行容器  代码 lanything/code-read forked moby/moby, lanything/cli forked docker/cli
 createContainer  docker/cli cli/command/container/run.go#NewRunCommand docker/cli cli/command/container/run.go#runContainer  // cli/command/container/create.go#createContainer func createContainer(ctx context.Context, dockerCli command.Cli, containerConfig *containerConfig, opts *createOptions) (*container.ContainerCreateCreatedBody, error) { config := containerConfig.Config hostConfig := containerConfig.HostConfig networkingConfig := containerConfig.NetworkingConfig stderr := dockerCli.Err() warnOnOomKillDisable(*hostConfig, stderr) warnOnLocalhostDNS(*hostConfig, stderr) var ( trustedRef reference.Canonical namedRef reference.Named ) containerIDFile, err := newCIDFile(hostConfig.ContainerIDFile) if err != nil { return nil, err } defer containerIDFile.Close() ref, err := reference.ParseAnyReference(config.Image) if err != nil { return nil, err } if named, ok := ref.(reference.Named); ok { namedRef = reference.TagNameOnly(named) if taggedRef, ok := namedRef.(reference.NamedTagged); ok &amp;amp;&amp;amp; !opts.untrusted { var err error trustedRef, err = image.TrustedReference(ctx, dockerCli, taggedRef, nil) if err != nil { return nil, err } config.Image = reference.FamiliarString(trustedRef) } } //create the container 	response, err := dockerCli.Client().ContainerCreate(ctx, config, hostConfig, networkingConfig, opts.name) //if image not found try to pull it 	if err != nil { if apiclient.IsErrNotFound(err) &amp;amp;&amp;amp; namedRef != nil { fmt.Fprintf(stderr, &amp;#34;Unable to find image &amp;#39;%s&amp;#39; locally\n&amp;#34;, reference.FamiliarString(namedRef)) // we don&amp;#39;t want to write to stdout anything apart from container.ID 	if err := pullImage(ctx, dockerCli, config.Image, opts.platform, stderr); err != nil { return nil, err } if taggedRef, ok := namedRef.(reference.NamedTagged); ok &amp;amp;&amp;amp; trustedRef != nil { if err := image.TagTrusted(ctx, dockerCli, trustedRef, taggedRef); err != nil { return nil, err } } // Retry 	var retryErr error response, retryErr = dockerCli.Client().ContainerCreate(ctx, config, hostConfig, networkingConfig, opts.name) if retryErr != nil { return nil, retryErr } } else { return nil, err } } for _, warning := range response.Warnings { fmt.Fprintf(stderr, &amp;#34;WARNING: %s\n&amp;#34;, warning) } err = containerIDFile.Write(response.ID) return &amp;amp;response, err }  docker/cli cli/command/container/create.go#createContainer 调用 ContainerCreate moby/moby api/server/router/container/container.go#initRoutes.postContainersCreate moby/moby api/server/router/container/container_routes.go#postContainersCreate moby/moby daemon/create.go#ContainerCreate  containerCreate // `moby/moby` daemon/create.go#containerCreate func (daemon *Daemon) containerCreate(opts createOpts) (containertypes.ContainerCreateCreatedBody, error) { start := time.Now() if opts.params.Config == nil { return containertypes.ContainerCreateCreatedBody{}, errdefs.InvalidParameter(errors.New(&amp;#34;Config cannot be empty in order to create a container&amp;#34;)) } os := runtime.GOOS if opts.params.Config.Image != &amp;#34;&amp;#34; { img, err := daemon.imageService.GetImage(opts.params.Config.Image) if err == nil { os = img.OS } } else { // This mean scratch. On Windows, we can safely assume that this is a linux 	// container. On other platforms, it&amp;#39;s the host OS (which it already is) 	if runtime.GOOS == &amp;#34;windows&amp;#34; &amp;amp;&amp;amp; system.LCOWSupported() { os = &amp;#34;linux&amp;#34; } } warnings, err := daemon.verifyContainerSettings(os, opts.params.HostConfig, opts.params.Config, false) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } err = verifyNetworkingConfig(opts.params.NetworkingConfig) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } if opts.params.HostConfig == nil { opts.params.HostConfig = &amp;amp;containertypes.HostConfig{} } err = daemon.adaptContainerSettings(opts.params.HostConfig, opts.params.AdjustCPUShares) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, errdefs.InvalidParameter(err) } container, err := daemon.create(opts) if err != nil { return containertypes.ContainerCreateCreatedBody{Warnings: warnings}, err } containerActions.WithValues(&amp;#34;create&amp;#34;).UpdateSince(start) if warnings == nil { warnings = make([]string, 0) // Create an empty slice to avoid https://github.com/moby/moby/issues/38222 	} return containertypes.ContainerCreateCreatedBody{ID: container.ID, Warnings: warnings}, nil } GetImages // GetImage returns an image corresponding to the image referred to by refOrID. func (i *ImageService) GetImage(refOrID string) (*image.Image, error) { ref, err := reference.ParseAnyReference(refOrID) if err != nil { return nil, errdefs.InvalidParameter(err) } namedRef, ok := ref.(reference.Named) if !ok { digested, ok := ref.(reference.Digested) if !ok { return nil, ErrImageDoesNotExist{ref} } id := image.IDFromDigest(digested.Digest()) if img, err := i.imageStore.Get(id); err == nil { return img, nil } return nil, ErrImageDoesNotExist{ref} } if digest, err := i.referenceStore.Get(namedRef); err == nil { // Search the image stores to get the operating system, defaulting to host OS. 	id := image.IDFromDigest(digest) if img, err := i.imageStore.Get(id); err == nil { return img, nil } } // Search based on ID 	if id, err := i.imageStore.Search(refOrID); err == nil { img, err := i.imageStore.Get(id) if err != nil { return nil, ErrImageDoesNotExist{ref} } return img, nil } return nil, ErrImageDoesNotExist{ref} } ImageService.imageStore 在mobydaemon/daemon.go#NewDaemon 中有设置 ImageService.imageStore 在mobyimage/store.go#NewImageStore 有初始化
@@ -67,7 +75,6 @@ func (daemon *Daemon) ContainerStart(name string, hostConfig *containertypes.Hos
           <tag>docker</tag><tag>container</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：介绍 docker 开发环境搭建
-
 docker 官方的贡献引导: moby/docs/contributing/README.md
 步骤 moby/docs/contributing/set-up-dev-env.md完整的描述了开发环境如何搭建
 开发环境搭建  因为网络问题，需要尽快的提速安装 dev 环境，需要配置 Dockerfile 中的配置 APT_MIRROR=mirrors.163.com 运行make --just-print BIND_DIR=. shell简单的看一下 make 都做了那些事情  运行make BIND_DIR=. shell开始安装开发环境
@@ -87,7 +94,6 @@ docker 官方的贡献引导: moby/docs/contributing/README.md
           <tag>docker</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的
-
 Docker? 我们可以使用 Docker 做什么 快速，一致地交付您的应用程序
 Docker 允许开发人员使用提供应用程序和服务的本地容器在标准化环境中工作，从而简化了开发生命周期。 容器非常适合持续集成和持续交付（CI / CD）工作流程。
 docker 全局架构 CLI 使用 Docker REST API 通过脚本或直接 CLI 命令控制 Docker 守护程序或与 Docker 守护程序交互。 许多其他 Docker 应用程序使用底层 API 和 CLI。
@@ -131,7 +137,6 @@ Docker 如何运行容器？  Docker 引擎创建 images， 把 images 传递给
           <tag>docker</tag><tag>源码</tag>
         </tags>
         <content type="html"> 文章简介：资料汇总以及源码阅读目录
-
 Contents  Docker 架构介绍 Docker 编译开发环境搭建 Docker Run Docker Build Docker Volume todo docker network  资料汇总  Visualizing Docker Containers and Images容器、镜像可视化 Docker 核心技术与实现原理 docker-debug  related links  Visualizing Docker Containers and Images </content>
     </entry>
     
@@ -145,7 +150,6 @@ Contents  Docker 架构介绍 Docker 编译开发环境搭建 Docker Run Docker 
           
         </tags>
         <content type="html"> 文章简介：如何参与开源项目。在这里分享一些思路和开源资源。
-
 简介 自从学习计算机开始，很多时候希望自己能够也为 opensource 贡献一些什么。这里会总结一些思路为开源做些什么。
 思路 Start Your Open Source Career这里简述了如何参与开源项目。对自己有很多启示。我们在工作学习中也会有一些自己感觉很好的对某个技术问题的解决方式,希望可以分享给大家，或者希望学习新的知识，成为某个工具的核心维护者。 这里会总结一些比较好的参与开源项目的思路。
 good first issue or help wanted 很多开源项目的issue中已经标记出很多类似good first issue or help wanted的 label，这些 label 表示新人可以来帮忙。可以通过一些网站找到打相应 label 的项目，这可能成为你贡献开源项目的开端。 或许这些网站可以帮到你(来自 github)：
@@ -166,7 +170,6 @@ good first issue or help wanted 很多开源项目的issue中已经标记出很�
           <tag>openapi</tag><tag>codegen</tag>
         </tags>
         <content type="html"> swagger and openapi 代码生成和文档自动生成一些体会
-
 说在前面 平时使用gqlgen，一般的 workflow 是先写 graphql 的 schema，然后 code generate 对应的 model 和 api 的实现的空接口，自己对应实现对应的 resolver 即可。使用起来很流程。最近调研一下 java 下类似的工具。找到在 java 下 star 最多的项目graphql-java，但并不是这里讨论的。 这里讨论的是基于 spring 的 openapi 的实现和 code generate 方案。
 基于 openapi 的 code generate 方案 首先简单介绍一下 openapi，他是语言无关的 restful 描述语言，可以使用 yaml 进行编写接口文档，通过 generate，生成不同语言的 client 和 server。这里有官方的简介。自己比较关注的语言是 python、java、go、rust，js。
 踩到的一些坑，这里简单试用了一下generate java。首先，maven下有对应的openapi的plugin，openapi-generator-maven-plugin, 但每次compile都会进行generate，并不是我所希望的，所以这里使用了基于docker的使用方案。代码见exfly:gorgestar/isn,使用generator.sh生成对应的代码，配置文件可以看generator.json，
@@ -187,7 +190,6 @@ good first issue or help wanted 很多开源项目的issue中已经标记出很�
           <tag>工具</tag><tag>wsl</tag>
         </tags>
         <content type="html"> win 子系统安装与 cmder&#43;zsh 开发环境搭建
-
 说在前面 这里只展示可以做到什么程度，具体怎么做，网上教程很多，后边会贴出自己感觉比较好的网址
 大致操作思路 先在 windows 下打开 win subsystem for linux 功能，之后去 win store 中下载对应的 linux 发行版.之后就是打开对应的 linux 发行版的 bash、配置 zsh 了，详细步骤见这里。具体 zsh 怎么折腾，可以看一下这里
 贴一张自己配置之后，使用 zsh 和 tmux 之后的截图 给我的体验是，基本可以满足大部分日常开发工作
@@ -204,7 +206,6 @@ good first issue or help wanted 很多开源项目的issue中已经标记出很�
           <tag>前后端分离</tag><tag>Vue</tag>
         </tags>
         <content type="html"> 使用 Vue 前后端&#43;Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境
-
 原文地址
 Web 研发模式演变 最近研究一下前后端的开发模式，看到一个很好的入门路径developer-roadmap: frontend backend DevOps,可以看一下，效果还是不错的。
 之前看到一个说web 研发演进这里总结一下。
@@ -241,7 +242,6 @@ npm dev run go run server.go 之后访问前端页面，localhost:8080，按 F12
           <tag>bigdata</tag><tag>总结</tag>
         </tags>
         <content type="html"> 总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器
-
 从使用到的技术来说，如今各大网站平台趋向于使用经过长期检验过的技术，包括不限于动态网站技术、数据库技术、高速缓存技术、负载均衡、分布式相关技术。
 首先动态网站技术，开始没有动态网站时期，大部分 BBS 使用基于 Telnet 协议为基础的 BBS 进行交流。HTTP 协议的出现，使得 BS 架构的网站能够展现多媒体等信息如视频、音乐等。起初 HTTP 协议一般仅展示一些静态数据，其表现能力不强，不能更好的动态的为用户交互。之后动态网站技术如 CGI 的出现，使得网站拥有的更加丰富的交互功能。经过数十年的技术积累，动态网站技术已经能够支撑起现如今的大部分信息的获取。
 其次是存储技术。开始的时候数据仅仅使用本地文件进行存储。文件的读写效率很高，但是需要程序员重复的使用操作系统提供的较底层的操作来操作文件，对程序员的要求太大。而且对这种结构化的数据来说，可以使用相同的模式进行操作。所以有了数据库关系系统，尤其关系型数据库。从此，对于一些结构化的数据只需要使用 SQL 这种数据操作语言，就可以很方便的操作数据，而真正的数据管理维护工作由数据库管理系统进行维护，人可以通过配置数据库，使数据库获得更好的性能。当用户量很大时候，单机响应出现瓶颈，单台数据库不能够满足这样的请求。可以通过复制的方式，将相同的数据复制到多台机器上，多台机器为用户提供数据，对于读操作进行扩展。对于读多写少的网站，这种方式基本可以实现线性的性能提升。数据量再大一些，使用分库分表方式，把一份数据切片，分布到多台机器上提高性能。进而使用复制与分库分表的方式，进一步压榨单机的性能潜力。单机数据库很强大，但数据量达到一定的数量级，数据库的性能完全不能满足需求。大数据时代，数据量达到 PB、TB 级别。而每一块硬盘仅仅几 T，单机完全不可能将所有的数据都存储下来。如上分库分表的方式基本已经不能完全解决如上的问题，所以出现了分布式数据库，比如 MySQL Cluster 等通过两阶段提交等方式，维护线上数据的强一致性，分布式存储系统，比如 Google 研发的 GFS，现如今正火热的 HDFS 等，基本可以满足海量数据的存储。
@@ -261,7 +261,6 @@ npm dev run go run server.go 之后访问前端页面，localhost:8080，按 F12
           <tag>工具</tag><tag>Go</tag>
         </tags>
         <content type="html"> realize 代码分析
-
 Realize realize 是 Go 写的 workfloaw 工具，可以配置自己的工作流。项目在修改之后需要进行编译、测试，可以还有其他的一系列流程需要走，可以使用 realize 进行自动化。抽点时间研究了一下源码。这里总结一下思路，不是很完整的解释，简单说一下思路。
 原理 从 Linux 2.6.13 内核开始，Linux 就推出了 inotify，允许监控程序打开一个独立文件描述符，并针对事件集监控一个或者多个文件，例如打开、关闭、移动/重命名、删除、创建或者改变属性。glib 对对此进行了封装glib/inotify.h,同时各个操作系统都有对应的实现，win 下的 ReadDirectoryChangesW，mac 下的 FSEvents。同时 go 下已经有写好的封装库fsnotify/fsnotify，对不同的平台进行了封装。
 简单来讲，内核为应用程序提供了系统级文件修改事件的监视器。当文件进行修改后，会通知应用程序监视的文件已经修改了，之后有realize进行事件的处理即可。
@@ -279,7 +278,6 @@ Realize realize 是 Go 写的 workfloaw 工具，可以配置自己的工作流�
           <tag>BigData</tag><tag>Spark</tag><tag>Stream</tag>
         </tags>
         <content type="html"> 比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法
-
 各产品比较 Samza Samza 是一个分布式的流式数据处理框架（streaming processing），Linkedin 开源的产品， 它是基于 Kafka 消息队列来实现类实时的流式数据处理的。更为准确的说法是，Samza 是通过模块化的形式来使用 Apache Kafka 的，因此可以构架在其他消息队列框架上，但出发点和默认实现是基于 Apache Kafka。
 本质上说，Samza 是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。
 总的来说，Samza 与 Storm 相比，传输上完全基于 Apache Kafka，集群管理基于 Hadoop YARN，即 Samza 只负责处理这一块具体业务，再加上基于 RocksDB 的状态管理。由于受限于 Kafka 和 YARN，所以它的拓扑结构不够灵活。
@@ -327,7 +325,6 @@ spark集群 找到一个中文的文档,可以看一下，部署很简单
           <tag>Architecture</tag><tag>Distributed</tag>
         </tags>
         <content type="html"> 单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？
-
 简介 由于自己刚刚接触，自己理解的也不深。在这里，把我整理的一些资料汇总下来。
 微服务架构 微服务架构将单应用放在多个相互独立的服务，这个每个服务能够持续独立的开发和部署，难题是数据该如何存储？
 多个应用使用同一数据库 传统的单体应用一般采用的是数据库提供的事务一致性，通过数据库提供的提交以及回滚机制来保证相关操作的ACID，这些操作要么同时成功，要么同时失败。各个服务看到数据库中的数据是一致的，同时数据库的操作也是相互隔离的，最后数据也是在数据库中持久存储的。这样的架构不具备横向扩展能力，服务之间的耦合程度也比较高，会存在单点故障。
@@ -357,7 +354,6 @@ BASE 这里实验了一个基于BASE协议的最终一致性demo。注意，这�
         </tags>
         <content type="html"> 文章简介： 1.总结gradle和maven正确使用方法 2.开箱即用maven&amp;amp;gradle同时支持的项目配置。
 Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！
-
 说在前面 Gradle和Maven都是项目自动构建工具，编译源代码只是整个过程的一个方面，更重要的是，你要把你的软件发布到生产环境中来产生商业价值，所以，你要运行测试，构建分布、分析代码质量、甚至为不同目标环境提供不同版本，然后部署。整个过程进行自动化操作是很有必要的。
 整个过程可以分成以下几个步骤：
  编译源代码 运行单元测试和集成测试 执行静态代码分析、生成分析报告 创建发布版本 部署到目标环境 部署传递过程 执行冒烟测试和自动功能测试  两者都是项目工具，但是maven使用的最多，Gradle是后起之秀，想spring等都是使用gradle构建的。Gradle抛弃了Maven的基于XML的繁琐配置，采用了领域特定语言Groovy的配置，大大简化了构建代码的行数。
@@ -394,14 +390,16 @@ maven -&amp;gt; gradle  cd /path/to/mavenproject gradle init gradle wrapper  gra
           <tag>Lua</tag><tag>OpenResty</tag>
         </tags>
         <content type="html"> 如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。
-
 简介 openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。 结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。
 OpenResty安装 对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib，并根据我的配置进行修改相应参数
 ./configure --prefix=$HOME/openresty \  --add-module=$HOME/openresty/setupfile/third/naxsi-0.55.3/naxsi_src \  --add-module=$HOME/openresty/setupfile/third/nginx-goodies-nginx-sticky-module-ng \  --with-pcre=$HOME/openresty/setupfile/depency/pcre-8.41 \  --with-openssl=$HOME/openresty/setupfile/depency/openssl-1.0.2k \  --with-zlib=$HOME/openresty/setupfile/depency/zlib-1.2.11 \  --with-http_v2_module \  --with-http_sub_module \  --with-http_stub_status_module \  --with-http_realip_module \  --with-cc-opt=-O2 \  --with-luajit  这里是一个比较好的 nginx的笔记，可以过一遍 我在学习的时候，看了这本书深入理解Nginx模块开发与架构解析,毕竟讲的比较系统，可以借鉴一下 有问题，知乎，搜索引擎  安装luarocks  下载地址 http://luarocks.github.io/luarocks/releases/ 编译安装  ./configure --prefix=$HOME/openresty/luajit \  --with-lua=$HOME/openresty/luajit \  --lua-suffix=jit \  --with-lua-include=$HOME/openresty/luajit/include/luajit-2.1 --prefix 设定 luarocks 的安装目录 --with-lua 则是系统中安装的 lua 的根目录 --lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit --with-lua-include 设置 lua 引入一些头文件头文件的目录 make build &amp;amp;&amp;amp; make install lua面向对象 lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。Lua 中实现面向对象。 这里要说一下lua中.运算和:的区别，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是:可以省略self参数。
 local _class={} function class(super) local class_type={} class_type.ctor=false class_type.super=super class_type.new=function(...) local obj={} do local create create = function(c,...) if c.super then create(c.super,...) end if c.ctor then c.ctor(obj,...) end end create(class_type,...) end setmetatable(obj,{ __index=_class[class_type] }) return obj end local vtbl={} _class[class_type]=vtbl setmetatable(class_type,{__newindex= function(t,k,v) vtbl[k]=v end }) if super then setmetatable(vtbl,{__index= function(t,k) local ret=_class[super][k] vtbl[k]=ret return ret end }) end return class_type end 基本编码规范 设计 可以参考OpenResty的最佳实践，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。
 包管理 lua下有两个包管理系统，LuaDist和LuaRocks
-单元测试  重点 如下方法请在命令行中使用类似curl localhost/unittest进行测试，浏览器中看会很痛苦 OpenResty最佳实践-单元测试给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。  -- file: unittest.lua local _M = {} local csrf_test = require(&amp;#34;test.test_csrf&amp;#34;) local tmp_test = require(&amp;#34;test.tmp_test&amp;#34;) function _M:run_unittest() csrf_test:run() end return _M -- file: test_csrf.lua local iresty_test = require(&amp;#34;resty.iresty_test&amp;#34;) local json = require(&amp;#34;json&amp;#34;) local config = require(&amp;#34;config&amp;#34;) local csrf_config = require(&amp;#34;csrf_config&amp;#34;) local token = require(&amp;#34;token&amp;#34;) local tabletls = require(&amp;#34;tabletls&amp;#34;) local tb = iresty_test.new({unit_name=&amp;#34;test_csrf&amp;#34;}) local function assert_eq(wanted, real, msg) if wanted ~= real then error(msg or &amp;#34;error&amp;#34;, 2) -- 请注意参数 2 end end local function assert_not_eq(wanted, real, msg) if wanted == real then error(msg or &amp;#34;error&amp;#34;, 2) end end function tb:test_geturl() assert_eq(&amp;#34;/unittest&amp;#34;, ngx.var.uri, &amp;#34;the unittest url changed&amp;#34;) end function tb:run_unittest() tb:run() end return tb  如上有一个很有意思的地方，error(msg or &amp;quot;error&amp;quot;, 2),其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号） 性能测试 代码覆盖率 API测试等，都可以去OpenResty最佳实践中找，配置很简单。  远程调试 OpenResty  对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。 此调试方法适用于 win linux osx 先贴这里用到的luaIDE地址：ZeroBraneStudio 如下为安装步骤： 下载这个项目，ZeroBraneStudio，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】 启动ZBS，Project -&amp;gt; Start Debugger Server 复制/lualibs/mobdebug/mobdebug.lua -&amp;gt; nginx lua path, 复制/lualibs/socket.lua -&amp;gt; nginx lua path， 复制/bin/clibs/socket/core -&amp;gt; socket设为nginx lua cpath（调试时候，使用的是require(&amp;ldquo;socket.core&amp;rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，） nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可 创建需要调试的lua文件  require(&amp;#39;mobdebug&amp;#39;).start(&amp;#39;192.168.1.22&amp;#39;) local name = ngx.var.arg_name or &amp;#34;Anonymous&amp;#34; ngx.say(&amp;#34;Hello, &amp;#34;, name, &amp;#34;!&amp;#34;) ngx.say(&amp;#34;Done debugging.&amp;#34;) require(&amp;#39;mobdebug&amp;#39;).done() 注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）
- 在ide中打开需要调试的如上lua文件 Project -&amp;gt; Project Directory -&amp;gt; Set From Current File。 此时，打开浏览器，访问需要此文件处理的链接 此时开始调试  注：在最下侧有Remote console，在这里可以执行任何ngx lua语句 如上流程没有截图，或者没有说清楚，可以来这里  nginx一些技巧  看我配置的nginx.conf  lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;  我的笔记  资料  章亦春 OpenResty OpenResty最佳实践 Lua 5.1 参考手册 Lua 5.3 参考手册 云风 github awesome-lua awesome-resty Nginx-Lua-OpenResty-ResourcesA collection of resources covering Nginx, Nginx &#43; Lua, OpenResty and Tengine </content>
+单元测试  重点 如下方法请在命令行中使用类似curl localhost/unittest进行测试，浏览器中看会很痛苦 OpenResty最佳实践-单元测试给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。  -- file: unittest.lua local _M = {} local csrf_test = require(&amp;#34;test.test_csrf&amp;#34;) local tmp_test = require(&amp;#34;test.tmp_test&amp;#34;) function _M:run_unittest() csrf_test:run() end return _M -- file: test_csrf.lua local iresty_test = require(&amp;#34;resty.iresty_test&amp;#34;) local json = require(&amp;#34;json&amp;#34;) local config = require(&amp;#34;config&amp;#34;) local csrf_config = require(&amp;#34;csrf_config&amp;#34;) local token = require(&amp;#34;token&amp;#34;) local tabletls = require(&amp;#34;tabletls&amp;#34;) local tb = iresty_test.new({unit_name=&amp;#34;test_csrf&amp;#34;}) local function assert_eq(wanted, real, msg) if wanted ~= real then error(msg or &amp;#34;error&amp;#34;, 2) -- 请注意参数 2 end end local function assert_not_eq(wanted, real, msg) if wanted == real then error(msg or &amp;#34;error&amp;#34;, 2) end end function tb:test_geturl() assert_eq(&amp;#34;/unittest&amp;#34;, ngx.var.uri, &amp;#34;the unittest url changed&amp;#34;) end function tb:run_unittest() tb:run() end return tb  如上有一个很有意思的地方，error(msg or &amp;quot;error&amp;quot;, 2),其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号） 性能测试 代码覆盖率 API测试等，都可以去OpenResty最佳实践中找，配置很简单。  远程调试 OpenResty  对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。 此调试方法适用于 win linux osx 先贴这里用到的luaIDE地址：ZeroBraneStudio 如下为安装步骤： 下载这个项目，ZeroBraneStudio，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】 启动ZBS，Project -&amp;gt; Start Debugger Server 复制/lualibs/mobdebug/mobdebug.lua -&amp;gt; nginx lua path, 复制/lualibs/socket.lua -&amp;gt; nginx lua path， 复制/bin/clibs/socket/core -&amp;gt; socket设为nginx lua cpath（调试时候，使用的是require(&amp;ldquo;socket.core&amp;rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，） nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可 创建需要调试的lua文件
+require(&amp;#39;mobdebug&amp;#39;).start(&amp;#39;192.168.1.22&amp;#39;) local name = ngx.var.arg_name or &amp;#34;Anonymous&amp;#34; ngx.say(&amp;#34;Hello, &amp;#34;, name, &amp;#34;!&amp;#34;) ngx.say(&amp;#34;Done debugging.&amp;#34;) require(&amp;#39;mobdebug&amp;#39;).done()  注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）
+ 在ide中打开需要调试的如上lua文件 Project -&amp;gt; Project Directory -&amp;gt; Set From Current File。 此时，打开浏览器，访问需要此文件处理的链接 此时开始调试  注：在最下侧有Remote console，在这里可以执行任何ngx lua语句 如上流程没有截图，或者没有说清楚，可以来这里  nginx一些技巧  看我配置的nginx.conf
+lua_package_path &amp;#39;$prefix/lua_script/?.lua;;&amp;#39;; 我的笔记
+  资料  章亦春 OpenResty OpenResty最佳实践 Lua 5.1 参考手册 Lua 5.3 参考手册 云风 github awesome-lua awesome-resty Nginx-Lua-OpenResty-ResourcesA collection of resources covering Nginx, Nginx &#43; Lua, OpenResty and Tengine </content>
     </entry>
     
      <entry>
@@ -414,7 +412,6 @@ local _class={} function class(super) local class_type={} class_type.ctor=false 
           <tag>Architecture</tag><tag>微服务</tag><tag>Distributed</tag>
         </tags>
         <content type="html"> 读《微服务设计》，制作的脑图
-
 脑图如下：  脑图地址 </content>
     </entry>
     
@@ -428,7 +425,6 @@ local _class={} function class(super) local class_type={} class_type.ctor=false 
           <tag>Spring</tag><tag>SSM</tag>
         </tags>
         <content type="html"> 文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。
-
 目录  手动装配  使用@Bean  自动装配 使用@ComponentScan 自动装配的歧义性 条件生效 Bean profile bean作用域  手动装配 手动装配可以通过声明xml文件和java配置文件两种手段。在这两种方式中，更加推荐使用java配置的方式。两种配置不是相互替代的关系，一般将业务相关的配置放到java配置中，对于非业务，如数据库等，可以放到xml中。 通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。@Bean(name= {&amp;ldquo;sayAndPlayServiceNewName&amp;rdquo;, &amp;ldquo;sayAndPlayService&amp;rdquo;})
 public interface SayAndPlayService { String say(); String play(); } public class PeopleSayAndPlayServiceImpl implements SayAndPlayService { @Override public String say() { return &amp;#34;People Service implements say.&amp;#34;; } @Override public String play() { return &amp;#34;People Service implements play.&amp;#34;; } } @Configuration public class SimpleManualwireConfig { @Bean public SayAndPlayService sayAndPlayService() { return new PeopleSayAndPlayServiceImpl(); } } @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleManualwireConfig.class}) public class SimpleBeanManualwireTest { @Autowired private SayAndPlayService service; @Test public void testTestOneAutowiredService() { Assert.assertEquals(&amp;#34;People Service implements say.&amp;#34;, service.say()); } @Test public void testAnnotationConfigAppContext() { ApplicationContext context = new AnnotationConfigApplicationContext(org.exfly.demo.config.SimpleManualwireConfig.class); SayAndPlayService service = (SayAndPlayService) context.getBean(&amp;#34;sayAndPlayService&amp;#34;); Assert.assertEquals(&amp;#34;People Service implements say.&amp;#34;, service.say()); } } 自动装配 使用@ComponentScan可以自动扫描，@ComponentScan告诉Spring 哪个packages 的用注解标识的类 会被spring自动扫描并且装入bean容器。自动扫描，会扫描相应包以及子包，并为所有bean生成name，name命名规则为其类首字母变小写，如interface UserService被唯一的UserServiceImpl实现，则经过扫描，bean被声明为name为userServiceImpl。如果接口被多各类实现，需要转到下文消除歧义部分进行了解。
 public interface SpeakService { String speak(); } @Service public class PeopleSpeakServiceImpl implements SpeakService { @Override public String speak() { return &amp;#34;People speak&amp;#34;; } } @Configuration @ComponentScan(basePackageClasses={org.exfly.demo.service.SpeakService.class}) public class SimpleConfigScanConfig {} @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleManualwireConfig.class}) public class SimpleBeanManualwireTest { @Test public void testAnnotationConfigAppContextAutoScan() { ApplicationContext context = new AnnotationConfigApplicationContext(org.exfly.demo.config.SimpleConfigScanConfig.class); SpeakService service = (SpeakService) context.getBean(&amp;#34;peopleSpeakServiceImpl&amp;#34;); Assert.assertEquals(&amp;#34;People speak&amp;#34;, service.speak()); } } //如果希望使用@Autowired自动装配， @RunWith(SpringRunner.class) @ContextConfiguration(classes= {org.exfly.demo.config.SimpleConfigScanConfig.class}) public class SimpleAutoScanTest { @Autowired //根据类型进行自动注入 	private SpeakService sservice; @Test public void testAnnotationConfigAppContextAutoScanAutoWire() { Assert.assertEquals(&amp;#34;People speak&amp;#34;, sservice.speak()); } } @Autowired 可以在属性、构造方法、set函数中进行自动注入
@@ -450,10 +446,10 @@ public interface SpeakService { String speak(); } @Service public class PeopleSp
           <tag>Java</tag>
         </tags>
         <content type="html"> 文章简介：学Java Collections集合，对其中一些知识进行整理
-
 Collections结构 使用例子 Iterator public void testIterator(){ //创建一个集合  Collection books = new HashSet(); books.add(&amp;#34;轻量级J2EE企业应用实战&amp;#34;); books.add(&amp;#34;Struts2权威指南&amp;#34;); books.add(&amp;#34;基于J2EE的Ajax宝典&amp;#34;); //获取books集合对应的迭代器  Iterator&amp;lt;String&amp;gt; it = books.iterator(); while(it.hasNext()) { String book = it.next(); System.out.println(book); if (book.equals(&amp;#34;Struts2权威指南&amp;#34;)) { it.remove(); //使用Iterator迭代过程中，不可修改集合元素,下面代码引发异常  //books.remove(book);  } //对book变量赋值，不会改变集合元素本身  book = &amp;#34;测试字符串&amp;#34;; } System.out.println(books); } List 实现List接口的常用类有LinkedList，ArrayList
 List&amp;lt;String&amp;gt; list = new LinkedList&amp;lt;&amp;gt;(); Set Set接口有以下几种实现：
- HashSet : 为快速查找设计的Set，主要的特点是：不能存放重复元素，而且采用散列的存储方法，所以没有顺序。这里所说的没有顺序是指元素插入的顺序与输出的顺序不一致。 TreeSet : 保存次序的Set, 底层为树结构。使用它可以从Set中提取有序的序列。 LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。  Set&amp;lt;String&amp;gt; hs = new HashSet&amp;lt;&amp;gt;(); Map Map接口有以下几种实现： HashMap、LinkedHashMap、HashTable和TreeMap
+ HashSet : 为快速查找设计的Set，主要的特点是：不能存放重复元素，而且采用散列的存储方法，所以没有顺序。这里所说的没有顺序是指元素插入的顺序与输出的顺序不一致。 TreeSet : 保存次序的Set, 底层为树结构。使用它可以从Set中提取有序的序列。 LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。
+Set&amp;lt;String&amp;gt; hs = new HashSet&amp;lt;&amp;gt;();  Map Map接口有以下几种实现： HashMap、LinkedHashMap、HashTable和TreeMap
 Map&amp;lt;String, String&amp;gt; m1 = new HashMap&amp;lt;&amp;gt;(); m1.put(&amp;#34;Zara&amp;#34;, &amp;#34;8&amp;#34;); m1.get(&amp;#34;Zara&amp;#34;); // 8 m1.containsKey(&amp;#34;Zara&amp;#34;); // true  Java8的HashMap详解（存储结构，功能实现，扩容优化，线程安全，遍历方法）  Queue Queue&amp;lt;String&amp;gt; queue = new LinkedList&amp;lt;String&amp;gt;(); //添加元素 queue.offer(&amp;#34;a&amp;#34;); queue.offer(&amp;#34;b&amp;#34;); queue.offer(&amp;#34;c&amp;#34;); queue.offer(&amp;#34;d&amp;#34;); queue.offer(&amp;#34;e&amp;#34;); for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;poll=&amp;#34;&#43;queue.poll()); //返回第一个元素，并在队列中删除 for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;element=&amp;#34;&#43;queue.element()); //返回第一个元素 for(String q : queue){ System.out.println(q); } System.out.println(&amp;#34;===&amp;#34;); System.out.println(&amp;#34;peek=&amp;#34;&#43;queue.peek()); //返回第一个元素 for(String q : queue){ System.out.println(q); } /* a b c d e === poll=a b c d e === element=b b c d e === peek=b b c d e */ 转成线程安全 List&amp;lt;String&amp;gt; list = Collections.synchronizedList(new LinkedList&amp;lt;&amp;gt;()); 资源  官方 Collections Api reference Java集合框架面试题 比较细致的讲解 面试整理-Java综合高级篇（吐血整理） 最全的BAT大厂面试题整理 </content>
     </entry>
     
@@ -467,7 +463,6 @@ Map&amp;lt;String, String&amp;gt; m1 = new HashMap&amp;lt;&amp;gt;(); m1.put(&am
           <tag>工具</tag>
         </tags>
         <content type="html"> 文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt&#43;空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。
-
 软件准备  everything wox  介绍一些软件的特性  直接使用搜索引擎搜索 可以搜索软件，直接回车即可运行 搜索文件、文件夹，回车后使用系统默认软件打开 配置系统命令，可以直接运行(类似Win&#43;R) 通过插件可以实现单词翻译等功能  安装方法 链接中有具体的使用方法。我更喜欢绿色软件，下载下来直接可以使用。
 安装之后 看一下使用效果： 引用  Wox一款国产开源的快捷启动器辅助工具神器 具体怎么配置可以看这个 wox程序开源地址 </content>
     </entry>
@@ -482,7 +477,6 @@ Map&amp;lt;String, String&amp;gt; m1 = new HashMap&amp;lt;&amp;gt;(); m1.put(&am
           
         </tags>
         <content type="html"> 文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程
-
 准备  中文维基百科预料：zhwiki-latest-pages-articles.xml.bz2 python3 wiki_zh_word2vec 繁体转简体：opencc一定要下*-win32.7z,win64的在我电脑上无法运行。如果使用我的wiki_zh_word2vec,则项目中包含可以直接使用的opencc  TODO 依赖准备  下载中文维基百科预料 git clone https://github.com/ExFly/wiki_zh_word2vec.git 将zhwiki-latest-pages-articles.xml.bz2放到build文件夹下 cd path/to/wiki_zh_word2vec pip install pipenv pipenv install &amp;ndash;dev  将XML的Wiki数据转换为text格式  pipenv run python 1_process.py build/zhwiki-latest-pages-articles.xml.bz2 build/wiki.zh.txt  31分钟运行完成282855篇文章，得到一个931M的txt文件
 中文繁体替换成简体  opencc-1.0.1-win32/opencc -i build/wiki.zh.txt -o build/wiki.zh.simp.txt -c opencc-1.0.1-win32/t2s.json  大约使用了15分钟
 结巴分词  pipenv run python 2_jieba_participle.py  大约使用了30分钟
@@ -501,7 +495,6 @@ Word2Vec模型训练  pipenv run python 3_train_word2vec_model.py  大约使用�
           <tag>总结</tag>
         </tags>
         <content type="html"> 对2017年全年的总结，并为未来做一些安排。
-
 年前一天，依旧忙碌 往事 如今 未来 以后该怎么如何进步？
 其他 继续学习，共勉！
 </content>
@@ -517,7 +510,6 @@ Word2Vec模型训练  pipenv run python 3_train_word2vec_model.py  大约使用�
           <tag>linux</tag><tag>工具</tag>
         </tags>
         <content type="html"> 学习vim基本使用的笔记
-
 引言 想学一下Vim的键位，结合sublime text和vscode的vim插件加快编码速度编码
 正文 资源 使用方法  Vim 简体中文  cheatsheet  vim_cheat_sheet vim_表格形式 vim_脑图形式 vim_中文形式    </content>
     </entry>
@@ -532,7 +524,6 @@ Word2Vec模型训练  pipenv run python 3_train_word2vec_model.py  大约使用�
           <tag>安全</tag>
         </tags>
         <content type="html"> 分享自己的密码管理体系:keepass&#43;坚果云&#43;keepass2Android，以及使用容器，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。
-
 个人密码管理 准备  win:keepass 自助云存储:坚果云账号 Android:keepass2Android  开始 工具准备好就开始吧，按如下步骤：
  电脑端keepass本地建一个密码文件（需要一个主密码，以后可以修改，主密码一定要复杂），后上传到坚果云里，（这时候就可以删除本地的密码文件了）； 坚果云中配置第三方应用授权。（坚果云记得开二步验证，这样每次登陆需要微信接收验证码才可以登陆，更安全一些）； 电脑keepass打开url，以及Android手机keepass2Android打开url； 完。  具体如何创建请看这个链接， 如我这般建密码维护基本不会出现问题。
 到这里密码管理体系基本完成了。可是对于一个新手机，用好久就会卡，很卡，超级卡，为了解决这个问题，就要耍一些小手段，具体如下。
@@ -556,7 +547,6 @@ Enjoy!!!
           <tag>安全</tag><tag>kali</tag><tag>刷机</tag>
         </tags>
         <content type="html"> 看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。
-
 一 使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如二清、三清、四清等等。如下一步一步的说如何刷。
 二 刷机四步走 第一步， 仔细阅读官方Wiki 仔细研读仔细阅读官方Wiki，可以减少刷机过程中各种坑。
 第二步， 刷TWRP-oneplus1 一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&amp;rdquo;预配置&amp;rdquo;在 Windows 下，也可以参考&amp;rdquo;Bacon Root Toolkit&amp;ldquo;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。
@@ -577,7 +567,6 @@ Enjoy!!!
           <tag>算法</tag>
         </tags>
         <content type="html"> 总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。
-
 Source  排序算法比较-wiki visualgo 排序算法的动态图 排序算法复杂度   冒泡排序 伪代码 function bubble_sort (array, length) { var i, j; for(i from 0 to length-1){ for(j from 0 to length-1-i){ if (array[j] &amp;gt; array[j&#43;1]) swap(array[j], array[j&#43;1]) } } } 函数 冒泡排序 输入 一个数组名称为array 其长度为length i 从 0 到 (length - 1) j 从 0 到 (length - 1 - i) 如果 array[j] &amp;gt; array[j &#43; 1] 交换 array[j] 和 array[j &#43; 1] 的值 如果结束 j循环结束 i循环结束 函数结束  python实现 def bubble(List): for j in range(len(List)-1,0,-1): for i in range(0, j): if List[i] &amp;gt; List[i&#43;1]: List[i], List[i&#43;1] = List[i&#43;1], List[i] return List 插入排序 python实现 def insert_sort(lst): n=len(lst) if n==1: return lst for i in range(1,n): for j in range(i,0,-1): if lst[j] &amp;lt; lst[j-1]: lst[j], lst[j-1] = lst[j-1], lst[j] return lst 快速排序 python实现 def quicksort(a): if len(a) == 1: return a[0] if len(a) &amp;lt; 1: return 0 return quicksort([x for x in a[1:] if x &amp;lt; a[0]]), [a[0]], quicksort([x for x in a[1:] if x &amp;gt; a[0]]) C语言实现 int partition(int arr[], int low, int high){ int key; key = arr[low]; while(low &amp;lt; high){ while(low &amp;lt; high &amp;amp;&amp;amp; arr[high]&amp;gt;= key ) high--; if(low &amp;lt; high) arr[low&#43;&#43;] = arr[high]; while( low &amp;lt; high &amp;amp;&amp;amp; arr[low]&amp;lt;=key ) low&#43;&#43;; if(low &amp;lt; high) arr[high--] = arr[low]; } arr[low] = key; return low; } void quick_sort(int arr[], int start, int end){ int pos; if (start &amp;lt; end){ pos = partition(arr, start, end); quick_sort(arr,start,pos-1); quick_sort(arr,pos&#43;1,end); } return; } 归并排序 python实现 from collections import deque def merge_sort(lst): if len(lst) &amp;lt;= 1: return lst def merge(left, right): merged,left,right = deque(),deque(left),deque(right) while left and right: merged.append(left.popleft() if left[0] &amp;lt;= right[0] else right.popleft()) # deque popleft is also O(1) merged.extend(right if right else left) return list(merged) middle = int(len(lst) // 2) left = merge_sort(lst[:middle]) right = merge_sort(lst[middle:]) return merge(left, right) 计数排序 C实现 void counting_sort(int *ini_arr, int *sorted_arr, int n) { int *count_arr = (int *) malloc(sizeof(int) * 100); int i, j, k; for (k = 0; k &amp;lt; 100; k&#43;&#43;) count_arr[k] = 0; for (i = 0; i &amp;lt; n; i&#43;&#43;) count_arr[ini_arr[i]]&#43;&#43;; for (k = 1; k &amp;lt; 100; k&#43;&#43;) count_arr[k] &#43;= count_arr[k - 1]; for (j = n; j &amp;gt; 0; j--) sorted_arr[--count_arr[ini_arr[j - 1]]] = ini_arr[j - 1]; free(count_arr); } 二分查找 int binary_search(int array[],int n,int value){ int left=0; int right=n-1; while (left&amp;lt;=right){ int middle=left &#43; ((right-left)&amp;gt;&amp;gt;1); //防止溢出，移位也更高效。同时，每次循环都需要更新。 if (array[middle] &amp;gt; value) { right =middle-1; } else if(array[middle] &amp;lt; value) { left=middle&#43;1; } else { return middle; } } return -1; } </content>
     </entry>
     
@@ -591,7 +580,6 @@ Source  排序算法比较-wiki visualgo 排序算法的动态图 排序算法�
           <tag>总结</tag>
         </tags>
         <content type="html"> 对2016年全年的总结，并为未来做一些安排。
-
 年前一天，依旧忙碌 往事 14年十月至今天，从0到1的转变。 开始的时候，不断的学习各种软件的使用，像什么PS之类的东西玩了个遍，总感觉这些东西都是别人做出来的东西，便生出自己也搞出一些想这类软件。然而继续的瞎搞。 不知什么时候，知道通过学习c可以做出来好多有意思的小玩意，比如贪吃蛇，便开始学习高级语言。 之后，知道原来学习计算机，需要系统的学习计算机的理论知识，从此入坑，一发不可收拾。 网易云课堂是自己计算机启蒙课程。跟着上边的课程学了好久，懂了计算机需要如何入门。学了导论、计组、C语言、算法和数据结构、操作系统、计算机网络、数据库原理等等。自己找视频看了Linux，读了鸟哥的linux书，甚至直接吧自己的电脑系统换成了Ubuntu/linuxmint，真正体会到Linux该如何使用。 假期用Flask完成了动态网站，部署到服务器里一段时间，后来因为网站太简单，给撤了。 后来深入web，用了两个月的时间，把前端学了一下，同时完成了自己第一个网页。学了Tornado,重构了几次Project Generator，也算初步掌握全栈开发。同学科研训练，找了一个Tornado开源项目，改成了论坛系统，还帮这个项目修了几个bug。 学了些东西。
 如今 如今，趁着假期，也是准备考研前的最后一个可以自由支配的假期，准备了些东西回来学。每天完成一个汇编的项目，( 假期汇编 )。准备好好学学数据结构和算法导论.
 越努力越迷茫 越努力，知道的越多，不知到的更多。为了选择自己的技术方向，越接触越不知道该学什么，越着急，越急躁。 同时还有一些其他的事让我烦心。慢慢来吧，急不来。
@@ -610,26 +598,11 @@ Source  排序算法比较-wiki visualgo 排序算法的动态图 排序算法�
           <tag>Linux</tag><tag>资源</tag>
         </tags>
         <content type="html"> 记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。
-
 linux history  linux 0.11 linux 0.95 实现虚拟文件系统 linux 0.96 实现网络接口  linux linux采用分段&#43;分页机制结合管理内存
-linux 调试方法  linux0.11 调试方法 ``` gdb tools/system target remote localhost:1234  gdb常用命令 b: 下中斷點 info b :u 列出目前中断点，也可简写成&amp;rdquo;i b&amp;rdquo; continue&amp;copy; 继续执行直到下一个中断点或结束 list(l): 列出目前上下文 step(s): 单步 (会进入 funciton) next(n) : 单步 (不会进入 funciton) until(u) 跳离一个 while for 循环 print(p): 显示某变量，如 p str info register(i r) : 显示 CPU 的 register
-GDB 打印出内存中的內容，格式為 x/nyz，其中 n: 要印出的數量 y: 显示的格式，可为C( char), d(整数), x(hex) z: 单位，可为 b(byte), h(16bit), w(32bit)
-cgdb	可显示为上半部分为代码，下半部分命令部分 cgdb tools/system* linux-0.11启动过程描述 * Linux0.11启动过程 * 80386保护模式的本质 * linux虚拟地址到线性地址的转化 * Linux内存寻址之分段机制-linux回避了分段机制 * Linux内存寻址之分页机制/ * 逻辑地址、线性地址、物理地址和虚拟地址 * Intel 80386 程序员参考手册 * linux0.11内核之文件系统 ```
-source 80386内存访问公式 32位线性地址 = 段基地址(32位) &#43; 段内偏移(32位)
+linux 调试方法  linux0.11 调试方法
+gdb tools/system target remote localhost:1234 gdb常用命令 b: 下中斷點 info b :u 列出目前中断点，也可简写成&amp;#34;i b&amp;#34; continue(c) 继续执行直到下一个中断点或结束 list(l): 列出目前上下文 step(s): 单步 (会进入 funciton) next(n) : 单步 (不会进入 funciton) until(u) 跳离一个 while for 循环 print(p): 显示某变量，如 p str info register(i r) : 显示 CPU 的 register GDB 打印出内存中的內容，格式為 x/nyz，其中 n: 要印出的數量 y: 显示的格式，可为C( char), d(整数), x(hex) z: 单位，可为 b(byte), h(16bit), w(32bit) cgdb	可显示为上半部分为代码，下半部分命令部分 cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/linux-0-11-boot/) * [Linux0.11启动过程](http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml) * [80386保护模式的本质](http://www.jianshu.com/p/1cea7dc5d6b7) * [linux虚拟地址到线性地址的转化](http://luodw.cc/2016/02/17/address/) * [Linux内存寻址之分段机制-linux回避了分段机制](http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/) * [Linux内存寻址之分页机制/](http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/) * [逻辑地址、线性地址、物理地址和虚拟地址](http://www.voidcn.com/blog/will130/article/p-5705051.html) * [Intel 80386 程序员参考手册](http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838) * [linux0.11内核之文件系统](http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164)  source 80386内存访问公式 32位线性地址 = 段基地址(32位) &#43; 段内偏移(32位)
 48bit = 16 &#43; 32 16位地段选择子 &#43; 32虚拟地址 -&amp;gt; 32线性地址 32线性地址 -&amp;gt; 物理地址
 </content>
-    </entry>
-    
-     <entry>
-        <title>Posts</title>
-        <url>/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
     </entry>
     
 </search>

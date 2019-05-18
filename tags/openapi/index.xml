@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Openapi on Exfly Blog</title>
+    <title>openapi on Exfly Blog</title>
     <link>/tags/openapi/</link>
-    <description>Recent content in Openapi on Exfly Blog</description>
+    <description>Recent content in openapi on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Mon, 04 Feb 2019 13:41:19 +0800</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Mon, 04 Feb 2019 13:41:19 +0800</pubDate>
       
       <guid>/post/java/openapi/</guid>
-      <description>&lt;p&gt;swagger and openapi 代码生成和文档自动生成一些体会&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;swagger and openapi 代码生成和文档自动生成一些体会&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -144,8 +144,6 @@
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：学Java Collections集合，对其中一些知识进行整理</p>
 
-<p></p>
-
 <h1 id="collections结构">Collections结构</h1>
 
 <p><img src="/media/img/Java/Collections/CollectionFramework.png" alt="Collections结构" />
@@ -187,9 +185,11 @@
 <ol>
 <li>HashSet : 为快速查找设计的Set，主要的特点是：不能存放重复元素，而且采用散列的存储方法，所以没有顺序。这里所说的没有顺序是指元素插入的顺序与输出的顺序不一致。</li>
 <li>TreeSet : 保存次序的Set, 底层为树结构。使用它可以从Set中提取有序的序列。</li>
-<li>LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。</li>
+
+<li><p>LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Set&lt;String&gt; hs = new HashSet&lt;&gt;();</pre></div></li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Set&lt;String&gt; hs = new HashSet&lt;&gt;();</pre></div>
+
 <h3 id="map">Map</h3>
 
 <p>Map接口有以下几种实现：
@@ -267,16 +267,16 @@ b c d e
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/tools/wox_everything/" rel="next" title="Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐">
-        <i class="fa fa-chevron-left"></i> Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐
+        <a href="/post/java/spring/beans/" rel="next" title="Spring Beans的装配规则总结">
+        <i class="fa fa-chevron-left"></i> Spring Beans的装配规则总结
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/java/spring/beans/" rel="prev" title="Spring Beans的装配规则总结">
-        Spring Beans的装配规则总结 <i class="fa fa-chevron-right"></i>
+        <a href="/post/tools/wox_everything/" rel="prev" title="Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐">
+        Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -406,7 +406,7 @@ b c d e
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.45.1</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Bigdata on Exfly Blog</title>
+    <title>bigdata on Exfly Blog</title>
     <link>/tags/bigdata/</link>
-    <description>Recent content in Bigdata on Exfly Blog</description>
+    <description>Recent content in bigdata on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 25 Oct 2018 17:07:58 +0800</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>
       
       <guid>/post/architecture/itabstract/</guid>
-      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,9 +26,7 @@
       <pubDate>Wed, 04 Jul 2018 17:36:24 +0800</pubDate>
       
       <guid>/post/bigdata/sparkstream/</guid>
-      <description>&lt;p&gt;比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法&lt;/p&gt;</description>
     </item>
     
   </channel>

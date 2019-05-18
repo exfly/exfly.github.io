@@ -17,9 +17,7 @@
       <pubDate>Tue, 12 Jun 2018 16:01:38 +0800</pubDate>
       
       <guid>/post/lua/openresty_awesome/</guid>
-      <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;</description>
     </item>
     
   </channel>

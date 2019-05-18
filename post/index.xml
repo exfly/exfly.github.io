@@ -17,9 +17,7 @@
       <pubDate>Sun, 05 May 2019 08:43:53 +0800</pubDate>
       
       <guid>/post/docker/docker-volume/</guid>
-      <description>&lt;p&gt;文章简介：描述 docker volume 的原理&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：描述 docker volume 的原理&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,9 +26,7 @@
       <pubDate>Sun, 05 May 2019 08:41:00 +0800</pubDate>
       
       <guid>/post/docker/docker-build/</guid>
-      <description>&lt;p&gt;文章简介：docker build 源码阅读&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：docker build 源码阅读&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -39,9 +35,7 @@
       <pubDate>Mon, 29 Apr 2019 12:46:21 +0800</pubDate>
       
       <guid>/post/docker/docker-run/</guid>
-      <description>&lt;p&gt;文章简介：通过分析 &lt;code&gt;docker run&lt;/code&gt; 命令，理解 Docker 的工作原理&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：通过分析 &lt;code&gt;docker run&lt;/code&gt; 命令，理解 Docker 的工作原理&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -50,9 +44,7 @@
       <pubDate>Tue, 23 Apr 2019 12:48:28 +0800</pubDate>
       
       <guid>/post/docker/docker-source-dev-install/</guid>
-      <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -61,9 +53,7 @@
       <pubDate>Mon, 22 Apr 2019 21:35:46 +0800</pubDate>
       
       <guid>/post/docker/docker-architecture/</guid>
-      <description>&lt;p&gt;文章简介：&lt;code&gt;docker&lt;/code&gt;基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：&lt;code&gt;docker&lt;/code&gt;基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -72,9 +62,7 @@
       <pubDate>Mon, 22 Apr 2019 21:35:45 +0800</pubDate>
       
       <guid>/post/docker/docker-contents/</guid>
-      <description>&lt;p&gt;文章简介：资料汇总以及源码阅读目录&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：资料汇总以及源码阅读目录&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -83,9 +71,7 @@
       <pubDate>Sun, 21 Apr 2019 12:56:32 +0800</pubDate>
       
       <guid>/post/contribute-to-opensource/</guid>
-      <description>&lt;p&gt;文章简介：如何参与开源项目。在这里分享一些思路和开源资源。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：如何参与开源项目。在这里分享一些思路和开源资源。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -94,9 +80,7 @@
       <pubDate>Mon, 04 Feb 2019 13:41:19 +0800</pubDate>
       
       <guid>/post/java/openapi/</guid>
-      <description>&lt;p&gt;swagger and openapi 代码生成和文档自动生成一些体会&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;swagger and openapi 代码生成和文档自动生成一些体会&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -105,9 +89,7 @@
       <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
       
       <guid>/post/tools/wsl/</guid>
-      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -116,9 +98,7 @@
       <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>
       
       <guid>/post/frontend/front-end-separation-architecture-environment-construction/</guid>
-      <description>&lt;p&gt;使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -127,9 +107,7 @@
       <pubDate>Thu, 25 Oct 2018 17:07:58 +0800</pubDate>
       
       <guid>/post/architecture/itabstract/</guid>
-      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -138,9 +116,7 @@
       <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
       
       <guid>/post/tools/realize/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -149,9 +125,7 @@
       <pubDate>Wed, 04 Jul 2018 17:36:24 +0800</pubDate>
       
       <guid>/post/bigdata/sparkstream/</guid>
-      <description>&lt;p&gt;比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;比较SparkStream类似产品如Samza、Storm，介绍Spark和Spark Stream安装和简单使用方法&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -160,9 +134,7 @@
       <pubDate>Thu, 28 Jun 2018 16:34:49 +0800</pubDate>
       
       <guid>/post/architecture/eventuallyconsistent/</guid>
-      <description>&lt;p&gt;单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -171,9 +143,7 @@
       <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
       
       <guid>/post/java/gradle_maven/</guid>
-      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -182,9 +152,7 @@
       <pubDate>Tue, 12 Jun 2018 16:01:38 +0800</pubDate>
       
       <guid>/post/lua/openresty_awesome/</guid>
-      <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -193,9 +161,7 @@
       <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
       
       <guid>/post/architecture/microservicedesign/</guid>
-      <description>&lt;p&gt;读《微服务设计》，制作的脑图&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;读《微服务设计》，制作的脑图&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -204,9 +170,7 @@
       <pubDate>Sun, 20 May 2018 16:49:06 +0800</pubDate>
       
       <guid>/post/java/spring/beans/</guid>
-      <description>&lt;p&gt;文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -215,9 +179,7 @@
       <pubDate>Sat, 24 Mar 2018 10:33:11 +0800</pubDate>
       
       <guid>/post/java/collectionslearn/</guid>
-      <description>&lt;p&gt;文章简介：学Java Collections集合，对其中一些知识进行整理&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：学Java Collections集合，对其中一些知识进行整理&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -226,9 +188,7 @@
       <pubDate>Sat, 24 Feb 2018 19:15:55 +0800</pubDate>
       
       <guid>/post/tools/wox_everything/</guid>
-      <description>&lt;p&gt;文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -237,9 +197,7 @@
       <pubDate>Wed, 14 Feb 2018 11:04:36 +0800</pubDate>
       
       <guid>/post/algorithm/wiki_zh_practice_word2vec/</guid>
-      <description>&lt;p&gt;文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -248,9 +206,7 @@
       <pubDate>Thu, 01 Feb 2018 14:24:40 +0900</pubDate>
       
       <guid>/post/diary/2018.02.01-2017-holiday-summary/</guid>
-      <description>&lt;p&gt;对2017年全年的总结，并为未来做一些安排。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;对2017年全年的总结，并为未来做一些安排。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -259,9 +215,7 @@
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
       
       <guid>/post/tools/vim/</guid>
-      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;学习vim基本使用的笔记&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -270,9 +224,7 @@
       <pubDate>Tue, 19 Dec 2017 10:21:19 +0800</pubDate>
       
       <guid>/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
-      <description>&lt;p&gt;分享自己的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用&lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;分享自己的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用&lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -282,9 +234,7 @@
       
       <guid>/post/sercurity/2017.09.17-black-phone/</guid>
       <description>&lt;p&gt;看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
-这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -293,9 +243,7 @@
       <pubDate>Sat, 16 Sep 2017 16:08:44 +0800</pubDate>
       
       <guid>/post/algorithm/sort/</guid>
-      <description>&lt;p&gt;总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -304,9 +252,7 @@
       <pubDate>Sun, 01 Jan 2017 14:24:40 +0800</pubDate>
       
       <guid>/post/diary/2017.01.01-2016-holiday-summary/</guid>
-      <description>&lt;p&gt;对2016年全年的总结，并为未来做一些安排。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;对2016年全年的总结，并为未来做一些安排。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -315,9 +261,7 @@
       <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
       
       <guid>/post/linux/linux0.11-read-code/</guid>
-      <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;</description>
     </item>
     
   </channel>

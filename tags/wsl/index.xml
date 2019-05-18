@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Wsl on Exfly Blog</title>
+    <title>wsl on Exfly Blog</title>
     <link>/tags/wsl/</link>
-    <description>Recent content in Wsl on Exfly Blog</description>
+    <description>Recent content in wsl on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sat, 08 Dec 2018 16:00:59 +0800</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
       
       <guid>/post/tools/wsl/</guid>
-      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;</description>
     </item>
     
   </channel>

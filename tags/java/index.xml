@@ -17,9 +17,7 @@
       <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
       
       <guid>/post/java/gradle_maven/</guid>
-      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -28,9 +26,7 @@
       <pubDate>Sat, 24 Mar 2018 10:33:11 +0800</pubDate>
       
       <guid>/post/java/collectionslearn/</guid>
-      <description>&lt;p&gt;文章简介：学Java Collections集合，对其中一些知识进行整理&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：学Java Collections集合，对其中一些知识进行整理&lt;/p&gt;</description>
     </item>
     
   </channel>

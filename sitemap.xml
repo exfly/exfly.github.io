@@ -19,7 +19,7 @@ mkfifo tpipe ll # total 8 # drwx------ 2 vagrant vagrant 4096 May 18 17:28 ./ # 
 在 Go 中应该如何使用
 rpcSvrCmd := exec.Command(conf.RPCSvrBinPath) rpcSvrStdinPipe, err := rpcSvrCmd.StdinPipe() rpcSvrStdoutPipe, err := rpcSvrCmd.StdoutPipe() rpcSvrStderrPipe, err := rpcSvrCmd.StderrPipe() rpcSvrCmd.Start() 如此即可获得子进程的各种 FIFO
 完整例子 代码见 exfly/go-ipc
-make task rpc &amp;amp;&amp;amp; ./bin/task # ▶ running gofmt… # ▶ running golint… # ▶ building executable… # ▶ building executable… # 2019/05/19 01:33:12 sleep 1s to wait rpc server startup # 2019/05/19 01:33:13 2019/05/19 01:33:12 Serving RPC server on {unix rpc.sock} # 2019/05/19 01:33:13 Finish App: {Finish App Started} # 2019/05/19 01:33:13 2019/05/19 01:33:13 stop the server # 2019/05/19 01:33:13 2019/05/19 01:33:13 deleted socket file: rpc.sock # 2019/05/19 01:33:13 pipe rpc_srv_stderr has Closed # 2019/05/19 01:33:13 pipe rpc_srv_stdout has Closed # 2019/05/19 01:33:13 stop subproc ./bin/task-rpc success 当前更新主要以发布代码为主，没有详细解释，详细见代码。
+make task rpc &amp;amp;&amp;amp; ./bin/task # ▶ running gofmt… # ▶ running golint… # ▶ building executable… # ▶ building executable… # 2019/05/19 01:33:12 sleep 1s to wait rpc server startup # 2019/05/19 01:33:13 2019/05/19 01:33:12 Serving RPC server on {unix rpc.sock} # 2019/05/19 01:33:13 Finish App: {Finish App Started} # 2019/05/19 01:33:13 2019/05/19 01:33:13 stop the server # 2019/05/19 01:33:13 2019/05/19 01:33:13 deleted socket file: rpc.sock # 2019/05/19 01:33:13 pipe rpc_srv_stderr has Closed # 2019/05/19 01:33:13 pipe rpc_srv_stdout has Closed # 2019/05/19 01:33:13 stop subproc ./bin/task-rpc success 当前更新主要以发布代码为主，没有详细解释，详细见代码 exfly/go-ipc
 </content>
     </entry>
     

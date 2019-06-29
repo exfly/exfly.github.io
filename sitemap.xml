@@ -1,6 +1,36 @@
 <search>
     
      <entry>
+        <title>Newdb</title>
+        <url>/post/db/newdb/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> 文章简介：简单介绍最近自己最近设计实现 newdb 的工作
+项目地址 anydemo/newdb
+最近一段时间花了很大的力气学习数据库的知识，设计实现了简单的 RDBMS, 收获比较丰富
+开始先从数据库底层的数据持久化开始。再此设计的数据库主要是固定类型大小的关系型数据库。一个 table 中有固定大小的一定数量的数据列，每一个 tuple 的大小是固定不变的，也就是每一个 page 的可以容纳的 tuple 是一定的，这样很容易在记录某一个 tuple 的位置、以及其在文件中的位置。在这过程中收获最大的部分就是对于 Marshal 于 Unmarshal 的理解更进一步，知道数据如何在数据库中是如何存储的，以及事务的本质。
+最后通过一个 Sequences Scan 的例子，手写一个物理执行计划，执行一次全表扫描。
+未来还有很多的内容可以做，暂时告一段落，最近抽时间沉淀一下，思考一下未来，回头有时间了再回头继续加新的内容。毕竟issues积攒了太多。
+</content>
+    </entry>
+    
+     <entry>
+        <title>Posts</title>
+        <url>/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
+    </entry>
+    
+     <entry>
         <title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</title>
         <url>/post/go/rpc-ipc/</url>
         <categories>
@@ -21,18 +51,6 @@ rpcSvrCmd := exec.Command(conf.RPCSvrBinPath) rpcSvrStdinPipe, err := rpcSvrCmd.
 完整例子 代码见 exfly/go-ipc
 make task rpc &amp;amp;&amp;amp; ./bin/task # ▶ running gofmt… # ▶ running golint… # ▶ building executable… # ▶ building executable… # 2019/05/19 01:33:12 sleep 1s to wait rpc server startup # 2019/05/19 01:33:13 2019/05/19 01:33:12 Serving RPC server on {unix rpc.sock} # 2019/05/19 01:33:13 Finish App: {Finish App Started} # 2019/05/19 01:33:13 2019/05/19 01:33:13 stop the server # 2019/05/19 01:33:13 2019/05/19 01:33:13 deleted socket file: rpc.sock # 2019/05/19 01:33:13 pipe rpc_srv_stderr has Closed # 2019/05/19 01:33:13 pipe rpc_srv_stdout has Closed # 2019/05/19 01:33:13 stop subproc ./bin/task-rpc success 当前更新主要以发布代码为主，没有详细解释，详细见代码 exfly/go-ipc
 </content>
-    </entry>
-    
-     <entry>
-        <title>Posts</title>
-        <url>/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
     </entry>
     
      <entry>

@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 05 May 2019 18:54:46 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 29 Jun 2019 15:13:28 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Newdb</title>
+      <link>/post/db/newdb/</link>
+      <pubDate>Sat, 29 Jun 2019 15:13:28 +0800</pubDate>
+      
+      <guid>/post/db/newdb/</guid>
+      <description>&lt;p&gt;文章简介：简单介绍最近自己最近设计实现 newdb 的工作&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</title>

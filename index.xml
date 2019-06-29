@@ -6,7 +6,7 @@
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 05 May 2019 18:54:46 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 29 Jun 2019 15:13:28 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -27,6 +27,15 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Description Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry. Skills Golang &amp;gt; Java &amp;gt; Python &amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>Newdb</title>
+      <link>/post/db/newdb/</link>
+      <pubDate>Sat, 29 Jun 2019 15:13:28 +0800</pubDate>
+      
+      <guid>/post/db/newdb/</guid>
+      <description>&lt;p&gt;文章简介：简单介绍最近自己最近设计实现 newdb 的工作&lt;/p&gt;</description>
     </item>
     
     <item>

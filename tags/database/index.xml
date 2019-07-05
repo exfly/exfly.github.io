@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>database on Exfly Blog</title>
+    <link>/tags/database/</link>
+    <description>Recent content in database on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 04 Jul 2019 09:17:59 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The Log: What every software engineer should know about real-time data&#39;s unifying abstraction 翻译</title>
+      <link>/post/db/log/</link>
+      <pubDate>Thu, 04 Jul 2019 09:17:59 +0800</pubDate>
+      
+      <guid>/post/db/log/</guid>
+      <description>&lt;p&gt;文章简介：翻译&lt;a href=&#34;https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying&#34;&gt;The Log: What every software engineer should know about real-time data&amp;rsquo;s unifying abstraction&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

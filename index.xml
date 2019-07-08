@@ -6,7 +6,7 @@
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 04 Jul 2019 09:17:59 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -27,6 +27,15 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Description Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry. Skills Golang &amp;gt; Java &amp;gt; Python &amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>高可用系统设计问题、微服务设计笔记 脑图</title>
+      <link>/post/architecture/microservicedesign/</link>
+      <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
+      
+      <guid>/post/architecture/microservicedesign/</guid>
+      <description>&lt;p&gt;高可用系统设计，有哪些问题需要解决&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -198,15 +207,6 @@
       
       <guid>/post/lua/openresty_awesome/</guid>
       <description>&lt;p&gt;如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>微服务设计笔记 脑图</title>
-      <link>/post/architecture/microservicedesign/</link>
-      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
-      
-      <guid>/post/architecture/microservicedesign/</guid>
-      <description>&lt;p&gt;读《微服务设计》，制作的脑图&lt;/p&gt;</description>
     </item>
     
     <item>

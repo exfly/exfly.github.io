@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>微服务设计笔记 脑图 - Exfly Blog</title>
+    <title>高可用系统设计问题、微服务设计笔记 脑图 - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="微服务设计笔记 脑图">
+    <meta property="og:title" content="高可用系统设计问题、微服务设计笔记 脑图">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="微服务设计笔记 脑图 - Exfly Blog" />
+    <meta name="title" content="高可用系统设计问题、微服务设计笔记 脑图 - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -117,7 +117,7 @@
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
         <a class="post-title-link" href="/post/architecture/microservicedesign/" itemprop="url">
-        微服务设计笔记 脑图
+        高可用系统设计问题、微服务设计笔记 脑图
         </a>
       </h1>
       <div class="post-meta">
@@ -126,8 +126,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-06-10">
-    2018-06-10
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-07-07">
+    2019-07-07
 </time>
 </span> 
       
@@ -137,18 +137,67 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">23 字 ~1分钟</span>
+<span class="leancloud-visitors-count">433 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>读《微服务设计》，制作的脑图</p>
+    <p>高可用系统设计，有哪些问题需要解决</p>
+
+<h1 id="什么是高可用系统">什么是高可用系统</h1>
+
+<p><a href="https://coolshell.cn/articles/17459.html">关于高可用的系统</a></p>
+
+<h1 id="高可用系统需要解决的问题">高可用系统需要解决的问题</h1>
+
+<ol>
+<li>可扩展：水平扩展、垂直扩展。 通过冗余部署，避免单点故障。</li>
+</ol>
+
+<ul>
+<li>隔离：避免单一业务占用全部资源。避免业务之间的相互影响 2. 机房隔离避免单点故障。</li>
+<li>解耦：降低维护成本，降低耦合风险。减少依赖，减少相互间的影响。</li>
+<li>限流：滑动窗口计数法、漏桶算法、令牌桶算法等算法。遇到突发流量时，保证系统稳定。</li>
+<li>降级：紧急情况下释放非核心功能的资源。牺牲非核心业务，保证核心业务的高可用。</li>
+<li>熔断：异常情况超出阈值进入熔断状态，快速失败。减少不稳定的外部依赖对核心服务的影响。</li>
+<li>系统监控：对 CPU 利用率，load，内存，带宽，系统调用量，应用错误量，PV，UV 和业务量进行监控</li>
+<li>自动化测试：通过完善的测试，减少发布引起的故障。</li>
+<li>灰度发布(+回滚)：灰度发布是速度与安全性作为妥协，能够有效减少发布故障。</li>
+<li>异步消息系统</li>
+</ul>
+
+<h1 id="微服务设计-脑图">《微服务设计》脑图</h1>
 
 <p>脑图如下：
 <img src="https://github.com/ExFly/CsLearning/raw/master/NoteBookForDevelop/%E4%B9%A6%E7%AC%94%E8%AE%B0/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1.png" alt="脑图" /></p>
 
 <ul>
 <li><a href="https://github.com/ExFly/CsLearning/tree/master/NoteBookForDevelop/%E4%B9%A6%E7%AC%94%E8%AE%B0/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1">脑图地址</a></li>
+</ul>
+
+<h1 id="references">references</h1>
+
+<ul>
+<li><a href="https://github.com/xingshaocheng/architect-awesome/blob/master/README.md">后端架构师技术图谱</a></li>
+<li><a href="https://github.com/Netflix/Hystrix/wiki">hystrix</a></li>
+
+<li><p><a href="https://github.com/bilibili/kratos">bilibili/kratos</a></p></li>
+
+<li><p><a href="https://callistaenterprise.se/blogg/teknik/2017/02/17/go-blog-series-part1/">Go Microservices blog series</a></p></li>
+
+<li><p><a href="https://ewanvalentine.io/microservices-in-golang-part-1/">microservices-in-golang</a></p></li>
+
+<li><p><a href="https://github.com/EwanValentine/shippy/tree/master/user-service">shippy-demo</a></p></li>
+
+<li><p><a href="https://zhuanlan.zhihu.com/p/52778237">20 个好用的 Go 语言微服务开发框架</a></p></li>
+
+<li><p><a href="https://github.com/micro/micro/">micro/micro</a></p></li>
+
+<li><p><a href="https://github.com/micro/go-micro">micro/go-micro</a></p></li>
+
+<li><p><a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a></p></li>
+
+<li><p><a href="https://github.com/gogo/grpc-example">grpc-example</a></p></li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -169,16 +218,16 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/lua/openresty_awesome/" rel="next" title="OpenResty最佳实践">
-        <i class="fa fa-chevron-left"></i> OpenResty最佳实践
+        <a href="/about/" rel="next" title="关于">
+        <i class="fa fa-chevron-left"></i> 关于
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/java/spring/beans/" rel="prev" title="Spring Beans的装配规则总结">
-        Spring Beans的装配规则总结 <i class="fa fa-chevron-right"></i>
+        <a href="/post/db/log/" rel="prev" title="The Log: What every software engineer should know about real-time data&#39;s unifying abstraction 翻译">
+        The Log: What every software engineer should know about real-time data&#39;s unifying abstraction 翻译 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -192,7 +241,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：微服务设计笔记 脑图
+            标题：高可用系统设计问题、微服务设计笔记 脑图
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

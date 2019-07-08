@@ -6,10 +6,19 @@
     <description>Recent content in Architecture on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 28 Jun 2018 16:34:49 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate>
     
 	<atom:link href="/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>高可用系统设计问题、微服务设计笔记 脑图</title>
+      <link>/post/architecture/microservicedesign/</link>
+      <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
+      
+      <guid>/post/architecture/microservicedesign/</guid>
+      <description>&lt;p&gt;高可用系统设计，有哪些问题需要解决&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>分布式数据的最终一致性</title>
@@ -18,15 +27,6 @@
       
       <guid>/post/architecture/eventuallyconsistent/</guid>
       <description>&lt;p&gt;单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>微服务设计笔记 脑图</title>
-      <link>/post/architecture/microservicedesign/</link>
-      <pubDate>Sun, 10 Jun 2018 22:50:19 +0800</pubDate>
-      
-      <guid>/post/architecture/microservicedesign/</guid>
-      <description>&lt;p&gt;读《微服务设计》，制作的脑图&lt;/p&gt;</description>
     </item>
     
   </channel>

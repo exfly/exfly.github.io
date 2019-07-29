@@ -4,20 +4,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Linux0.11源码学习环境配置与相关资源汇总 - Exfly Blog</title>
+    <title>mq - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总">
+    <meta property="og:title" content="mq">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Linux0.11源码学习环境配置与相关资源汇总 - Exfly Blog" />
+    <meta name="title" content="mq - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
-    
+    <link rel="alternate" href="/tags/mq/index.xml" title="Exfly Blog" type="application/rss+xml" />
     <link rel="shortcut icon" href="/img/favicon.ico" />
     <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
     <link rel="apple-touch-icon-precomposed" href="/img/apple-touch-icon.png" />
     <link href="/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-    <link href="/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+    
     <link href="/css/main.css" rel="stylesheet" type="text/css" />
     <link href="/css/syntax.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" id="hexo.configuration">
@@ -25,13 +25,13 @@
   var CONFIG = {
     scheme: 'Pisces',
     sidebar: {"position":"left","display":"post"},
-     fancybox: true, 
+    fancybox: false, 
     motion: true
   };
 </script>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-<div class="container one-collumn sidebar-position-left page-home  ">
+<div class="container one-collumn sidebar-position-left   ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -112,150 +112,68 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-<section id="posts" class="posts-expand">
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+<section id="posts" class="posts-collapse">
+<div class="collection-title">
+    <h2 >mq
+    <small>标签</small>
+    </h2>
+</div>
+
+<div class="collection-title">
+  <h2 class="archive-year motion-element" id="archive-year-2019">2019</h2>
+</div>
+
+  <article class="post post-type-normal }}" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
-      <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/linux/linux0.11-read-code/" itemprop="url">
-        Linux0.11源码学习环境配置与相关资源汇总
+      <h1 class="post-title">
+        <a class="post-title-link" href="/post/architecture/mq/" itemprop="url">
+            <span itemprop="name">消息队列</span>
         </a>
       </h1>
+
       <div class="post-meta">
-      <span class="post-time">
-<span class="post-meta-item-icon">
-    <i class="fa fa-calendar-o"></i>
-</span>
-<span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-10-30">
-    2016-10-30
-</time>
-</span> 
-      
-       <span>
-&nbsp; | &nbsp;
-<span class="post-meta-item-icon">
-    <i class="fa fa-eye"></i>
-</span>
-<span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1185 字 ~3分钟</span>
-</span>
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2019-07-29"
+              content="07-29" >
+          07-29
+        </time>
       </div>
     </header>
-    <div class="post-body" itemprop="articleBody">
-    <p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
-
-<h1 id="linux-history">linux history</h1>
-
-<ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
-</ul>
-
-<h1 id="linux">linux</h1>
-
-<p>linux采用分段+分页机制结合管理内存</p>
-
-<h1 id="linux-调试方法">linux 调试方法</h1>
-
-<ul>
-<li><p><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">gdb tools/system
-target remote localhost:1234
-
-
-gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&#34;i b&#34;
-continue(c) 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register
-
-GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)
-
-cgdb	可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/linux-0-11-boot/)
-* [Linux0.11启动过程](http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml)
-* [80386保护模式的本质](http://www.jianshu.com/p/1cea7dc5d6b7)
-* [linux虚拟地址到线性地址的转化](http://luodw.cc/2016/02/17/address/)
-* [Linux内存寻址之分段机制-linux回避了分段机制](http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/)
-* [Linux内存寻址之分页机制/](http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/)
-* [逻辑地址、线性地址、物理地址和虚拟地址](http://www.voidcn.com/blog/will130/article/p-5705051.html)
-* [Intel 80386 程序员参考手册](http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838)
-* [linux0.11内核之文件系统](http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164)</pre></div></li>
-</ul>
-
-<h1 id="source">source</h1>
-
-<h1 id="80386内存访问公式">80386内存访问公式</h1>
-
-<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
-
-<p>48bit = 16 + 32
-16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
-32线性地址 -&gt; 物理地址</p>
-    </div>
-    <footer class="post-footer">
-     
- 
-<div class="post-tags">     
-     
-    <a href="/tags/linux" rel="tag" title="Linux">#Linux#</a>
-    
-    <a href="/tags/%e8%b5%84%e6%ba%90" rel="tag" title="资源">#资源#</a>
-    
-</div>
-
-
-
-     <div class="post-nav">
-    <div class="post-nav-next post-nav-item">
-    
-        <a href="/post/diary/2017.01.01-2016-holiday-summary/" rel="next" title="2016年终总结，未来规划">
-        <i class="fa fa-chevron-left"></i> 2016年终总结，未来规划
-        </a>
-    
-    </div>
-
-    <div class="post-nav-prev post-nav-item">
-    
-    </div>
-</div>
-      
-     <div class="post-nav">
-<div style="border: 1px dashed #e0e0e0; padding: 10px 10px 10px 10px; background-color: #fffeee; background-repeat: no-repeat; background-attachment: scroll; background-position: 1% 50%; -moz-background-size: auto auto; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;">
-    <div style="float:left;margin-top:0px;">
-    
-    
-    </div>
-    <div>
-        <p style="margin-top:0px;">
-            标题：Linux0.11源码学习环境配置与相关资源汇总
-        <br />作者：<a target="_blank" href="/">exfly</a>
-        <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
-        <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）
-        </p>
-    </div>
-</div>
-<div class="clear"></div>
-</div>
-     
-     
-     
-
-
-
-
-    </footer>
   </article>
-</section>
+
+
+ </section>
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+<nav class="pagination">
+    
+    
+        
+        
+          <span class="page-number current">1</span>
+        
+        
+    
+    
+</nav>
+
 
           </div>
         </div>
@@ -305,6 +223,13 @@ cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/l
     </div>
 </nav>
       
+<div class="feed-link motion-element">
+<a href="/tags/mq/index.xml" rel="alternate" type="application/rss+xml" target="_blank">
+    <i class="fa fa-rss"></i>
+    RSS 订阅
+</a>
+</div>
+
       
 <div class="links-of-author motion-element">
     
@@ -384,18 +309,16 @@ cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/l
 <script type="text/javascript" src="/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script>
 <script src="/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
 
-<script src="/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
-
 <script type="text/javascript" src="/js/utils.js"></script>
 <script type="text/javascript" src="/js/motion.js"></script>
 <script type="text/javascript" src="/js/affix.js"></script>
 <script type="text/javascript" src="/js/schemes/pisces.js"></script>
 
-<script type="text/javascript" src="/js/scrollspy.js"></script>
-<script type="text/javascript" src="/js/post-details.js"></script>
-<script type="text/javascript" src="/js/toc.js"></script>
-
 <script type="text/javascript" src="/js/bootstrap.js"></script>
+
+<script type="text/javascript" id="motion.page.archive">
+  $('.archive-year').velocity('transition.slideLeftIn');
+</script>
 
 <script type="text/javascript" src="/js/search.js"></script>
 </body>

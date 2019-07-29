@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Linux0.11源码学习环境配置与相关资源汇总 - Exfly Blog</title>
+    <title>消息队列 - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总">
+    <meta property="og:title" content="消息队列">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Linux0.11源码学习环境配置与相关资源汇总 - Exfly Blog" />
+    <meta name="title" content="消息队列 - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -116,8 +116,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/linux/linux0.11-read-code/" itemprop="url">
-        Linux0.11源码学习环境配置与相关资源汇总
+        <a class="post-title-link" href="/post/architecture/mq/" itemprop="url">
+        消息队列
         </a>
       </h1>
       <div class="post-meta">
@@ -126,8 +126,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2016-10-30">
-    2016-10-30
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-07-29">
+    2019-07-29
 </time>
 </span> 
       
@@ -137,79 +137,62 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1185 字 ~3分钟</span>
+<span class="leancloud-visitors-count">601 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
+    <p>文章简介：消息队列中需要解决的问题</p>
 
-<h1 id="linux-history">linux history</h1>
+<p>网络通信可能会包含，成功、失败以及超时三种情况</p>
+
+<h1 id="消息投递语义">消息投递语义</h1>
+
+<p>最多一次（At-Most Once）、最少一次（At-Least Once）以及恰好一次（Exactly Once）</p>
+
+<p><strong>最多一次</strong>在 TCP/UDP 传输层协议就是保证最多一次消息投递，消息的发送者只会尝试发送该消息一次，并不会关心该消息是否得到了远程节点的响应。
+<strong>最少一次</strong>引入超时重试的机制。同时引入新的问题，消息重复。
+<strong>恰好一次</strong>从理论上来说，在分布式系统中想要解决消息重复的问题是不可能的，很多消息服务提供了正好一次的 QoS 其实是在接收端进行了去重。</p>
+
+<h1 id="投递顺序">投递顺序</h1>
+
+<p>由于一些网络的问题，消息在投递时可能会出现顺序不一致性的情况，在网络条件非常不稳定时，我们就可能会遇到接收方处理消息的顺序和生产者投递的不一致；消费者就需要对顺序不一致的消息进行处理，常见的两种方式就是使用<strong>序列号</strong>或者<strong>状态机</strong>。</p>
+
+<h2 id="序列号">序列号</h2>
+
+<p>用阻塞的方式保证序列号的递增或者忽略部分『过期』的消息。</p>
+
+<h2 id="状态机">状态机</h2>
+
+<p>虽然消息投递的顺序是乱序的，但是资源最终还是通过状态机达到了我们想要的正确状态，不会出现不一致的问题。</p>
+
+<h1 id="协议">协议</h1>
+
+<p>AMQP： StormMQ、RabbitMQ， 支持最多一次和最少一次的投递语义，当我们选择最少一次时，需要幂等或者重入机制保证消息重复不会出现问题。</p>
+
+<p>MQTT</p>
+
+<h1 id="reference">reference</h1>
 
 <ul>
-<li>linux 0.11</li>
-<li>linux 0.95    实现虚拟文件系统</li>
-<li>linux 0.96    实现网络接口</li>
+<li><a href="https://draveness.me/distributed-transaction-principle">分布式事务的实现原理</a></li>
+<li><a href="https://draveness.me/message-delivery">分布式系统与消息的投递</a></li>
+<li><a href="https://draveness.me/database-concurrency-control">浅谈数据库并发控制 - 锁和 MVCC</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650993240&amp;idx=1&amp;sn=bb2c943ee7aeabc3b5962056534d36b5#rd">消息队列设计的精髓基本都藏在本文里了</a></li>
+<li><a href="https://tech.meituan.com/2016/07/01/mq-design.html">消息队列设计精要</a></li>
+<li><a href="https://tech.meituan.com/2016/07/01/mq-design.html">消息队列设计精要</a></li>
 </ul>
-
-<h1 id="linux">linux</h1>
-
-<p>linux采用分段+分页机制结合管理内存</p>
-
-<h1 id="linux-调试方法">linux 调试方法</h1>
-
-<ul>
-<li><p><a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">gdb tools/system
-target remote localhost:1234
-
-
-gdb常用命令
-b: 下中斷點
-info b :u 列出目前中断点，也可简写成&#34;i b&#34;
-continue(c) 继续执行直到下一个中断点或结束
-list(l): 列出目前上下文
-step(s): 单步 (会进入 funciton)
-next(n) : 单步 (不会进入 funciton)
-until(u) 跳离一个 while for 循环
-print(p): 显示某变量，如 p str
-info register(i r) : 显示 CPU 的 register
-
-GDB 打印出内存中的內容，格式為 x/nyz，其中
-n: 要印出的數量
-y: 显示的格式，可为C( char), d(整数), x(hex)
-z: 单位，可为 b(byte), h(16bit), w(32bit)
-
-cgdb	可显示为上半部分为代码，下半部分命令部分
-cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/linux-0-11-boot/)
-* [Linux0.11启动过程](http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml)
-* [80386保护模式的本质](http://www.jianshu.com/p/1cea7dc5d6b7)
-* [linux虚拟地址到线性地址的转化](http://luodw.cc/2016/02/17/address/)
-* [Linux内存寻址之分段机制-linux回避了分段机制](http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/)
-* [Linux内存寻址之分页机制/](http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/)
-* [逻辑地址、线性地址、物理地址和虚拟地址](http://www.voidcn.com/blog/will130/article/p-5705051.html)
-* [Intel 80386 程序员参考手册](http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838)
-* [linux0.11内核之文件系统](http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164)</pre></div></li>
-</ul>
-
-<h1 id="source">source</h1>
-
-<h1 id="80386内存访问公式">80386内存访问公式</h1>
-
-<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
-
-<p>48bit = 16 + 32
-16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
-32线性地址 -&gt; 物理地址</p>
     </div>
     <footer class="post-footer">
      
  
 <div class="post-tags">     
      
-    <a href="/tags/linux" rel="tag" title="Linux">#Linux#</a>
+    <a href="/tags/mq" rel="tag" title="mq">#mq#</a>
     
-    <a href="/tags/%e8%b5%84%e6%ba%90" rel="tag" title="资源">#资源#</a>
+    <a href="/tags/architecture" rel="tag" title="architecture">#architecture#</a>
+    
+    <a href="/tags/distributed" rel="tag" title="distributed">#distributed#</a>
     
 </div>
 
@@ -218,13 +201,17 @@ cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/l
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/diary/2017.01.01-2016-holiday-summary/" rel="next" title="2016年终总结，未来规划">
-        <i class="fa fa-chevron-left"></i> 2016年终总结，未来规划
+        <a href="/about/" rel="next" title="关于">
+        <i class="fa fa-chevron-left"></i> 关于
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
+    
+        <a href="/post/architecture/microservicedesign/" rel="prev" title="高可用系统设计问题、微服务设计笔记 脑图">
+        高可用系统设计问题、微服务设计笔记 脑图 <i class="fa fa-chevron-right"></i>
+        </a>
     
     </div>
 </div>
@@ -237,7 +224,7 @@ cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/l
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Linux0.11源码学习环境配置与相关资源汇总
+            标题：消息队列
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

@@ -13,6 +13,27 @@
     </entry>
     
      <entry>
+        <title>消息队列</title>
+        <url>/post/architecture/mq/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>mq</tag><tag>architecture</tag><tag>distributed</tag>
+        </tags>
+        <content type="html"> 文章简介：消息队列中需要解决的问题
+网络通信可能会包含，成功、失败以及超时三种情况
+消息投递语义 最多一次（At-Most Once）、最少一次（At-Least Once）以及恰好一次（Exactly Once）
+最多一次在 TCP/UDP 传输层协议就是保证最多一次消息投递，消息的发送者只会尝试发送该消息一次，并不会关心该消息是否得到了远程节点的响应。 最少一次引入超时重试的机制。同时引入新的问题，消息重复。 恰好一次从理论上来说，在分布式系统中想要解决消息重复的问题是不可能的，很多消息服务提供了正好一次的 QoS 其实是在接收端进行了去重。
+投递顺序 由于一些网络的问题，消息在投递时可能会出现顺序不一致性的情况，在网络条件非常不稳定时，我们就可能会遇到接收方处理消息的顺序和生产者投递的不一致；消费者就需要对顺序不一致的消息进行处理，常见的两种方式就是使用序列号或者状态机。
+序列号 用阻塞的方式保证序列号的递增或者忽略部分『过期』的消息。
+状态机 虽然消息投递的顺序是乱序的，但是资源最终还是通过状态机达到了我们想要的正确状态，不会出现不一致的问题。
+协议 AMQP： StormMQ、RabbitMQ， 支持最多一次和最少一次的投递语义，当我们选择最少一次时，需要幂等或者重入机制保证消息重复不会出现问题。
+MQTT
+reference  分布式事务的实现原理 分布式系统与消息的投递 浅谈数据库并发控制 - 锁和 MVCC 消息队列设计的精髓基本都藏在本文里了 消息队列设计精要 消息队列设计精要 </content>
+    </entry>
+    
+     <entry>
         <title>高可用系统设计问题、微服务设计笔记 脑图</title>
         <url>/post/architecture/microservicedesign/</url>
         <categories>
@@ -23,7 +44,21 @@
         </tags>
         <content type="html"> 高可用系统设计，有哪些问题需要解决
 什么是高可用系统 关于高可用的系统
-高可用系统需要解决的问题  可扩展：水平扩展、垂直扩展。 通过冗余部署，避免单点故障。   隔离：避免单一业务占用全部资源。避免业务之间的相互影响 2. 机房隔离避免单点故障。 解耦：降低维护成本，降低耦合风险。减少依赖，减少相互间的影响。 限流：滑动窗口计数法、漏桶算法、令牌桶算法等算法。遇到突发流量时，保证系统稳定。 降级：紧急情况下释放非核心功能的资源。牺牲非核心业务，保证核心业务的高可用。 熔断：异常情况超出阈值进入熔断状态，快速失败。减少不稳定的外部依赖对核心服务的影响。 系统监控：对 CPU 利用率，load，内存，带宽，系统调用量，应用错误量，PV，UV 和业务量进行监控 自动化测试：通过完善的测试，减少发布引起的故障。 灰度发布(&#43;回滚)：灰度发布是速度与安全性作为妥协，能够有效减少发布故障。 异步消息系统  《微服务设计》脑图 脑图如下：  脑图地址  references  后端架构师技术图谱 hystrix bilibili/kratos
+高可用系统需要解决的问题 挑战  成倍的 API 数量   引入网络延迟 CAP 理论，处理跨多个服务的事务复杂 调试分布式系统十分复杂 服务雪崩 大量请求堆积，故障恢复慢 微服务技术选型 API 版本管理混乱 TCC、事务消息队列  需要做的事  可扩展：水平扩展、垂直扩展。 通过冗余部署，避免单点故障。   隔离：避免单一业务占用全部资源。避免业务之间的相互影响 2. 机房隔离避免单点故障。 解耦：降低维护成本，降低耦合风险。减少依赖，减少相互间的影响。 限流：滑动窗口计数法、漏桶算法、令牌桶算法等算法。遇到突发流量时，保证系统稳定。 降级：紧急情况下释放非核心功能的资源。牺牲非核心业务，保证核心业务的高可用。 熔断：异常情况超出阈值进入熔断状态，快速失败。减少不稳定的外部依赖对核心服务的影响。 系统监控：对 CPU 利用率，load，内存，带宽，系统调用量，应用错误量，PV，UV 和业务量进行监控 自动化测试：通过完善的测试，减少发布引起的故障。 灰度发布(&#43;回滚)：灰度发布是速度与安全性作为妥协，能够有效减少发布故障。 异步消息系统  需要深入的技术栈 分布式系统、DevOps、基础架构即代码(IaC)、不同类型的数据库、前端组件化和复合化、单元测试、全自动发布、迭代、小版本发布计划、测试工具、多版本管理
+分布式一致性与共识算法 Consensus from wiki, 总结下来一致性就是，在分布式系统中，在给定的一系列操作，即使系统内部出错，最终整个系统对外提供的数据都是可靠的。在协调一致性的过程中，对于一个 Proposal 整个系统达成共识，共识算法起着很重要的作用。
+CAP 加州伯克利大学的教授 Eric Brewer 论文Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services 阐述了 CAP 理论 CAP from wiki, 论文中提出的观点：在异步的网络模型中，所有的节点由于没有时钟仅仅能根据接收到的消息作出判断，这时完全不能同时保证一致性(Consistency)、可用性(Availability)和分区容错性(Partition tolerance)，每一个系统只能在这三种特性中选择两种。 由于网络有一定的延迟，并不能做到强一致性，所以大部分时候采用最终一致性的方式，容忍一定时间内数据不一致，在一定的时间内系统内部各节点可以在有限的时间内解决冲突，使数据恢复准确的状态。
+拜占庭将军问题 拜占庭将军问题论文
+拜占庭将军问题是对分布式系统容错的最高要求，然而这不是日常工作中使用的大多数分布式系统中会面对的问题，我们遇到更多的还是节点故障宕机或者不响应等情况，这就大大简化了系统对容错的要求
+FLP FLP 不可能定理是分布式系统领域最重要的定理之一，它给出了一个非常重要的结论：在网络可靠并且存在节点失效的异步模型系统中，不存在一个可以解决一致性问题的确定性算法。
+ In this paper, we show the surprising result that no completely asynchronous consensus protocol can tolerate even a single unannounced process death. We do not consider Byzantine failures, and we assume that the message system is reliable it delivers all messages correctly and exactly once.
+ 相关论文
+共识算法 paxos, raft 包括 Paxos、Raft
+The Raft Consensus Algorithm raft 工作原理动图
+Paxos 算法难以理解、难以实现，难道什么程度呢？在 raft 的论文中有提及。比如 zookeeper 的 zab 就是在 paxos 的基础上进行设计的。每一种 Paxos 的实现，都需要重新设计实现一套算法。而 raft 相对难度降低很多。 基于 raft 的 etcd，consul 等。
+POW(Proof-of-Work) 无论是 Paxos 还是 Raft 其实都只能解决非拜占庭将军容错的一致性问题，不能够应对分布式网络中出现的极端情况，但是这在传统的分布式系统都不是什么问题，无论是分布式数据库还是消息队列集群，它们内部的节点并不会故意的发送错误信息，在类似系统中，最常见的问题就是节点失去响应或者失效，所以它们在这种前提下是有效可行的，也是充分的。
+工作量证明是一个用于阻止拒绝服务攻击和类似垃圾邮件等服务错误问题的协议
+POS(Proof-of-Stake) 权益证明是区块链网络中的使用的另一种共识算法，在基于权益证明的密码货币中，下一个区块的选择是根据不同节点的股份和时间进行随机选择的。
+DPOS(Delegated Proof-of-Stake) 《微服务设计》脑图 脑图如下：  脑图地址  references  后端架构师技术图谱 hystrix bilibili/kratos
  Go Microservices blog series
  microservices-in-golang
  shippy-demo
@@ -32,6 +67,7 @@
  micro/go-micro
  CAP theorem
  grpc-example
+ 分布式一致性与共识算法
  </content>
     </entry>
     

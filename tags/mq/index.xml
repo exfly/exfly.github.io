@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mq on Exfly Blog</title>
+    <link>/tags/mq/</link>
+    <description>Recent content in mq on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 29 Jul 2019 08:04:30 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/mq/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>消息队列</title>
+      <link>/post/architecture/mq/</link>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
+      
+      <guid>/post/architecture/mq/</guid>
+      <description>&lt;p&gt;文章简介：消息队列中需要解决的问题&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

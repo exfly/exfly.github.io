@@ -6,26 +6,35 @@
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jul 2019 08:04:30 +0800</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Architecture</title>
+      <title>architecture</title>
       <link>/tags/architecture/</link>
-      <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
       
       <guid>/tags/architecture/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Distributed</title>
+      <title>distributed</title>
       <link>/tags/distributed/</link>
-      <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
       
       <guid>/tags/distributed/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mq</title>
+      <link>/tags/mq/</link>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
+      
+      <guid>/tags/mq/</guid>
       <description></description>
     </item>
     

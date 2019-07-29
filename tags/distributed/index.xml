@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Distributed on Exfly Blog</title>
+    <title>distributed on Exfly Blog</title>
     <link>/tags/distributed/</link>
-    <description>Recent content in Distributed on Exfly Blog</description>
+    <description>Recent content in distributed on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 29 Jul 2019 08:04:30 +0800</lastBuildDate>
     
 	<atom:link href="/tags/distributed/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>消息队列</title>
+      <link>/post/architecture/mq/</link>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
+      
+      <guid>/post/architecture/mq/</guid>
+      <description>&lt;p&gt;文章简介：消息队列中需要解决的问题&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>高可用系统设计问题、微服务设计笔记 脑图</title>

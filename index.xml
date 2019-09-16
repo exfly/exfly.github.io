@@ -6,7 +6,7 @@
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 29 Jul 2019 08:04:30 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2019 09:03:53 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -17,7 +17,7 @@
       <pubDate>Sat, 16 Sep 2017 15:41:18 +0800</pubDate>
       
       <guid>/links/</guid>
-      <description>draveness Draveness&amp;rsquo;s Blog面向信仰编程 docker k8s 胡伟煌 胡伟煌 k8s</description>
+      <description>draveness Draveness&amp;rsquo;s Blog面向信仰编程 docker k8s 胡伟煌 胡伟煌 k8s zhile.io zhile.io</description>
     </item>
     
     <item>
@@ -27,6 +27,33 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Description Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry. Skills Golang &amp;gt; Java &amp;gt; Python &amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>Log</title>
+      <link>/post/architecture/log/</link>
+      <pubDate>Mon, 16 Sep 2019 09:03:53 +0800</pubDate>
+      
+      <guid>/post/architecture/log/</guid>
+      <description>&lt;p&gt;文章简介：log&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>/post/tools/git/</link>
+      <pubDate>Mon, 09 Sep 2019 10:28:44 +0800</pubDate>
+      
+      <guid>/post/tools/git/</guid>
+      <description>&lt;p&gt;文章简介：git 简单使用， 分享一些资料&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linker</title>
+      <link>/post/cs/linker/</link>
+      <pubDate>Tue, 06 Aug 2019 12:48:38 +0800</pubDate>
+      
+      <guid>/post/cs/linker/</guid>
+      <description>&lt;p&gt;文章简介：链接器 学习资源&lt;/p&gt;</description>
     </item>
     
     <item>

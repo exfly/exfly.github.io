@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Contribute to Opensource - Exfly Blog</title>
+    <title>Linker - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Contribute to Opensource">
+    <meta property="og:title" content="Linker">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Contribute to Opensource - Exfly Blog" />
+    <meta name="title" content="Linker - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -122,8 +122,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/contribute-to-opensource/" itemprop="url">
-        Contribute to Opensource
+        <a class="post-title-link" href="/post/cs/linker/" itemprop="url">
+        Linker
         </a>
       </h1>
       <div class="post-meta">
@@ -132,8 +132,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-04-21">
-    2019-04-21
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-08-06">
+    2019-08-06
 </time>
 </span> 
       
@@ -143,106 +143,49 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">962 字 ~2分钟</span>
+<span class="leancloud-visitors-count">53 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>文章简介：如何参与开源项目。在这里分享一些思路和开源资源。</p>
+    <p>文章简介：链接器 学习资源</p>
 
-<h1 id="简介">简介</h1>
+<p>链接器 学习资源</p>
 
-<p>自从学习计算机开始，很多时候希望自己能够也为 opensource 贡献一些什么。这里会总结一些思路为开源做些什么。</p>
-
-<h1 id="思路">思路</h1>
-
-<p><a href="https://blog.algolia.com/start-your-open-source-career/">Start Your Open Source Career</a>这里简述了如何参与开源项目。对自己有很多启示。我们在工作学习中也会有一些自己感觉很好的对某个技术问题的解决方式,希望可以分享给大家，或者希望学习新的知识，成为某个工具的核心维护者。
-这里会总结一些比较好的参与开源项目的思路。</p>
-
-<h2 id="good-first-issue-or-help-wanted"><code>good first issue</code> or <code>help wanted</code></h2>
-
-<p>很多开源项目的<code>issue</code>中已经标记出很多类似<code>good first issue</code> or <code>help wanted</code>的 label，这些 label 表示新人可以来帮忙。可以通过一些网站找到打相应 label 的项目，这可能成为你贡献开源项目的开端。
-或许这些网站可以帮到你(<a href="https://opensource.guide/how-to-contribute/#finding-a-project-to-contribute-to">来自 github</a>)：</p>
+<h1 id="references">references</h1>
 
 <ul>
-<li><a href="https://opensourcefriday.com/users/exfly">开源星期五 - opensourcefriday</a> 统计自己参与的项目，同时推荐如何开始</li>
-<li><a href="https://github.com/explore/">github-explore</a> github 会为你推荐一些你感兴趣的项目</li>
-<li><a href="https://github.com/tuvtran/project-based-learning">project-based-learning</a> Curated list of project-based tutorials</li>
-<li><a href="https://www.firsttimersonly.com/">first timers only</a> 贡献 pr 需要的 git 知识，label 搜索，相关订阅提醒等</li>
-<li><a href="https://www.codetriage.com/">codetriage</a> 订阅 github 中的项目，issue 等，方便通知自己感兴趣的项目</li>
-<li><a href="http://issuehub.io/">issuehub</a> 按照标签搜索项目</li>
-<li><a href="http://www.pullrequestroulette.com/">pullrequestroulette</a> 检索需要 reviews 的 pr</li>
-<li><a href="https://up-for-grabs.net/">up-for-grabs.net</a> 根据 label 等检索项目</li>
-<li><a href="https://opensource.guide/how-to-contribute/#a-checklist-before-you-contribute">how-to-contribute/#a-checklist-before-you-contribute</a></li>
-</ul>
+<li><a href="https://blog.crazyforcode.org/beginners-guide-to-linkers/">Beginner&rsquo;s Guide to Linkers-cn</a></li>
 
-<h2 id="思路-1">思路</h2>
+<li><p><a href="https://www.lurklurk.org/linkers/linkers.html">Beginner&rsquo;s Guide to Linkers</a></p></li>
 
-<h3 id="构建一些工具">构建一些工具</h3>
-
-<p>比如构建一些项目模版，比如<a href="https://github.com/exfly/graphql-boilerplate">graphql+mongoboilerplate</a>.
-比如编写一些平时可以提高工作效率的工具，<a href="https://github.com/alibaba/arthas">alibaba/arthas</a></p>
-
-<h3 id="成为新的维护者">成为新的维护者</h3>
-
-<p>有很多有价值的项目因为没有维护者渐渐被人遗弃。你是否可以成为新的维护者呢？可以通过邮件、twiter 等联系原作者，成为项目维护者是不是很棒？</p>
-
-<h3 id="创建自己的项目">创建自己的项目</h3>
-
-<p>如果自己有对新的技术问题的解决办法，可以开源出来，分享自己是如何解决的</p>
-
-<h3 id="发布-推广-分享">发布，推广，分享</h3>
-
-<p>为了确保每个有需要的人都乐意来找到你的模块，你必须：</p>
-
-<ul>
-<li>撰写 readme 等
-
-<ul>
-<li><a href="https://help.github.com/en/articles/licensing-a-repository#where-does-the-license-live-on-my-repository">license</a></li>
-<li><a href="https://opensource.guide/starting-a-project/#writing-a-readme">README</a></li>
-<li><a href="https://shields.io/">版本徽章</a></li>
-<li><a href="https://help.github.com/en/articles/setting-guidelines-for-repository-contributors">贡献指南</a></li>
-<li>提供<a href="https://github.blog/2016-02-17-issue-and-pull-request-templates/">ISSUE_TEMPLATE</a></li>
-<li><a href="https://opensource.guide/code-of-conduct/">使用本项目的产品</a></li>
-</ul></li>
-<li>为项目撰写精心设计的在线网站，和文档，可以使用静态网站工具生成，如<a href="vuepress.vuejs.org">vuepress</a></li>
-<li>在 StackOverflow 和 GitHub 等社交媒体中寻找相关问题并贴出你的项目，并解答</li>
-<li>将项目发布到汇集开源项目的社区中，如<a href="https://news.ycombinator.com/submit">HackerNews</a>、<a href="https://www.reddit.com/r/programming/">reddit</a>、<a href="https://www.producthunt.com/posts/new">producthunt</a>、<a href="https://hashnode.com/">hashnode</a></li>
-<li>参与一些线下分享、讨论会、演讲等中介绍你的项目</li>
-</ul>
-
-<h1 id="链接">链接</h1>
-
-<ul>
-<li><a href="https://octobox.io/">octobox</a> 将你的 GitHub 通知转成邮件的形式，这是避免因堆积「太多问题」以至于影响关注重要问题的很好的方法</li>
-<li><a href="https://probot.github.io/">probot</a> GitHub App 可以自动化和改善你的工作流程</li>
-<li><a href="https://github.com/sindresorhus/refined-github">refined-github</a> 浏览器扩展，简化了 GitHub 界面并添加了有用的功能</li>
-<li><a href="https://blog.algolia.com/start-your-open-source-career/">Start Your Open Source Career</a></li>
-<li>[](<a href="https://github.com/mattermost/mattermost-server">https://github.com/mattermost/mattermost-server</a>)</li>
-<li>[](<a href="https://github.com/tuvtran/project-based-learning#go">https://github.com/tuvtran/project-based-learning#go</a>)</li>
-<li>[](<a href="https://github.com/MunGell/awesome-for-beginners">https://github.com/MunGell/awesome-for-beginners</a>)</li>
-<li><a href="https://www.atlassian.com/git/tutorials/merging-vs-rebasing">https://www.atlassian.com/git/tutorials/merging-vs-rebasing</a></li>
+<li><p><a href="https://www.youtube.com/watch?v=xVT1y0xWgww">CppCon 2017: Nir Friedman “What C++ developers should know about globals (and the linker)”</a></p></li>
 </ul>
     </div>
     <footer class="post-footer">
      
+ 
+<div class="post-tags">     
+     
+    <a href="/tags/%e5%b7%a5%e5%85%b7" rel="tag" title="工具">#工具#</a>
+    
+</div>
 
 
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/docker/docker-contents/" rel="next" title="Docker 源码阅读: 目录">
-        <i class="fa fa-chevron-left"></i> Docker 源码阅读: 目录
+        <a href="/post/tools/git/" rel="next" title="Git">
+        <i class="fa fa-chevron-left"></i> Git
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/java/openapi/" rel="prev" title="Openapi">
-        Openapi <i class="fa fa-chevron-right"></i>
+        <a href="/post/architecture/mq/" rel="prev" title="消息队列">
+        消息队列 <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -256,7 +199,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Contribute to Opensource
+            标题：Linker
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

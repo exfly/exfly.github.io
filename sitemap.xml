@@ -1,6 +1,20 @@
 <search>
     
      <entry>
+        <title>Log</title>
+        <url>/post/architecture/log/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>architecture</tag>
+        </tags>
+        <content type="html"> 文章简介：log
+在多个系统相互协作的分布式系统中，为了能够保证异步系统的协作是否工作，需要一套日志系统保证系统正常的工作。
+工具  应用内日志，比如开一个新的 log table，其中记录关键元数据，以及一些返回结果。应用内日志记录的内容未来可以作为数据 migration 的有效工具，保证没有成功的操作可以在未来重试，保证系统的数据的完整 opentracing 跟踪请求链路，方便 debug 分布式系统。（具体如何做，之后补充 TODO: flag） elk 系列 nginx 日志 </content>
+    </entry>
+    
+     <entry>
         <title>Posts</title>
         <url>/post/</url>
         <categories>
@@ -10,6 +24,35 @@
           
         </tags>
         <content type="html"> </content>
+    </entry>
+    
+     <entry>
+        <title>Git</title>
+        <url>/post/tools/git/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>工具</tag>
+        </tags>
+        <content type="html"> 文章简介：git 简单使用， 分享一些资料
+references  图解 Git Git 交互式学习环境-演示 Git 交互式学习环境-学习中使用 Google Engineering Practices Documentation Conventional Commits 有工具可以生成 changelog </content>
+    </entry>
+    
+     <entry>
+        <title>Linker</title>
+        <url>/post/cs/linker/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          <tag>工具</tag>
+        </tags>
+        <content type="html"> 文章简介：链接器 学习资源
+链接器 学习资源
+references  Beginner&amp;rsquo;s Guide to Linkers-cn Beginner&amp;rsquo;s Guide to Linkers
+ CppCon 2017: Nir Friedman “What C&#43;&#43; developers should know about globals (and the linker)”
+ </content>
     </entry>
     
      <entry>

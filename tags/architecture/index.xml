@@ -6,10 +6,19 @@
     <description>Recent content in architecture on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 29 Jul 2019 08:04:30 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 16 Sep 2019 09:03:53 +0800</lastBuildDate>
     
 	<atom:link href="/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Log</title>
+      <link>/post/architecture/log/</link>
+      <pubDate>Mon, 16 Sep 2019 09:03:53 +0800</pubDate>
+      
+      <guid>/post/architecture/log/</guid>
+      <description>&lt;p&gt;文章简介：log&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>消息队列</title>

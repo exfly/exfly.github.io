@@ -6,7 +6,7 @@
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 17 Sep 2019 09:07:19 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 28 Sep 2019 17:20:14 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -27,6 +27,15 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Description Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry. Skills Golang &amp;gt; Java &amp;gt; Python &amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>整理了一套 dotfiles 自用</title>
+      <link>/post/tools/dotfiles/</link>
+      <pubDate>Sat, 28 Sep 2019 17:20:14 +0800</pubDate>
+      
+      <guid>/post/tools/dotfiles/</guid>
+      <description>&lt;p&gt;文章简介：自己的 &lt;code&gt;dotfiles&lt;/code&gt; 供自己使用，几乎一键换机&lt;/p&gt;</description>
     </item>
     
     <item>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>architecture on Exfly Blog</title>
+    <title>Architecture on Exfly Blog</title>
     <link>/tags/architecture/</link>
-    <description>Recent content in architecture on Exfly Blog</description>
+    <description>Recent content in Architecture on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Mon, 16 Sep 2019 09:03:53 +0800</lastBuildDate>

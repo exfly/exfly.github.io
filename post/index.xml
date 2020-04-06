@@ -6,10 +6,28 @@
     <description>Recent content in Posts on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 28 Sep 2019 17:20:14 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 06 Apr 2020 12:54:50 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux epoll</title>
+      <link>/post/high_performance/linux_epoll/</link>
+      <pubDate>Mon, 06 Apr 2020 12:54:50 +0800</pubDate>
+      
+      <guid>/post/high_performance/linux_epoll/</guid>
+      <description>&lt;p&gt;epoll 高性能 network io 模型&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>读写操作到底有多慢, 操作系统相关一些参数</title>
+      <link>/post/db/how-fast-the-read-write/</link>
+      <pubDate>Sat, 30 Nov 2019 13:11:38 +0800</pubDate>
+      
+      <guid>/post/db/how-fast-the-read-write/</guid>
+      <description>&lt;p&gt;文章简介：Latency numbers every programmer should know&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>整理了一套 dotfiles 自用</title>

@@ -34,7 +34,7 @@ ES 会每隔 1 秒时间（这个时间可以修改）进行一次刷新操作�
 分布式一致性原理 资源，有源码分析
 ES 集群构成 node.master node.data 两两组合成不同的节点
 节点发现 Master 选举 多数派原则 选主
-references  elasticsearch cheatsheet Elasticsearch Reference </content>
+references  elasticsearch cheatsheet Elasticsearch Reference Elasticsearch－基础介绍及索引原理分析 Choosing a fast unique identifier (UUID) for Lucene Elasticsearch架构原理 Elasticsearch性能优化 ElasticSearch读写底层原理及性能调优 </content>
     </entry>
     
      <entry>

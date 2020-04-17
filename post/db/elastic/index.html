@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Docker 源码阅读: Docker Volume - Exfly Blog</title>
+    <title>ElasticSearch - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Docker 源码阅读: Docker Volume">
+    <meta property="og:title" content="ElasticSearch">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Docker 源码阅读: Docker Volume - Exfly Blog" />
+    <meta name="title" content="ElasticSearch - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -122,8 +122,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/docker/docker-volume/" itemprop="url">
-        Docker 源码阅读: Docker Volume
+        <a class="post-title-link" href="/post/db/elastic/" itemprop="url">
+        ElasticSearch
         </a>
       </h1>
       <div class="post-meta">
@@ -132,8 +132,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-05-05">
-    2019-05-05
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-04-16">
+    2020-04-16
 </time>
 </span> 
       
@@ -143,41 +143,121 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">258 字 ~1分钟</span>
+<span class="leancloud-visitors-count">2101 字 ~5分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>文章简介：描述 docker volume 的原理</p>
+    <p>ElasticSearch 整理一下知识点</p>
 
-<p>docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层通过类似 aufs 或者 overlay2 将多个层联合到一起，mount 成新的目录，在通过 namespaces 将新的文件目录 chroot 进入新启动的进程，达到文件隔离的目的。</p>
+<p>ElasticSearch 是一个分布式搜索引擎，底层使用 Lucene 来实现其核心搜索功能.其核心是全文检索.</p>
+
+<h2 id="全文检索">全文检索</h2>
+
+<p><a href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/inverted-index.html">倒排索引</a> + <a href="https://zhuanlan.zhihu.com/p/31197209">TF-IDF</a>为全文搜索的基石。</p>
+
+<h2 id="elasticsearch-诞生的背景">ElasticSearch 诞生的背景</h2>
+
+<h3 id="大规模数据如何检索">大规模数据如何检索</h3>
+
+<p>当系统数据量上了 10 亿、100 亿条的时候，我们在做系统架构的时候通常会从以下角度去考虑问题：</p>
+
+<ol>
+<li>用什么数据库好？(mysql、postgres、sybase、oracle、达梦、神通、mongodb、hbase…)</li>
+<li>如何解决单点故障；(lvs、F5、A10、Zookeep、MQ)</li>
+<li>如何保证数据安全性；(热备、冷备、异地多活)</li>
+<li>如何解决检索难题；(数据库代理中间件：mysql-proxy、Cobar、MaxScale 等;)</li>
+<li>如何解决统计分析问题；(离线、近实时)</li>
+</ol>
+
+<h3 id="传统数据库的应对解决方案">传统数据库的应对解决方案</h3>
+
+<p>对于关系型数据，我们通常采用以下或类似架构去解决查询瓶颈和写入瓶颈：</p>
+
+<ol>
+<li>通过主从备份解决数据安全性问题；</li>
+<li>通过数据库代理中间件心跳监测，解决单点故障问题；</li>
+<li>通过代理中间件将查询语句分发到各个 slave 节点进行查询，并汇总结果</li>
+</ol>
+
+<h3 id="非关系型数据库的解决方案">非关系型数据库的解决方案</h3>
+
+<p>对于 Nosql 数据库，基本原理类似：</p>
+
+<ol>
+<li>通过副本备份保证数据安全性；</li>
+<li>通过节点竞选机制解决单点问题；</li>
+<li>先从配置库检索分片信息，然后将请求分发到各个节点，最后由路由节点合并汇总结果</li>
+</ol>
+
+<h2 id="elastic-理论知识">Elastic 理论知识</h2>
+
+<h3 id="elasticsearch-vs-mysql">Elasticsearch vs mysql</h3>
+
+<p>Mysql -&gt; database -&gt; table -&gt; rows -&gt; columns
+Elasticsearch -&gt; index -&gt; type -&gt; documents -&gt; fields</p>
+
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.x/removal-of-types.html">elastic 在 7.x 之后将去掉 types</a>, 替代方案：index per document type / custom type field</p>
+
+<h3 id="es-的-crud">ES 的 CRUD</h3>
+
+<p><a href="https://blog.csdn.net/zkyfcx/article/details/79998197">资料</a></p>
+
+<h4 id="索引新文档">索引新文档</h4>
+
+<p>当用户向一个节点提交了一个索引新文档的请求，节点会计算新文档应该加入到哪个分片（shard）中。每个节点都存储有每个分片存储在哪个节点的信息，因此协调节点会将请求发送给对应的节点。注意这个请求会发送给主分片，等主分片完成索引，会并行将请求发送到其所有副本分片，保证每个分片都持有最新数据。</p>
+
+<p>每次写入新文档时，都会先写入内存中，并将这一操作写入一个 translog 文件（transaction log）中，此时如果执行搜索操作，这个新文档还不能被索引到。</p>
+
+<p>ES 会每隔 1 秒时间（这个时间可以修改）进行一次刷新操作（refresh），此时在这 1 秒时间内写入内存的新文档都会被写入一个文件系统缓存（filesystem cache）中，并构成一个分段（segment）。此时这个 segment 里的文档可以被搜索到，但是尚未写入硬盘，即如果此时发生断电，则这些文档可能会丢失。</p>
+
+<p>不断有新的文档写入，则这一过程将不断重复执行。每隔一秒将生成一个新的 segment，而 translog 文件将越来越大。每隔 30 分钟或者 translog 文件变得很大，则执行一次 fsync 操作。此时所有在文件系统缓存中的 segment 将被写入磁盘，而 translog 将被删除（此后会生成新的 translog）。</p>
+
+<p>由上面的流程可以看出，在两次 fsync 操作之间，存储在内存和文件系统缓存中的文档是不安全的，一旦出现断电这些文档就会丢失。所以 ES 引入了 translog 来记录两次 fsync 之间所有的操作，这样机器从故障中恢复或者重新启动，ES 便可以根据 translog 进行还原。</p>
+
+<p>此外，由于每一秒就会生成一个新的 segment，很快将会有大量的 segment。对于一个分片进行查询请求，将会轮流查询分片中的所有 segment，这将降低搜索的效率。因此 ES 会自动启动合并 segment 的工作，将一部分相似大小的 segment 合并成一个新的大 segment。合并的过程实际上是创建了一个新的 segment，当新 segment 被写入磁盘，所有被合并的旧 segment 被清除。</p>
+
+<h4 id="更新-update-和删除-delete-文档">更新（Update）和删除（Delete）文档</h4>
+
+<p>ES 的索引是不能修改的，因此更新和删除操作并不是直接在原索引上直接执行。每一个磁盘上的 segment 都会维护一个 del 文件，用来记录被删除的文件。每当用户提出一个删除请求，文档并没有被真正删除，索引也没有发生改变，而是在 del 文件中标记该文档已被删除。因此，被删除的文档依然可以被检索到，只是在返回检索结果时被过滤掉了。每次在启动 segment 合并工作时，那些被标记为删除的文档才会被真正删除。</p>
+
+<p>更新文档会首先查找原文档，得到该文档的版本号。然后将修改后的文档写入内存，此过程与写入一个新文档相同。同时，旧版本文档被标记为删除，同理，该文档可以被搜索到，只是最终被过滤掉。</p>
+
+<h4 id="读操作-read-查询过程">读操作（Read）：查询过程</h4>
+
+<h5 id="查询阶段">查询阶段</h5>
+
+<p>当一个节点接收到一个搜索请求，则这个节点就变成了协调节点。第一步是广播请求到索引中每一个节点的分片拷贝。 查询请求可以被某个主分片或某个副本分片处理，协调节点将在之后的请求中轮询所有的分片拷贝来分摊负载。</p>
+
+<p>每个分片将会在本地构建一个优先级队列。如果客户端要求返回结果排序中从第 from 名开始的数量为 size 的结果集，则每个节点都需要生成一个 from+size 大小的结果集，因此优先级队列的大小也是 from+size。分片仅会返回一个轻量级的结果给协调节点，包含结果集中的每一个文档的 ID 和进行排序所需要的信息。</p>
+
+<p>协调节点会将所有分片的结果汇总，并进行全局排序，得到最终的查询排序结果。此时查询阶段结束。</p>
+
+<h5 id="取回阶段">取回阶段</h5>
+
+<p>查询过程得到的是一个排序结果，标记出哪些文档是符合搜索要求的，此时仍然需要获取这些文档返回客户端。</p>
+
+<p>协调节点会确定实际需要返回的文档，并向含有该文档的分片发送 get 请求；分片获取文档返回给协调节点；协调节点将结果返回给客户端。</p>
+
+<h2 id="分布式一致性原理">分布式一致性原理</h2>
+
+<p><a href="https://zhuanlan.zhihu.com/p/34830403">资源，有源码分析</a></p>
+
+<h3 id="es-集群构成">ES 集群构成</h3>
+
+<p>node.master node.data 两两组合成不同的节点</p>
+
+<h3 id="节点发现">节点发现</h3>
+
+<h3 id="master-选举">Master 选举</h3>
+
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-quorums.html">多数派原则</a> 选主</p>
+
+<h2 id="references">references</h2>
 
 <ul>
-<li>对于读请求，由于写实复制技术，会直接读取底层文件</li>
-<li>对于写请求，会先将文件复制到读写层，然后进行修改文件</li>
-<li>对于删除，没有真正删除文件，只是讲文件标记删除，没有真正删除下层文件。</li>
-</ul>
-
-<h1 id="命令">命令</h1>
-
-<ul>
-<li><p><code>docker volume create volume-for-test</code>可以创建新的 volume</p></li>
-
-<li><p><code>docker volume ls</code> 查看新创建的 volume</p></li>
-
-<li><p><code>docker volume inspect volume-for-test</code></p></li>
-
-<li><p><code>docker run -d --name devtest --mount source=volume-for-test,target=/app alpine /bin/sh</code></p></li>
-
-<li><p><code>docker inspect &lt;container_id&gt;| grap Mounts</code> 可以看到刚刚 mount 进去的 volume <code>/var/lib/docker/volumes/volume-for-test/_data</code></p></li>
-</ul>
-
-<h1 id="related-links">related links</h1>
-
-<ul>
-<li><a href="https://docs.docker.com/storage/">Manage data in Docker</a></li>
-<li><a href="https://docs.docker.com/storage/volumes/">Use volumes</a></li>
-<li><a href="https://li-sen.github.io/2018/12/23/docker%E5%AD%98%E5%82%A8%E5%9F%BA%E7%A1%80/">docker 存储基础</a></li>
+<li><a href="https://elasticsearch-cheatsheet.jolicode.com/">elasticsearch cheatsheet</a></li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/index.html">Elasticsearch Reference</a></li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -185,9 +265,7 @@
  
 <div class="post-tags">     
      
-    <a href="/tags/docker" rel="tag" title="docker">#docker#</a>
-    
-    <a href="/tags/%e6%ba%90%e7%a0%81" rel="tag" title="源码">#源码#</a>
+    <a href="/tags/es" rel="tag" title="es">#es#</a>
     
 </div>
 
@@ -196,16 +274,16 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/go/rpc-ipc/" rel="next" title="Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown">
-        <i class="fa fa-chevron-left"></i> Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown
+        <a href="/about/" rel="next" title="关于">
+        <i class="fa fa-chevron-left"></i> 关于
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/docker/docker-build/" rel="prev" title="Docker 源码阅读: Docker Build">
-        Docker 源码阅读: Docker Build <i class="fa fa-chevron-right"></i>
+        <a href="/post/high_performance/linux_epoll/" rel="prev" title="Linux epoll">
+        Linux epoll <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -219,7 +297,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Docker 源码阅读: Docker Volume
+            标题：ElasticSearch
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

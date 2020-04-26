@@ -6,10 +6,28 @@
     <description>Recent content in Posts on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 Apr 2020 08:49:16 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 24 Apr 2020 08:41:08 +0800</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Opentracing - jaeger</title>
+      <link>/post/architecture/opentracing/jaeger-agent/</link>
+      <pubDate>Fri, 24 Apr 2020 08:41:08 +0800</pubDate>
+      
+      <guid>/post/architecture/opentracing/jaeger-agent/</guid>
+      <description>&lt;p&gt;文章简介：介绍 Opentracing - jaeger&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Opentracing Overview</title>
+      <link>/post/architecture/opentracing/overview/</link>
+      <pubDate>Fri, 24 Apr 2020 08:40:08 +0800</pubDate>
+      
+      <guid>/post/architecture/opentracing/overview/</guid>
+      <description>&lt;p&gt;文章简介：简单介绍 opentracing，以及技术选型。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>ElasticSearch</title>

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐 - Exfly Blog</title>
+    <title>Opentracing Overview - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐">
+    <meta property="og:title" content="Opentracing Overview">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐 - Exfly Blog" />
+    <meta name="title" content="Opentracing Overview - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -122,8 +122,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/tools/wox_everything/" itemprop="url">
-        Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐
+        <a class="post-title-link" href="/post/architecture/opentracing/overview/" itemprop="url">
+        Opentracing Overview
         </a>
       </h1>
       <div class="post-meta">
@@ -132,8 +132,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2018-02-24">
-    2018-02-24
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-04-24">
+    2020-04-24
 </time>
 </span> 
       
@@ -143,70 +143,48 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">339 字 ~1分钟</span>
+<span class="leancloud-visitors-count">43 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。</p>
+    <p>文章简介：简单介绍 opentracing，以及技术选型。</p>
 
-<h1 id="软件准备">软件准备</h1>
+<h2 id="基础名词理解">基础名词理解</h2>
 
-<ul>
-<li><a href="https://www.voidtools.com/">everything</a></li>
-<li><a href="https://github.com/Wox-launcher/Wox/">wox</a></li>
-</ul>
+<blockquote>
+<p><a href="https://github.com/opentracing-contrib/opentracing-specification-zh/blob/master/specification.md">spec-zh</a></p>
 
-<h1 id="介绍一些软件的特性">介绍一些软件的特性</h1>
+<p><a href="https://github.com/opentracing/specification">spec-office</a></p>
 
-<ul>
-<li>直接使用搜索引擎搜索</li>
-<li>可以搜索软件，直接回车即可运行</li>
-<li>搜索文件、文件夹，回车后使用系统默认软件打开</li>
-<li>配置系统命令，可以直接运行(类似Win+R)</li>
-<li>通过插件可以实现单词翻译等功能</li>
-</ul>
+<p><a href="https://github.com/opentracing-contrib/opentracing-specification-zh/blob/master/semantic_conventions.md">语义惯例</a></p>
+</blockquote>
 
-<h1 id="安装方法">安装方法</h1>
-
-<p>链接中有具体的使用方法。我更喜欢绿色软件，下载下来直接可以使用。</p>
-
-<h1 id="安装之后">安装之后</h1>
-
-<p>看一下使用效果：
-<img src="/media/img/tools/wox_everything/wox.gif" alt="wox" /></p>
-
-<h1 id="引用">引用</h1>
+<h2 id="references">references</h2>
 
 <ul>
-<li><a href="http://tengj.top/2017/04/02/wox/">Wox一款国产开源的快捷启动器辅助工具神器</a> 具体怎么配置可以看这个</li>
-<li><a href="https://github.com/Wox-launcher/Wox">wox程序开源地址</a></li>
+<li><a href="https://jeremyxu2010.github.io/2018/07/%E7%A0%94%E7%A9%B6%E8%B0%83%E7%94%A8%E9%93%BE%E8%B7%9F%E8%B8%AA%E6%8A%80%E6%9C%AF%E4%B9%8Bjaeger/">jaeger</a></li>
+<li><a href="https://github.com/opentracing-contrib/">opentracing-contrib</a></li>
 </ul>
     </div>
     <footer class="post-footer">
      
- 
-<div class="post-tags">     
-     
-    <a href="/tags/%e5%b7%a5%e5%85%b7" rel="tag" title="工具">#工具#</a>
-    
-</div>
 
 
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/java/collectionslearn/" rel="next" title="Collections知识整理">
-        <i class="fa fa-chevron-left"></i> Collections知识整理
+        <a href="/post/architecture/opentracing/jaeger-agent/" rel="next" title="Opentracing - jaeger">
+        <i class="fa fa-chevron-left"></i> Opentracing - jaeger
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/algorithm/wiki_zh_practice_word2vec/" rel="prev" title="使用gensim训练word2vec模型--中文维基百科语料">
-        使用gensim训练word2vec模型--中文维基百科语料 <i class="fa fa-chevron-right"></i>
+        <a href="/post/db/elastic/" rel="prev" title="ElasticSearch">
+        ElasticSearch <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -220,7 +198,7 @@
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐
+            标题：Opentracing Overview
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

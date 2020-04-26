@@ -1,6 +1,55 @@
 <search>
     
      <entry>
+        <title>Opentracing - jaeger</title>
+        <url>/post/architecture/opentracing/jaeger-agent/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> 文章简介：介绍 Opentracing - jaeger
+agent Agent 处于 jaeger-client 和 collector 之间，属于代理的作用，主要是把 client 发送过来的数据从 thrift 转为 Batch，并通过 RPC 批量提交到 collector
+ jaegertracing/jaeger/cmd/agent/app/flags.go#L62
+ var defaultProcessors = []struct { model Model protocol Protocol port int }{ {model: &amp;#34;zipkin&amp;#34;, protocol: &amp;#34;compact&amp;#34;, port: 5775}, {model: &amp;#34;jaeger&amp;#34;, protocol: &amp;#34;compact&amp;#34;, port: 6831}, {model: &amp;#34;jaeger&amp;#34;, protocol: &amp;#34;binary&amp;#34;, port: 6832}, }  jaegertracing/jaeger/cmd/agent/app/servers/tbuffered_server.go#L82
+ // Serve initiates the readers and starts serving traffic func (s *TBufferedServer) Serve() { atomic.StoreUint32(&amp;amp;s.serving, 1) for s.IsServing() { readBuf := s.readBufPool.Get().(*ReadBuf) n, err := s.transport.Read(readBuf.bytes) if err == nil { readBuf.n = n s.metrics.PacketSize.Update(int64(n)) select { case s.dataChan &amp;lt;- readBuf: s.metrics.PacketsProcessed.Inc(1) s.updateQueueSize(1) default: s.metrics.PacketsDropped.Inc(1) } } else { s.metrics.ReadError.Inc(1) } } }  jaegertracing/jaeger/blob/master/cmd/agent/app/processors/thrift_processor.go#L114
+ // processBuffer reads data off the channel and puts it into a custom transport for // the processor to process func (s *ThriftProcessor) processBuffer() { for readBuf := range s.server.DataChan() { protocol := s.protocolPool.Get().(thrift.TProtocol) payload := readBuf.GetBytes() protocol.Transport().Write(payload) s.logger.Debug(&amp;#34;Span(s) received by the agent&amp;#34;, zap.Int(&amp;#34;bytes-received&amp;#34;, len(payload))) if ok, err := s.handler.Process(protocol, protocol); !ok { s.logger.Error(&amp;#34;Processor failed&amp;#34;, zap.Error(err)) s.metrics.HandlerProcessError.Inc(1) } s.protocolPool.Put(protocol) s.server.DataRecd(readBuf) // acknowledge receipt and release the buffer 	} }  jaegertracing/jaeger/thrift-gen/agent/agent.go#L187
+ func (p *agentProcessorEmitBatch) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) { args := AgentEmitBatchArgs{} if err = args.Read(iprot); err != nil { iprot.ReadMessageEnd() return false, err } iprot.ReadMessageEnd() var err2 error if err2 = p.handler.EmitBatch(args.Batch); err2 != nil { return true, err2 } return true, nil }  jaegertracing/jaeger/thrift-gen/jaeger/tchan-jaeger.go#L39
+ Collector 接收 Agent 的数据  jaegertracing/jaeger/cmd/collector/app/handler/thrift_span_handler.go#L60
+比较舒服的维护metrics的场景
+ references  jaeger </content>
+    </entry>
+    
+     <entry>
+        <title>Posts</title>
+        <url>/post/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> </content>
+    </entry>
+    
+     <entry>
+        <title>Opentracing Overview</title>
+        <url>/post/architecture/opentracing/overview/</url>
+        <categories>
+          
+        </categories>
+        <tags>
+          
+        </tags>
+        <content type="html"> 文章简介：简单介绍 opentracing，以及技术选型。
+基础名词理解  spec-zh
+spec-office
+语义惯例
+ references  jaeger opentracing-contrib </content>
+    </entry>
+    
+     <entry>
         <title>ElasticSearch</title>
         <url>/post/db/elastic/</url>
         <categories>
@@ -35,18 +84,6 @@ ES 会每隔 1 秒时间（这个时间可以修改）进行一次刷新操作�
 ES 集群构成 node.master node.data 两两组合成不同的节点
 节点发现 Master 选举 多数派原则 选主
 references  elasticsearch cheatsheet Elasticsearch Reference Elasticsearch－基础介绍及索引原理分析 Choosing a fast unique identifier (UUID) for Lucene Elasticsearch架构原理 Elasticsearch性能优化 ElasticSearch读写底层原理及性能调优 </content>
-    </entry>
-    
-     <entry>
-        <title>Posts</title>
-        <url>/post/</url>
-        <categories>
-          
-        </categories>
-        <tags>
-          
-        </tags>
-        <content type="html"> </content>
     </entry>
     
      <entry>

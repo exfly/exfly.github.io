@@ -143,26 +143,21 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">788 字 ~2分钟</span>
+<span class="leancloud-visitors-count">786 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：为了写论文，使用gensim训练word2vec模型，如下记录了进行训练的过程</p>
-
 <h1 id="准备">准备</h1>
-
 <ul>
 <li>中文维基百科预料：<a href="https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-pages-articles.xml.bz2">zhwiki-latest-pages-articles.xml.bz2</a></li>
 <li><a href="#">python3</a></li>
 <li><a href="https://github.com/ExFly/wiki_zh_word2vec.git">wiki_zh_word2vec</a></li>
 <li>繁体转简体：<a href="https://bintray.com/package/files/byvoid/opencc/OpenCC">opencc</a>一定要下*-win32.7z,win64的在我电脑上无法运行。如果使用我的<a href="https://github.com/ExFly/wiki_zh_word2vec.git">wiki_zh_word2vec</a>,则项目中包含可以直接使用的opencc</li>
 </ul>
-
 <h1 id="todo">TODO</h1>
-
 <h2 id="依赖准备">依赖准备</h2>
-
 <ul>
 <li>下载<a href="https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-pages-articles.xml.bz2">中文维基百科预料</a></li>
 <li>git clone <a href="https://github.com/ExFly/wiki_zh_word2vec.git">https://github.com/ExFly/wiki_zh_word2vec.git</a></li>
@@ -171,41 +166,27 @@
 <li>pip install pipenv</li>
 <li>pipenv install &ndash;dev</li>
 </ul>
-
 <h2 id="将xml的wiki数据转换为text格式">将XML的Wiki数据转换为text格式</h2>
-
 <ul>
 <li>pipenv run python 1_process.py build/zhwiki-latest-pages-articles.xml.bz2 build/wiki.zh.txt</li>
 </ul>
-
 <p>31分钟运行完成282855篇文章，得到一个931M的txt文件</p>
-
 <h2 id="中文繁体替换成简体">中文繁体替换成简体</h2>
-
 <ul>
 <li>opencc-1.0.1-win32/opencc -i build/wiki.zh.txt -o build/wiki.zh.simp.txt -c opencc-1.0.1-win32/t2s.json</li>
 </ul>
-
 <p>大约使用了15分钟</p>
-
 <h2 id="结巴分词">结巴分词</h2>
-
 <ul>
 <li>pipenv run python 2_jieba_participle.py</li>
 </ul>
-
 <p>大约使用了30分钟</p>
-
 <h2 id="word2vec模型训练">Word2Vec模型训练</h2>
-
 <ul>
 <li>pipenv run python 3_train_word2vec_model.py</li>
 </ul>
-
 <p>大约使用了30分钟，且全程cpu使用率达到90%+</p>
-
 <h2 id="模型测试">模型测试</h2>
-
 <ul>
 <li>pipenv run python 4_model_match.py</li>
 </ul>
@@ -220,15 +201,14 @@
 男子篮球 0.48382389545440674
 足球联赛 0.4837716817855835
 体育 0.4835757911205292
-football 0.47945135831832886</code></pre></div>
-<h2 id="查看结果">查看结果</h2>
-
-<p>可以使用linux的head或者tail命令查看运行的结果。
-* head -n 100 wiki.zh.simp.txt &gt; wiki.zh.simp_head_100.txt,直接查看wiki.zh.simp_head_100.txt即可
-* 没有head命令，可以安装<a href="https://github.com/bmatzelle/gow/releases">gow</a>，或者直接下载<a href="http://cmder.net/">cmder</a>,进入就可以使用head命令了</p>
-
+football 0.47945135831832886
+</code></pre></div><h2 id="查看结果">查看结果</h2>
+<p>可以使用linux的head或者tail命令查看运行的结果。</p>
+<ul>
+<li>head -n 100 wiki.zh.simp.txt &gt; wiki.zh.simp_head_100.txt,直接查看wiki.zh.simp_head_100.txt即可</li>
+<li>没有head命令，可以安装<a href="https://github.com/bmatzelle/gow/releases">gow</a>，或者直接下载<a href="http://cmder.net/">cmder</a>,进入就可以使用head命令了</li>
+</ul>
 <h1 id="结果">结果</h1>
-
 <ul>
 <li>至此，使用python对中文wiki语料的词向量建模就全部结束了，wiki.zh.text.vector中是每个词对应的词向量，可以在此基础上作文本特征的提取以及分类。所有代码都已上传至<a href="https://github.com/ExFly/wiki_zh_word2vec">本人GitHub</a>中，欢迎指教！</li>
 <li>感谢<a href="https://github.com/AimeeLee77/wiki_zh_word2vec">AimeeLee77</a>,其代码为Python2，我的项目<a href="https://github.com/ExFly/wiki_zh_word2vec.git">exfly/wiki_zh_word2vec</a>已经完全迁移到python3,并向<a href="https://github.com/AimeeLee77/wiki_zh_word2vec">AimeeLee77</a>提交了pull request</li>
@@ -310,7 +290,7 @@ football 0.47945135831832886</code></pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -382,7 +362,7 @@ football 0.47945135831832886</code></pre></div>
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -143,19 +143,15 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">2775 字 ~6分钟</span>
+<span class="leancloud-visitors-count">2771 字 ~6分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>文章简介： <br>1.总结gradle和maven正确使用方法 <br>2.开箱即用maven&amp;gradle同时支持的项目配置。<br>Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！</p>
-
+    <p>文章简介： <!-- raw HTML omitted -->1.总结gradle和maven正确使用方法 <!-- raw HTML omitted -->2.开箱即用maven&amp;gradle同时支持的项目配置。<!-- raw HTML omitted -->Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！</p>
 <h1 id="说在前面">说在前面</h1>
-
 <p>Gradle和Maven都是项目自动构建工具，编译源代码只是整个过程的一个方面，更重要的是，你要把你的软件发布到生产环境中来产生商业价值，所以，你要运行测试，构建分布、分析代码质量、甚至为不同目标环境提供不同版本，然后部署。整个过程进行自动化操作是很有必要的。</p>
-
 <p>整个过程可以分成以下几个步骤：</p>
-
 <ul>
 <li>编译源代码</li>
 <li>运行单元测试和集成测试</li>
@@ -165,91 +161,70 @@
 <li>部署传递过程</li>
 <li>执行冒烟测试和自动功能测试</li>
 </ul>
-
 <p>两者都是项目工具，但是maven使用的最多，Gradle是后起之秀，想spring等都是使用gradle构建的。Gradle抛弃了Maven的基于XML的繁琐配置，采用了领域特定语言Groovy的配置，大大简化了构建代码的行数。</p>
-
 <p>比如maven要 这么写</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;dependency&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">&lt;dependency&gt;
 	&lt;groupId&gt;org.springframework&lt;/groupId&gt;
 	&lt;artifactId&gt;spring-core&lt;/artifactId&gt;
 	&lt;version&gt;${spring.version}&lt;/version&gt;
-&lt;/dependency&gt;</pre></div>
-<p>gradle这么写</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">compile(&#39;org.springframework:spring-core:2.5.6&#39;)</pre></div>
-<p>详细的Gradle和Maven比较看<a href="https://www.tianmaying.com/tutorial/Gradle">这里</a>讲的很好了。<a href="https://gradle.org/maven-vs-gradle/">gradle官方</a>也对两个工具进行了比较。</p>
-
-<p>我们可以使用其中一个，或者两个一起使用！！！这是可行的，当然前提是，有一个人在整个过程中维护相同功能的两份配置。实际上并不难。抽一个周末空余时间，自己把这两个都熟悉了一下，整理了一套Gradle&amp;Maven日常开发中常用的包和插件的集合，作为项目的开始。<strong>比较通用，所以需要根据公司或个人项目实际情况*加入私服*的配置，以及你想使用的*jar包</strong>*，如此简单。如果使用过程中遇到什么问题，请联系我。别忘了，帮我star一下。</p>
-
+&lt;/dependency&gt;
+</code></pre></div><p>gradle这么写</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">compile(&#39;org.springframework:spring-core:2.5.6&#39;)
+</code></pre></div><p>详细的Gradle和Maven比较看<a href="https://www.tianmaying.com/tutorial/Gradle">这里</a>讲的很好了。<a href="https://gradle.org/maven-vs-gradle/">gradle官方</a>也对两个工具进行了比较。</p>
+<p>我们可以使用其中一个，或者两个一起使用！！！这是可行的，当然前提是，有一个人在整个过程中维护相同功能的两份配置。实际上并不难。抽一个周末空余时间，自己把这两个都熟悉了一下，整理了一套Gradle&amp;Maven日常开发中常用的包和插件的集合，作为项目的开始。<strong>比较通用，所以需要根据公司或个人项目实际情况<em>加入私服</em>的配置，以及你想使用的<em>jar包</em></strong>，如此简单。如果使用过程中遇到什么问题，请联系我。别忘了，帮我star一下。</p>
 <p>接下来涉及到的内容：</p>
-
 <ul>
 <li>maven 正确使用方法</li>
 <li>gradle正确使用方法</li>
 <li>gradle项目和maven项目相互转化</li>
 <li>一个项目同时支持maven和gradle配置：一个好的开始</li>
 </ul>
-
 <h1 id="maven-正确使用方法">maven 正确使用方法</h1>
-
 <h2 id="maven版本不相同问题">maven版本不相同问题</h2>
-
 <p>我们大部分时候使用IDE进行项目开发的时候，大部分时候会直接使用IDE创建MAVEN项目，这是正确的。可是，您有没有发现，大家合作的时候，由于maven版本不相同，哪怕是3.5.1和3.5.2的区别，都会引发一场血案！我的可以正常打开项目，而其他人却会出现问题。除了IDE下载包损坏外，就是maven的版本不相同。其实通过一些工具，已经可以让这种情况不在发生，那就是<a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html">Wrapper</a>。请看如下图(图没配错，maven的wrapper和gradle的wrapper流程上完全相同)</p>
-
-<p><img src="/media/img/Java/gradle_maven/wrapper-workflow.png" alt="wrapper-workflow" /></p>
-
+<p><img src="/media/img/Java/gradle_maven/wrapper-workflow.png" alt="wrapper-workflow"></p>
 <p><strong>前提条件</strong>：</p>
-
 <ul>
 <li>项目创建者系统中已经由maven的命令</li>
 <li>其他人没有要求，mvn可有可无（原因之后说）</li>
 </ul>
-
 <p>具体如何做：</p>
-
 <ul>
 <li>项目创建者执行 <code>mvn -N io.takari:maven:wrapper -Dmaven=3.5.3</code>
-
 <ul>
 <li>此时，项目目录会生成<code>mvnw.cmd</code>和<code>mvnw</code>，之后的所有操作都是基于此，也就是说，项目开发者不需要由任何依赖，除了jdk-_!!!</li>
-</ul></li>
+</ul>
+</li>
 <li>项目创建者执行 <code>mvnw archetype:generate</code>
-
 <ul>
 <li>此步是自动生成项目目录结构。同时，项目管理者需要搭建好基础的代码框架。之后可以开发了</li>
-</ul></li>
+</ul>
+</li>
 <li>项目开发者
-
 <ul>
 <li><code>mvnw.cmd compiler:compile</code></li>
 <li><code>mvnw.cmd exec:java -Dexec.mainClass=&quot;org.exfly.LombokL.LombokLApplication&quot; -q</code></li>
 <li><code>mvn.cmd clean</code></li>
 <li><code>mvn.cmd test</code></li>
 <li>。。。</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p><strong>注意</strong>:</p>
-
 <ol>
 <li>当第一次执行<code>mvnw.cmd</code>时候，会自动下载对应版本的Maven，maven的<code>$HOME/.m2/wrapper/dists/&lt;version&gt;/</code>下。</li>
 <li>初网络问题，如果出现错误，依赖包已经下好，只需要到<code>1</code>所说的位置去掉后缀.pack，重新运行即可。</li>
 </ol>
-
-<h2 id="使用-dependencymanagement-https-zhuanlan-zhihu-com-p-31020263-集中管理版本依赖">使用<a href="https://zhuanlan.zhihu.com/p/31020263">dependencyManagement</a>集中管理版本依赖</h2>
-
+<h2 id="使用dependencymanagementhttpszhuanlanzhihucomp31020263集中管理版本依赖">使用<a href="https://zhuanlan.zhihu.com/p/31020263">dependencyManagement</a>集中管理版本依赖</h2>
 <ul>
 <li><a href="https://zhuanlan.zhihu.com/p/31020263">dependencyManagement</a>这里已经很好的解释如何做。同时可以借鉴springboot-parent</li>
 </ul>
-
 <h2 id="多模块项目管理方法">多模块项目管理方法</h2>
-
 <ul>
 <li><a href="http://www.infoq.com/cn/news/2011/01/xxb-maven-3-pom-refactoring">多模块项目的POM重构</a></li>
 <li>通过parent的方式，将多模块依赖集中管理，</li>
 </ul>
-
 <h2 id="如何更好的使用maven进行项目管理-几点建议">如何更好的使用maven进行项目管理 几点建议</h2>
-
 <ul>
 <li>尽量使用wapper多</li>
 <li>使用<a href="https://zhuanlan.zhihu.com/p/31020263">dependencyManagement</a>集中管理版本依赖</li>
@@ -257,102 +232,76 @@
 <li>M2_HOME maven主程序的安装目录</li>
 <li>~/.m2 本地包下载位置</li>
 <li>http代理
-
 <ul>
 <li>setting.xml中的proxies</li>
-</ul></li>
+</ul>
+</li>
 <li>MAVEN_OPTS
-
 <ul>
 <li>运行mvn时候相当于运行java命令，MAVEN_OPTS可以配置为任何java的命令参数</li>
-</ul></li>
+</ul>
+</li>
 <li>设置MAVEN_OPTS环境变量</li>
 <li>配置用户范围settings.xml
-
 <ul>
 <li>%M2_HOME%/conf/settings.xml 为全局配置文件</li>
 <li>~/.m2/settings.xml 为用户配置文件</li>
-</ul></li>
+</ul>
+</li>
 <li>不要使用IDE内嵌的Maven，应该配置IDE中为自己安装的maven</li>
 <li>显示声明所有用到的依赖</li>
 </ul>
-
-<h2 id="我的maven常用命令笔记-https-github-com-exfly-cslearning-blob-master-notebookfordevelop-e6-96-87-e6-a1-a3-java-e5-b7-a5-e5-85-b7-maven-md"><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md">我的maven常用命令笔记</a></h2>
-
+<h2 id="我的maven常用命令笔记httpsgithubcomexflycslearningblobmasternotebookfordevelope69687e6a1a3javae5b7a5e585b7mavenmd"><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md">我的maven常用命令笔记</a></h2>
 <p><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md">我的maven常用命令笔记</a></p>
-
 <h1 id="gradle正确使用方法">gradle正确使用方法</h1>
-
 <p>理由同上节，直接说使用方法。可以对照<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Gradle.md">我的笔记查看</a>。</p>
-
 <ul>
 <li>gradle init &ndash;type java-library
-
 <ul>
 <li>这里自动生成gradlew，并创建项目目录结构</li>
-</ul></li>
+</ul>
+</li>
 <li>之后所有命令使用gradlew即可</li>
 </ul>
-
 <h1 id="gradle项目和maven项目相互转化">gradle项目和maven项目相互转化</h1>
-
 <p>gradle和maven可以相互转化，意味着，我们可以使用gradle为主的开发，之后导出为maven项目，供生产环境使用。前提，你足够了解gradle和maven。</p>
-
-<h2 id="maven-gradle">maven -&gt; gradle</h2>
-
+<h2 id="maven---gradle">maven -&gt; gradle</h2>
 <ul>
 <li>cd /path/to/mavenproject</li>
 <li>gradle init</li>
 <li>gradle wrapper</li>
 </ul>
-
-<h2 id="gradle-maven">gradle -&gt; maven</h2>
-
+<h2 id="gradle---maven">gradle -&gt; maven</h2>
 <ul>
 <li>cd /path/to/gradleproject</li>
 <li>gradlew install</li>
 </ul>
-
 <p>将项目转换为maven和gradle项目后，目录结构如下：
-<img src="/media/img/Java/gradle_maven/dir_frame.png" alt="dir_frame.png" />
+<img src="/media/img/Java/gradle_maven/dir_frame.png" alt="dir_frame.png">
 之后，我们习惯使用mavnw或者gradlew，都可以。如此，做到了共存。</p>
-
-<h1 id="一个项目同时支持maven和gradle配置-一个好的开始">一个项目同时支持maven和gradle配置：一个好的开始</h1>
-
+<h1 id="一个项目同时支持maven和gradle配置一个好的开始">一个项目同时支持maven和gradle配置：一个好的开始</h1>
 <p>抽时间，做了常用jar包和插件整合包，一个项目同时支持maven和gradle。</p>
-
 <p><strong>共同的依赖</strong>：</p>
-
 <ul>
 <li>内容包括： 日志、通用工具库、单元测试、代码质量度量、文档生成等</li>
 <li>jar: slf4j、logback、lombok、guava、junit、mockito</li>
 </ul>
-
 <p><strong>配置中整合的工具</strong>：</p>
-
 <ul>
 <li>代码质量分析报告工具：pmd、findbugs、checkstyle、jdepend</li>
 <li>单元测试报告工具、javadoc、依赖管理、项目信息汇总等可视化信息</li>
 </ul>
-
 <p><strong>maven具体内容</strong></p>
-
 <ul>
 <li>maven-compiler-plugin、maven-javadoc-plugin、cobertura-maven-plugin、maven-checkstyle-plugin、findbugs-maven-plugin、maven-pmd-plugin、jdepend-maven-plugin、maven-jar-plugin、maven-surefire-plugin、maven-surefire-report-plugin</li>
 </ul>
-
 <p><strong>gradle具体内容</strong></p>
-
 <ul>
 <li>java、maven、checkstyle、pmd、findbugs、jdepend、eclipse、idea、javadoc</li>
 </ul>
-
 <p>首先maven配置见<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/pom.common.xml">此文件</a></p>
-
 <p>其次gradle配置见<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/build.common.gradle">此文件</a></p>
-
 <h1 id="资料汇总">资料汇总</h1>
-
 <ul>
 <li><a href="https://raw.githubusercontent.com/ExFly/CsLearning/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/LombokL.zip">完整的整合项目，支持maven和gradle，点我下载</a></li>
 <li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Gradle.md">我的Gradle笔记，点我查看</a></li>
@@ -440,7 +389,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -512,7 +461,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

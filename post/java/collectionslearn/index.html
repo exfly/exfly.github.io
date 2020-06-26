@@ -149,15 +149,11 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：学Java Collections集合，对其中一些知识进行整理</p>
-
 <h1 id="collections结构">Collections结构</h1>
-
-<p><img src="/media/img/Java/Collections/CollectionFramework.png" alt="Collections结构" />
-<img src="/media/img/Java/Collections/CollectionsFramework2.jpg" alt="Collections结构2" />
-<img src="/media/img/Java/Collections/CollectionsBrainMap.png" alt="Collections总结脑图" /></p>
-
+<p><img src="/media/img/Java/Collections/CollectionFramework.png" alt="Collections结构">
+<img src="/media/img/Java/Collections/CollectionsFramework2.jpg" alt="Collections结构2">
+<img src="/media/img/Java/Collections/CollectionsBrainMap.png" alt="Collections总结脑图"></p>
 <h2 id="使用例子">使用例子</h2>
-
 <h3 id="iterator">Iterator</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testIterator</span><span style="color:#f92672">(){</span>
 		<span style="color:#75715e">//创建一个集合 
@@ -179,37 +175,30 @@
 </span><span style="color:#75715e"></span>            book <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;测试字符串&#34;</span><span style="color:#f92672">;</span> 
         <span style="color:#f92672">}</span> 
         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>books<span style="color:#f92672">);</span>
-	<span style="color:#f92672">}</span></code></pre></div>
-<h3 id="list">List</h3>
-
+	<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="list">List</h3>
 <p>实现List接口的常用类有LinkedList，ArrayList</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">List&lt;String&gt; list = new LinkedList&lt;&gt;();</pre></div>
-<h3 id="set">Set</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">List&lt;String&gt; list = new LinkedList&lt;&gt;();
+</code></pre></div><h3 id="set">Set</h3>
 <p>Set接口有以下几种实现：</p>
-
 <ol>
 <li>HashSet : 为快速查找设计的Set，主要的特点是：不能存放重复元素，而且采用散列的存储方法，所以没有顺序。这里所说的没有顺序是指元素插入的顺序与输出的顺序不一致。</li>
 <li>TreeSet : 保存次序的Set, 底层为树结构。使用它可以从Set中提取有序的序列。</li>
-
-<li><p>LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Set&lt;String&gt; hs = new HashSet&lt;&gt;();</pre></div></li>
+<li>LinkedHashSet : 具有HashSet的查询速度，且内部使用链表维护元素的顺序(插入的次序)。于是在使用迭代器遍历Set时，结果会按元素插入的次序显示。</li>
 </ol>
-
-<h3 id="map">Map</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Set&lt;String&gt; hs = new HashSet&lt;&gt;();
+</code></pre></div><h3 id="map">Map</h3>
 <p>Map接口有以下几种实现：
 HashMap、LinkedHashMap、HashTable和TreeMap</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Map&lt;String, String&gt; m1 = new HashMap&lt;&gt;(); 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Map&lt;String, String&gt; m1 = new HashMap&lt;&gt;(); 
 m1.put(&#34;Zara&#34;, &#34;8&#34;);
 m1.get(&#34;Zara&#34;);  // 8
-m1.containsKey(&#34;Zara&#34;);  // true</pre></div>
-<ul>
+m1.containsKey(&#34;Zara&#34;);  // true
+</code></pre></div><ul>
 <li><a href="https://blog.csdn.net/login_sonata/article/details/76598675">Java8的HashMap详解（存储结构，功能实现，扩容优化，线程安全，遍历方法）</a></li>
 </ul>
-
 <h3 id="queue">Queue</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">Queue&lt;String&gt; queue = new LinkedList&lt;String&gt;();
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Queue&lt;String&gt; queue = new LinkedList&lt;String&gt;();
 //添加元素
 queue.offer(&#34;a&#34;);
 queue.offer(&#34;b&#34;);
@@ -246,11 +235,10 @@ b c d e
 ===
 peek=b
 b c d e
-*/</pre></div>
-<h2 id="转成线程安全">转成线程安全</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">List&lt;String&gt; list = Collections.synchronizedList(new LinkedList&lt;&gt;());</pre></div>
-<h1 id="资源">资源</h1>
-
+*/
+</code></pre></div><h2 id="转成线程安全">转成线程安全</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">List&lt;String&gt; list = Collections.synchronizedList(new LinkedList&lt;&gt;());
+</code></pre></div><h1 id="资源">资源</h1>
 <ul>
 <li><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/reference.html">官方 Collections Api reference</a></li>
 <li><a href="https://www.jianshu.com/p/8b0a09f70b9c">Java集合框架面试题</a></li>
@@ -340,7 +328,7 @@ b c d e
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -412,7 +400,7 @@ b c d e
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

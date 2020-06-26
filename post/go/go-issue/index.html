@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
-    <title>整理了一套 dotfiles 自用 - Exfly Blog</title>
+    <title>Go Issue - Exfly Blog</title>
     <meta name="keywords" content="exfly,独立,博客,程序员,架构师,个人,思考,读书,笔记,技术,分享,Golang">
     
-    <meta property="og:title" content="整理了一套 dotfiles 自用">
+    <meta property="og:title" content="Go Issue">
     <meta property="og:site_name" content="Exfly Blog">
     <meta property="og:image" content="/img/author.jpg"> 
-    <meta name="title" content="整理了一套 dotfiles 自用 - Exfly Blog" />
+    <meta name="title" content="Go Issue - Exfly Blog" />
     <meta name="description" content="exfly | 博客 | 软件 | 架构 | Java | Golang | Python"> 
     
     <link rel="shortcut icon" href="/img/favicon.ico" />
@@ -122,8 +122,8 @@
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link" href="/post/tools/dotfiles/" itemprop="url">
-        整理了一套 dotfiles 自用
+        <a class="post-title-link" href="/post/go/go-issue/" itemprop="url">
+        Go Issue
         </a>
       </h1>
       <div class="post-meta">
@@ -132,8 +132,8 @@
     <i class="fa fa-calendar-o"></i>
 </span>
 <span class="post-meta-item-text">时间：</span>
-<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2019-09-28">
-    2019-09-28
+<time itemprop="dateCreated" datetime="2016-03-22T13:04:35+08:00" content="2020-06-27">
+    2020-06-27
 </time>
 </span> 
       
@@ -143,53 +143,36 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">134 字 ~1分钟</span>
+<span class="leancloud-visitors-count">93 字 ~1分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
-    <p>文章简介：自己的 <code>dotfiles</code> 供自己使用，几乎一键换机</p>
-<h1 id="简介">简介</h1>
-<p>使用方法</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">git clone https://github.com/exfly/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
-make preinstall-arch
-make bootstrap
-make install
-</code></pre></div><h2 id="备注">备注</h2>
-<p>对于所有的 <code>*.zsh</code> 都会加载到 <code>.zshrc</code> 中，所有的 <code>*.symlink</code> 都会对应的在<code>$HOME</code>生成一个软连接 <code>.*</code>, 文件夹也可以直接使用这种方式进行加载。</p>
-<p>比如 <code>zsh/zshrc.symlink</code> 会生成软连接 <code>$HOME/.zshrc</code>,具体如何工作可以看一下 <code>script/bootstrap</code></p>
-<h1 id="references">references</h1>
-<ul>
-<li><a href="https://github.com/exfly/dotfiles">my dotfiles</a></li>
-</ul>
+    <p>记录 golang 相关很难调试的 bug</p>
+<h2 id="bugs">bugs</h2>
+<h3 id="sigsegv-during-cgetaddrinfo">SIGSEGV during C.getaddrinfo</h3>
+<blockquote>
+<p><a href="https://github.com/golang/go/issues/30310">https://github.com/golang/go/issues/30310</a></p>
+</blockquote>
+<p>glibc 的 bug 导致 go 中 net 模块静态编译后的可执行文件 getaddrinfo 的时候 pinic，无法启动服务
+解决办法: 临时使用 go 自己的 net 实现 <code>-tags netgo</code>, 或者 已经 build 的程序 <code>GODEBUG=netdns=go binery</code> 加环境变量使用 go 的 net 实现</p>
     </div>
     <footer class="post-footer">
      
- 
-<div class="post-tags">     
-     
-    <a href="/tags/tools" rel="tag" title="tools">#tools#</a>
-    
-    <a href="/tags/dev" rel="tag" title="dev">#dev#</a>
-    
-</div>
-
-
 
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/post/db/how-fast-the-read-write/" rel="next" title="读写操作到底有多慢, 操作系统相关一些参数">
-        <i class="fa fa-chevron-left"></i> 读写操作到底有多慢, 操作系统相关一些参数
+        <a href="/about/" rel="next" title="关于">
+        <i class="fa fa-chevron-left"></i> 关于
         </a>
     
     </div>
 
     <div class="post-nav-prev post-nav-item">
     
-        <a href="/post/docker/comtainerd-cgroup-namespace/" rel="prev" title="Comtainerd Cgroup Namespace">
-        Comtainerd Cgroup Namespace <i class="fa fa-chevron-right"></i>
+        <a href="/post/architecture/opentracing/jaeger-agent/" rel="prev" title="Opentracing - jaeger">
+        Opentracing - jaeger <i class="fa fa-chevron-right"></i>
         </a>
     
     </div>
@@ -203,7 +186,7 @@ make install
     </div>
     <div>
         <p style="margin-top:0px;">
-            标题：整理了一套 dotfiles 自用
+            标题：Go Issue
         <br />作者：<a target="_blank" href="/">exfly</a>
         <br />关注：<a target="_blank" href="https://github.com/exfly">exfly</a>
         <br />声明：自由转载-非商用-非衍生-保持署名（创作共享3.0许可证）

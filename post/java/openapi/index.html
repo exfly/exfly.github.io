@@ -149,39 +149,41 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>swagger and openapi 代码生成和文档自动生成一些体会</p>
-
 <h1 id="说在前面">说在前面</h1>
-
 <p>平时使用<a href="https://gqlgen.com">gqlgen</a>，一般的 workflow 是先写 graphql 的 schema，然后 code generate 对应的 model 和 api 的实现的空接口，自己对应实现对应的 resolver 即可。使用起来很流程。最近调研一下 java 下类似的工具。找到在 java 下 star 最多的项目<a href="https://github.com/graphql-java/graphql-java">graphql-java</a>，但并不是这里讨论的。
 这里讨论的是基于 spring 的 openapi 的实现和 code generate 方案。</p>
-
 <h1 id="基于-openapi-的-code-generate-方案">基于 openapi 的 code generate 方案</h1>
-
 <p>首先简单介绍一下 openapi，他是语言无关的 restful 描述语言，可以使用 yaml 进行编写接口文档，通过 generate，生成不同语言的 client 和 server。<a href="https://swagger.io/docs/specification/about/">这里</a>有官方的简介。自己比较关注的语言是 python、java、go、rust，js。</p>
-
 <p>踩到的一些坑，这里简单试用了一下generate java。首先，maven下有对应的openapi的plugin，<a href="https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md">openapi-generator-maven-plugin</a>, 但每次compile都会进行generate，并不是我所希望的，所以这里使用了基于docker的使用方案。代码见<a href="https://github.com/gorgestar/isn/tree/v0.0.1">exfly:gorgestar/isn</a>,使用<a href="https://github.com/gorgestar/isn/blob/v0.0.1/generator.sh">generator.sh</a>生成对应的代码，配置文件可以看<a href="https://github.com/gorgestar/isn/blob/v0.0.1/generator.json">generator.json</a>，</p>
-
 <p>我的使用策略是，先修改<a href="https://github.com/gorgestar/isn/blob/v0.0.1/src/main/resources/openapi.yaml">openapi.yaml</a>，创建或者修改restful api，然后 <code>bash ./generator.sh</code>，生成对应接口默认空实现，之后由我们对应的实现接口即可。</p>
-
 <p>一些自己没有进行操作的方案：</p>
-
 <ul>
 <li>如何保证api和接口文档一致：可以对应的使用swagger的api-doc json进行转换为yaml，对原本手写的<code>openapi.yaml</code>进行比较，确认文档的一致性</li>
 <li>这个版本的generate每次都会将所有的文件覆盖，需要编辑<a href="https://github.com/gorgestar/isn/blob/v0.0.1/.openapi-generator-ignore">.openapi-generator-ignore</a>，类似gitignore的东西，类比修改即可。被忽略的文件，即使被删除，也不会自动生成对应文件，生成逻辑看起来比较傻。</li>
 </ul>
-
 <h1 id="其他资源">其他资源</h1>
-
 <ul>
-<li><a href="https://github.com/gorgestar/isn">exfly:gorgestar/isn</a>,本文项目代码</li>
-<li><a href="https://swagger.io/">swagger</a></li>
-<li><a href="https://raml.org/">raml</a></li>
-<li><a href="https://github.com/OAI/OpenAPI-Specification">OpenAPI-Specification</a></li>
-<li><a href="https://github.com/OpenAPITools/openapi-generator">openapi-generator</a></li>
-
-<li><p><a href="https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md">openapi generator maven plugin</a></p></li>
-
-<li><p><a href="https://spring.io/projects/spring-restdocs">spring rest docs</a></p></li>
+<li>
+<p><a href="https://github.com/gorgestar/isn">exfly:gorgestar/isn</a>,本文项目代码</p>
+</li>
+<li>
+<p><a href="https://swagger.io/">swagger</a></p>
+</li>
+<li>
+<p><a href="https://raml.org/">raml</a></p>
+</li>
+<li>
+<p><a href="https://github.com/OAI/OpenAPI-Specification">OpenAPI-Specification</a></p>
+</li>
+<li>
+<p><a href="https://github.com/OpenAPITools/openapi-generator">openapi-generator</a></p>
+</li>
+<li>
+<p><a href="https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-maven-plugin/README.md">openapi generator maven plugin</a></p>
+</li>
+<li>
+<p><a href="https://spring.io/projects/spring-restdocs">spring rest docs</a></p>
+</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -267,7 +269,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -339,7 +341,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

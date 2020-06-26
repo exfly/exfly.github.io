@@ -149,14 +149,10 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。</p>
-
 <h1 id="简介">简介</h1>
-
 <p>openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。
 结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。</p>
-
 <h1 id="openresty安装">OpenResty安装</h1>
-
 <p>对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib，并根据我的配置进行修改相应参数</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./configure --prefix<span style="color:#f92672">=</span>$HOME/openresty <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span> --add-module<span style="color:#f92672">=</span>$HOME/openresty/setupfile/third/naxsi-0.55.3/naxsi_src <span style="color:#ae81ff">\
@@ -169,15 +165,13 @@
 </span><span style="color:#ae81ff"></span> --with-http_stub_status_module <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span> --with-http_realip_module <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span> --with-cc-opt<span style="color:#f92672">=</span>-O2 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span> --with-luajit</code></pre></div>
-<ul>
+</span><span style="color:#ae81ff"></span> --with-luajit
+</code></pre></div><ul>
 <li><a href="http://blog.51cto.com/1992tao/1865611">这里</a>是一个比较好的 nginx的笔记，可以过一遍</li>
 <li>我在学习的时候，看了这本书<a href="#">深入理解Nginx模块开发与架构解析</a>,毕竟讲的比较系统，可以借鉴一下</li>
 <li>有问题，知乎，搜索引擎</li>
 </ul>
-
 <h2 id="安装luarocks">安装luarocks</h2>
-
 <ul>
 <li>下载地址 <a href="http://luarocks.github.io/luarocks/releases/">http://luarocks.github.io/luarocks/releases/</a></li>
 <li>编译安装</li>
@@ -191,9 +185,8 @@
 --with-lua 则是系统中安装的 lua 的根目录
 --lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit
 --with-lua-include 设置 lua 引入一些头文件头文件的目录
-make build <span style="color:#f92672">&amp;&amp;</span> make install</code></pre></div>
-<h1 id="lua面向对象">lua面向对象</h1>
-
+make build <span style="color:#f92672">&amp;&amp;</span> make install
+</code></pre></div><h1 id="lua面向对象">lua面向对象</h1>
 <p>lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。<a href="https://blog.codingnow.com/2006/06/oo_lua.html">Lua 中实现面向对象</a>。
 这里要说一下lua中<a href="https://www.kancloud.cn/digest/luanote/119940">.运算和:的区别</a>，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是<code>:</code>可以省略self参数。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> _class<span style="color:#f92672">=</span>{}
@@ -237,17 +230,12 @@ make build <span style="color:#f92672">&amp;&amp;</span> make install</code></pr
     <span style="color:#66d9ef">end</span>
  
     <span style="color:#66d9ef">return</span> class_type
-<span style="color:#66d9ef">end</span></code></pre></div>
-<h1 id="基本编码规范-设计">基本编码规范 设计</h1>
-
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h1 id="基本编码规范-设计">基本编码规范 设计</h1>
 <p><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/web/code_style.html">可以参考OpenResty的最佳实践</a>，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。</p>
-
 <h1 id="包管理">包管理</h1>
-
 <p>lua下有两个包管理系统，LuaDist和LuaRocks</p>
-
 <h1 id="单元测试">单元测试</h1>
-
 <ul>
 <li><strong>重点</strong> 如下方法请在命令行中使用类似<code>curl localhost/unittest</code>进行测试，浏览器中看会很痛苦</li>
 <li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/test/unittest.html">OpenResty最佳实践-单元测试</a>给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。</li>
@@ -286,14 +274,12 @@ make build <span style="color:#f92672">&amp;&amp;</span> make install</code></pr
 <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">tb</span>:<span style="color:#a6e22e">run_unittest</span>()
     tb:run()
 <span style="color:#66d9ef">end</span>
-<span style="color:#66d9ef">return</span> tb</code></pre></div>
-<ul>
+<span style="color:#66d9ef">return</span> tb
+</code></pre></div><ul>
 <li>如上有一个很有意思的地方，<code>error(msg or &quot;error&quot;, 2)</code>,其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号）</li>
 <li>性能测试 代码覆盖率 API测试等，都可以去<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/">OpenResty最佳实践</a>中找，配置很简单。</li>
 </ul>
-
 <h1 id="远程调试-openresty">远程调试 OpenResty</h1>
-
 <ul>
 <li>对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。</li>
 <li>此调试方法适用于 win linux osx</li>
@@ -301,42 +287,36 @@ make build <span style="color:#f92672">&amp;&amp;</span> make install</code></pr
 <li>如下为安装步骤：</li>
 <li>下载这个项目，<a href="https://github.com/pkulchenko/ZeroBraneStudio/archive/master.zip">ZeroBraneStudio</a>，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】</li>
 <li>启动ZBS，Project -&gt; Start Debugger Server</li>
-<li>复制<ZBS>/lualibs/mobdebug/mobdebug.lua -&gt; nginx lua path,</li>
-<li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
-<li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
+<li>复制<!-- raw HTML omitted -->/lualibs/mobdebug/mobdebug.lua -&gt; nginx lua path,</li>
+<li>复制<!-- raw HTML omitted -->/lualibs/socket.lua -&gt; nginx lua path，</li>
+<li>复制<!-- raw HTML omitted -->/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
 <li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
-
-<li><p>创建需要调试的lua文件</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">require(&#39;mobdebug&#39;).start(&#39;192.168.1.22&#39;)
+<li>创建需要调试的lua文件</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">require(&#39;mobdebug&#39;).start(&#39;192.168.1.22&#39;)
 local name = ngx.var.arg_name or &#34;Anonymous&#34;
 ngx.say(&#34;Hello, &#34;, name, &#34;!&#34;)
 ngx.say(&#34;Done debugging.&#34;)
-require(&#39;mobdebug&#39;).done()</pre></div></li>
-</ul>
-
-<p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
-
+require(&#39;mobdebug&#39;).done()
+</code></pre></div><p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
 <ul>
 <li>在ide中打开需要调试的如上lua文件</li>
 <li>Project -&gt; Project Directory -&gt; Set From Current File。</li>
 <li>此时，打开浏览器，访问需要此文件处理的链接</li>
 <li>此时开始调试
-<img src="/media/img/Lua/openresty_awesome/debug.png" alt="ZeroBrane Studio调试OpenResty" /></li>
+<img src="/media/img/Lua/openresty_awesome/debug.png" alt="ZeroBrane Studio调试OpenResty"></li>
 <li>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</li>
 <li>如上流程没有截图，或者没有说清楚，可以来<a href="http://ju.outofmemory.cn/entry/326200">这里</a></li>
 </ul>
-
 <h1 id="nginx一些技巧">nginx一些技巧</h1>
-
 <ul>
-<li><p>看我配置的nginx.conf</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;</pre></div></li>
-
-<li><p><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></p></li>
+<li>看我配置的nginx.conf</li>
 </ul>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;
+</code></pre></div><ul>
+<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></li>
+</ul>
 <h1 id="资料">资料</h1>
-
 <ul>
 <li><a href="http://agentzh.org/">章亦春</a></li>
 <li><a href="https://openresty.org/">OpenResty</a></li>
@@ -432,7 +412,7 @@ require(&#39;mobdebug&#39;).done()</pre></div></li>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -504,7 +484,7 @@ require(&#39;mobdebug&#39;).done()</pre></div></li>
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

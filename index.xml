@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Exfly Blog</title>
@@ -6,7 +6,7 @@
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 24 Apr 2020 08:41:08 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2020 07:33:02 +0800</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -27,6 +27,15 @@
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid. Description Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry. Skills Golang &amp;gt; Java &amp;gt; Python &amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>Go Issue</title>
+      <link>/post/go/go-issue/</link>
+      <pubDate>Sat, 27 Jun 2020 07:33:02 +0800</pubDate>
+      
+      <guid>/post/go/go-issue/</guid>
+      <description>&lt;p&gt;记录 golang 相关很难调试的 bug&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -296,7 +305,7 @@
       <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
       
       <guid>/post/java/gradle_maven/</guid>
-      <description>&lt;p&gt;文章简介： &lt;br&gt;1.总结gradle和maven正确使用方法 &lt;br&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;br&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介： &lt;!-- raw HTML omitted --&gt;1.总结gradle和maven正确使用方法 &lt;!-- raw HTML omitted --&gt;2.开箱即用maven&amp;amp;gradle同时支持的项目配置。&lt;!-- raw HTML omitted --&gt;Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！&lt;/p&gt;</description>
     </item>
     
     <item>

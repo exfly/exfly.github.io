@@ -143,48 +143,42 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">3016 字 ~7分钟</span>
+<span class="leancloud-visitors-count">3019 字 ~7分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：Docker Cgroup , Namespace , union fs 运行机制</p>
-
 <h1 id="namespaces">Namespaces</h1>
-
 <p>命名空间 (namespaces) 是 Linux 为我们提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法.</p>
-
 <p>Linux 的命名空间机制提供了以下七种不同的命名空间，包括 CLONE_NEWCGROUP、CLONE_NEWIPC、CLONE_NEWNET、CLONE_NEWNS、CLONE_NEWPID、CLONE_NEWUSER 和 CLONE_NEWUTS(分别对应 Cgroup, IPC, Network, Mount, PID, User, UTS)，通过这七个选项我们能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。</p>
-
 <blockquote>
 <p>the Network namespace encapsulates system resources related to networking such as network interfaces (e.g wlan0, eth0), route tables etc, the Mount namespace encapsulates files and directories in the system, PID contains process IDs and so on. So two instances of a Network namespace A and B (corresponding to two boxes of the same type in our analogy) can contain different resources - maybe A contains wlan0 while B contains eth0 and a different route table copy &ndash; <a href="http://ifeanyi.co/posts/linux-namespaces-part-1/">related</a></p>
 </blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ls -l /proc/$$/ns
 total <span style="color:#ae81ff">0</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 cgroup -&gt; <span style="color:#e6db74">&#39;cgroup:[4026531835]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 ipc -&gt; <span style="color:#e6db74">&#39;ipc:[4026531839]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026531840]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 net -&gt; <span style="color:#e6db74">&#39;net:[4026531992]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 pid -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 pid_for_children -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 user -&gt; <span style="color:#e6db74">&#39;user:[4026531837]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">00</span>:46 uts -&gt; <span style="color:#e6db74">&#39;uts:[4026531838]&#39;</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sudo unshare -u bash
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 cgroup -&gt; <span style="color:#e6db74">&#39;cgroup:[4026531835]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 ipc -&gt; <span style="color:#e6db74">&#39;ipc:[4026531839]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026531840]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 net -&gt; <span style="color:#e6db74">&#39;net:[4026531992]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 pid -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 pid_for_children -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 user -&gt; <span style="color:#e6db74">&#39;user:[4026531837]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> vagrant vagrant <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 00:46 uts -&gt; <span style="color:#e6db74">&#39;uts:[4026531838]&#39;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ sudo unshare -u bash
 $ ls -l /proc/$$/ns
 total <span style="color:#ae81ff">0</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 cgroup -&gt; <span style="color:#e6db74">&#39;cgroup:[4026531835]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 ipc -&gt; <span style="color:#e6db74">&#39;ipc:[4026531839]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026531840]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 net -&gt; <span style="color:#e6db74">&#39;net:[4026531992]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 pid -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 pid_for_children -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 user -&gt; <span style="color:#e6db74">&#39;user:[4026531837]&#39;</span>
-lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">01</span>:00 uts -&gt; <span style="color:#e6db74">&#39;uts:[4026532239]&#39;</span></code></pre></div>
-<p><code>unshare</code> 会在一个新的 namespace 执行新的程序，flag <code>-u</code> 指定新的 <code>UTS</code> namespace, <code>sudo unshare -u bash</code>即是在新的<code>UTS</code>命名空间执行 <code>bash</code></p>
-
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 cgroup -&gt; <span style="color:#e6db74">&#39;cgroup:[4026531835]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 ipc -&gt; <span style="color:#e6db74">&#39;ipc:[4026531839]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 mnt -&gt; <span style="color:#e6db74">&#39;mnt:[4026531840]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 net -&gt; <span style="color:#e6db74">&#39;net:[4026531992]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 pid -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 pid_for_children -&gt; <span style="color:#e6db74">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 user -&gt; <span style="color:#e6db74">&#39;user:[4026531837]&#39;</span>
+lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">19</span> 01:00 uts -&gt; <span style="color:#e6db74">&#39;uts:[4026532239]&#39;</span>
+</code></pre></div><p><code>unshare</code> 会在一个新的 namespace 执行新的程序，flag <code>-u</code> 指定新的 <code>UTS</code> namespace, <code>sudo unshare -u bash</code>即是在新的<code>UTS</code>命名空间执行 <code>bash</code></p>
 <p>linux 以默认的 namespace 启动新的程序，除非明确的指定</p>
-
 <h2 id="user-namespace">user namespace</h2>
-
 <blockquote>
 <p>P$ Q$ 不同的字母代表不同的 user namespace</p>
 </blockquote>
@@ -192,21 +186,19 @@ lrwxrwxrwx <span style="color:#ae81ff">1</span> root root <span style="color:#ae
 vagrant
 
 P$ id
-uid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span>,977<span style="color:#f92672">(</span>docker<span style="color:#f92672">)</span>
+uid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span>,977<span style="color:#f92672">(</span>docker<span style="color:#f92672">)</span>
 
 P$ unshare -U bash
 <span style="color:#75715e"># Enter a new shell that runs within a nested user namespace, the shell is bash which is your cmd shell</span>
 
 C$ id
-uid<span style="color:#f92672">=</span><span style="color:#ae81ff">65534</span><span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span><span style="color:#ae81ff">65534</span><span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span><span style="color:#ae81ff">65534</span><span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span>
+uid<span style="color:#f92672">=</span>65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span>
 
-C$ ls -l</code></pre></div>
-<h3 id="proc-pid-uid-map"><code>/proc/$pid/uid_map</code></h3>
-
+C$ ls -l
+</code></pre></div><h3 id="procpiduid_map"><code>/proc/$pid/uid_map</code></h3>
 <blockquote>
 <p>the map file <code>/proc/$pid/uid_map</code> returns a mapping from UIDs in the user namespace to which the process pid belongs， <a href="http://man7.org/linux/man-pages/man7/user_namespaces.7.html">user_namespace linux man page</a></p>
 </blockquote>
-
 <p>每一行的格式为 <code>$fromID $toID $length</code>，</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">C$ echo $$
 <span style="color:#ae81ff">8683</span> <span style="color:#75715e"># 新的 PID</span>
@@ -217,8 +209,9 @@ P$ echo $$
 C$ cat /proc/8683/uid_map
 
 C$ cat /proc/7898/uid_map
-         <span style="color:#ae81ff">0</span>          <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4294967295</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">P$ id
-uid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span>,977<span style="color:#f92672">(</span>docker<span style="color:#f92672">)</span>
+         <span style="color:#ae81ff">0</span>          <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4294967295</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">P$ id
+uid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>1000<span style="color:#f92672">(</span>vagrant<span style="color:#f92672">)</span>,977<span style="color:#f92672">(</span>docker<span style="color:#f92672">)</span>
 
 P$ ip link add type veth
 RTNETLINK answers: Operation not permitted
@@ -235,7 +228,7 @@ C$ echo $$
 P$ echo <span style="color:#e6db74">&#34;0 1000 1&#34;</span> &gt; /proc/9078/uid_map
 
 C$ id
-uid<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span><span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span><span style="color:#ae81ff">65534</span><span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span><span style="color:#ae81ff">65534</span><span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span>
+uid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span>
 
 C$ ip link add type veth
 <span style="color:#75715e"># Success!</span>
@@ -245,18 +238,18 @@ P$ echo deny &gt; /proc/9078/setgroups
 P$ echo <span style="color:#e6db74">&#34;0 1000 1&#34;</span> &gt; /proc/9078/gid_map
 
 C$ id
-uid<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span><span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span><span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span><span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>,65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span></code></pre></div>
-<h3 id="mount-namespace-http-man7-org-linux-man-pages-man7-mount-namespaces-7-html"><a href="http://man7.org/linux/man-pages/man7/mount_namespaces.7.html">mount namespace</a></h3>
+uid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>,65534<span style="color:#f92672">(</span>nobody<span style="color:#f92672">)</span>
+</code></pre></div><h3 id="mount-namespacehttpman7orglinuxman-pagesman7mount_namespaces7html"><a href="http://man7.org/linux/man-pages/man7/mount_namespaces.7.html">mount namespace</a></h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /proc/$$/mounts
 
 proc /proc proc rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 sys /sys sysfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-dev /dev devtmpfs rw,nosuid,relatime,size<span style="color:#f92672">=</span>496792k,nr_inodes<span style="color:#f92672">=</span><span style="color:#ae81ff">124198</span>,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+dev /dev devtmpfs rw,nosuid,relatime,size<span style="color:#f92672">=</span>496792k,nr_inodes<span style="color:#f92672">=</span>124198,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 run /run tmpfs rw,nosuid,nodev,relatime,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-/dev/sda2 / btrfs rw,relatime,space_cache,subvolid<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,subvol<span style="color:#f92672">=</span>/ <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+/dev/sda2 / btrfs rw,relatime,space_cache,subvolid<span style="color:#f92672">=</span>5,subvol<span style="color:#f92672">=</span>/ <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /dev/shm tmpfs rw,nosuid,nodev <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">620</span>,ptmxmode<span style="color:#f92672">=</span><span style="color:#ae81ff">000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid<span style="color:#f92672">=</span>5,mode<span style="color:#f92672">=</span>620,ptmxmode<span style="color:#f92672">=</span><span style="color:#ae81ff">000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 cgroup2 /sys/fs/cgroup/unified cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 cgroup /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,name<span style="color:#f92672">=</span>systemd <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
@@ -275,23 +268,23 @@ cgroup /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory <span
 cgroup /sys/fs/cgroup/hugetlb cgroup rw,nosuid,nodev,noexec,relatime,hugetlb <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 hugetlbfs /dev/hugepages hugetlbfs rw,relatime,pagesize<span style="color:#f92672">=</span>2M <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd<span style="color:#f92672">=</span><span style="color:#ae81ff">46</span>,pgrp<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,minproto<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,maxproto<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,direct,pipe_ino<span style="color:#f92672">=</span><span style="color:#ae81ff">10711</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd<span style="color:#f92672">=</span>46,pgrp<span style="color:#f92672">=</span>1,timeout<span style="color:#f92672">=</span>0,minproto<span style="color:#f92672">=</span>5,maxproto<span style="color:#f92672">=</span>5,direct,pipe_ino<span style="color:#f92672">=</span><span style="color:#ae81ff">10711</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /tmp tmpfs rw,nosuid,nodev <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-tmpfs /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size<span style="color:#f92672">=</span>100836k,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">700</span>,uid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-vagrant /vagrant vboxsf rw,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span></code></pre></div>
-<p><a href="http://www.linfo.org/mount_point.html">mount point</a></p>
+tmpfs /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size<span style="color:#f92672">=</span>100836k,mode<span style="color:#f92672">=</span>700,uid<span style="color:#f92672">=</span>1000,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+vagrant /vagrant vboxsf rw,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><p><a href="http://www.linfo.org/mount_point.html">mount point</a></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ unshare -m bash
 $ cat /proc/$$/mounts
-/dev/sda2 / btrfs rw,relatime,space_cache,subvolid<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,subvol<span style="color:#f92672">=</span>/ <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-dev /dev devtmpfs rw,nosuid,relatime,size<span style="color:#f92672">=</span>496792k,nr_inodes<span style="color:#f92672">=</span><span style="color:#ae81ff">124198</span>,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+/dev/sda2 / btrfs rw,relatime,space_cache,subvolid<span style="color:#f92672">=</span>5,subvol<span style="color:#f92672">=</span>/ <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+dev /dev devtmpfs rw,nosuid,relatime,size<span style="color:#f92672">=</span>496792k,nr_inodes<span style="color:#f92672">=</span>124198,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /dev/shm tmpfs rw,nosuid,nodev <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">620</span>,ptmxmode<span style="color:#f92672">=</span><span style="color:#ae81ff">000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid<span style="color:#f92672">=</span>5,mode<span style="color:#f92672">=</span>620,ptmxmode<span style="color:#f92672">=</span><span style="color:#ae81ff">000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 hugetlbfs /dev/hugepages hugetlbfs rw,relatime,pagesize<span style="color:#f92672">=</span>2M <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 proc /proc proc rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd<span style="color:#f92672">=</span><span style="color:#ae81ff">46</span>,pgrp<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,minproto<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,maxproto<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>,direct,pipe_ino<span style="color:#f92672">=</span><span style="color:#ae81ff">10711</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd<span style="color:#f92672">=</span>46,pgrp<span style="color:#f92672">=</span>1,timeout<span style="color:#f92672">=</span>0,minproto<span style="color:#f92672">=</span>5,maxproto<span style="color:#f92672">=</span>5,direct,pipe_ino<span style="color:#f92672">=</span><span style="color:#ae81ff">10711</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 sys /sys sysfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
@@ -314,29 +307,26 @@ configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime <span style
 debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tracefs /sys/kernel/debug/tracing tracefs rw,nosuid,nodev,noexec,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 run /run tmpfs rw,nosuid,nodev,relatime,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">755</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-tmpfs /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size<span style="color:#f92672">=</span>100836k,mode<span style="color:#f92672">=</span><span style="color:#ae81ff">700</span>,uid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span>,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+tmpfs /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size<span style="color:#f92672">=</span>100836k,mode<span style="color:#f92672">=</span>700,uid<span style="color:#f92672">=</span>1000,gid<span style="color:#f92672">=</span><span style="color:#ae81ff">1000</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
 tmpfs /tmp tmpfs rw,nosuid,nodev <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
-vagrant /vagrant vboxsf rw,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span></code></pre></div>
-<p>说明 <code>unshare -m bash</code> 并没有按照预期在新的 mount namespace 中运行</p>
-
+vagrant /vagrant vboxsf rw,relatime <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><p>说明 <code>unshare -m bash</code> 并没有按照预期在新的 mount namespace 中运行</p>
 <p>所以为了验证<code>mount namespace</code>, 我们需要做如下一些事情:</p>
-
 <ol>
 <li>创建命令所需的依赖项和系统文件的副本</li>
 <li>创建一个新的 <code>mount namespace</code></li>
 <li>将新挂载命名空间中的根文件系统替换为由我们的系统文件副本组成的根文件系统。</li>
 <li>在新的安装名称空间内执行程序</li>
 </ol>
-
 <h4 id="进行实验">进行实验</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ wget http://dl-cdn.alpinelinux.org/alpine/v3.10/releases/x86_64/alpine-minirootfs-3.10.1-x86_64.tar.gz
 $ mkdir rootfs
 $ tar -xzf alpine-minirootfs-3.10.1-x86_64.tar.gz -C rootfs
 $ ls rootfs
 
-$ ls rootfs/<span style="color:#f92672">{</span>mnt,dev,proc,home,sys<span style="color:#f92672">}</span></code></pre></div>
-<h5 id="pivot-root">Pivot root</h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">$ unshare -m bash
+$ ls rootfs/<span style="color:#f92672">{</span>mnt,dev,proc,home,sys<span style="color:#f92672">}</span>
+</code></pre></div><h5 id="pivot-root">Pivot root</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ unshare -m bash
 $ mount --bind rootfs rootfs
 $ cd rootfs
 $ mkdir put_old
@@ -351,35 +341,31 @@ bin   dev  home        lib    lost+found  mnt  proc  run   srv  tmp  var
 boot  etc  initrd.img  lib64  media       opt  root  sbin  sys  usr  vmlinuz
 
 $ /bin/busybox umount -l put_old # 卸载旧的文件系统
-$ mount -t proc proc proc/</pre></div>
-<p>到这里，已经创建了一个隔离的 rootfs</p>
-
+$ mount -t proc proc proc/
+</code></pre></div><p>到这里，已经创建了一个隔离的 rootfs</p>
 <h2 id="进程">进程</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ps -ef
 UID        PID  PPID  C STIME TTY          TIME CMD
-root         <span style="color:#ae81ff">1</span>     <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 /sbin/init
-root         <span style="color:#ae81ff">2</span>     <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>kthreadd<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">3</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>rcu_gp<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">4</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>rcu_par_gp<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">5</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>kworker/0:0-events<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">6</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>kworker/0:0H-kblockd<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">7</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>kworker/u4:0-btrfs-endio-write<span style="color:#f92672">]</span>
-root         <span style="color:#ae81ff">8</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">01</span>:17 ?        <span style="color:#ae81ff">00</span>:00:00 <span style="color:#f92672">[</span>mm_percpu_wq<span style="color:#f92672">]</span></code></pre></div>
-<p>有两个进程很特殊，pid={1,2}, 这两个进程都是被 Linux 中的上帝进程 idle 创建出来的</p>
-
+root         <span style="color:#ae81ff">1</span>     <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 /sbin/init
+root         <span style="color:#ae81ff">2</span>     <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>kthreadd<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">3</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>rcu_gp<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">4</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>rcu_par_gp<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">5</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>kworker/0:0-events<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">6</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>kworker/0:0H-kblockd<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">7</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>kworker/u4:0-btrfs-endio-write<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">8</span>     <span style="color:#ae81ff">2</span>  <span style="color:#ae81ff">0</span> 01:17 ?        00:00:00 <span style="color:#f92672">[</span>mm_percpu_wq<span style="color:#f92672">]</span>
+</code></pre></div><p>有两个进程很特殊，pid={1,2}, 这两个进程都是被 Linux 中的上帝进程 idle 创建出来的</p>
 <ul>
 <li>pid=1 的 <code>/sbin/init</code>, 执行内核的一部分初始化工作和系统配置，也会创建一些类似 getty 的注册进程</li>
 <li>pid=2 的<code>kthreadd</code>, 管理和调度其他的内核进程</li>
 </ul>
-
 <h2 id="网络">网络</h2>
-
 <p>在默认情况下，每一个容器在创建时都会创建一对虚拟网卡，两个虚拟网卡组成了数据的通道，其中一个会放在创建的容器中，会加入到名为 docker0 网桥中。我们可以使用如下的命令来查看当前网桥的接口：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ brctl show
 bridge name     bridge id               STP enabled     interfaces
-br-43ee5ed53f84         <span style="color:#ae81ff">8000</span>.024297630322       no
-docker0         <span style="color:#ae81ff">8000</span>.0242bf0282f8       no</code></pre></div>
-<p>docker0 会为每一个容器分配一个新的 IP 地址并将 docker0 的 IP 地址设置为默认的网关。网桥 docker0 通过 iptables 中的配置与宿主机器上的网卡相连，所有符合条件的请求都会通过 iptables 转发到 docker0 并由网桥分发给对应的机器。</p>
+br-43ee5ed53f84         8000.024297630322       no
+docker0         8000.0242bf0282f8       no
+</code></pre></div><p>docker0 会为每一个容器分配一个新的 IP 地址并将 docker0 的 IP 地址设置为默认的网关。网桥 docker0 通过 iptables 中的配置与宿主机器上的网卡相连，所有符合条件的请求都会通过 iptables 转发到 docker0 并由网桥分发给对应的机器。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ iptables -t nat -L
 Chain PREROUTING <span style="color:#f92672">(</span>policy ACCEPT<span style="color:#f92672">)</span>
 target     prot opt source               destination
@@ -387,95 +373,85 @@ DOCKER     all  --  anywhere             anywhere             ADDRTYPE match dst
 
 Chain DOCKER <span style="color:#f92672">(</span><span style="color:#ae81ff">2</span> references<span style="color:#f92672">)</span>
 target     prot opt source               destination
-RETURN     all  --  anywhere             anywhere</code></pre></div>
-<h4 id="ip">ip</h4>
+RETURN     all  --  anywhere             anywhere
+</code></pre></div><h4 id="ip">ip</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ip link list
-<span style="color:#ae81ff">1</span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/loopback <span style="color:#ae81ff">00</span>:00:00:00:00:00 brd <span style="color:#ae81ff">00</span>:00:00:00:00:00
-<span style="color:#ae81ff">2</span>: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">1500</span> qdisc fq_codel state UP mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/ether <span style="color:#ae81ff">08</span>:00:27:d4:b6:c8 brd ff:ff:ff:ff:ff:ff
-<span style="color:#ae81ff">3</span>: eth1: &lt;BROADCAST,MULTICAST&gt; mtu <span style="color:#ae81ff">1500</span> qdisc fq_codel state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/ether <span style="color:#ae81ff">08</span>:00:27:b7:f5:14 brd ff:ff:ff:ff:ff:ff
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">1500</span> qdisc fq_codel state UP mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/ether 08:00:27:d4:b6:c8 brd ff:ff:ff:ff:ff:ff
+3: eth1: &lt;BROADCAST,MULTICAST&gt; mtu <span style="color:#ae81ff">1500</span> qdisc fq_codel state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/ether 08:00:27:b7:f5:14 brd ff:ff:ff:ff:ff:ff
 
 $ ip netns add coke
 $ ip netns list
-coke</code></pre></div>
-<p><code>ip netns list</code> 只显示命名的 netns，初始 netns 是非命名 netns。并且每一个命名 netns 都会在<code>/var/run/netns</code>创建同名文件，这个文件可以让进程切换到此 netns</p>
-
+coke
+</code></pre></div><p><code>ip netns list</code> 只显示命名的 netns，初始 netns 是非命名 netns。并且每一个命名 netns 都会在<code>/var/run/netns</code>创建同名文件，这个文件可以让进程切换到此 netns</p>
 <p><code>C$</code> 代表在一个子命名空间中执行</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ip netns exec coke bash
 
 C$ ip link list
-<span style="color:#ae81ff">1</span>: lo: &lt;LOOPBACK&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noop state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/loopback <span style="color:#ae81ff">00</span>:00:00:00:00:00 brd <span style="color:#ae81ff">00</span>:00:00:00:00:00
+1: lo: &lt;LOOPBACK&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noop state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 
-C$ ping <span style="color:#ae81ff">127</span>.0.0.1
+C$ ping 127.0.0.1
 connect: Network is unreachable
 
 C$ ip link set dev lo up
 
 C$ ip link list
-<span style="color:#ae81ff">1</span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/loopback <span style="color:#ae81ff">00</span>:00:00:00:00:00 brd <span style="color:#ae81ff">00</span>:00:00:00:00:00
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 
-C$ ping <span style="color:#ae81ff">127</span>.0.0.1
-<span style="color:#75715e"># OK</span></code></pre></div>
-<p>现在在此 netns 中只可以与同 netns 的进程进行沟通(localhost),我们可以尝试与 init netns 的程序进行沟通</p>
-
+C$ ping 127.0.0.1
+<span style="color:#75715e"># OK</span>
+</code></pre></div><p>现在在此 netns 中只可以与同 netns 的进程进行沟通(localhost),我们可以尝试与 init netns 的程序进行沟通</p>
 <h3 id="veth-devices">Veth Devices</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ip link add veth0 type veth peer name veth1 <span style="color:#75715e"># # Create a veth pair (veth0 &lt;=&gt; veth1)</span>
 $ ip link set veth1 netns coke <span style="color:#75715e"># # Move the veth1 end to the new namespace</span>
 C$ ip link list
-<span style="color:#ae81ff">1</span>: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
-    link/loopback <span style="color:#ae81ff">00</span>:00:00:00:00:00 brd <span style="color:#ae81ff">00</span>:00:00:00:00:00
-<span style="color:#ae81ff">7</span>: veth1@if5: &lt;BROADCAST,MULTICAST&gt; mtu <span style="color:#ae81ff">1500</span> qdisc noop state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+7: veth1@if5: &lt;BROADCAST,MULTICAST&gt; mtu <span style="color:#ae81ff">1500</span> qdisc noop state DOWN mode DEFAULT group default qlen <span style="color:#ae81ff">1000</span>
     link/ether ee:16:0c:23:f3:af brd ff:ff:ff:ff:ff:ff link-netnsid <span style="color:#ae81ff">0</span>
 
-$ ip addr add <span style="color:#ae81ff">10</span>.1.1.1/24 dev veth0</code></pre></div>
-<p>现在 veth1 设备已经可以在两个 netns 中看到，为了是他们都可以工作，我们需要给它们两个<code>ip addresses</code> 和让<code>interface up</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ip addr add <span style="color:#ae81ff">10</span>.1.1.1/24 dev veth0 <span style="color:#75715e"># In the initial namespace</span>
+$ ip addr add 10.1.1.1/24 dev veth0
+</code></pre></div><p>现在 veth1 设备已经可以在两个 netns 中看到，为了是他们都可以工作，我们需要给它们两个<code>ip addresses</code> 和让<code>interface up</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ip addr add 10.1.1.1/24 dev veth0 <span style="color:#75715e"># In the initial namespace</span>
 $ ip link set dev veth0 up
 
-C$ ip addr add <span style="color:#ae81ff">10</span>.1.1.2/24 dev veth1 <span style="color:#75715e"># # In the coke namespace</span>
+C$ ip addr add 10.1.1.2/24 dev veth1 <span style="color:#75715e"># # In the coke namespace</span>
 C$ ip link set dev veth1 up
 C$ ip addr show veth1
-<span style="color:#ae81ff">4</span>: veth1@if5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">1500</span> qdisc noqueue state UP group default qlen <span style="color:#ae81ff">1000</span>
+4: veth1@if5: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">1500</span> qdisc noqueue state UP group default qlen <span style="color:#ae81ff">1000</span>
     link/ether 1a:e7:9f:4e:d4:db brd ff:ff:ff:ff:ff:ff link-netnsid <span style="color:#ae81ff">0</span>
-    inet <span style="color:#ae81ff">10</span>.1.1.2/24 scope global veth1
+    inet 10.1.1.2/24 scope global veth1
        valid_lft forever preferred_lft forever
     inet6 fe80::18e7:9fff:fe4e:d4db/64 scope link
-       valid_lft forever preferred_lft forever</code></pre></div>
-<p>现在 <code>veth0</code> 和 <code>veth1</code> 已经 <code>up</code> 和赋予了 ip address <code>10.1.1.1</code> <code>10.1.1.2</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ping -I veth0 <span style="color:#ae81ff">10</span>.1.1.2
+       valid_lft forever preferred_lft forever
+</code></pre></div><p>现在 <code>veth0</code> 和 <code>veth1</code> 已经 <code>up</code> 和赋予了 ip address <code>10.1.1.1</code> <code>10.1.1.2</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ ping -I veth0 10.1.1.2
 
-C$ ping <span style="color:#ae81ff">10</span>.1.1.1</code></pre></div>
-<h3 id="netlink">netlink</h3>
-
+C$ ping 10.1.1.1
+</code></pre></div><h3 id="netlink">netlink</h3>
 <h3 id="libnetwork">libnetwork</h3>
-
 <h2 id="chroot">chroot</h2>
-
 <p><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-chroot/index.html">https://www.ibm.com/developerworks/cn/linux/l-cn-chroot/index.html</a></p>
-
 <h1 id="cgroups">CGroups</h1>
-
 <p><a href="https://www.ibm.com/developerworks/cn/linux/1506_cgroup/index.html">https://www.ibm.com/developerworks/cn/linux/1506_cgroup/index.html</a></p>
-
 <h1 id="unionfs">UnionFS</h1>
-
-<p>docker export \$(docker create busybox) | tar -C rootfs -xvf -
+<p>docker export $(docker create busybox) | tar -C rootfs -xvf -
 AUFS overlay2</p>
-
 <p>查看系统是否支持相应的文件系统</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ uname -a
-Linux archlinux <span style="color:#ae81ff">5</span>.1.15-arch1-1-ARCH <span style="color:#75715e">#1 SMP PREEMPT Tue Jun 25 04:49:39 UTC 2019 x86_64 GNU/Linux</span>
+Linux archlinux 5.1.15-arch1-1-ARCH <span style="color:#75715e">#1 SMP PREEMPT Tue Jun 25 04:49:39 UTC 2019 x86_64 GNU/Linux</span>
 
 $ grep btrfs /proc/filesystems
-       btrfs</code></pre></div>
-<p>有一些系统这种方式找不到对应的系统，但是同样支持此文件系统，比如 <code>archlinux</code> 发行版，<a href="https://wiki.archlinux.org/index.php/Overlay_filesystem">Overlay_filesystem</a>, <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">overlay-docker-doc</a></p>
+       btrfs
+</code></pre></div><p>有一些系统这种方式找不到对应的系统，但是同样支持此文件系统，比如 <code>archlinux</code> 发行版，<a href="https://wiki.archlinux.org/index.php/Overlay_filesystem">Overlay_filesystem</a>, <a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/">overlay-docker-doc</a></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ mkdir b0 b1 b2 upper work merged
-$ mount -t overlay overlay -o lowerdir<span style="color:#f92672">=</span>./b0:./b1:./b2,upperdir<span style="color:#f92672">=</span>./upper,workdir<span style="color:#f92672">=</span>./work ./merged</code></pre></div>
-<p>overlay2 将 lowerdir、upperdir、workdir 联合挂载，形成最终的 merged 挂载点，其中 lowerdir 是镜像只读层，upperdir 是容器可读可写层，workdir 是执行涉及修改 lowerdir 执行 copy_up 操作的中转层（例如，upperdir 中不存在，需要从 lowerdir 中进行复制，该过程暂未详细了解，遇到了再分析）</p>
+$ mount -t overlay overlay -o lowerdir<span style="color:#f92672">=</span>./b0:./b1:./b2,upperdir<span style="color:#f92672">=</span>./upper,workdir<span style="color:#f92672">=</span>./work ./merged
+</code></pre></div><p>overlay2 将 lowerdir、upperdir、workdir 联合挂载，形成最终的 merged 挂载点，其中 lowerdir 是镜像只读层，upperdir 是容器可读可写层，workdir 是执行涉及修改 lowerdir 执行 copy_up 操作的中转层（例如，upperdir 中不存在，需要从 lowerdir 中进行复制，该过程暂未详细了解，遇到了再分析）</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ tree
 .
 ├── b0
@@ -486,12 +462,13 @@ $ mount -t overlay overlay -o lowerdir<span style="color:#f92672">=</span>./b0:.
 ├── upper
 └── work
     ├── index
-    └── work</code></pre></div>
-<p>获得的文件系统是有层次的，当前的层次关系为：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">/upper
+    └── work
+</code></pre></div><p>获得的文件系统是有层次的，当前的层次关系为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">/upper
 /b0
 /b1
-/b2</pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ echo <span style="color:#e6db74">&#39;192.168.0.1&#39;</span> &gt; b0/ip.txt
+/b2
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">$ echo <span style="color:#e6db74">&#39;192.168.0.1&#39;</span> &gt; b0/ip.txt
 $ tree
 .
 ├── b0
@@ -507,7 +484,7 @@ $ tree
     └── work
 
 $ cat merged/ip.txt
-<span style="color:#ae81ff">192</span>.168.0.1
+192.168.0.1
 
 $ echo <span style="color:#e6db74">&#39;192.168.0.2&#39;</span> &gt; merged/ip.txt
 $ tree
@@ -526,11 +503,11 @@ $ tree
     └── work
 
 $ cat upper/ip.txt
-<span style="color:#ae81ff">192</span>.168.0.2
+192.168.0.2
 
 $ echo <span style="color:#e6db74">&#39;192.168.0.3&#39;</span> &gt; upper/ip.txt
 $ cat merged/ip.txt
-<span style="color:#ae81ff">192</span>.168.0.3
+192.168.0.3
 
 $ rm -rf merged/ip.txt
 $ tree
@@ -549,31 +526,63 @@ $ tree
     └── work
 
 $ ls upper/ip.txt
-c--------- <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">18</span> <span style="color:#ae81ff">04</span>:35 upper/ip.txt</code></pre></div>
-<h1 id="references">references</h1>
-
+c--------- <span style="color:#ae81ff">1</span> root root 0, <span style="color:#ae81ff">0</span> Sep <span style="color:#ae81ff">18</span> 04:35 upper/ip.txt
+</code></pre></div><h1 id="references">references</h1>
 <ul>
-<li><a href="https://github.com/lanything/container-lab">container-lab</a></li>
-<li><a href="https://draveness.me/docker">https://draveness.me/docker</a></li>
-<li>调试网络 <code>docker run -it --net container:vibrant_blackburn nicolaka/netshoot</code></li>
-<li><a href="https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt">https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt</a></li>
-<li><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlayfs</code>的一些限制/兼容性问题</a></li>
-<li><a href="http://ifeanyi.co/posts/linux-namespaces-part-1/">linux-namespace-isolate-programing</a> 有一个例子程序</li>
-<li><a href="https://lwn.net/Articles/531114/">Namespaces in operation</a></li>
-<li><a href="http://man7.org/linux/man-pages/man7/cgroups.7.html">cgroup/linux-man-page</a></li>
-<li><a href="http://man7.org/linux/man-pages/man7/user_namespaces.7.html">user-namespace/linum-man-page</a></li>
-<li><a href="http://man7.org/linux/man-pages/man7/mount_namespaces.7.html">mount namespaces</a></li>
-<li><a href="https://www.tldp.org/LDP/Linux-Filesystem-Hierarchy/html/proc.html">proc special filesystem</a></li>
-<li><a href="http://man7.org/linux/man-pages/man8/ip-netns.8.html">management ip netns</a></li>
-<li><a href="https://access.redhat.com/sites/default/files/attachments/rh_ip_command_cheatsheet_1214_jcs_print.pdf">ip command cheatsheet</a></li>
-<li><a href="http://man7.org/linux/man-pages/man4/veth.4.html">veth</a></li>
-<li><a href="http://www.infradead.org/~tgr/libnl/doc/core.html#_introduction">Netlink-doc</a></li>
-
-<li><p><a href="http://man7.org/linux/man-pages/man7/netlink.7.html">man netlink</a></p></li>
-
-<li><p><a href="http://ifeanyi.co/posts/linux-namespaces-part-1/">A deep dive into Linux namespaces</a></p></li>
-
-<li><p><a href="https://juejin.im/entry/5b558e3751882561b75a5865">100个容器周边项目，点亮你的容器集群技能树</a></p></li>
+<li>
+<p><a href="https://github.com/lanything/container-lab">container-lab</a></p>
+</li>
+<li>
+<p><a href="https://draveness.me/docker">https://draveness.me/docker</a></p>
+</li>
+<li>
+<p>调试网络 <code>docker run -it --net container:vibrant_blackburn nicolaka/netshoot</code></p>
+</li>
+<li>
+<p><a href="https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt">https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt</a></p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/"><code>overlayfs</code>的一些限制/兼容性问题</a></p>
+</li>
+<li>
+<p><a href="http://ifeanyi.co/posts/linux-namespaces-part-1/">linux-namespace-isolate-programing</a> 有一个例子程序</p>
+</li>
+<li>
+<p><a href="https://lwn.net/Articles/531114/">Namespaces in operation</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man7/cgroups.7.html">cgroup/linux-man-page</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man7/user_namespaces.7.html">user-namespace/linum-man-page</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man7/mount_namespaces.7.html">mount namespaces</a></p>
+</li>
+<li>
+<p><a href="https://www.tldp.org/LDP/Linux-Filesystem-Hierarchy/html/proc.html">proc special filesystem</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man8/ip-netns.8.html">management ip netns</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/sites/default/files/attachments/rh_ip_command_cheatsheet_1214_jcs_print.pdf">ip command cheatsheet</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man4/veth.4.html">veth</a></p>
+</li>
+<li>
+<p><a href="http://www.infradead.org/~tgr/libnl/doc/core.html#_introduction">Netlink-doc</a></p>
+</li>
+<li>
+<p><a href="http://man7.org/linux/man-pages/man7/netlink.7.html">man netlink</a></p>
+</li>
+<li>
+<p><a href="http://ifeanyi.co/posts/linux-namespaces-part-1/">A deep dive into Linux namespaces</a></p>
+</li>
+<li>
+<p><a href="https://juejin.im/entry/5b558e3751882561b75a5865">100个容器周边项目，点亮你的容器集群技能树</a></p>
+</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -659,7 +668,7 @@ c--------- <span style="color:#ae81ff">1</span> root root <span style="color:#ae
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -731,7 +740,7 @@ c--------- <span style="color:#ae81ff">1</span> root root <span style="color:#ae
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

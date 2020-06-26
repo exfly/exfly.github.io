@@ -143,42 +143,29 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">936 字 ~2分钟</span>
+<span class="leancloud-visitors-count">933 字 ~2分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>
-
 <h2 id="一">一</h2>
-
 <p>使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如<a href="http://www.oneplusbbs.com/thread-942394-1-1.html">二清、三清、四清</a>等等。如下一步一步的说如何刷。</p>
-
 <h2 id="二">二</h2>
-
 <h3 id="刷机四步走">刷机四步走</h3>
-
-<h4 id="第一步-仔细阅读-官方wiki-https-github-com-offensive-security-kali-nethunter-wiki"><strong>第一步</strong>， 仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a></h4>
-
+<h4 id="第一步-仔细阅读官方wikihttpsgithubcomoffensive-securitykali-nethunterwiki"><strong>第一步</strong>， 仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a></h4>
 <p>仔细研读仔细阅读<a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>，可以减少刷机过程中各种坑。</p>
-
-<h4 id="第二步-刷-twrp-oneplus1-https-dl-twrp-me-bacon"><strong>第二步</strong>， 刷<a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a></h4>
-
-<p>一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&rdquo;预配置&rdquo;在 Windows 下，也可以参考&rdquo;<a href="http://www.wugfresh.com/brt/">Bacon Root Toolkit</a>&ldquo;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。</p>
-
-<h4 id="第三步-下载最新的-nethunter-并进入twrp的recovery模式刷入kali"><strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">kernel-nethunter-[device]-[os]-*.zip
-nethunter-generic-[arch]-kalifs-*.zip</pre></div>
-<p>对于oneplus1手机来说，其对应的[arch]为armhf。
+<h4 id="第二步-刷twrp-oneplus1httpsdltwrpmebacon"><strong>第二步</strong>， 刷<a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a></h4>
+<p>一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&quot;预配置&quot;在 Windows 下，也可以参考&rdquo;<a href="http://www.wugfresh.com/brt/">Bacon Root Toolkit</a>&quot;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。</p>
+<h4 id="第三步下载最新的-nethunter并进入twrp的recovery模式刷入kali"><strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">kernel-nethunter-[device]-[os]-*.zip
+nethunter-generic-[arch]-kalifs-*.zip
+</code></pre></div><p>对于oneplus1手机来说，其对应的[arch]为armhf。
 随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。</p>
-
-<h4 id="第四步-都刷顺利后-开机进入kali-用已经-预装-上的-supersu-app-来完成之后一系列的-root授权即可"><strong>第四步</strong>，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。</h4>
-
+<h4 id="第四步都刷顺利后开机进入kali-用已经预装上的-supersu-app-来完成之后一系列的-root授权即可"><strong>第四步</strong>，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。</h4>
 <h2 id="三">三</h2>
-
 <p>如果安装Kali Linux NetHunter,需要下载的文件如下：</p>
-
 <ul>
 <li><a href="#">CM13.0</a></li>
 <li><a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
@@ -188,13 +175,9 @@ nethunter-generic-[arch]-kalifs-*.zip</pre></div>
 <li><a href="https://lineageos.org/">lineageos rom</a>：cm的重生</li>
 <li><a href="http://www.supersu.com/download">supersu</a>：root工具</li>
 </ul>
-
 <h2 id="四">四</h2>
-
 <p>Enjoy！</p>
-
 <h2 id="最后">最后</h2>
-
 <p>安装了Kali Linux NetHunter，手机便有了完整的python环境。剩下的，你懂的。</p>
     </div>
     <footer class="post-footer">
@@ -282,7 +265,7 @@ nethunter-generic-[arch]-kalifs-*.zip</pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -354,7 +337,7 @@ nethunter-generic-[arch]-kalifs-*.zip</pre></div>
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

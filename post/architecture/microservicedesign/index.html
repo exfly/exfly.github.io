@@ -149,19 +149,13 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>高可用系统设计，有哪些问题需要解决</p>
-
 <h1 id="什么是高可用系统">什么是高可用系统</h1>
-
 <p><a href="https://coolshell.cn/articles/17459.html">关于高可用的系统</a></p>
-
 <h1 id="高可用系统需要解决的问题">高可用系统需要解决的问题</h1>
-
 <h2 id="挑战">挑战</h2>
-
 <ol>
 <li>成倍的 API 数量</li>
 </ol>
-
 <ul>
 <li>引入网络延迟</li>
 <li>CAP 理论，处理跨多个服务的事务复杂</li>
@@ -172,13 +166,10 @@
 <li>API 版本管理混乱</li>
 <li>TCC、事务消息队列</li>
 </ul>
-
 <h2 id="需要做的事">需要做的事</h2>
-
 <ol>
 <li>可扩展：水平扩展、垂直扩展。 通过冗余部署，避免单点故障。</li>
 </ol>
-
 <ul>
 <li>隔离：避免单一业务占用全部资源。避免业务之间的相互影响 2. 机房隔离避免单点故障。</li>
 <li>解耦：降低维护成本，降低耦合风险。减少依赖，减少相互间的影响。</li>
@@ -190,94 +181,79 @@
 <li>灰度发布(+回滚)：灰度发布是速度与安全性作为妥协，能够有效减少发布故障。</li>
 <li>异步消息系统</li>
 </ul>
-
 <h2 id="需要深入的技术栈">需要深入的技术栈</h2>
-
 <p>分布式系统、DevOps、基础架构即代码(IaC)、不同类型的数据库、前端组件化和复合化、单元测试、全自动发布、迭代、小版本发布计划、测试工具、多版本管理</p>
-
 <h1 id="分布式一致性与共识算法">分布式一致性与共识算法</h1>
-
 <p><a href="https://en.wikipedia.org/wiki/Consensus_(computer_science)">Consensus from wiki</a>, 总结下来一致性就是，在分布式系统中，在给定的一系列操作，即使系统内部出错，最终整个系统对外提供的数据都是可靠的。在协调一致性的过程中，对于一个 Proposal 整个系统达成共识，共识算法起着很重要的作用。</p>
-
 <h2 id="cap">CAP</h2>
-
 <p>加州伯克利大学的教授 Eric Brewer 论文<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.67.6951&amp;rep=rep1&amp;type=pdf">Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services</a> 阐述了 CAP 理论 <a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP from wiki</a>, 论文中提出的观点：在异步的网络模型中，所有的节点由于没有时钟仅仅能根据接收到的消息作出判断，这时完全不能同时保证一致性(Consistency)、可用性(Availability)和分区容错性(Partition tolerance)，每一个系统只能在这三种特性中选择两种。
 由于网络有一定的延迟，并不能做到强一致性，所以大部分时候采用最终一致性的方式，容忍一定时间内数据不一致，在一定的时间内系统内部各节点可以在有限的时间内解决冲突，使数据恢复准确的状态。</p>
-
 <h2 id="拜占庭将军问题">拜占庭将军问题</h2>
-
 <p><a href="https://web.archive.org/web/20170205142845/http://lamport.azurewebsites.net/pubs/byz.pdf">拜占庭将军问题论文</a></p>
-
 <p>拜占庭将军问题是对分布式系统容错的最高要求，然而这不是日常工作中使用的大多数分布式系统中会面对的问题，我们遇到更多的还是节点故障宕机或者不响应等情况，这就大大简化了系统对容错的要求</p>
-
 <h2 id="flp">FLP</h2>
-
 <p>FLP 不可能定理是分布式系统领域最重要的定理之一，它给出了一个非常重要的结论：<strong>在网络可靠并且存在节点失效的异步模型系统中，不存在一个可以解决一致性问题的确定性算法。</strong></p>
-
 <blockquote>
 <p>In this paper, we show the surprising result that no completely asynchronous consensus protocol can tolerate even a single unannounced process death. We do not consider Byzantine failures, and we assume that the message system is reliable it delivers all messages correctly and exactly once.</p>
 </blockquote>
-
 <p><a href="https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf">相关论文</a></p>
-
 <h1 id="共识算法">共识算法</h1>
-
 <h2 id="paxos-raft">paxos, raft</h2>
-
 <p>包括 Paxos、Raft</p>
-
 <p><a href="https://raft.github.io/">The Raft Consensus Algorithm</a>
 <a href="http://thesecretlivesofdata.com/raft/">raft 工作原理动图</a></p>
-
 <p>Paxos 算法难以理解、难以实现，难道什么程度呢？在 raft 的论文中有提及。比如 zookeeper 的 zab 就是在 paxos 的基础上进行设计的。每一种 Paxos 的实现，都需要重新设计实现一套算法。而 raft 相对难度降低很多。
 基于 raft 的 etcd，consul 等。</p>
-
-<h2 id="pow-proof-of-work">POW(Proof-of-Work)</h2>
-
+<h2 id="powproof-of-work">POW(Proof-of-Work)</h2>
 <p>无论是 Paxos 还是 Raft 其实都只能解决非拜占庭将军容错的一致性问题，不能够应对分布式网络中出现的极端情况，但是这在传统的分布式系统都不是什么问题，无论是分布式数据库还是消息队列集群，它们内部的节点并不会故意的发送错误信息，在类似系统中，最常见的问题就是节点失去响应或者失效，所以它们在这种前提下是有效可行的，也是充分的。</p>
-
 <p><a href="https://en.wikipedia.org/wiki/Proof-of-work_system">工作量证明</a>是一个用于阻止拒绝服务攻击和类似垃圾邮件等服务错误问题的协议</p>
-
-<h2 id="pos-proof-of-stake">POS(Proof-of-Stake)</h2>
-
+<h2 id="posproof-of-stake">POS(Proof-of-Stake)</h2>
 <p>权益证明是区块链网络中的使用的另一种共识算法，在基于权益证明的密码货币中，下一个区块的选择是根据不同节点的股份和时间进行随机选择的。</p>
-
-<h2 id="dpos-delegated-proof-of-stake">DPOS(Delegated Proof-of-Stake)</h2>
-
-<h1 id="微服务设计-脑图">《微服务设计》脑图</h1>
-
+<h2 id="dposdelegated-proof-of-stake">DPOS(Delegated Proof-of-Stake)</h2>
+<h1 id="微服务设计脑图">《微服务设计》脑图</h1>
 <p>脑图如下：
-<img src="https://github.com/ExFly/CsLearning/raw/master/NoteBookForDevelop/%E4%B9%A6%E7%AC%94%E8%AE%B0/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1.png" alt="脑图" /></p>
-
+<img src="https://github.com/ExFly/CsLearning/raw/master/NoteBookForDevelop/%E4%B9%A6%E7%AC%94%E8%AE%B0/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1.png" alt="脑图"></p>
 <ul>
 <li><a href="https://github.com/ExFly/CsLearning/tree/master/NoteBookForDevelop/%E4%B9%A6%E7%AC%94%E8%AE%B0/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E8%AE%BE%E8%AE%A1">脑图地址</a></li>
 </ul>
-
 <h1 id="references">references</h1>
-
 <ul>
-<li><a href="https://github.com/xingshaocheng/architect-awesome/blob/master/README.md">后端架构师技术图谱</a></li>
-<li><a href="https://github.com/Netflix/Hystrix/wiki">hystrix</a></li>
-
-<li><p><a href="https://github.com/bilibili/kratos">bilibili/kratos</a></p></li>
-
-<li><p><a href="https://callistaenterprise.se/blogg/teknik/2017/02/17/go-blog-series-part1/">Go Microservices blog series</a></p></li>
-
-<li><p><a href="https://ewanvalentine.io/microservices-in-golang-part-1/">microservices-in-golang</a></p></li>
-
-<li><p><a href="https://github.com/EwanValentine/shippy/tree/master/user-service">shippy-demo</a></p></li>
-
-<li><p><a href="https://zhuanlan.zhihu.com/p/52778237">20 个好用的 Go 语言微服务开发框架</a></p></li>
-
-<li><p><a href="https://github.com/micro/micro/">micro/micro</a></p></li>
-
-<li><p><a href="https://github.com/micro/go-micro">micro/go-micro</a></p></li>
-
-<li><p><a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a></p></li>
-
-<li><p><a href="https://github.com/gogo/grpc-example">grpc-example</a></p></li>
-
-<li><p><a href="https://draveness.me/consensus">分布式一致性与共识算法</a></p></li>
+<li>
+<p><a href="https://github.com/xingshaocheng/architect-awesome/blob/master/README.md">后端架构师技术图谱</a></p>
+</li>
+<li>
+<p><a href="https://github.com/Netflix/Hystrix/wiki">hystrix</a></p>
+</li>
+<li>
+<p><a href="https://github.com/bilibili/kratos">bilibili/kratos</a></p>
+</li>
+<li>
+<p><a href="https://callistaenterprise.se/blogg/teknik/2017/02/17/go-blog-series-part1/">Go Microservices blog series</a></p>
+</li>
+<li>
+<p><a href="https://ewanvalentine.io/microservices-in-golang-part-1/">microservices-in-golang</a></p>
+</li>
+<li>
+<p><a href="https://github.com/EwanValentine/shippy/tree/master/user-service">shippy-demo</a></p>
+</li>
+<li>
+<p><a href="https://zhuanlan.zhihu.com/p/52778237">20 个好用的 Go 语言微服务开发框架</a></p>
+</li>
+<li>
+<p><a href="https://github.com/micro/micro/">micro/micro</a></p>
+</li>
+<li>
+<p><a href="https://github.com/micro/go-micro">micro/go-micro</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a></p>
+</li>
+<li>
+<p><a href="https://github.com/gogo/grpc-example">grpc-example</a></p>
+</li>
+<li>
+<p><a href="https://draveness.me/consensus">分布式一致性与共识算法</a></p>
+</li>
 </ul>
     </div>
     <footer class="post-footer">
@@ -365,7 +341,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -437,7 +413,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

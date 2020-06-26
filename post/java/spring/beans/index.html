@@ -149,24 +149,20 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。</p>
-
 <h1 id="目录">目录</h1>
-
 <ul>
 <li>手动装配
-
 <ul>
 <li>使用@Bean</li>
-</ul></li>
+</ul>
+</li>
 <li>自动装配 使用@ComponentScan</li>
 <li>自动装配的歧义性</li>
 <li>条件生效 Bean</li>
 <li>profile</li>
 <li>bean作用域</li>
 </ul>
-
 <h2 id="手动装配">手动装配</h2>
-
 <p>手动装配可以通过声明xml文件和java配置文件两种手段。在这两种方式中，更加推荐使用java配置的方式。两种配置不是相互替代的关系，一般将业务相关的配置放到java配置中，对于非业务，如数据库等，可以放到xml中。
 通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。@Bean(name= {&ldquo;sayAndPlayServiceNewName&rdquo;, &ldquo;sayAndPlayService&rdquo;})</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SayAndPlayService</span> <span style="color:#f92672">{</span>
@@ -207,9 +203,8 @@
 		SayAndPlayService service <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>SayAndPlayService<span style="color:#f92672">)</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;sayAndPlayService&#34;</span><span style="color:#f92672">);</span>
 		Assert<span style="color:#f92672">.</span><span style="color:#a6e22e">assertEquals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;People Service implements say.&#34;</span><span style="color:#f92672">,</span> service<span style="color:#f92672">.</span><span style="color:#a6e22e">say</span><span style="color:#f92672">());</span>
 	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
-<h2 id="自动装配">自动装配</h2>
-
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="自动装配">自动装配</h2>
 <p>使用@ComponentScan可以自动扫描，@ComponentScan告诉Spring 哪个packages 的用注解标识的类 会被spring自动扫描并且装入bean容器。自动扫描，会扫描相应包以及子包，并为所有bean生成name，name命名规则为其类首字母变小写，如interface UserService被唯一的UserServiceImpl实现，则经过扫描，bean被声明为name为userServiceImpl。如果接口被多各类实现，需要转到下文<strong>消除歧义</strong>部分进行了解。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SpeakService</span> <span style="color:#f92672">{</span>
 	String <span style="color:#a6e22e">speak</span><span style="color:#f92672">();</span>
@@ -248,13 +243,10 @@
 	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testAnnotationConfigAppContextAutoScanAutoWire</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
 		Assert<span style="color:#f92672">.</span><span style="color:#a6e22e">assertEquals</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;People speak&#34;</span><span style="color:#f92672">,</span> sservice<span style="color:#f92672">.</span><span style="color:#a6e22e">speak</span><span style="color:#f92672">());</span>
 	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
-<h3 id="autowired">@Autowired</h3>
-
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="autowired">@Autowired</h3>
 <p>可以在属性、构造方法、set函数中进行自动注入</p>
-
 <h2 id="消除歧义">消除歧义</h2>
-
 <p>通过使用@Bean注解方法，可以声明并注册一个以方法名为name的bean。如果使用@Bean(name= {&ldquo;sayAndPlayServiceNewName&rdquo;, &ldquo;sayAndPlayService&rdquo;})对bean进行命名，可以用不同的名字取用（在@Autowired处再加一个@Qualifier(&ldquo;sayAndPlayServiceNewName&rdquo;)）;
 如果使用@ComponentScan，相应的Bean定义需要使用Component等进行注解，同时使用@Qualifier(&ldquo;BeanId&rdquo;)限定符，如下</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
@@ -276,9 +268,8 @@
 <span style="color:#75715e">//如何使用
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">@Autowired</span>
 <span style="color:#a6e22e">@Qualifier</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;peopleSayServ&#34;</span><span style="color:#f92672">)</span>
-SayService service<span style="color:#f92672">;</span></code></pre></div>
-<h2 id="条件生效">条件生效</h2>
-
+SayService service<span style="color:#f92672">;</span>
+</code></pre></div><h2 id="条件生效">条件生效</h2>
 <p>如下的解释：在当前上下文中，如果Conditional注解中的MagitExistsCondition.matches方法返回true，则当前bean：magicBean生效。@Profile和springboot自动配置都是基于此种原理实现的。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Bean</span>
 <span style="color:#a6e22e">@Conditional</span><span style="color:#f92672">(</span>MagitExistsCondition<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
@@ -290,28 +281,22 @@ SayService service<span style="color:#f92672">;</span></code></pre></div>
 		Environment env <span style="color:#f92672">=</span> ctxt<span style="color:#f92672">.</span><span style="color:#a6e22e">getEnvironment</span><span style="color:#f92672">();</span>
 		<span style="color:#66d9ef">return</span> env<span style="color:#f92672">.</span><span style="color:#a6e22e">containsProperty</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;magic&#34;</span><span style="color:#f92672">);</span>
 	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span></code></pre></div>
-<h2 id="profile">@Profile</h2>
-
+<span style="color:#f92672">}</span>
+</code></pre></div><h2 id="profile">@Profile</h2>
 <h2 id="bean作用域">bean作用域</h2>
-
 <ul>
 <li>Singleton 默认 只创建一个实例</li>
 <li>Prototype    每次创建新的实例</li>
 <li>Session  每个会话创建一个实例</li>
 <li>Request  每个请求创建一个实例</li>
 </ul>
-
 <p>使用@Scope进行配置即可</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span>
 <span style="color:#a6e22e">@Scope</span><span style="color:#f92672">(</span>ConfigurableBeanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">SCOPE_PROTOTYPE</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Notepad</span><span style="color:#f92672">{}</span></code></pre></div>
-<h2 id="运行时值注入">运行时值注入</h2>
-
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Notepad</span><span style="color:#f92672">{}</span>
+</code></pre></div><h2 id="运行时值注入">运行时值注入</h2>
 <p>以后补充</p>
-
 <h2 id="其他">其他</h2>
-
 <p><a href="/media/img/Java/beans/beandemo.rar">项目代码</a></p>
     </div>
     <footer class="post-footer">
@@ -397,7 +382,7 @@ SayService service<span style="color:#f92672">;</span></code></pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -469,7 +454,7 @@ SayService service<span style="color:#f92672">;</span></code></pre></div>
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

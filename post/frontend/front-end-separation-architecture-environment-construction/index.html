@@ -143,76 +143,52 @@
     <i class="fa fa-eye"></i>
 </span>
 <span class="post-meta-item-text">阅读：</span>
-<span class="leancloud-visitors-count">1295 字 ~3分钟</span>
+<span class="leancloud-visitors-count">1289 字 ~3分钟</span>
 </span>
       </div>
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境</p>
-
 <p><a href="https://github.com/ExFly/HugoBlog/blob/master/content/post/frontend/front-end-separation-architecture-environment-construction.md">原文地址</a></p>
-
 <h1 id="web-研发模式演变">Web 研发模式演变</h1>
-
 <p>最近研究一下前后端的开发模式，看到一个很好的入门路径<a href="https://github.com/kamranahmedse/developer-roadmap">developer-roadmap: frontend backend DevOps</a>,可以看一下，效果还是不错的。</p>
-
 <p>之前看到一个说<a href="https://github.com/lifesinger/blog/issues/184">web 研发演进</a>这里总结一下。</p>
-
 <p>很久之前，前后端的分工是，前端从设计师那里拿到设计图纸，转化静态页面模板，由后端工程师进行数据库设计等一系列设计之后，套前端给的模板。如上也即后端渲染。</p>
-
 <p>但是这样的流程，所有工作的 Block 在后端，想进一步提高研发速度，应该如何分工？到如今给出的答案是基于 Nodejs 的前后端分离架构。这时前后端分工是这样的：</p>
-
 <h2 id="前端的工作">前端的工作</h2>
-
 <ul>
 <li>UI 设计</li>
 <li>前端路由设计</li>
 <li>处理浏览器层的展现逻辑</li>
 </ul>
-
 <p>通过 CSS 渲染样式，通过 JavaScript 添加交互功能，HTML 的生成也可以放在这层，具体看应用场景</p>
-
 <h2 id="后端的工作">后端的工作</h2>
-
 <ul>
 <li>业务逻辑和 API 的设计和实现</li>
 <li>数据库设计和维护</li>
 <li>后端缓存设计</li>
 </ul>
-
 <h2 id="前后端分离下协作体系">前后端分离下协作体系</h2>
-
 <p>前后端分离下的协作方式一般是，前后端各司其职，互不影响。</p>
-
 <p>首先，对于后端来说，后端的主要工作依然是传统的数据库设计、业务逻辑设计，但不需要套模板了，而是为前端提供数据接口</p>
-
 <p>其次，对于前端来说，前端的主要工作是，前端的 ui，以及获取数据，在前端渲染。</p>
-
 <p>工作流程是，先进行 API 设计。前后端一起设计数据接口以及数据返回的格式，现在比较常见的是 json 数据。可以根据接口生成一些 mock 用的 json 数据文件，供前端开发使用。后端根据这个 API 规范实现真正的接口。两端分别并行开发。开发结束时候联调，打通前后端之后进行调试。</p>
-
 <p>具体，可以看一下<a href="https://github.com/genify/ita1024/blob/master/%E7%BD%91%E6%98%93%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E5%AE%9E%E8%B7%B5.md">网易前后端分离实践</a>.</p>
-
 <h1 id="基于-vue-前后端分离环境搭建">基于 Vue 前后端分离环境搭建</h1>
-
 <p>这里对前后端分离 Vue 的开发环境进行演示。思路是，前后端分离，后端可以设置 cookie，前端可以接收到配置的 cookie</p>
-
 <h3 id="node-环境安装">node 环境安装</h3>
-
 <p>安装方法见<a href="http://www.runoob.com/nodejs/nodejs-install-setup.html">这里</a></p>
-
 <h3 id="vue-安装">Vue 安装</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm config set registry <span style="color:#e6db74">&#39;https://registry.npm.taobao.org&#39;</span>
 npm install -g @vue/cli
 vue init webpack demo
 cd demo
-npm dev run</code></pre></div>
-<p>即可在浏览器中看到效果，熟悉的 vue 页面</p>
-
-<h3 id="安装-axios-实现前后端交互-并实现后端设置-cookie-在前端可以生效">安装 axios，实现前后端交互，并实现后端设置 cookie，在前端可以生效</h3>
-
+npm dev run
+</code></pre></div><p>即可在浏览器中看到效果，熟悉的 vue 页面</p>
+<h3 id="安装-axios实现前后端交互并实现后端设置-cookie在前端可以生效">安装 axios，实现前后端交互，并实现后端设置 cookie，在前端可以生效</h3>
 <p>安装 axios</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install axios</code></pre></div>
-<p>修改/src/components/HelloWorld.vue 中对应的 srcipt</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm install axios
+</code></pre></div><p>修改/src/components/HelloWorld.vue 中对应的 srcipt</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#f92672">&lt;</span><span style="color:#a6e22e">script</span><span style="color:#f92672">&gt;</span>
 <span style="color:#66d9ef">import</span> <span style="color:#a6e22e">axios</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;axios&#39;</span>
 
@@ -226,9 +202,7 @@ npm dev run</code></pre></div>
   }
 }
 <span style="color:#f92672">&lt;</span><span style="color:#960050;background-color:#1e0010">/script&gt;</span>
-</code></pre></div>
-<p>最终完成的时候，访问 &lsquo;/&lsquo;，可以看到 cookie 添加了一个 kv 对。现在暂时看不到效果，因为接口后端没有实现。</p>
-
+</code></pre></div><p>最终完成的时候，访问 &lsquo;/'，可以看到 cookie 添加了一个 kv 对。现在暂时看不到效果，因为接口后端没有实现。</p>
 <p>后端接口实现,这里使用的 go，具体 go 编译器的安装方法<a href="https://golang.org/doc/install#install">见这里</a></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
@@ -257,8 +231,8 @@ npm dev run</code></pre></div>
 	<span style="color:#a6e22e">expire</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">AddDate</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
 	<span style="color:#a6e22e">cookie</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Cookie</span>{<span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;csrftoken&#34;</span>, <span style="color:#a6e22e">Value</span>: <span style="color:#a6e22e">expire</span>.<span style="color:#a6e22e">String</span>(), <span style="color:#a6e22e">Expires</span>: <span style="color:#a6e22e">expire</span>}
 	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">SetCookie</span>(<span style="color:#a6e22e">w</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">cookie</span>)
-}</code></pre></div>
-<p>此时前后端都已经实现了，但是因为前端开在了端口 8080，后端开在了 8081，涉及到跨域，相互没法访问。需要配置一下 webpack 的配置才可以。</p>
+}
+</code></pre></div><p>此时前后端都已经实现了，但是因为前端开在了端口 8080，后端开在了 8081，涉及到跨域，相互没法访问。需要配置一下 webpack 的配置才可以。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#75715e">// 修改一下文件/config/index.js: 13 line
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">proxyTable</span><span style="color:#f92672">:</span> {
     <span style="color:#e6db74">&#39;/&#39;</span><span style="color:#f92672">:</span> {
@@ -266,22 +240,15 @@ npm dev run</code></pre></div>
     <span style="color:#a6e22e">changeOrigin</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
     }
 },
-</code></pre></div>
-<p>之后，开启前后端服务：</p>
+</code></pre></div><p>之后，开启前后端服务：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">npm dev run
-go run server.go</code></pre></div>
-<p>之后访问前端页面，localhost:8080，按 F12 -&gt; Application -&gt; Cookies， 即可看到每次刷新都会改变的 csrftoken 的 cookie</p>
-
-<p><img src="/media/img/frontend/setcookie-front-back-sep.png" alt="前后度分离结果，设置了cookie" /></p>
-
+go run server.go
+</code></pre></div><p>之后访问前端页面，localhost:8080，按 F12 -&gt; Application -&gt; Cookies， 即可看到每次刷新都会改变的 csrftoken 的 cookie</p>
+<p><img src="/media/img/frontend/setcookie-front-back-sep.png" alt="前后度分离结果，设置了cookie"></p>
 <p>最终的网站见<a href="https://github.com/ExFly/FrontBackSep">ExFly/FrontBackSep</a></p>
-
 <h1 id="后记">后记</h1>
-
 <p>既然在前后端分离后的后端可以配置cookie，其他的所有操作都可以进行了。进一步可以实现其他的操作。如上。</p>
-
 <h2 id="引用">引用</h2>
-
 <ul>
 <li><a href="https://github.com/kamranahmedse/developer-roadmap">developer-roadmap: frontend backend DevOps</a></li>
 <li><a href="https://github.com/lifesinger/blog/issues/184">web 研发演进</a></li>
@@ -371,7 +338,7 @@ go run server.go</code></pre></div>
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -443,7 +410,7 @@ go run server.go</code></pre></div>
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linux on Exfly Blog</title>
+    <title>Linux on Exfly Blog</title>
     <link>/tags/linux/</link>
-    <description>Recent content in linux on Exfly Blog</description>
+    <description>Recent content in Linux on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Wed, 10 Jan 2018 11:24:31 +0800</lastBuildDate>

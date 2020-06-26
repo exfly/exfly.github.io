@@ -149,31 +149,31 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：描述 docker volume 的原理</p>
-
 <p>docker 存储基于 UnionFS 实现，所有容器存储是将多个 layout 层通过类似 aufs 或者 overlay2 将多个层联合到一起，mount 成新的目录，在通过 namespaces 将新的文件目录 chroot 进入新启动的进程，达到文件隔离的目的。</p>
-
 <ul>
 <li>对于读请求，由于写实复制技术，会直接读取底层文件</li>
 <li>对于写请求，会先将文件复制到读写层，然后进行修改文件</li>
 <li>对于删除，没有真正删除文件，只是讲文件标记删除，没有真正删除下层文件。</li>
 </ul>
-
 <h1 id="命令">命令</h1>
-
 <ul>
-<li><p><code>docker volume create volume-for-test</code>可以创建新的 volume</p></li>
-
-<li><p><code>docker volume ls</code> 查看新创建的 volume</p></li>
-
-<li><p><code>docker volume inspect volume-for-test</code></p></li>
-
-<li><p><code>docker run -d --name devtest --mount source=volume-for-test,target=/app alpine /bin/sh</code></p></li>
-
-<li><p><code>docker inspect &lt;container_id&gt;| grap Mounts</code> 可以看到刚刚 mount 进去的 volume <code>/var/lib/docker/volumes/volume-for-test/_data</code></p></li>
+<li>
+<p><code>docker volume create volume-for-test</code>可以创建新的 volume</p>
+</li>
+<li>
+<p><code>docker volume ls</code> 查看新创建的 volume</p>
+</li>
+<li>
+<p><code>docker volume inspect volume-for-test</code></p>
+</li>
+<li>
+<p><code>docker run -d --name devtest --mount source=volume-for-test,target=/app alpine /bin/sh</code></p>
+</li>
+<li>
+<p><code>docker inspect &lt;container_id&gt;| grap Mounts</code> 可以看到刚刚 mount 进去的 volume <code>/var/lib/docker/volumes/volume-for-test/_data</code></p>
+</li>
 </ul>
-
 <h1 id="related-links">related links</h1>
-
 <ul>
 <li><a href="https://docs.docker.com/storage/">Manage data in Docker</a></li>
 <li><a href="https://docs.docker.com/storage/volumes/">Use volumes</a></li>
@@ -263,7 +263,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -335,7 +335,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

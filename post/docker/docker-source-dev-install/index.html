@@ -149,43 +149,35 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：介绍 <code>docker</code> 开发环境搭建</p>
-
 <p>docker 官方的贡献引导: <a href="https://github.com/moby/moby/blob/master/docs/contributing/README.md">moby/docs/contributing/README.md</a></p>
-
 <h1 id="步骤">步骤</h1>
-
 <p><a href="https://github.com/moby/moby/blob/master/docs/contributing/set-up-dev-env.md">moby/docs/contributing/set-up-dev-env.md</a>完整的描述了开发环境如何搭建</p>
-
 <h3 id="开发环境搭建">开发环境搭建</h3>
-
 <ul>
-<li>因为网络问题，需要尽快的提速安装 dev 环境，需要配置 Dockerfile 中的配置 APT_MIRROR=mirrors.163.com</li>
-
-<li><p>运行<code>make --just-print BIND_DIR=. shell</code>简单的看一下 make 都做了那些事情
-<img src="/media/img/docker/install-dev-env/docker-make-just-print-shell.png" alt="make --just-print BIND_DIR=. shell" /></p></li>
-
-<li><p>运行<code>make BIND_DIR=. shell</code>开始安装开发环境</p></li>
+<li>
+<p>因为网络问题，需要尽快的提速安装 dev 环境，需要配置 Dockerfile 中的配置 APT_MIRROR=mirrors.163.com</p>
+</li>
+<li>
+<p>运行<code>make --just-print BIND_DIR=. shell</code>简单的看一下 make 都做了那些事情
+<img src="/media/img/docker/install-dev-env/docker-make-just-print-shell.png" alt="make &ndash;just-print BIND_DIR=. shell"></p>
+</li>
+<li>
+<p>运行<code>make BIND_DIR=. shell</code>开始安装开发环境</p>
+</li>
 </ul>
-
 <h3 id="编译">编译</h3>
-
 <p>上一节已经进入 docker 中，可以开始编译 dockerd</p>
-
 <ul>
 <li><code>hack/make.sh binary</code></li>
 <li><code>make install</code>copy binary to container&rsquo;s <code>/usr/local/bin/</code></li>
 <li><code>dockerd -D &amp;</code></li>
 </ul>
-
 <h3 id="日常工作流">日常工作流</h3>
-
 <ul>
 <li>修改代码</li>
 <li><code>hack/make.sh binary install-binary</code></li>
 </ul>
-
-<h3 id="常用目录-命令">常用目录/命令</h3>
-
+<h3 id="常用目录命令">常用目录/命令</h3>
 <ul>
 <li><code>docker inspect</code> 查看镜像或容器运行配置信息，<code>GraphDriver</code> 为容器挂载信息</li>
 <li><code>/var/lib/docker/overlay2/&lt;image_id&gt;/{merged, diff, work}</code></li>
@@ -193,15 +185,10 @@
 <li><code>/var/lib/docker/image</code>镜像库</li>
 <li><code>/var/lib/docker/volumes</code>volumes 储存位置</li>
 </ul>
-
 <h1 id="调试">调试</h1>
-
 <h2 id="调试-makefile">调试 makefile</h2>
-
 <p><code>make --just-print BIND_DIR=. shell</code></p>
-
 <h2 id="调试-shell">调试 shell</h2>
-
 <p><code>bash -x hack/make.sh binary</code></p>
     </div>
     <footer class="post-footer">
@@ -289,7 +276,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -361,7 +348,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

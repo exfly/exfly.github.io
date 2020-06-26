@@ -149,19 +149,12 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p><a href="https://github.com/oxequa/realize">realize</a> 代码分析</p>
-
 <h1 id="realize">Realize</h1>
-
 <p><a href="https://github.com/oxequa/realize">realize</a> 是 Go 写的 workfloaw 工具，可以配置自己的工作流。项目在修改之后需要进行编译、测试，可以还有其他的一系列流程需要走，可以使用 realize 进行自动化。抽点时间研究了一下源码。这里总结一下思路，不是很完整的解释，简单说一下思路。</p>
-
 <h2 id="原理">原理</h2>
-
 <p>从 Linux 2.6.13 内核开始，Linux 就推出了 inotify，允许监控程序打开一个独立文件描述符，并针对事件集监控一个或者多个文件，例如打开、关闭、移动/重命名、删除、创建或者改变属性。glib 对对此进行了封装<a href="https://github.com/lattera/glibc/blob/master/sysdeps/unix/sysv/linux/sys/inotify.h">glib/inotify.h</a>,同时各个操作系统都有对应的实现，win 下的 ReadDirectoryChangesW，mac 下的 FSEvents。同时 go 下已经有写好的封装库<a href="https://github.com/fsnotify/fsnotify">fsnotify/fsnotify</a>，对不同的平台进行了封装。</p>
-
 <p>简单来讲，内核为应用程序提供了系统级文件修改事件的监视器。当文件进行修改后，会通知应用程序监视的文件已经修改了，之后有realize进行事件的处理即可。</p>
-
 <p>比较有意思的是，yaml文件的marshal和unmarshal。之后可以研究一下。</p>
-
 <h2 id="核心代码">核心代码</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-golang" data-lang="golang"><span style="color:#75715e">// github.com/oxequa/realize/realize/projects.go
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Project</span>) <span style="color:#a6e22e">Watch</span>(<span style="color:#a6e22e">wg</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>) {
@@ -229,9 +222,8 @@
 		}
 	}
 	<span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
-}</code></pre></div>
-<h1 id="reference">Reference</h1>
-
+}
+</code></pre></div><h1 id="reference">Reference</h1>
 <ul>
 <li><a href="https://www.ibm.com/developerworks/cn/linux/l-inotify/index.html">用 inotify 监控 Linux 文件系统事件</a></li>
 <li><a href="https://github.com/oxequa/realize">oxequa/realize</a></li>
@@ -321,7 +313,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -393,7 +385,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

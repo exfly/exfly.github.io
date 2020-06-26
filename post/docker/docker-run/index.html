@@ -149,22 +149,15 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：通过分析 <code>docker run</code> 命令，理解 Docker 的工作原理</p>
-
-<h1 id="docker-run-执行流程分析"><code>docker run</code>执行流程分析</h1>
-
+<h1 id="docker-run执行流程分析"><code>docker run</code>执行流程分析</h1>
 <p>整体执行流程: 从本地镜像中寻找是否存在命令指定镜像，如果存在则正常返回，执行接下来流程。如果不存在镜像，deamon 返回错误，由 cli 重新发起 pull 请求，之后重试。</p>
-
 <h3 id="总体描述">总体描述</h3>
-
 <ul>
 <li>createContainer cli 通过 rest 接口请求 dockerd 创建容器，dockerd 设置基础配置后记录创建的容器</li>
 <li>ContainerStart cli 通过 rest 接口请求 dockerd 运行容器，dockerd 使用 rpc 链接 containnerd 进行运行容器</li>
 </ul>
-
 <p>代码 <code>lanything/code-read</code> forked <code>moby/moby</code>, <code>lanything/cli</code> forked <code>docker/cli</code></p>
-
 <h3 id="createcontainer">createContainer</h3>
-
 <ul>
 <li><code>docker/cli</code> cli/command/container/run.go#NewRunCommand</li>
 <li><code>docker/cli</code> cli/command/container/run.go#runContainer</li>
@@ -240,14 +233,13 @@
 	}
 	<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">containerIDFile</span>.<span style="color:#a6e22e">Write</span>(<span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">ID</span>)
 	<span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">response</span>, <span style="color:#a6e22e">err</span>
-}</code></pre></div>
-<ul>
+}
+</code></pre></div><ul>
 <li><code>docker/cli</code> cli/command/container/create.go#createContainer 调用 <code>ContainerCreate</code></li>
 <li><code>moby/moby</code> api/server/router/container/container.go#initRoutes.postContainersCreate</li>
 <li><code>moby/moby</code> api/server/router/container/container_routes.go#postContainersCreate</li>
 <li><code>moby/moby</code> daemon/create.go#ContainerCreate</li>
 </ul>
-
 <h3 id="containercreate">containerCreate</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// `moby/moby` daemon/create.go#containerCreate
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">daemon</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Daemon</span>) <span style="color:#a6e22e">containerCreate</span>(<span style="color:#a6e22e">opts</span> <span style="color:#a6e22e">createOpts</span>) (<span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>, <span style="color:#66d9ef">error</span>) {
@@ -299,8 +291,8 @@
 </span><span style="color:#75715e"></span>	}
 
 	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">ContainerCreateCreatedBody</span>{<span style="color:#a6e22e">ID</span>: <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">ID</span>, <span style="color:#a6e22e">Warnings</span>: <span style="color:#a6e22e">warnings</span>}, <span style="color:#66d9ef">nil</span>
-}</code></pre></div>
-<h3 id="getimages">GetImages</h3>
+}
+</code></pre></div><h3 id="getimages">GetImages</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// GetImage returns an image corresponding to the image referred to by refOrID.
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">i</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ImageService</span>) <span style="color:#a6e22e">GetImage</span>(<span style="color:#a6e22e">refOrID</span> <span style="color:#66d9ef">string</span>) (<span style="color:#f92672">*</span><span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">Image</span>, <span style="color:#66d9ef">error</span>) {
 	<span style="color:#a6e22e">ref</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">reference</span>.<span style="color:#a6e22e">ParseAnyReference</span>(<span style="color:#a6e22e">refOrID</span>)
@@ -338,12 +330,10 @@
 	}
 
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>, <span style="color:#a6e22e">ErrImageDoesNotExist</span>{<span style="color:#a6e22e">ref</span>}
-}</code></pre></div>
-<p><code>ImageService.imageStore</code> 在<code>moby</code>daemon/daemon.go#NewDaemon 中有设置
+}
+</code></pre></div><p><code>ImageService.imageStore</code> 在<code>moby</code>daemon/daemon.go#NewDaemon 中有设置
 <code>ImageService.imageStore</code> 在<code>moby</code>image/store.go#NewImageStore 有初始化</p>
-
 <h3 id="containerstart">ContainerStart</h3>
-
 <p><code>moby</code> daemon/start.go#ContainerStart</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">daemon</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Daemon</span>) <span style="color:#a6e22e">ContainerStart</span>(<span style="color:#a6e22e">name</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">hostConfig</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">containertypes</span>.<span style="color:#a6e22e">HostConfig</span>, <span style="color:#a6e22e">checkpoint</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">checkpointDir</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">error</span> {
 	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">checkpoint</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">&amp;&amp;</span> !<span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">HasExperimental</span>() {
@@ -423,8 +413,8 @@
 		}
 	}
 	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">daemon</span>.<span style="color:#a6e22e">containerStart</span>(<span style="color:#a6e22e">container</span>, <span style="color:#a6e22e">checkpoint</span>, <span style="color:#a6e22e">checkpointDir</span>, <span style="color:#66d9ef">true</span>)
-}</code></pre></div>
-<p><code>moby</code> daemon/start.go#containerStart</p>
+}
+</code></pre></div><p><code>moby</code> daemon/start.go#containerStart</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// containerStart prepares the container to run by setting up everything the
 </span><span style="color:#75715e">// container needs, such as storage and networking, as well as links
 </span><span style="color:#75715e">// between containers. The container is left waiting for a signal to
@@ -552,8 +542,8 @@
 	<span style="color:#a6e22e">containerActions</span>.<span style="color:#a6e22e">WithValues</span>(<span style="color:#e6db74">&#34;start&#34;</span>).<span style="color:#a6e22e">UpdateSince</span>(<span style="color:#a6e22e">start</span>)
 
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
-}</code></pre></div>
-<p>上边这段代码到 err = daemon.containerd.Create(ctx, container.ID, spec, createOptions) // daemon/daemon.go#NewDaemon#L1043 libcontainerd.NewClient 这里会比较麻烦，需要到<code>libcontainerd/libcontainerd_linux.go#NewClient</code>寻找源码</p>
+}
+</code></pre></div><p>上边这段代码到 err = daemon.containerd.Create(ctx, container.ID, spec, createOptions) // daemon/daemon.go#NewDaemon#L1043 libcontainerd.NewClient 这里会比较麻烦，需要到<code>libcontainerd/libcontainerd_linux.go#NewClient</code>寻找源码</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// libcontainerd/remote/client.go#Creat(
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">client</span>) <span style="color:#a6e22e">Create</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">id</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">ociSpec</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">specs</span>.<span style="color:#a6e22e">Spec</span>, <span style="color:#a6e22e">runtimeOptions</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">error</span> {
 	<span style="color:#a6e22e">bdir</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">bundleDir</span>(<span style="color:#a6e22e">id</span>)
@@ -571,9 +561,8 @@
 		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">wrapError</span>(<span style="color:#a6e22e">err</span>)
 	}
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
-}</code></pre></div>
-<h1 id="技巧">技巧</h1>
-
+}
+</code></pre></div><h1 id="技巧">技巧</h1>
 <p>在这过程中，比较方便的寻找代码实现方法是 比如 ContainerExecStart 是一个接口中的方法，希望找到她的实现可以通过比较简单的搜索注释寻找到方法：比如搜索 <code>//ContainerExecStart</code></p>
     </div>
     <footer class="post-footer">
@@ -659,7 +648,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -731,7 +720,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

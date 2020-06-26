@@ -149,67 +149,47 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>分享自己的密码管理体系:<a href="https://keepass.info/">keepass</a>+<a href="https://www.jianguoyun.com/">坚果云</a>+<a href="https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk">keepass2Android</a>，以及使用<a href="https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk">容器</a>，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。</p>
-
 <h1 id="个人密码管理">个人密码管理</h1>
-
 <h2 id="准备">准备</h2>
-
 <ul>
 <li>win:<a href="https://keepass.info/">keepass</a></li>
 <li>自助云存储:<a href="https://www.jianguoyun.com/">坚果云</a>账号</li>
 <li>Android:<a href="https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk">keepass2Android</a></li>
 </ul>
-
 <h2 id="开始">开始</h2>
-
 <p>工具准备好就开始吧，按如下步骤：</p>
-
 <ol>
 <li>电脑端keepass本地建一个密码文件（需要一个主密码，以后可以修改，<strong>主密码一定要复杂</strong>），后上传到坚果云里，（这时候就可以删除本地的密码文件了）；</li>
+</ol>
+<ul>
 <li>坚果云中配置第三方应用授权。（坚果云记得开二步验证，这样每次登陆需要微信接收验证码才可以登陆，更安全一些）；</li>
 <li>电脑keepass打开url，以及Android手机keepass2Android打开url；</li>
 <li>完。</li>
-</ol>
-
+</ul>
 <p>具体如何创建请看这个<a href="http://www.itbulu.com/webdav-keepass.html">链接</a>，
 如我这般建密码维护基本不会出现问题。</p>
-
 <p>到这里密码管理体系基本完成了。可是对于一个新手机，用好久就会卡，很卡，超级卡，为了解决这个问题，就要耍一些小手段，具体如下。</p>
-
 <h1 id="android装机指南">Android装机指南</h1>
-
 <h2 id="准备-1">准备</h2>
-
 <ul>
 <li><a href="https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk">容器</a>开源产品，基于virtualapp框架，有点像Docker；又是双开工具，他自己有自己的运行环境；又可以说是Android下的免安装应用的运行平台。之后会告诉你怎么用，超级棒</li>
 <li><a href="https://www.coolapk.com/">酷安</a>应用商店</li>
 <li><a href="https://apkpure.com/">apkpure.com</a>下载中国下载不了的应用，有一个没被墙的网址，下载好app后，app不需要vpn，懂了没？域名没找到，懒得找了。google商店里所有的应用这里都可以下，自己想像吧</li>
 </ul>
-
 <h2 id="开始-1">开始</h2>
-
 <p>先截个图，看一看
-<img src="/media/img/2017.12.19-个人密码管理-Android装机指南/container.jpg" alt="container" /></p>
-
+<img src="/media/img/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-Android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/container.jpg" alt="container"></p>
 <p>最屌炸天的是，我把淘宝、王者荣耀和吃鸡都放到容器了，而且完全没有性能损失</p>
-
 <p><strong>基本思路</strong>：把必须装到手机里的（比如支付宝，微信等）装到手机里，非必需（比如淘宝，百度云等），都装容器里。</p>
-
 <p>类比真机，软件需要有一个执行环境和临时文件，容器里的软件文件都存到了/virtual中的。</p>
-
 <p><strong>使用思路</strong>：平时把可以放到容器中的软件放到里边，不用的时候直接关闭容器，容器里所有的软件会关闭。这样就防止软件的后台自动启动，浪费内存，手机越用越慢的现象。</p>
-
 <p>具体看我平时常用的一些软件，我把他们分为主机（就是安装到真机中）和容器中的。地址分别如下</p>
-
 <ul>
 <li><a href="https://www.coolapk.com/album/4893177">真机</a></li>
 <li><a href="https://www.coolapk.com/album/4893175">容器</a></li>
 </ul>
-
 <h2 id="最后">最后</h2>
-
 <p>有什么问题请直接在我的酷安@我，或者邮箱我：exflycat@gmail.com。</p>
-
 <p>Enjoy!!!</p>
     </div>
     <footer class="post-footer">
@@ -293,7 +273,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -365,7 +345,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

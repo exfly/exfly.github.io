@@ -149,13 +149,9 @@
     </header>
     <div class="post-body" itemprop="articleBody">
     <p>文章简介：介绍 Opentracing - jaeger</p>
-
-<p><img src="/media/img/opentracing/jaeger.png" alt="jaeger" /></p>
-
+<p><img src="/media/img/opentracing/jaeger.png" alt="jaeger"></p>
 <h2 id="agent">agent</h2>
-
 <p>Agent 处于 jaeger-client 和 collector 之间，属于代理的作用，主要是把 client 发送过来的数据从 thrift 转为 Batch，并通过 RPC 批量提交到 collector</p>
-
 <blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/886b96574253a005ee7ebe74140098f3fe183606/cmd/agent/app/flags.go#L62">jaegertracing/jaeger/cmd/agent/app/flags.go#L62</a></p>
 </blockquote>
@@ -167,8 +163,8 @@
 	{<span style="color:#a6e22e">model</span>: <span style="color:#e6db74">&#34;zipkin&#34;</span>, <span style="color:#a6e22e">protocol</span>: <span style="color:#e6db74">&#34;compact&#34;</span>, <span style="color:#a6e22e">port</span>: <span style="color:#ae81ff">5775</span>},
 	{<span style="color:#a6e22e">model</span>: <span style="color:#e6db74">&#34;jaeger&#34;</span>, <span style="color:#a6e22e">protocol</span>: <span style="color:#e6db74">&#34;compact&#34;</span>, <span style="color:#a6e22e">port</span>: <span style="color:#ae81ff">6831</span>},
 	{<span style="color:#a6e22e">model</span>: <span style="color:#e6db74">&#34;jaeger&#34;</span>, <span style="color:#a6e22e">protocol</span>: <span style="color:#e6db74">&#34;binary&#34;</span>, <span style="color:#a6e22e">port</span>: <span style="color:#ae81ff">6832</span>},
-}</code></pre></div>
-<blockquote>
+}
+</code></pre></div><blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/b4670412977f653dfbb2671f7f04756a30e897e6/cmd/agent/app/servers/tbuffered_server.go#L82">jaegertracing/jaeger/cmd/agent/app/servers/tbuffered_server.go#L82</a></p>
 </blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// Serve initiates the readers and starts serving traffic
@@ -191,8 +187,8 @@
 			<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">metrics</span>.<span style="color:#a6e22e">ReadError</span>.<span style="color:#a6e22e">Inc</span>(<span style="color:#ae81ff">1</span>)
 		}
 	}
-}</code></pre></div>
-<blockquote>
+}
+</code></pre></div><blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/ae86232300d47061eeeed6715004d2c8e889dcf0/cmd/agent/app/processors/thrift_processor.go#L114">jaegertracing/jaeger/blob/master/cmd/agent/app/processors/thrift_processor.go#L114</a></p>
 </blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// processBuffer reads data off the channel and puts it into a custom transport for
@@ -211,8 +207,8 @@
 		<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">protocolPool</span>.<span style="color:#a6e22e">Put</span>(<span style="color:#a6e22e">protocol</span>)
 		<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">server</span>.<span style="color:#a6e22e">DataRecd</span>(<span style="color:#a6e22e">readBuf</span>) <span style="color:#75715e">// acknowledge receipt and release the buffer
 </span><span style="color:#75715e"></span>	}
-}</code></pre></div>
-<blockquote>
+}
+</code></pre></div><blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/43be2e7b6be62b04bb40ac564a4be8f5cb7cf607/thrift-gen/agent/agent.go#L187">jaegertracing/jaeger/thrift-gen/agent/agent.go#L187</a></p>
 </blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">agentProcessorEmitBatch</span>) <span style="color:#a6e22e">Process</span>(<span style="color:#a6e22e">seqId</span> <span style="color:#66d9ef">int32</span>, <span style="color:#a6e22e">iprot</span>, <span style="color:#a6e22e">oprot</span> <span style="color:#a6e22e">thrift</span>.<span style="color:#a6e22e">TProtocol</span>) (<span style="color:#a6e22e">success</span> <span style="color:#66d9ef">bool</span>, <span style="color:#a6e22e">err</span> <span style="color:#a6e22e">thrift</span>.<span style="color:#a6e22e">TException</span>) {
@@ -228,23 +224,19 @@
 		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">err2</span>
 	}
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>, <span style="color:#66d9ef">nil</span>
-}</code></pre></div>
-<blockquote>
+}
+</code></pre></div><blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/43be2e7b6be62b04bb40ac564a4be8f5cb7cf607/thrift-gen/jaeger/tchan-jaeger.go#L39">jaegertracing/jaeger/thrift-gen/jaeger/tchan-jaeger.go#L39</a></p>
 </blockquote>
-
 <h2 id="collector">Collector</h2>
-
 <h3 id="接收-agent-的数据">接收 Agent 的数据</h3>
-
 <blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/3ae21efe69cf5657b9b39a873edc0bcc85b84407/cmd/collector/app/handler/thrift_span_handler.go#L60">jaegertracing/jaeger/cmd/collector/app/handler/thrift_span_handler.go#L60</a></p>
-
+</blockquote>
+<blockquote>
 <p><a href="https://github.com/jaegertracing/jaeger/blob/5fb7d7295bf99210ae9c8f6364da5356e61afefb/cmd/collector/app/span_processor.go#L78">比较舒服的维护metrics的场景</a></p>
 </blockquote>
-
 <h2 id="references">references</h2>
-
 <ul>
 <li><a href="https://github.com/jukylin/blog/blob/master/Jaeger%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E2%80%94%E2%80%94%E7%AA%A5%E8%A7%86%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0.md">jaeger</a></li>
 </ul>
@@ -257,8 +249,8 @@
      <div class="post-nav">
     <div class="post-nav-next post-nav-item">
     
-        <a href="/about/" rel="next" title="关于">
-        <i class="fa fa-chevron-left"></i> 关于
+        <a href="/post/go/go-issue/" rel="next" title="Go Issue">
+        <i class="fa fa-chevron-left"></i> Go Issue
         </a>
     
     </div>
@@ -324,7 +316,7 @@
       <nav class="site-state motion-element">
     <div class="site-state-item site-state-posts">
       <a href="/post/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">44</span>
         <span class="site-state-item-name">日志</span>
       </a>
     </div>
@@ -396,7 +388,7 @@
   <span class="author" itemprop="copyrightHolder">Exfly Blog</span>
 </div>
 <div class="powered-by">
-  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.55.5</a>
+  Powered by - <a class="theme-link" href="http://gohugo.io" target="_blank" title="hugo" >Hugo v0.72.0</a>
 </div>
 <div class="theme-info">
   Theme by - <a class="theme-link" href="https://github.com/xtfly/hugo-theme-next" target="_blank"> NexT

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Architecture on Exfly Blog</title>
+    <link>/tags/Architecture/</link>
+    <description>Recent content in Architecture on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 16 Sep 2019 09:03:53 +0800</lastBuildDate><atom:link href="/tags/Architecture/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Log</title>
+      <link>/posts/Architecture/log/</link>
+      <pubDate>Mon, 16 Sep 2019 09:03:53 +0800</pubDate>
+      
+      <guid>/posts/Architecture/log/</guid>
+      <description>&lt;p&gt;文章简介：log&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>消息队列</title>
+      <link>/posts/Architecture/mq/</link>
+      <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
+      
+      <guid>/posts/Architecture/mq/</guid>
+      <description>&lt;p&gt;文章简介：消息队列中需要解决的问题&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>高可用系统设计问题、微服务设计笔记 脑图</title>
+      <link>/posts/Architecture/MicroServiceDesign/</link>
+      <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
+      
+      <guid>/posts/Architecture/MicroServiceDesign/</guid>
+      <description>&lt;p&gt;高可用系统设计，有哪些问题需要解决&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>分布式数据的最终一致性</title>
+      <link>/posts/Architecture/EventuallyConsistent/</link>
+      <pubDate>Thu, 28 Jun 2018 16:34:49 +0800</pubDate>
+      
+      <guid>/posts/Architecture/EventuallyConsistent/</guid>
+      <description>&lt;p&gt;单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

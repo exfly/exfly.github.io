@@ -5,18 +5,13 @@
     <link>/tags/%E8%B5%84%E6%BA%90/</link>
     <description>Recent content in 资源 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Sun, 30 Oct 2016 14:17:49 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/%E8%B5%84%E6%BA%90/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 30 Oct 2016 14:17:49 +0800</lastBuildDate><atom:link href="/tags/%E8%B5%84%E6%BA%90/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux0.11源码学习环境配置与相关资源汇总</title>
-      <link>/post/linux/linux0.11-read-code/</link>
+      <link>/posts/linux/linux0.11-read-code/</link>
       <pubDate>Sun, 30 Oct 2016 14:17:49 +0800</pubDate>
       
-      <guid>/post/linux/linux0.11-read-code/</guid>
+      <guid>/posts/linux/linux0.11-read-code/</guid>
       <description>&lt;p&gt;记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。&lt;/p&gt;</description>
     </item>
     

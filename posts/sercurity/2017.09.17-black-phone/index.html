@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="oneplus one 刷Kali Linux NetHunter" />
+<meta property="og:description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/sercurity/2017.09.17-black-phone/" />
+<meta property="article:published_time" content="2017-09-17T14:35:34+08:00" />
+<meta property="article:modified_time" content="2017-09-17T14:35:34+08:00" />
+<title>oneplus one 刷Kali Linux NetHunter | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
+<script defer src="/zh.search.min.edd9403de8c7ca97ee3cf0a5301a7d19fb7889182f2beeea3392b3eb595b7e77.js" integrity="sha256-7dlAPejHypfuPPClMBp9Gft4iRgvK&#43;7qM5Kz61lbfnc="></script>
+
+<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>example</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/example/">section</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>oneplus one 刷Kali Linux NetHunter</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一">一</a></li>
+        <li><a href="#二">二</a>
+          <ul>
+            <li><a href="#刷机四步走">刷机四步走</a></li>
+          </ul>
+        </li>
+        <li><a href="#三">三</a></li>
+        <li><a href="#四">四</a></li>
+        <li><a href="#最后">最后</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/sercurity/2017.09.17-black-phone/">oneplus one 刷Kali Linux NetHunter</a>
+  </h1>
+  
+  <h5>September 17, 2017</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/%E5%AE%89%E5%85%A8/">安全</a>, 
+      <a href="/tags/kali/">kali</a>, 
+      <a href="/tags/%E5%88%B7%E6%9C%BA/">刷机</a>
+  </div>
+  
+
+
+  <p><p>看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
+这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>
+<h2 id="一">
+  一
+  <a class="anchor" href="#%e4%b8%80">#</a>
+</h2>
+<p>使用oneplus one搭建黑手还是比较简单的，因为对Android平台不熟悉，刷kali过程中踩了许多坑。比如
+  <a href="http://www.oneplusbbs.com/thread-942394-1-1.html">二清、三清、四清</a>等等。如下一步一步的说如何刷。</p>
+<h2 id="二">
+  二
+  <a class="anchor" href="#%e4%ba%8c">#</a>
+</h2>
+<h3 id="刷机四步走">
+  刷机四步走
+  <a class="anchor" href="#%e5%88%b7%e6%9c%ba%e5%9b%9b%e6%ad%a5%e8%b5%b0">#</a>
+</h3>
+<strong>第一步</strong>， 仔细阅读<h4 id="第一步-仔细阅读官方wikihttpsgithubcomoffensive-securitykali-nethunterwiki">
+  
+  <a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%80%e6%ad%a5-%e4%bb%94%e7%bb%86%e9%98%85%e8%af%bb%e5%ae%98%e6%96%b9wikihttpsgithubcomoffensive-securitykali-nethunterwiki">#</a>
+</h4>
+<p>仔细研读仔细阅读
+  <a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>，可以减少刷机过程中各种坑。</p>
+<strong>第二步</strong>， 刷<h4 id="第二步-刷twrp-oneplus1httpsdltwrpmebacon">
+  
+  <a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a>
+  <a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5-%e5%88%b7twrp-oneplus1httpsdltwrpmebacon">#</a>
+</h4>
+<p>一句话总结就是：解锁、刷进对应的 twrp.img。整个过程本质是一加 3T 开启了开发者模式，同时电脑上基于预配置好的adb、fastboot命令完成这一系列操作。这个&quot;预配置&quot;在 Windows 下，也可以参考&quot;
+  <a href="http://www.wugfresh.com/brt/">Bacon Root Toolkit</a>&quot;（这是专为一加打造的GUI工具集，当时还是一加1时，用这个很方便，虽然很久没更新了，但作为参考还是很好的）。</p>
+<h4 id="第三步下载最新的-nethunter并进入twrp的recovery模式刷入kali">
+  <strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e4%b8%8b%e8%bd%bd%e6%9c%80%e6%96%b0%e7%9a%84-nethunter%e5%b9%b6%e8%bf%9b%e5%85%a5twrp%e7%9a%84recovery%e6%a8%a1%e5%bc%8f%e5%88%b7%e5%85%a5kali">#</a>
+</h4>
+<pre><code>kernel-nethunter-[device]-[os]-*.zip
+nethunter-generic-[arch]-kalifs-*.zip
+</code></pre><p>对于oneplus1手机来说，其对应的[arch]为armhf。
+随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。</p>
+<h4 id="第四步都刷顺利后开机进入kali-用已经预装上的-supersu-app-来完成之后一系列的-root授权即可">
+  <strong>第四步</strong>，都刷顺利后，开机进入kali ，用已经“预装”上的 SuperSU App 来完成之后一系列的 Root授权即可。
+  <a class="anchor" href="#%e7%ac%ac%e5%9b%9b%e6%ad%a5%e9%83%bd%e5%88%b7%e9%a1%ba%e5%88%a9%e5%90%8e%e5%bc%80%e6%9c%ba%e8%bf%9b%e5%85%a5kali-%e7%94%a8%e5%b7%b2%e7%bb%8f%e9%a2%84%e8%a3%85%e4%b8%8a%e7%9a%84-supersu-app-%e6%9d%a5%e5%ae%8c%e6%88%90%e4%b9%8b%e5%90%8e%e4%b8%80%e7%b3%bb%e5%88%97%e7%9a%84-root%e6%8e%88%e6%9d%83%e5%8d%b3%e5%8f%af">#</a>
+</h4>
+<h2 id="三">
+  三
+  <a class="anchor" href="#%e4%b8%89">#</a>
+</h2>
+<p>如果安装Kali Linux NetHunter,需要下载的文件如下：</p>
+<ul>
+<li>
+  <a href="/">CM13.0</a></li>
+<li>
+  <a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
+<li>
+  <a href="http://www.wugfresh.com/brt/">brt</a>：oneplus的解锁、root工具</li>
+<li>
+  <a href="https://build.nethunter.com/nightly/">Kali Linux NetHunter</a>：如果刷其他系统，可能需要的文件如下：</li>
+<li>
+  <a href="https://dl.twrp.me/bacon/">TWRP</a>：第三方recovery</li>
+<li>
+  <a href="https://lineageos.org/">lineageos rom</a>：cm的重生</li>
+<li>
+  <a href="http://www.supersu.com/download">supersu</a>：root工具</li>
+</ul>
+<h2 id="四">
+  四
+  <a class="anchor" href="#%e5%9b%9b">#</a>
+</h2>
+<p>Enjoy！</p>
+<h2 id="最后">
+  最后
+  <a class="anchor" href="#%e6%9c%80%e5%90%8e">#</a>
+</h2>
+<p>安装了Kali Linux NetHunter，手机便有了完整的python环境。剩下的，你懂的。</p></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一">一</a></li>
+        <li><a href="#二">二</a>
+          <ul>
+            <li><a href="#刷机四步走">刷机四步走</a></li>
+          </ul>
+        </li>
+        <li><a href="#三">三</a></li>
+        <li><a href="#四">四</a></li>
+        <li><a href="#最后">最后</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

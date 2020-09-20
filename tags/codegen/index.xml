@@ -5,18 +5,13 @@
     <link>/tags/codegen/</link>
     <description>Recent content in codegen on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Mon, 04 Feb 2019 13:41:19 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/codegen/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 04 Feb 2019 13:41:19 +0800</lastBuildDate><atom:link href="/tags/codegen/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Openapi</title>
-      <link>/post/java/openapi/</link>
+      <link>/posts/Java/openapi/</link>
       <pubDate>Mon, 04 Feb 2019 13:41:19 +0800</pubDate>
       
-      <guid>/post/java/openapi/</guid>
+      <guid>/posts/Java/openapi/</guid>
       <description>&lt;p&gt;swagger and openapi 代码生成和文档自动生成一些体会&lt;/p&gt;</description>
     </item>
     

@@ -5,27 +5,26 @@
     <link>/tags/%E5%AE%89%E5%85%A8/</link>
     <description>Recent content in 安全 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Tue, 19 Dec 2017 10:21:19 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 19 Dec 2017 10:21:19 +0800</lastBuildDate><atom:link href="/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>个人密码管理&#43;Android装机指南</title>
-      <link>/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</link>
+      <link>/posts/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-Android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</link>
       <pubDate>Tue, 19 Dec 2017 10:21:19 +0800</pubDate>
       
-      <guid>/post/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
-      <description>&lt;p&gt;分享自己的密码管理体系:&lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+&lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+&lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用&lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。&lt;/p&gt;</description>
+      <guid>/posts/sercurity/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-Android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
+      <description>&lt;p&gt;分享自己的密码管理体系:
+  &lt;a href=&#34;https://keepass.info/&#34;&gt;keepass&lt;/a&gt;+
+  &lt;a href=&#34;https://www.jianguoyun.com/&#34;&gt;坚果云&lt;/a&gt;+
+  &lt;a href=&#34;https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk&#34;&gt;keepass2Android&lt;/a&gt;，以及使用
+  &lt;a href=&#34;https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk&#34;&gt;容器&lt;/a&gt;，搭建防止手机越用越卡的日常使用app体系，该应用不需要root。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>oneplus one 刷Kali Linux NetHunter</title>
-      <link>/post/sercurity/2017.09.17-black-phone/</link>
+      <link>/posts/sercurity/2017.09.17-black-phone/</link>
       <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
       
-      <guid>/post/sercurity/2017.09.17-black-phone/</guid>
+      <guid>/posts/sercurity/2017.09.17-black-phone/</guid>
       <description>&lt;p&gt;看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;</description>
     </item>

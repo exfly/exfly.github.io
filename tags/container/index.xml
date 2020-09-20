@@ -5,18 +5,13 @@
     <link>/tags/container/</link>
     <description>Recent content in container on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Tue, 23 Apr 2019 12:48:28 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/container/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 23 Apr 2019 12:48:28 +0800</lastBuildDate><atom:link href="/tags/container/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker 源码阅读: 开发环境搭建</title>
-      <link>/post/docker/docker-source-dev-install/</link>
+      <link>/posts/docker/docker-source-dev-install/</link>
       <pubDate>Tue, 23 Apr 2019 12:48:28 +0800</pubDate>
       
-      <guid>/post/docker/docker-source-dev-install/</guid>
+      <guid>/posts/docker/docker-source-dev-install/</guid>
       <description>&lt;p&gt;文章简介：介绍 &lt;code&gt;docker&lt;/code&gt; 开发环境搭建&lt;/p&gt;</description>
     </item>
     

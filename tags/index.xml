@@ -5,12 +5,7 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Thu, 16 Apr 2020 08:49:16 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 16 Apr 2020 08:49:16 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>es</title>
       <link>/tags/es/</link>
@@ -76,10 +71,10 @@
     
     <item>
       <title>Architecture</title>
-      <link>/tags/architecture/</link>
+      <link>/tags/Architecture/</link>
       <pubDate>Mon, 16 Sep 2019 09:03:53 +0800</pubDate>
       
-      <guid>/tags/architecture/</guid>
+      <guid>/tags/Architecture/</guid>
       <description></description>
     </item>
     
@@ -94,10 +89,10 @@
     
     <item>
       <title>Distributed</title>
-      <link>/tags/distributed/</link>
+      <link>/tags/Distributed/</link>
       <pubDate>Mon, 29 Jul 2019 08:04:30 +0800</pubDate>
       
-      <guid>/tags/distributed/</guid>
+      <guid>/tags/Distributed/</guid>
       <description></description>
     </item>
     
@@ -139,19 +134,19 @@
     
     <item>
       <title>IPC</title>
-      <link>/tags/ipc/</link>
+      <link>/tags/IPC/</link>
       <pubDate>Sun, 05 May 2019 18:54:46 +0800</pubDate>
       
-      <guid>/tags/ipc/</guid>
+      <guid>/tags/IPC/</guid>
       <description></description>
     </item>
     
     <item>
       <title>RPC</title>
-      <link>/tags/rpc/</link>
+      <link>/tags/RPC/</link>
       <pubDate>Sun, 05 May 2019 18:54:46 +0800</pubDate>
       
-      <guid>/tags/rpc/</guid>
+      <guid>/tags/RPC/</guid>
       <description></description>
     </item>
     
@@ -211,10 +206,10 @@
     
     <item>
       <title>Vue</title>
-      <link>/tags/vue/</link>
+      <link>/tags/Vue/</link>
       <pubDate>Sun, 28 Oct 2018 09:47:12 +0800</pubDate>
       
-      <guid>/tags/vue/</guid>
+      <guid>/tags/Vue/</guid>
       <description></description>
     </item>
     
@@ -247,73 +242,73 @@
     
     <item>
       <title>Spark</title>
-      <link>/tags/spark/</link>
+      <link>/tags/Spark/</link>
       <pubDate>Wed, 04 Jul 2018 17:36:24 +0800</pubDate>
       
-      <guid>/tags/spark/</guid>
+      <guid>/tags/Spark/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Stream</title>
-      <link>/tags/stream/</link>
+      <link>/tags/Stream/</link>
       <pubDate>Wed, 04 Jul 2018 17:36:24 +0800</pubDate>
       
-      <guid>/tags/stream/</guid>
+      <guid>/tags/Stream/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Java</title>
-      <link>/tags/java/</link>
+      <link>/tags/Java/</link>
       <pubDate>Sun, 24 Jun 2018 17:38:17 +0800</pubDate>
       
-      <guid>/tags/java/</guid>
+      <guid>/tags/Java/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Lua</title>
-      <link>/tags/lua/</link>
+      <link>/tags/Lua/</link>
       <pubDate>Tue, 12 Jun 2018 16:01:38 +0800</pubDate>
       
-      <guid>/tags/lua/</guid>
+      <guid>/tags/Lua/</guid>
       <description></description>
     </item>
     
     <item>
       <title>OpenResty</title>
-      <link>/tags/openresty/</link>
+      <link>/tags/OpenResty/</link>
       <pubDate>Tue, 12 Jun 2018 16:01:38 +0800</pubDate>
       
-      <guid>/tags/openresty/</guid>
+      <guid>/tags/OpenResty/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spring</title>
-      <link>/tags/spring/</link>
+      <link>/tags/Spring/</link>
       <pubDate>Sun, 20 May 2018 16:49:06 +0800</pubDate>
       
-      <guid>/tags/spring/</guid>
+      <guid>/tags/Spring/</guid>
       <description></description>
     </item>
     
     <item>
       <title>SSM</title>
-      <link>/tags/ssm/</link>
+      <link>/tags/SSM/</link>
       <pubDate>Sun, 20 May 2018 16:49:06 +0800</pubDate>
       
-      <guid>/tags/ssm/</guid>
+      <guid>/tags/SSM/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>/tags/linux/</link>
+      <link>/tags/Linux/</link>
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
       
-      <guid>/tags/linux/</guid>
+      <guid>/tags/Linux/</guid>
       <description></description>
     </item>
     

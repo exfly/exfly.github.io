@@ -5,18 +5,13 @@
     <link>/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
     <description>Recent content in 微服务 on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 07 Jul 2019 22:50:19 +0800</lastBuildDate><atom:link href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>高可用系统设计问题、微服务设计笔记 脑图</title>
-      <link>/post/architecture/microservicedesign/</link>
+      <link>/posts/Architecture/MicroServiceDesign/</link>
       <pubDate>Sun, 07 Jul 2019 22:50:19 +0800</pubDate>
       
-      <guid>/post/architecture/microservicedesign/</guid>
+      <guid>/posts/Architecture/MicroServiceDesign/</guid>
       <description>&lt;p&gt;高可用系统设计，有哪些问题需要解决&lt;/p&gt;</description>
     </item>
     

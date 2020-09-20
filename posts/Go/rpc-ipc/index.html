@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown" />
+<meta property="og:description" content="文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/Go/rpc-ipc/" />
+<meta property="article:published_time" content="2019-05-05T18:54:46+08:00" />
+<meta property="article:modified_time" content="2019-05-05T18:54:46+08:00" />
+<title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
+<script defer src="/zh.search.min.edd9403de8c7ca97ee3cf0a5301a7d19fb7889182f2beeea3392b3eb595b7e77.js" integrity="sha256-7dlAPejHypfuPPClMBp9Gft4iRgvK&#43;7qM5Kz61lbfnc="></script>
+
+<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>example</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/example/">section</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#引言">引言</a></li>
+    <li><a href="#正文">正文</a>
+      <ul>
+        <li><a href="#rpc">RPC</a></li>
+        <li><a href="#如何进行进程间通信-ipc-呢">如何进行进程间通信 IPC 呢</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整例子">完整例子</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/Go/rpc-ipc/">Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</a>
+  </h1>
+  
+  <h5>May 5, 2019</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/go/">go</a>, 
+      <a href="/tags/IPC/">IPC</a>, 
+      <a href="/tags/RPC/">RPC</a>
+  </div>
+  
+
+
+  <p><p>文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互</p>
+<p>代码见 
+  <a href="https://github.com/exfly/cslab/tree/master/Code/Go/go-ipc">exfly/go-ipc</a></p>
+<h1 id="引言">
+  引言
+  <a class="anchor" href="#%e5%bc%95%e8%a8%80">#</a>
+</h1>
+<p>为什么要写这篇文章。最近看了一些 Docker 源码。dockerd 的架构长
+  <a href="/post/docker/docker-architecture/">这个样子</a>。 一条 docker 命令的执行，比如<code>docker run</code>，是先由 containerd 执行，containerd 也同样不是真正运行容器，他会将执行请求发给 runc，有 runc 真正去执行。dockerd、containderd、runc 分别是三个可执行文件，他们是通过 管道（IPC）以及 rest、RPC 进行交互的。</p>
+<p>为了展示三者交互方式是如何进行的，这里写一个简单的 demo 来解释。</p>
+<h1 id="正文">
+  正文
+  <a class="anchor" href="#%e6%ad%a3%e6%96%87">#</a>
+</h1>
+<h2 id="rpc">
+  RPC
+  <a class="anchor" href="#rpc">#</a>
+</h2>
+<p>首先说一下 RPC。Go 标准库便有<code>net/rpc</code>，写一个 Go 的 rpc 很简单：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;log&#34;</span>
+	<span style="color:#e6db74">&#34;net&#34;</span>
+	<span style="color:#e6db74">&#34;net/http&#34;</span>
+	<span style="color:#e6db74">&#34;net/rpc&#34;</span>
+)
+
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Task</span> []<span style="color:#66d9ef">string</span>
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Todo</span> {<span style="color:#a6e22e">ID</span> <span style="color:#66d9ef">string</span>}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">Task</span>) <span style="color:#a6e22e">Get</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">reply</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Todo</span>) <span style="color:#66d9ef">error</span> {
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">reply</span>=<span style="color:#a6e22e">Todo</span>{<span style="color:#a6e22e">ID</span>:<span style="color:#a6e22e">id</span>}
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">task</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Task</span>)
+	<span style="color:#75715e">// Publish the receivers methods
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">Register</span>(<span style="color:#a6e22e">task</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Format of service Task isn&#39;t correct. &#34;</span>, <span style="color:#a6e22e">err</span>)
+	}
+	<span style="color:#75715e">// Register a HTTP handler
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">HandleHTTP</span>()
+	<span style="color:#a6e22e">listener</span>, <span style="color:#a6e22e">e</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">net</span>.<span style="color:#a6e22e">Listen</span>(<span style="color:#e6db74">&#34;unix&#34;</span>, <span style="color:#e6db74">&#34;rpc.sock&#34;</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">e</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Listen error: &#34;</span>, <span style="color:#a6e22e">e</span>)
+	}
+    <span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Serve</span>(<span style="color:#a6e22e">listener</span>, <span style="color:#66d9ef">nil</span>)
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+        <span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">Fatal</span>(<span style="color:#e6db74">&#34;Error serving: &#34;</span>, <span style="color:#a6e22e">err</span>)
+    }
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// client
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">client</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpc</span>.<span style="color:#a6e22e">DialHTTP</span>(<span style="color:#e6db74">&#34;unix&#34;</span>, <span style="color:#e6db74">&#34;rpc.sock&#34;</span>)
+<span style="color:#a6e22e">reply</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">TODO</span>{}
+<span style="color:#a6e22e">err</span> = <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Call</span>(<span style="color:#e6db74">&#34;Task.Get&#34;</span>, <span style="color:#e6db74">&#34;new_id&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">reply</span>)
+</code></pre></div><h2 id="如何进行进程间通信-ipc-呢">
+  如何进行进程间通信 IPC 呢
+  <a class="anchor" href="#%e5%a6%82%e4%bd%95%e8%bf%9b%e8%a1%8c%e8%bf%9b%e7%a8%8b%e9%97%b4%e9%80%9a%e4%bf%a1-ipc-%e5%91%a2">#</a>
+</h2>
+<p>首先 linux 下的 FIFO（有名管道）是什么样子的</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkfifo tpipe
+ll
+<span style="color:#75715e"># total 8</span>
+<span style="color:#75715e"># drwx------  2 vagrant vagrant 4096 May 18 17:28 ./</span>
+<span style="color:#75715e"># drwxrwxrwt 10 root    root    4096 May 18 17:28 ../</span>
+<span style="color:#75715e"># prw-rw-r--  1 vagrant vagrant    0 May 18 17:28 tpipe|</span>
+
+<span style="color:#75715e"># 现在一个terminal</span>
+cat tpipe
+<span style="color:#75715e"># 另一个terminal</span>
+echo tttttttttt &gt; tpipe
+</code></pre></div><p>此时第一个 terminal 会输出 tttttttttt，另一个命令行会返回</p>
+<p>在 Go 中应该如何使用</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rpcSvrCmd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">exec</span>.<span style="color:#a6e22e">Command</span>(<span style="color:#a6e22e">conf</span>.<span style="color:#a6e22e">RPCSvrBinPath</span>)
+<span style="color:#a6e22e">rpcSvrStdinPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StdinPipe</span>()
+<span style="color:#a6e22e">rpcSvrStdoutPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StdoutPipe</span>()
+<span style="color:#a6e22e">rpcSvrStderrPipe</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">StderrPipe</span>()
+<span style="color:#a6e22e">rpcSvrCmd</span>.<span style="color:#a6e22e">Start</span>()
+</code></pre></div><p>如此即可获得子进程的各种 FIFO</p>
+<h1 id="完整例子">
+  完整例子
+  <a class="anchor" href="#%e5%ae%8c%e6%95%b4%e4%be%8b%e5%ad%90">#</a>
+</h1>
+<p>代码见 
+  <a href="https://github.com/exfly/cslab/tree/master/Code/Go/go-ipc">exfly/go-ipc</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make task rpc <span style="color:#f92672">&amp;&amp;</span> ./bin/task
+<span style="color:#75715e"># ▶ running gofmt…</span>
+<span style="color:#75715e"># ▶ running golint…</span>
+<span style="color:#75715e"># ▶ building executable…</span>
+<span style="color:#75715e"># ▶ building executable…</span>
+<span style="color:#75715e"># 2019/05/19 01:33:12 sleep 1s to wait rpc server startup</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:12 Serving RPC server on {unix rpc.sock}</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 Finish App:  {Finish App Started}</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:13 stop the server</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 2019/05/19 01:33:13 deleted socket file: rpc.sock</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 pipe rpc_srv_stderr has Closed</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 pipe rpc_srv_stdout has Closed</span>
+<span style="color:#75715e"># 2019/05/19 01:33:13 stop subproc ./bin/task-rpc success</span>
+</code></pre></div><p>当前更新主要以发布代码为主，没有详细解释，详细见代码 
+  <a href="https://github.com/exfly/cslab/tree/master/Code/Go/go-ipc">exfly/go-ipc</a></p></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#引言">引言</a></li>
+    <li><a href="#正文">正文</a>
+      <ul>
+        <li><a href="#rpc">RPC</a></li>
+        <li><a href="#如何进行进程间通信-ipc-呢">如何进行进程间通信 IPC 呢</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整例子">完整例子</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

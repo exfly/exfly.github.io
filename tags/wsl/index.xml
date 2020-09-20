@@ -5,18 +5,13 @@
     <link>/tags/wsl/</link>
     <description>Recent content in wsl on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Sat, 08 Dec 2018 16:00:59 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/wsl/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 08 Dec 2018 16:00:59 +0800</lastBuildDate><atom:link href="/tags/wsl/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>WSL(windows subsystem for linux) win子系统</title>
-      <link>/post/tools/wsl/</link>
+      <link>/posts/tools/wsl/</link>
       <pubDate>Sat, 08 Dec 2018 16:00:59 +0800</pubDate>
       
-      <guid>/post/tools/wsl/</guid>
+      <guid>/posts/tools/wsl/</guid>
       <description>&lt;p&gt;win 子系统安装与 cmder+zsh 开发环境搭建&lt;/p&gt;</description>
     </item>
     

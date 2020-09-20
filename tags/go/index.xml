@@ -5,28 +5,24 @@
     <link>/tags/go/</link>
     <description>Recent content in go on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Sun, 05 May 2019 18:54:46 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/go/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 05 May 2019 18:54:46 +0800</lastBuildDate><atom:link href="/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</title>
-      <link>/post/go/rpc-ipc/</link>
+      <link>/posts/Go/rpc-ipc/</link>
       <pubDate>Sun, 05 May 2019 18:54:46 +0800</pubDate>
       
-      <guid>/post/go/rpc-ipc/</guid>
+      <guid>/posts/Go/rpc-ipc/</guid>
       <description>&lt;p&gt;文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Realize代码分析</title>
-      <link>/post/tools/realize/</link>
+      <link>/posts/tools/realize/</link>
       <pubDate>Thu, 11 Oct 2018 12:55:03 +0800</pubDate>
       
-      <guid>/post/tools/realize/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;</description>
+      <guid>/posts/tools/realize/</guid>
+      <description>&lt;p&gt;
+  &lt;a href=&#34;https://github.com/oxequa/realize&#34;&gt;realize&lt;/a&gt; 代码分析&lt;/p&gt;</description>
     </item>
     
   </channel>

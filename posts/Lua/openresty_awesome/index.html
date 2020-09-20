@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="OpenResty最佳实践" />
+<meta property="og:description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/Lua/openresty_awesome/" />
+<meta property="article:published_time" content="2018-06-12T16:01:38+08:00" />
+<meta property="article:modified_time" content="2018-06-12T16:01:38+08:00" />
+<title>OpenResty最佳实践 | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
+<script defer src="/zh.search.min.edd9403de8c7ca97ee3cf0a5301a7d19fb7889182f2beeea3392b3eb595b7e77.js" integrity="sha256-7dlAPejHypfuPPClMBp9Gft4iRgvK&#43;7qM5Kz61lbfnc="></script>
+
+<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>example</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/example/">section</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>OpenResty最佳实践</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#openresty安装">OpenResty安装</a>
+      <ul>
+        <li><a href="#安装luarocks">安装luarocks</a></li>
+      </ul>
+    </li>
+    <li><a href="#lua面向对象">lua面向对象</a></li>
+    <li><a href="#基本编码规范-设计">基本编码规范 设计</a></li>
+    <li><a href="#包管理">包管理</a></li>
+    <li><a href="#单元测试">单元测试</a></li>
+    <li><a href="#远程调试-openresty">远程调试 OpenResty</a></li>
+    <li><a href="#nginx一些技巧">nginx一些技巧</a></li>
+    <li><a href="#资料">资料</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/Lua/openresty_awesome/">OpenResty最佳实践</a>
+  </h1>
+  
+  <h5>June 12, 2018</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/Lua/">Lua</a>, 
+      <a href="/tags/OpenResty/">OpenResty</a>
+  </div>
+  
+
+
+  <p><p>如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。</p>
+<h1 id="简介">
+  简介
+  <a class="anchor" href="#%e7%ae%80%e4%bb%8b">#</a>
+</h1>
+<p>openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。
+结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。</p>
+<h1 id="openresty安装">
+  OpenResty安装
+  <a class="anchor" href="#openresty%e5%ae%89%e8%a3%85">#</a>
+</h1>
+<p>对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib，并根据我的配置进行修改相应参数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./configure --prefix<span style="color:#f92672">=</span>$HOME/openresty <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --add-module<span style="color:#f92672">=</span>$HOME/openresty/setupfile/third/naxsi-0.55.3/naxsi_src <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --add-module<span style="color:#f92672">=</span>$HOME/openresty/setupfile/third/nginx-goodies-nginx-sticky-module-ng <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-pcre<span style="color:#f92672">=</span>$HOME/openresty/setupfile/depency/pcre-8.41 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-openssl<span style="color:#f92672">=</span>$HOME/openresty/setupfile/depency/openssl-1.0.2k <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-zlib<span style="color:#f92672">=</span>$HOME/openresty/setupfile/depency/zlib-1.2.11 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-http_v2_module <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-http_sub_module <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-http_stub_status_module <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-http_realip_module <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-cc-opt<span style="color:#f92672">=</span>-O2 <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span> --with-luajit
+</code></pre></div><ul>
+<li>
+  <a href="http://blog.51cto.com/1992tao/1865611">这里</a>是一个比较好的 nginx的笔记，可以过一遍</li>
+<li>我在学习的时候，看了这本书
+  <a href="/">深入理解Nginx模块开发与架构解析</a>,毕竟讲的比较系统，可以借鉴一下</li>
+<li>有问题，知乎，搜索引擎</li>
+</ul>
+<h2 id="安装luarocks">
+  安装luarocks
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85luarocks">#</a>
+</h2>
+<ul>
+<li>下载地址 <a href="http://luarocks.github.io/luarocks/releases/">http://luarocks.github.io/luarocks/releases/</a></li>
+<li>编译安装</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">./configure --prefix<span style="color:#f92672">=</span>$HOME/openresty/luajit <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --with-lua<span style="color:#f92672">=</span>$HOME/openresty/luajit <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --lua-suffix<span style="color:#f92672">=</span>jit <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    --with-lua-include<span style="color:#f92672">=</span>$HOME/openresty/luajit/include/luajit-2.1
+
+--prefix 设定 luarocks 的安装目录
+--with-lua 则是系统中安装的 lua 的根目录
+--lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit
+--with-lua-include 设置 lua 引入一些头文件头文件的目录
+make build <span style="color:#f92672">&amp;&amp;</span> make install
+</code></pre></div><h1 id="lua面向对象">
+  lua面向对象
+  <a class="anchor" href="#lua%e9%9d%a2%e5%90%91%e5%af%b9%e8%b1%a1">#</a>
+</h1>
+<p>lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。
+  <a href="https://blog.codingnow.com/2006/06/oo_lua.html">Lua 中实现面向对象</a>。
+这里要说一下lua中
+  <a href="https://www.kancloud.cn/digest/luanote/119940">.运算和:的区别</a>，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是<code>:</code>可以省略self参数。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">local</span> _class<span style="color:#f92672">=</span>{}
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">class</span>(super)
+    <span style="color:#66d9ef">local</span> class_type<span style="color:#f92672">=</span>{}
+    class_type.ctor<span style="color:#f92672">=</span><span style="color:#66d9ef">false</span>
+    class_type.super<span style="color:#f92672">=</span>super
+    class_type.new<span style="color:#f92672">=</span><span style="color:#66d9ef">function</span>(...) 
+            <span style="color:#66d9ef">local</span> obj<span style="color:#f92672">=</span>{}
+            <span style="color:#66d9ef">do</span>
+                <span style="color:#66d9ef">local</span> create
+                create <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(c,...)
+                    <span style="color:#66d9ef">if</span> c.super <span style="color:#66d9ef">then</span>
+                        create(c.super,...)
+                    <span style="color:#66d9ef">end</span>
+                    <span style="color:#66d9ef">if</span> c.ctor <span style="color:#66d9ef">then</span>
+                        c.ctor(obj,...)
+                    <span style="color:#66d9ef">end</span>
+                <span style="color:#66d9ef">end</span>
+                create(class_type,...)
+            <span style="color:#66d9ef">end</span>
+            setmetatable(obj,{ __index<span style="color:#f92672">=</span>_class[class_type] })
+            <span style="color:#66d9ef">return</span> obj
+        <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">local</span> vtbl<span style="color:#f92672">=</span>{}
+    _class[class_type]<span style="color:#f92672">=</span>vtbl
+ 
+    setmetatable(class_type,{__newindex<span style="color:#f92672">=</span>
+        <span style="color:#66d9ef">function</span>(t,k,v)
+            vtbl[k]<span style="color:#f92672">=</span>v
+        <span style="color:#66d9ef">end</span>
+    })
+    <span style="color:#66d9ef">if</span> super <span style="color:#66d9ef">then</span>
+        setmetatable(vtbl,{__index<span style="color:#f92672">=</span>
+            <span style="color:#66d9ef">function</span>(t,k)
+                <span style="color:#66d9ef">local</span> ret<span style="color:#f92672">=</span>_class[super][k]
+                vtbl[k]<span style="color:#f92672">=</span>ret
+                <span style="color:#66d9ef">return</span> ret
+            <span style="color:#66d9ef">end</span>
+        })
+    <span style="color:#66d9ef">end</span>
+ 
+    <span style="color:#66d9ef">return</span> class_type
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h1 id="基本编码规范-设计">
+  基本编码规范 设计
+  <a class="anchor" href="#%e5%9f%ba%e6%9c%ac%e7%bc%96%e7%a0%81%e8%a7%84%e8%8c%83-%e8%ae%be%e8%ae%a1">#</a>
+</h1>
+<p>
+  <a href="https://moonbingbing.gitbooks.io/openresty-best-practices/web/code_style.html">可以参考OpenResty的最佳实践</a>，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。</p>
+<h1 id="包管理">
+  包管理
+  <a class="anchor" href="#%e5%8c%85%e7%ae%a1%e7%90%86">#</a>
+</h1>
+<p>lua下有两个包管理系统，LuaDist和LuaRocks</p>
+<h1 id="单元测试">
+  单元测试
+  <a class="anchor" href="#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95">#</a>
+</h1>
+<ul>
+<li><strong>重点</strong> 如下方法请在命令行中使用类似<code>curl localhost/unittest</code>进行测试，浏览器中看会很痛苦</li>
+<li>
+  <a href="https://moonbingbing.gitbooks.io/openresty-best-practices/test/unittest.html">OpenResty最佳实践-单元测试</a>给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#75715e">-- file: unittest.lua</span>
+<span style="color:#66d9ef">local</span> _M <span style="color:#f92672">=</span> {}
+<span style="color:#66d9ef">local</span> csrf_test <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;test.test_csrf&#34;</span>)
+<span style="color:#66d9ef">local</span> tmp_test <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;test.tmp_test&#34;</span>)
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_M</span>:<span style="color:#a6e22e">run_unittest</span>()
+    csrf_test:run()
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">return</span> _M
+
+<span style="color:#75715e">-- file: test_csrf.lua</span>
+<span style="color:#66d9ef">local</span> iresty_test <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;resty.iresty_test&#34;</span>)
+<span style="color:#66d9ef">local</span> json <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;json&#34;</span>)
+<span style="color:#66d9ef">local</span> config <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;config&#34;</span>)
+<span style="color:#66d9ef">local</span> csrf_config <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;csrf_config&#34;</span>)
+<span style="color:#66d9ef">local</span> token <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;token&#34;</span>)
+<span style="color:#66d9ef">local</span> tabletls <span style="color:#f92672">=</span> require(<span style="color:#e6db74">&#34;tabletls&#34;</span>)
+<span style="color:#66d9ef">local</span> tb <span style="color:#f92672">=</span> iresty_test.new({unit_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;test_csrf&#34;</span>})
+
+<span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">assert_eq</span>(wanted, real, msg)
+    <span style="color:#66d9ef">if</span> wanted <span style="color:#f92672">~=</span> real <span style="color:#66d9ef">then</span>
+        error(msg <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#ae81ff">2</span>) <span style="color:#75715e">-- 请注意参数 2</span>
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">assert_not_eq</span>(wanted, real, msg)
+    <span style="color:#66d9ef">if</span> wanted <span style="color:#f92672">==</span> real <span style="color:#66d9ef">then</span>
+        error(msg <span style="color:#f92672">or</span> <span style="color:#e6db74">&#34;error&#34;</span>, <span style="color:#ae81ff">2</span>)
+    <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">tb</span>:<span style="color:#a6e22e">test_geturl</span>()
+	assert_eq(<span style="color:#e6db74">&#34;/unittest&#34;</span>, ngx.var.uri, <span style="color:#e6db74">&#34;the unittest url changed&#34;</span>)
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">tb</span>:<span style="color:#a6e22e">run_unittest</span>()
+    tb:run()
+<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">return</span> tb
+</code></pre></div><ul>
+<li>如上有一个很有意思的地方，<code>error(msg or &quot;error&quot;, 2)</code>,其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号）</li>
+<li>性能测试 代码覆盖率 API测试等，都可以去
+  <a href="https://moonbingbing.gitbooks.io/openresty-best-practices/">OpenResty最佳实践</a>中找，配置很简单。</li>
+</ul>
+<h1 id="远程调试-openresty">
+  远程调试 OpenResty
+  <a class="anchor" href="#%e8%bf%9c%e7%a8%8b%e8%b0%83%e8%af%95-openresty">#</a>
+</h1>
+<ul>
+<li>对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。</li>
+<li>此调试方法适用于 win linux osx</li>
+<li>先贴这里用到的luaIDE地址：
+  <a href="https://github.com/pkulchenko/ZeroBraneStudio">ZeroBraneStudio</a></li>
+<li>如下为安装步骤：</li>
+<li>下载这个项目，
+  <a href="https://github.com/pkulchenko/ZeroBraneStudio/archive/master.zip">ZeroBraneStudio</a>，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】</li>
+<li>启动ZBS，Project -&gt; Start Debugger Server</li>
+<li>复制<ZBS>/lualibs/mobdebug/mobdebug.lua -&gt; nginx lua path,</li>
+<li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
+<li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
+<li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
+<li>创建需要调试的lua文件</li>
+</ul>
+<pre><code>require('mobdebug').start('192.168.1.22')
+local name = ngx.var.arg_name or &quot;Anonymous&quot;
+ngx.say(&quot;Hello, &quot;, name, &quot;!&quot;)
+ngx.say(&quot;Done debugging.&quot;)
+require('mobdebug').done()
+</code></pre><p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
+<ul>
+<li>在ide中打开需要调试的如上lua文件</li>
+<li>Project -&gt; Project Directory -&gt; Set From Current File。</li>
+<li>此时，打开浏览器，访问需要此文件处理的链接</li>
+<li>此时开始调试
+
+  <img src="/media/img/Lua/openresty_awesome/debug.png" alt="ZeroBrane Studio调试OpenResty" /></li>
+<li>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</li>
+<li>如上流程没有截图，或者没有说清楚，可以来
+  <a href="http://ju.outofmemory.cn/entry/326200">这里</a></li>
+</ul>
+<h1 id="nginx一些技巧">
+  nginx一些技巧
+  <a class="anchor" href="#nginx%e4%b8%80%e4%ba%9b%e6%8a%80%e5%b7%a7">#</a>
+</h1>
+<ul>
+<li>看我配置的nginx.conf</li>
+</ul>
+<pre><code>lua_package_path '$prefix/lua_script/?.lua;;';
+</code></pre><ul>
+<li>
+  <a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md">我的笔记</a></li>
+</ul>
+<h1 id="资料">
+  资料
+  <a class="anchor" href="#%e8%b5%84%e6%96%99">#</a>
+</h1>
+<ul>
+<li>
+  <a href="http://agentzh.org/">章亦春</a></li>
+<li>
+  <a href="https://openresty.org/">OpenResty</a></li>
+<li>
+  <a href="https://moonbingbing.gitbooks.io/openresty-best-practices">OpenResty最佳实践</a></li>
+<li>
+  <a href="https://www.codingnow.com/2000/download/lua_manual.html">Lua 5.1 参考手册</a></li>
+<li>
+  <a href="http://cloudwu.github.io/lua53doc/contents.html">Lua 5.3 参考手册</a></li>
+<li>
+  <a href="https://github.com/cloudwu">云风 github</a></li>
+<li>
+  <a href="https://github.com/LewisJEllis/awesome-lua">awesome-lua</a></li>
+<li>
+  <a href="https://github.com/bungle/awesome-resty">awesome-resty</a></li>
+<li>
+  <a href="https://github.com/fcambus/nginx-resources">Nginx-Lua-OpenResty-Resources</a>A collection of resources covering Nginx, Nginx + Lua, OpenResty and Tengine</li>
+</ul></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#openresty安装">OpenResty安装</a>
+      <ul>
+        <li><a href="#安装luarocks">安装luarocks</a></li>
+      </ul>
+    </li>
+    <li><a href="#lua面向对象">lua面向对象</a></li>
+    <li><a href="#基本编码规范-设计">基本编码规范 设计</a></li>
+    <li><a href="#包管理">包管理</a></li>
+    <li><a href="#单元测试">单元测试</a></li>
+    <li><a href="#远程调试-openresty">远程调试 OpenResty</a></li>
+    <li><a href="#nginx一些技巧">nginx一些技巧</a></li>
+    <li><a href="#资料">资料</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

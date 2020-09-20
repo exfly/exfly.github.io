@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Linux0.11源码学习环境配置与相关资源汇总" />
+<meta property="og:description" content="记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/linux/linux0.11-read-code/" />
+<meta property="article:published_time" content="2016-10-30T14:17:49+08:00" />
+<meta property="article:modified_time" content="2016-10-30T14:17:49+08:00" />
+<title>Linux0.11源码学习环境配置与相关资源汇总 | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
+<script defer src="/zh.search.min.edd9403de8c7ca97ee3cf0a5301a7d19fb7889182f2beeea3392b3eb595b7e77.js" integrity="sha256-7dlAPejHypfuPPClMBp9Gft4iRgvK&#43;7qM5Kz61lbfnc="></script>
+
+<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>example</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/example/">section</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Linux0.11源码学习环境配置与相关资源汇总</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#linux-history">linux history</a></li>
+    <li><a href="#linux">linux</a></li>
+    <li><a href="#linux-调试方法">linux 调试方法</a></li>
+    <li><a href="#source">source</a></li>
+    <li><a href="#80386内存访问公式">80386内存访问公式</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/linux/linux0.11-read-code/">Linux0.11源码学习环境配置与相关资源汇总</a>
+  </h1>
+  
+  <h5>October 30, 2016</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/Linux/">Linux</a>, 
+      <a href="/tags/%E8%B5%84%E6%BA%90/">资源</a>
+  </div>
+  
+
+
+  <p><p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
+<h1 id="linux-history">
+  linux history
+  <a class="anchor" href="#linux-history">#</a>
+</h1>
+<ul>
+<li>linux 0.11</li>
+<li>linux 0.95    实现虚拟文件系统</li>
+<li>linux 0.96    实现网络接口</li>
+</ul>
+<h1 id="linux">
+  linux
+  <a class="anchor" href="#linux">#</a>
+</h1>
+<p>linux采用分段+分页机制结合管理内存</p>
+<h1 id="linux-调试方法">
+  linux 调试方法
+  <a class="anchor" href="#linux-%e8%b0%83%e8%af%95%e6%96%b9%e6%b3%95">#</a>
+</h1>
+<ul>
+<li>
+  <a href="https://wwssllabcd.github.io/blog/2012/08/03/compile-linux011/">linux0.11 调试方法</a></li>
+</ul>
+<pre><code>gdb tools/system
+target remote localhost:1234
+
+
+gdb常用命令
+b: 下中斷點
+info b :u 列出目前中断点，也可简写成&quot;i b&quot;
+continue(c) 继续执行直到下一个中断点或结束
+list(l): 列出目前上下文
+step(s): 单步 (会进入 funciton)
+next(n) : 单步 (不会进入 funciton)
+until(u) 跳离一个 while for 循环
+print(p): 显示某变量，如 p str
+info register(i r) : 显示 CPU 的 register
+
+GDB 打印出内存中的內容，格式為 x/nyz，其中
+n: 要印出的數量
+y: 显示的格式，可为C( char), d(整数), x(hex)
+z: 单位，可为 b(byte), h(16bit), w(32bit)
+
+cgdb	可显示为上半部分为代码，下半部分命令部分
+cgdb tools/system* [linux-0.11启动过程描述](http://labrick.cc/2015/08/13/linux-0-11-boot/)
+* [Linux0.11启动过程](http://linux.chinaunix.net/techdoc/install/2007/04/10/954810.shtml)
+* [80386保护模式的本质](http://www.jianshu.com/p/1cea7dc5d6b7)
+* [linux虚拟地址到线性地址的转化](http://luodw.cc/2016/02/17/address/)
+* [Linux内存寻址之分段机制-linux回避了分段机制](http://blog.xiaohansong.com/2015/10/03/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E6%AE%B5%E6%9C%BA%E5%88%B6/)
+* [Linux内存寻址之分页机制/](http://blog.xiaohansong.com/2015/10/05/Linux%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80%E4%B9%8B%E5%88%86%E9%A1%B5%E6%9C%BA%E5%88%B6/)
+* [逻辑地址、线性地址、物理地址和虚拟地址](http://www.voidcn.com/blog/will130/article/p-5705051.html)
+* [Intel 80386 程序员参考手册](http://www.kancloud.cn/wizardforcel/intel-80386-ref-manual/123838)
+* [linux0.11内核之文件系统](http://harpsword.leanote.com/post/Untitled-563d6103ab6441584f000164)
+</code></pre><h1 id="source">
+  source
+  <a class="anchor" href="#source">#</a>
+</h1>
+<h1 id="80386内存访问公式">
+  80386内存访问公式
+  <a class="anchor" href="#80386%e5%86%85%e5%ad%98%e8%ae%bf%e9%97%ae%e5%85%ac%e5%bc%8f">#</a>
+</h1>
+<p>32位线性地址 = 段基地址(32位)  + 段内偏移(32位)</p>
+<p>48bit = 16 + 32
+16位地段选择子 + 32虚拟地址 -&gt; 32线性地址
+32线性地址 -&gt; 物理地址</p></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#linux-history">linux history</a></li>
+    <li><a href="#linux">linux</a></li>
+    <li><a href="#linux-调试方法">linux 调试方法</a></li>
+    <li><a href="#source">source</a></li>
+    <li><a href="#80386内存访问公式">80386内存访问公式</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

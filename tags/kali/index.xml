@@ -5,18 +5,13 @@
     <link>/tags/kali/</link>
     <description>Recent content in kali on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate>
-    
-	<atom:link href="/tags/kali/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 17 Sep 2017 14:35:34 +0800</lastBuildDate><atom:link href="/tags/kali/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>oneplus one 刷Kali Linux NetHunter</title>
-      <link>/post/sercurity/2017.09.17-black-phone/</link>
+      <link>/posts/sercurity/2017.09.17-black-phone/</link>
       <pubDate>Sun, 17 Sep 2017 14:35:34 +0800</pubDate>
       
-      <guid>/post/sercurity/2017.09.17-black-phone/</guid>
+      <guid>/posts/sercurity/2017.09.17-black-phone/</guid>
       <description>&lt;p&gt;看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。&lt;/p&gt;</description>
     </item>

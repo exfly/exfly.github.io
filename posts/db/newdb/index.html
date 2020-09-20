@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh" dir=>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介：简单介绍最近自己最近设计实现 newdb 的工作">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Newdb" />
+<meta property="og:description" content="文章简介：简单介绍最近自己最近设计实现 newdb 的工作" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/db/newdb/" />
+<meta property="article:published_time" content="2019-06-29T15:13:28+08:00" />
+<meta property="article:modified_time" content="2019-06-29T15:13:28+08:00" />
+<title>Newdb | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
+<script defer src="/zh.search.min.edd9403de8c7ca97ee3cf0a5301a7d19fb7889182f2beeea3392b3eb595b7e77.js" integrity="sha256-7dlAPejHypfuPPClMBp9Gft4iRgvK&#43;7qM5Kz61lbfnc="></script>
+
+<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>example</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/example/">section</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Newdb</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents"></nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/db/newdb/">Newdb</a>
+  </h1>
+  
+  <h5>June 29, 2019</h5>
+
+
+
+  
+
+  
+
+
+  <p><p>文章简介：简单介绍最近自己最近设计实现 newdb 的工作</p>
+<p>项目地址 
+  <a href="https://github.com/anydemo/newdb">anydemo/newdb</a></p>
+<p>最近一段时间花了很大的力气学习数据库的知识，设计实现了简单的 RDBMS, 收获比较丰富</p>
+<p>开始先从数据库底层的数据持久化开始。再此设计的数据库主要是固定类型大小的关系型数据库。一个 table 中有固定大小的一定数量的数据列，每一个 tuple 的大小是固定不变的，也就是每一个 page 的可以容纳的 tuple 是一定的，这样很容易在记录某一个 tuple 的位置、以及其在文件中的位置。在这过程中收获最大的部分就是对于 Marshal 于 Unmarshal 的理解更进一步，知道数据如何在数据库中是如何存储的，以及事务的本质。</p>
+<p>最后通过一个 Sequences Scan 的例子，手写一个物理执行计划，执行一次全表扫描。</p>
+<p>未来还有很多的内容可以做，暂时告一段落，最近抽时间沉淀一下，思考一下未来，回头有时间了再回头继续加新的内容。毕竟
+  <a href="https://github.com/anydemo/newdb/issues">issues</a>积攒了太多。</p></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents"></nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

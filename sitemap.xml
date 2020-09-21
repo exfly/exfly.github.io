@@ -19,8 +19,13 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2020-09-20T15:25:18+08:00</lastmod>
+    <lastmod>2020-09-21T08:28:04+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/posts/backend/report/</loc>
+    <lastmod>2020-09-21T08:28:04+08:00</lastmod>
   </url>
   
   <url>

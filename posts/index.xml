@@ -6,6 +6,15 @@
     <description>Recent content in Blog on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>报告实现</title>
+      <link>/posts/backend/report/</link>
+      <pubDate>Mon, 21 Sep 2020 08:28:04 +0800</pubDate>
+      
+      <guid>/posts/backend/report/</guid>
+      <description>&lt;p&gt;文章简介：报告系统设计&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Go Issue</title>
       <link>/posts/Go/go-issue/</link>
       <pubDate>Sat, 27 Jun 2020 07:33:02 +0800</pubDate>

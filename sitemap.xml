@@ -19,8 +19,23 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2020-09-22T08:00:48+08:00</lastmod>
+    <lastmod>2020-09-22T08:38:58+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/posts/Go/high-performance-go-workshop/</loc>
+    <lastmod>2020-09-22T08:38:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/go/</loc>
+    <lastmod>2020-09-22T08:38:58+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-09-22T08:38:58+08:00</lastmod>
   </url>
   
   <url>
@@ -50,11 +65,6 @@
   
   <url>
     <loc>/tags/es/</loc>
-    <lastmod>2020-09-20T15:25:18+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2020-09-20T15:25:18+08:00</lastmod>
   </url>
   
@@ -170,11 +180,6 @@
   
   <url>
     <loc>/posts/db/newdb/</loc>
-    <lastmod>2020-09-20T15:25:18+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/go/</loc>
     <lastmod>2020-09-20T15:25:18+08:00</lastmod>
   </url>
   

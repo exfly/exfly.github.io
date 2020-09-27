@@ -6,6 +6,15 @@
     <description>Recent content in Blog on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>(翻译)Go 高性能研讨讲座 - High Performance Go Workshop</title>
+      <link>/posts/Go/high-performance-go-workshop/</link>
+      <pubDate>Sun, 27 Sep 2020 08:57:31 +0800</pubDate>
+      
+      <guid>/posts/Go/high-performance-go-workshop/</guid>
+      <description>&lt;p&gt;文章简介：优化Go程序&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>报告实现</title>
       <link>/posts/backend/report/</link>
       <pubDate>Mon, 21 Sep 2020 08:28:04 +0800</pubDate>

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" dir=>
-
+<html lang="zh" dir="ltr">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,30 +7,31 @@
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Gradle和Maven使用方法总结" />
 <meta property="og:description" content="文章简介： 1.总结gradle和maven正确使用方法 2.开箱即用maven&amp;gradle同时支持的项目配置。Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/posts/Java/gradle_maven/" />
-<meta property="article:published_time" content="2018-06-24T17:38:17+08:00" />
-<meta property="article:modified_time" content="2020-09-20T15:25:18+08:00" />
+<meta property="og:url" content="/posts/Java/gradle_maven/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-06-24T17:38:17&#43;08:00" />
+<meta property="article:modified_time" content="2020-09-20T15:25:18&#43;08:00" />
+
 <title>Gradle和Maven使用方法总结 | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
-<script defer src="/zh.search.min.5cd3ca6c6ddc66d8968aa39aebd5b95e11b919a44955c6f2e6ce6821e50921d2.js" integrity="sha256-XNPKbG3cZtiWiqOa69W5XhG5GaRJVcby5s5oIeUJIdI="></script>
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.12530a451e610369d0fcd518436c96e0c51628659f69ccd126f290a9e8121e7a.js" ></script>
 
-<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
-
   
 </head>
-
-<body dir=>
+<body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
     <aside class="book-menu">
-      
+      <div class="book-menu-content">
+        
   <nav>
 <h2 class="book-brand">
   <a href="/"><span>Exfly Blog</span>
@@ -79,12 +79,6 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
-  <li>
-    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
-        Github
-      </a>
-  </li>
-  
 </ul>
 
 
@@ -97,10 +91,11 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
+      </div>
     </aside>
 
     <div class="book-page">
@@ -124,7 +119,8 @@ https://github.com/alex-shpak/hugo-book
   
   <aside class="hidden clearfix">
     
-  <nav id="TableOfContents">
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#说在前面">说在前面</a></li>
     <li><a href="#maven-正确使用方法">maven 正确使用方法</a>
@@ -147,6 +143,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#资料汇总">资料汇总</a></li>
   </ul>
 </nav>
+
 
 
   </aside>
@@ -175,7 +172,8 @@ https://github.com/alex-shpak/hugo-book
   
 
 
-  <p><p>文章简介： <br>1.总结gradle和maven正确使用方法 <br>2.开箱即用maven&amp;gradle同时支持的项目配置。<br>Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！</p>
+
+<p>文章简介： <br>1.总结gradle和maven正确使用方法 <br>2.开箱即用maven&amp;gradle同时支持的项目配置。<br>Gradle和Maven使用起来都比较方便，而Gradle使用更灵活，配置更方便。而公司环境一般使用Maven。因此就有了取舍，是迁移到Gradle，还是继续使用Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！</p>
 <h1 id="说在前面">
   说在前面
   <a class="anchor" href="#%e8%af%b4%e5%9c%a8%e5%89%8d%e9%9d%a2">#</a>
@@ -389,8 +387,7 @@ https://github.com/alex-shpak/hugo-book
   <a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Gradle.md">我的Gradle笔记，点我查看</a></li>
 <li>
   <a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md">我的maven笔记，点我查看</a></li>
-</ul></p>
-</article>
+</ul></article>
  
       
 
@@ -400,7 +397,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/d88acc85906678f6972cafb37bc1c66f1e836c80" title='最后修改者 exfly | September 20, 2020' target="_blank" rel="noopener">
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" title='最后修改者 exfly | September 20, 2020' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>September 20, 2020</span>
     </a>
@@ -409,6 +406,11 @@ https://github.com/alex-shpak/hugo-book
 
 
 </div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
 
  
         
@@ -427,8 +429,10 @@ https://github.com/alex-shpak/hugo-book
 
     
     <aside class="book-toc">
-      
-  <nav id="TableOfContents">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#说在前面">说在前面</a></li>
     <li><a href="#maven-正确使用方法">maven 正确使用方法</a>
@@ -452,14 +456,15 @@ https://github.com/alex-shpak/hugo-book
   </ul>
 </nav>
 
+
  
+      </div>
     </aside>
     
   </main>
 
   
 </body>
-
 </html>
 
 

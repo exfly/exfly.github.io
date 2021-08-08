@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" dir=>
-
+<html lang="zh" dir="ltr">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,29 +8,29 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" />
-<meta property="og:updated_time" content="2020-09-20T15:25:18+08:00" />
+
 <title>前后端分离 | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.891c5b58a7a694942d519238f3c4138504c9ad2e207c0fd6541f9cd4f8d6220a.css" integrity="sha256-iRxbWKemlJQtUZI488QThQTJrS4gfA/WVB&#43;c1PjWIgo=">
-<script defer src="/zh.search.min.5cd3ca6c6ddc66d8968aa39aebd5b95e11b919a44955c6f2e6ce6821e50921d2.js" integrity="sha256-XNPKbG3cZtiWiqOa69W5XhG5GaRJVcby5s5oIeUJIdI="></script>
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.12530a451e610369d0fcd518436c96e0c51628659f69ccd126f290a9e8121e7a.js" ></script>
 
-<script defer src="/sw.min.74a8bb07f0bee86d6bb9a2750f073f14d93c7e4512f28860370cfd879e9719b4.js" integrity="sha256-dKi7B/C&#43;6G1ruaJ1Dwc/FNk8fkUS8ohgNwz9h56XGbQ="></script>
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <link rel="alternate" type="application/rss+xml" href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/index.xml" title="Exfly Blog" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
-
   
 </head>
-
-<body dir=>
+<body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
     <aside class="book-menu">
-      
+      <div class="book-menu-content">
+        
   <nav>
 <h2 class="book-brand">
   <a href="/"><span>Exfly Blog</span>
@@ -79,12 +78,6 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
-  <li>
-    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
-        Github
-      </a>
-  </li>
-  
 </ul>
 
 
@@ -97,10 +90,11 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
+      </div>
     </aside>
 
     <div class="book-page">
@@ -372,6 +366,8 @@ https://github.com/alex-shpak/hugo-book
   
 
 
+
+
     <p><p>使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境</p>
         <a href="/posts/frontend/front-end-separation-architecture-environment-construction/">...</a>
       
@@ -380,8 +376,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-
-
  
       
 
@@ -394,6 +388,11 @@ https://github.com/alex-shpak/hugo-book
 
 
 </div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
 
  
         
@@ -408,7 +407,8 @@ https://github.com/alex-shpak/hugo-book
 
     
     <aside class="book-toc">
-      
+      <div class="book-toc-content">
+        
   <nav>
   <ul>
   
@@ -629,13 +629,13 @@ https://github.com/alex-shpak/hugo-book
 </nav>
 
  
+      </div>
     </aside>
     
   </main>
 
   
 </body>
-
 </html>
 
 

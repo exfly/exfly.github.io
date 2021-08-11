@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.2db999c6df0b9e215686de19b19114b2822877ef4bc7e61ba56fe92dd652e825.js" ></script>
+  <script defer src="/zh.search.min.e43d6776acc927f50c52ec3895d3f02e1f14fee577c4f35c24a48937a78ed700.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -311,50 +311,53 @@ https://github.com/alex-shpak/hugo-book
 	}
 }
 </code></pre></div><p>coroutine 是如何切换的呢？由计算机的工作原理知道，程序的执行是根据 pc 寄存器中的位置取指令执行的，执行 task 需要 stack 和寄存器。寄存器中的数据就是一个 coroutine 的 上下文，记录下来，set 成其他的 上下文的 寄存器的值，即可达到切换 coroutine 的目的。由于不同平台的寄存器不同，指令集不同，需要区分平台做不同的事情:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// linux arm 平台的指令
-</span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/asm.S#L224
-</span><span style="color:#75715e"></span><span style="color:#75715e">#ifdef NEEDARMCONTEXT
-</span><span style="color:#75715e"></span>.globl GET
-GET:
-	str	r1, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">4</span>]
-	str	r2, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">8</span>]
-	str	r3, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">12</span>]
-	str	r4, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">16</span>]
-	str	r5, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">20</span>]
-	str	r6, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">24</span>]
-	str	r7, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">28</span>]
-	str	r8, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">32</span>]
-	str	r9, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">36</span>]
-	str	r10, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">40</span>]
-	str	r11, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">44</span>]
-	str	r12, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">48</span>]
-	str	r13, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">52</span>]
-	str	r14, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">56</span>]
-	<span style="color:#75715e">/* store 1 as r0-to-restore */</span>
-	mov	r1, <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">1</span>
-	str	r1, [r0]
-	<span style="color:#75715e">/* return 0 */</span>
-	mov	r0, <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">0</span>
-	mov	pc, lr
-
-.globl SET
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// linux x86 平台的指令
+</span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/asm.S#L43
+</span><span style="color:#75715e"></span><span style="color:#75715e">#ifdef NEEDX86CONTEXT
+</span><span style="color:#75715e"></span>.globl SET
 SET:
-	ldr	r1, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">4</span>]
-	ldr	r2, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">8</span>]
-	ldr	r3, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">12</span>]
-	ldr	r4, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">16</span>]
-	ldr	r5, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">20</span>]
-	ldr	r6, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">24</span>]
-	ldr	r7, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">28</span>]
-	ldr	r8, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">32</span>]
-	ldr	r9, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">36</span>]
-	ldr	r10, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">40</span>]
-	ldr	r11, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">44</span>]
-	ldr	r12, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">48</span>]
-	ldr	r13, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">52</span>]
-	ldr	r14, [r0,<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">56</span>]
-	ldr	r0, [r0]
-	mov	pc, lr
+	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
+
+	movl	<span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>fs
+	movl	<span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>es
+	movl	<span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ds
+	movl	<span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ss
+	movl	<span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edi
+	movl	<span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esi
+	movl	<span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebp
+	movl	<span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebx
+	movl	<span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edx
+	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx
+
+	movl	<span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esp
+	pushl	<span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* new %eip */</span>
+	movl	<span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>eax
+	ret
+
+.globl GET
+GET:
+	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
+
+	movl	<span style="color:#f92672">%</span>fs, <span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>es, <span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>ds, <span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>ss, <span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>edi, <span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>esi, <span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>ebp, <span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>ebx, <span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax)
+	movl	<span style="color:#f92672">%</span>edx, <span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax)		 
+	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax)
+
+	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* %eax */</span>
+	movl	(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %eip */</span>
+	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)
+	leal	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %esp */</span>
+	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax)
+
+	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* restore %ecx */</span>
+	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>, <span style="color:#f92672">%</span>eax
+	ret
 <span style="color:#75715e">#endif
 </span><span style="color:#75715e"></span>
 <span style="color:#75715e">// c 中的 Context
@@ -453,7 +456,10 @@ chanrecvul task 接受数据时候，如果 channel buf 不为空，则会直接
   goroutine pool
   <a class="anchor" href="#goroutine-pool">#</a>
 </h3>
-<p>golang 有 gc，goroutine 的创建与删除还是需要申请内存的，如果可以，尽量使用 pool，让 goroutine调度压力尽量小一点，用户程序复用 goroutine。可以使用 goroutine pool 实现 goroutine 的复用。</p>
+<blockquote>
+<p>10M(百万) goroutine 执行轻量操作会出现瓶颈，需要考虑 goroutine pool 来做优化了</p>
+</blockquote>
+<p>golang 有 gc，goroutine 的创建与删除还是需要申请内存的，如果可以，尽量使用 pool，让 goroutine调度压力尽量小一点，用户程序复用 goroutine。可以使用 goroutine pool 实现 goroutine 的复用。同时不好的 pool 实现也会让一把锁破坏掉好的性能。是否使用，需要视情况而定.</p>
 <h2 id="ref">
   ref
   <a class="anchor" href="#ref">#</a>
@@ -487,6 +493,10 @@ chanrecvul task 接受数据时候，如果 channel buf 不为空，则会直接
 <li>
 <p>
   <a href="http://supertech.csail.mit.edu/papers/steal.pdf">Scheduling Multithreaded Computations by Work Stealing</a></p>
+</li>
+<li>
+<p>
+  <a href="https://zhuanlan.zhihu.com/p/95056679">万字长文深入浅出 Golang Runtime</a></p>
 </li>
 <li>
 <p>

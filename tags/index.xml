@@ -5,7 +5,25 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 27 Sep 2020 08:57:31 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 Jan 2022 16:47:40 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux</title>
+      <link>/tags/Linux/</link>
+      <pubDate>Sat, 01 Jan 2022 16:47:40 +0800</pubDate>
+      
+      <guid>/tags/Linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Systemd</title>
+      <link>/tags/Systemd/</link>
+      <pubDate>Sat, 01 Jan 2022 16:47:40 +0800</pubDate>
+      
+      <guid>/tags/Systemd/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>go</title>
       <link>/tags/go/</link>
@@ -300,15 +318,6 @@
       <pubDate>Sun, 20 May 2018 16:49:06 +0800</pubDate>
       
       <guid>/tags/SSM/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Linux</title>
-      <link>/tags/Linux/</link>
-      <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>
-      
-      <guid>/tags/Linux/</guid>
       <description></description>
     </item>
     

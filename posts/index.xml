@@ -6,12 +6,21 @@
     <description>Recent content in Blog on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Systemd</title>
+      <link>/posts/linux/systemd/</link>
+      <pubDate>Sat, 01 Jan 2022 16:47:40 +0800</pubDate>
+      
+      <guid>/posts/linux/systemd/</guid>
+      <description>&lt;p&gt;文章简介：学习 systemd 笔记&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Go Scheduler</title>
       <link>/posts/Go/go-scheduler/</link>
       <pubDate>Sun, 08 Aug 2021 07:33:02 +0800</pubDate>
       
       <guid>/posts/Go/go-scheduler/</guid>
-      <description>&lt;p&gt;TODO: golang scheduler 相关的内容&lt;/p&gt;</description>
+      <description>&lt;p&gt;文章简介：golang scheduler 相关的内容&lt;/p&gt;</description>
     </item>
     
     <item>

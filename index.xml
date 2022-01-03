@@ -29,7 +29,7 @@ Description #   Focusing on computer technology, has basic operating system, com
     </item>
     
     <item>
-      <title>开机自启动脚本</title>
+      <title>Linux 开机自启动脚本机器实现原理</title>
       <link>/posts/linux/boot_script/</link>
       <pubDate>Sat, 01 Jan 2022 18:11:44 +0800</pubDate>
       
@@ -38,7 +38,7 @@ Description #   Focusing on computer technology, has basic operating system, com
     </item>
     
     <item>
-      <title>Systemd</title>
+      <title>Systemd 简单介绍，使用及如何 Debug</title>
       <link>/posts/linux/systemd/</link>
       <pubDate>Sat, 01 Jan 2022 16:47:40 +0800</pubDate>
       

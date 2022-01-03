@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>network on Exfly Blog</title>
+    <link>/tags/network/</link>
+    <description>Recent content in network on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 01 Jan 2022 20:44:16 +0800</lastBuildDate><atom:link href="/tags/network/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux Network 如何配置及工作原理</title>
+      <link>/posts/linux/linux_network/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/posts/linux/linux_network/</guid>
+      <description>&lt;p&gt;文章简介：Linux Network 是如何使用及工作的&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

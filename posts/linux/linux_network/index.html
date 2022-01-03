@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介：Linux Network 是如何使用及工作的">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Linux Network 如何配置及工作原理" />
+<meta property="og:description" content="文章简介：Linux Network 是如何使用及工作的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/linux/linux_network/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-01T20:44:16&#43;08:00" />
+<meta property="article:modified_time" content="2022-01-01T20:44:16&#43;08:00" />
+
+<title>Linux Network 如何配置及工作原理 | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.4ca2878e6e369362aa281b4d178fc5a13dbebe010b7f5ff7b56732aca03b96ae.js" ></script>
+
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>home</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/section/">section</a></p>
+</li>
+<li>
+<p>
+  <a href="/about/">about</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Linux Network 如何配置及工作原理</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#linux-网络设备">Linux 网络设备</a>
+          <ul>
+            <li><a href="#networkservice-使用方法">network.service 使用方法</a></li>
+            <li><a href="#networknanager-使用方法">NetworkNanager 使用方法</a></li>
+            <li><a href="#networknanager-工作原理">NetworkNanager 工作原理</a></li>
+            <li><a href="#networknanager-和-networkservice-如何并存">NetworkNanager 和 network.service 如何并存</a></li>
+            <li><a href="#netplan">netplan</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#ref">ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/linux/linux_network/">Linux Network 如何配置及工作原理</a>
+  </h1>
+  
+  <h5>January 1, 2022</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/Linux/">Linux</a>, 
+      <a href="/tags/network/">network</a>
+  </div>
+  
+
+
+
+<p>文章简介：Linux Network 是如何使用及工作的</p>
+<p>Linux Network 非常复杂，其本身的机制非常复杂，每一种 Linux 发行版的网络也有差别，管理工具也纷繁复杂。这里先简单的描述在 Centos7 和 Ubuntu20.04 下如何配置网络，后简单的描述一下 network 是怎样工作的.</p>
+<ul>
+<li>Centos6 使用 network.service</li>
+<li>Centos7 network.service 和 NetworkManager.service 并存</li>
+<li>Centos8 之后只使用 NetworkManager.service</li>
+<li>Ubuntu 使用 netplan 前端，NetworkManager/networkd 后端</li>
+</ul>
+<h2 id="linux-网络设备">
+  Linux 网络设备
+  <a class="anchor" href="#linux-%e7%bd%91%e7%bb%9c%e8%ae%be%e5%a4%87">#</a>
+</h2>
+<p>TODO: 网络设备架构</p>
+<p>TODO: 网络接口命名</p>
+<h3 id="networkservice-使用方法">
+  network.service 使用方法
+  <a class="anchor" href="#networkservice-%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95">#</a>
+</h3>
+<p>修改 <code>/etc/sysconfig/network-scripts</code> 下的 <code>ifcfg-*</code>文件，之后执行 <code>service network restart</code>，配置即可生效。</p>
+<blockquote>
+<p>注意: 网络配置修改可能会停掉当前的 ssh 连接</p>
+</blockquote>
+<p>原理：
+network.service 会执行 <code>/etc/rc.d/init.d/network start</code> 启动网络服务，启动的过程中，使用 ip 命令启动各 device，使用 route 配置系统路由，使用 sysctl 配置等。</p>
+<h3 id="networknanager-使用方法">
+  NetworkNanager 使用方法
+  <a class="anchor" href="#networknanager-%e4%bd%bf%e7%94%a8%e6%96%b9%e6%b3%95">#</a>
+</h3>
+<p>
+  <a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/networking_guide/index#part-Managing_IP_Networking">Managing IP Networking</a> 包含优点及如何使用</p>
+<blockquote>
+<p>D-Bus 的 unix socket: /var/run/dbus/system_bus_socket</p>
+<p>udev 配置: /etc/udev/udev.conf</p>
+</blockquote>
+<p>配置文件目录</p>
+<ul>
+<li>/etc/NetworkManager</li>
+<li>/etc/sysconfig/network-scripts</li>
+</ul>
+<p>命令</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">systemctl restart NetworkManager.service <span style="color:#75715e"># 重启服务</span>
+journalctl -u NetworkManager.service -f -n <span style="color:#ae81ff">100</span> <span style="color:#75715e"># 查看日志</span>
+
+<span style="color:#75715e"># 查询连接信息</span>
+nmcli conn
+
+<span style="color:#75715e"># 添加连接</span>
+nmcli conn add type ethernet con-name eth0-static ifname eth0 ipv4.method manual ipv4.addresses <span style="color:#e6db74">&#34;10.0.2.16/24&#34;</span> ipv4.gateway 10.0.2.2 ipv4.dns 114.114.114.114 ipv6.method auto
+
+<span style="color:#75715e"># 修改连接</span>
+nmcli conn modify eth0-static ipv4.method manual ipv4.addresses 10.0.2.254/24 ipv4.gateway 10.0.2.2
+
+<span style="color:#75715e"># interactive edit connection</span>
+nmcli conn edit &lt;conn-name&gt;
+
+<span style="color:#75715e"># 系统 link(设备)</span>
+nmcli dev
+
+<span style="color:#75715e"># 重新应用配置</span>
+nmcli dev reapply eth0
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># TUI</span>
+nmtui
+</code></pre></div><p>我们可以使用 nmcli 配置网络，当出现错误的时候，通过 journalctl 查看日志，分析配置错误原因，继续使用 nmcli 配置网络，直到网络服务配置好.</p>
+<h3 id="networknanager-工作原理">
+  NetworkNanager 工作原理
+  <a class="anchor" href="#networknanager-%e5%b7%a5%e4%bd%9c%e5%8e%9f%e7%90%86">#</a>
+</h3>
+<p>
+  <a href="https://en.wikipedia.org/wiki/NetworkManager">NetworkNanager</a> 有两个组件:</p>
+<ol>
+<li>NetworkManager daemon, 管理连接和监听并报告网络变化</li>
+<li>一些管理前端（front-ends）, 比如 nmcli,一些 GUI 程序等</li>
+</ol>
+<p>NetworkManager daemon 依赖于 
+  <a href="https://en.wikipedia.org/wiki/D-Bus">D-Bus</a>, 实现了管理连接的接口，底层使用 netlink 跟 linux 内核交互，获得设备信息，配置连接（比如修改 ipv4 的地址等）。nmcli 跟 D-Bus 交互连接 NetworkManager daemon，获得信息以及配置网络</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># ip 命令也是使用 netlink 跟 kernel 交互的</span>
+strace -fff ip a
+
+socket<span style="color:#f92672">(</span>AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETLINK, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054708, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifi_family<span style="color:#f92672">=</span>AF_UNSPEC, ifi_type<span style="color:#f92672">=</span>ARPHRD_NETROM, ifi_index<span style="color:#f92672">=</span>0, ifi_flags<span style="color:#f92672">=</span>0, ifi_change<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{{</span>nla_len<span style="color:#f92672">=</span>8, nla_type<span style="color:#f92672">=</span>IFLA_EXT_MASK<span style="color:#f92672">}</span>, 1<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
+recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
+recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>
+sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETADDR, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054709, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifa_family<span style="color:#f92672">=</span>AF_UNSPEC, ifa_prefixlen<span style="color:#f92672">=</span>0, ifa_flags<span style="color:#f92672">=</span>0, ifa_scope<span style="color:#f92672">=</span>RT_SCOPE_UNIVERSE, ifa_index<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>nla_len<span style="color:#f92672">=</span>0, nla_type<span style="color:#f92672">=</span>IFA_UNSPEC<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
+recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
+</code></pre></div><p>TODO: 简单的 demo 使用 netlink 获得 ip 地址和配置 ip 地址 
+  <a href="https://olegkutkov.me/2019/03/24/getting-linux-routing-table-using-netlink/">netlink-demo</a></p>
+<h3 id="networknanager-和-networkservice-如何并存">
+  NetworkNanager 和 network.service 如何并存
+  <a class="anchor" href="#networknanager-%e5%92%8c-networkservice-%e5%a6%82%e4%bd%95%e5%b9%b6%e5%ad%98">#</a>
+</h3>
+<p>TODO:</p>
+<h3 id="netplan">
+  netplan
+  <a class="anchor" href="#netplan">#</a>
+</h3>
+<blockquote>
+<p>The network configuration abstraction renderer</p>
+</blockquote>
+<p>
+  <a href="https://netplan.io/">netplan</a> 是一个方便在 linux 系统下配置网络的工具。我们通过 yaml 文件描述网络配置，netplan 会为我们生成我们选择的网络后端所需要的配置。当前支持后端 Systemd-networkd(default) 和 NetworkManager. Ubuntu 20.04 使用 netplan 作为网络配置工具.</p>
+<p>配置文件在 <code>ls /{lib,etc,run}/netplan/*.yaml</code>.</p>
+<blockquote>
+<p><code>ls /etc/netplan</code></p>
+</blockquote>
+<p>
+  <a href="https://netplan.io/design/">netplan design</a></p>
+<p>
+  <a href="https://netplan.io/reference/">netplan reference</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ls /<span style="color:#f92672">{</span>lib,etc,run<span style="color:#f92672">}</span>/netplan/*.yaml <span style="color:#75715e"># 配置文件位置</span>
+
+netplan generate <span style="color:#75715e"># 生成配置</span>
+ls /run/systemd/network/
+
+ip a <span style="color:#75715e"># 各接口信息</span>
+lshw -class network <span style="color:#75715e"># 硬件更详细的信息</span>
+ethtool enp0s3
+
+<span style="color:#75715e"># 修改配置 /etc/netplan/*.yaml</span>
+netplan try <span style="color:#75715e"># 测试是否生效</span>
+netplan apply <span style="color:#75715e"># 应用配置</span>
+
+resolvectl status <span style="color:#75715e"># resolve name</span>
+</code></pre></div><p>
+  <a href="https://ubuntu.com/server/docs/network-configuration">netplan 一些通用的配置模版</a></p>
+<p>netplan 配置 dhcp 自动获取 ip</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /etc/netplan/50-cloud-init.yaml
+<span style="color:#75715e"># This file is generated from information provided by the datasource.  Changes</span>
+<span style="color:#75715e"># to it will not persist across an instance reboot.  To disable cloud-init&#39;s</span>
+<span style="color:#75715e"># network configuration capabilities, write a file</span>
+<span style="color:#75715e"># /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:</span>
+<span style="color:#75715e"># network: {config: disabled}</span>
+network:
+  ethernets:
+    enp0s3:
+      dhcp4: true
+      match:
+        macaddress: 02:f6:7f:02:5c:72
+      set-name: enp0s3
+  version: <span style="color:#ae81ff">2</span>
+</code></pre></div><p>netplan 配置 static ip:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">network:
+  version: <span style="color:#ae81ff">2</span>
+  ethernets:
+    enp0s3:
+      match:
+        macaddress: 02:f6:7f:02:5c:72
+      addresses:
+        - 10.10.10.2/24
+	  gateway4: 10.10.10.1
+      set-name: enp0s3
+      nameservers:
+        search: <span style="color:#f92672">[</span>mydomain, otherdomain<span style="color:#f92672">]</span>
+        addresses: <span style="color:#f92672">[</span>10.10.10.1, 1.1.1.1<span style="color:#f92672">]</span>
+      routes:
+        - to: default
+          via: 10.10.10.1
+<span style="color:#75715e"># netplan generate --root-dir /vagrant</span>
+
+</code></pre></div><p>Name resolve</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># /run/systemd/resolve/stub-resolv.conf</span>
+man <span style="color:#ae81ff">8</span> systemd-resolved
+
+systemd-resolve --statistics <span style="color:#75715e"># resolve 服务</span>
+systemd-resolve --reset-statistics <span style="color:#75715e"># 重置统计信息</span>
+systemctl restart systemd-resolved <span style="color:#75715e"># 重启 ubuntu resolved 服务</span>
+
+resolvectl flush-caches <span style="color:#75715e"># flush dns cache (old: systemd-resolve --flush-caches)</span>
+<span style="color:#75715e"># flush dns cache</span>
+<span style="color:#75715e"># https://www.linuxuprising.com/2019/07/how-to-flush-dns-cache-on-linux-for.html</span>
+</code></pre></div><h2 id="总结">
+  总结
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+</h2>
+<p>网络配置最终都是跟内核用 netlink 沟通，告诉 linux 内核网络配置，由 kernel 生效并工作。用户态管理程序典型代表： NetworkManager 和 systemd-networkd。熟悉了这些，便有了手段指挥 linux kernel 网络如何工作。剩下的就需要我们慢慢了解和学习 linux 网络提供了哪些功能。</p>
+<h2 id="ref">
+  ref
+  <a class="anchor" href="#ref">#</a>
+</h2>
+<ul>
+<li>
+  <a href="https://wiki.archlinux.org/title/Network_configuration_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29">network_configuration</a></li>
+<li>
+  <a href="https://www.kernel.org/doc/html/latest/networking/index.html">linux kernel network docs</a></li>
+<li>
+  <a href="https://netplan.io/examples/">Netplan configuration examples</a></li>
+</ul></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#linux-网络设备">Linux 网络设备</a>
+          <ul>
+            <li><a href="#networkservice-使用方法">network.service 使用方法</a></li>
+            <li><a href="#networknanager-使用方法">NetworkNanager 使用方法</a></li>
+            <li><a href="#networknanager-工作原理">NetworkNanager 工作原理</a></li>
+            <li><a href="#networknanager-和-networkservice-如何并存">NetworkNanager 和 network.service 如何并存</a></li>
+            <li><a href="#netplan">netplan</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#ref">ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

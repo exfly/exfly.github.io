@@ -6,6 +6,15 @@
     <description>Recent content in Blog on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Linux Network 如何配置及工作原理</title>
+      <link>/posts/linux/linux_network/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/posts/linux/linux_network/</guid>
+      <description>&lt;p&gt;文章简介：Linux Network 是如何使用及工作的&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Linux 开机自启动脚本机器实现原理</title>
       <link>/posts/linux/boot_script/</link>
       <pubDate>Sat, 01 Jan 2022 18:11:44 +0800</pubDate>

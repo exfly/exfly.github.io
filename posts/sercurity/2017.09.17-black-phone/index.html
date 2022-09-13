@@ -5,20 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="oneplus one 刷Kali Linux NetHunter" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="oneplus one 刷Kali Linux NetHunter" />
 <meta property="og:description" content="看了余弦大大的知乎live后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝500大洋买了一部oneplus one，刷kali。
 这里记录使用oneplus one手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/sercurity/2017.09.17-black-phone/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2017-09-17T14:35:34&#43;08:00" />
-<meta property="article:modified_time" content="2020-09-20T15:25:18&#43;08:00" />
+<meta property="article:published_time" content="2017-09-17T14:35:34+08:00" />
+<meta property="article:modified_time" content="2020-09-20T15:25:18+08:00" />
 
 <title>oneplus one 刷Kali Linux NetHunter | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+<link rel="stylesheet" href="/book.min.c58292d36b18b675680ab9baea2029204537b839ea72f258746ec0f32ce8d6c8.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.4ca2878e6e369362aa281b4d178fc5a13dbebe010b7f5ff7b56732aca03b96ae.js" ></script>
+  <script defer src="/zh.search.min.661f3dbce865a3818eada8d9dfd61e397ed54959139c340a067c2a48e17ea210.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -36,7 +37,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><span>Exfly Blog</span>
+  <a class="flex align-center" href="/"><span>Exfly Blog</span>
   </a>
 </h2>
 
@@ -46,6 +47,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -85,6 +87,12 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
 </ul>
 
 
@@ -97,7 +105,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -191,15 +199,15 @@ https://github.com/alex-shpak/hugo-book
   刷机四步走
   <a class="anchor" href="#%e5%88%b7%e6%9c%ba%e5%9b%9b%e6%ad%a5%e8%b5%b0">#</a>
 </h3>
-<strong>第一步</strong>， 仔细阅读<h4 id="第一步-仔细阅读官方wikihttpsgithubcomoffensive-securitykali-nethunterwiki">
-  
+<h4 id="第一步-仔细阅读官方wikihttpsgithubcomoffensive-securitykali-nethunterwiki">
+  <strong>第一步</strong>， 仔细阅读
   <a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>
   <a class="anchor" href="#%e7%ac%ac%e4%b8%80%e6%ad%a5-%e4%bb%94%e7%bb%86%e9%98%85%e8%af%bb%e5%ae%98%e6%96%b9wikihttpsgithubcomoffensive-securitykali-nethunterwiki">#</a>
 </h4>
 <p>仔细研读仔细阅读
   <a href="https://github.com/offensive-security/kali-nethunter/wiki">官方Wiki</a>，可以减少刷机过程中各种坑。</p>
-<strong>第二步</strong>， 刷<h4 id="第二步-刷twrp-oneplus1httpsdltwrpmebacon">
-  
+<h4 id="第二步-刷twrp-oneplus1httpsdltwrpmebacon">
+  <strong>第二步</strong>， 刷
   <a href="https://dl.twrp.me/bacon/">TWRP-oneplus1</a>
   <a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5-%e5%88%b7twrp-oneplus1httpsdltwrpmebacon">#</a>
 </h4>
@@ -209,7 +217,7 @@ https://github.com/alex-shpak/hugo-book
   <strong>第三步</strong>，下载最新的 NetHunter，并进入TWRP的recovery模式刷入kali
   <a class="anchor" href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e4%b8%8b%e8%bd%bd%e6%9c%80%e6%96%b0%e7%9a%84-nethunter%e5%b9%b6%e8%bf%9b%e5%85%a5twrp%e7%9a%84recovery%e6%a8%a1%e5%bc%8f%e5%88%b7%e5%85%a5kali">#</a>
 </h4>
-<pre><code>kernel-nethunter-[device]-[os]-*.zip
+<pre tabindex="0"><code>kernel-nethunter-[device]-[os]-*.zip
 nethunter-generic-[arch]-kalifs-*.zip
 </code></pre><p>对于oneplus1手机来说，其对应的[arch]为armhf。
 随后进行刷入操作。进入TWRP，选择安装。先找到CM13.0刷到oneplus中，后进行默认的WIPE。之后再TWRP安装中选择kernel-nethunter-[device]-[os]-*.zip，安装结束后，在选择nethunter-generic-[arch]-kalifs-*.zip，最后这个文件安装话费的时间比较久，大约10多分钟的样子。</p>
@@ -256,7 +264,6 @@ nethunter-generic-[arch]-kalifs-*.zip
   <div class="flex flex-wrap justify-between">
 
 
-
   <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" title='最后修改者 exfly | September 20, 2020' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>September 20, 2020</span>
@@ -265,11 +272,12 @@ nethunter-generic-[arch]-kalifs-*.zip
 
 
 
+
 </div>
 
 
 
-  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 
 
  

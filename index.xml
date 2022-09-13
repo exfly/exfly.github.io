@@ -5,16 +5,16 @@
     <link>/</link>
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 01 Jan 2022 20:44:16 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Jun 2022 09:39:38 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>友链</title>
       <link>/links/</link>
       <pubDate>Sat, 16 Sep 2017 15:41:18 +0800</pubDate>
       
       <guid>/links/</guid>
-      <description>draveness #   Draveness&amp;rsquo;s Blog面向信仰编程 docker k8s
-胡伟煌 #   胡伟煌 k8s
-zhile.io #   zhile.io</description>
+      <description>draveness # Draveness&amp;rsquo;s Blog面向信仰编程 docker k8s
+胡伟煌 # 胡伟煌 k8s
+zhile.io # zhile.io</description>
     </item>
     
     <item>
@@ -24,8 +24,17 @@ zhile.io #   zhile.io</description>
       
       <guid>/about/</guid>
       <description>ExFly Keep It Simple &amp;amp; Stupid.
-Description #   Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry.
- Skills #   Golang &amp;gt; Java &amp;gt; Python &amp;gt; others Distribution, Microservice Linux Docker DevOps k8s  Project #  newdb #  Implement RDBMS</description>
+Description # Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry.
+Skills # Golang &amp;gt; Java &amp;gt; Python &amp;gt; others Distribution, Microservice Linux Docker DevOps k8s Project # newdb # Implement RDBMS</description>
+    </item>
+    
+    <item>
+      <title>Docker 修改内置 bridge ip 不生效, 原因及解决办法</title>
+      <link>/posts/docker/docker-change-default-bridge-ip/</link>
+      <pubDate>Thu, 23 Jun 2022 09:39:38 +0800</pubDate>
+      
+      <guid>/posts/docker/docker-change-default-bridge-ip/</guid>
+      <description>&lt;p&gt;文章简介: docker 内置 bridge 的 ip 修改方法&lt;/p&gt;</description>
     </item>
     
     <item>

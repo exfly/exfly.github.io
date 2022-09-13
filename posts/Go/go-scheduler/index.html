@@ -4,19 +4,20 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="文章简介：golang scheduler 相关的内容">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Go Scheduler" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Go Scheduler" />
 <meta property="og:description" content="文章简介：golang scheduler 相关的内容" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/Go/go-scheduler/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-08-08T07:33:02&#43;08:00" />
-<meta property="article:modified_time" content="2022-01-01T18:06:18&#43;08:00" />
+<meta property="article:published_time" content="2021-08-08T07:33:02+08:00" />
+<meta property="article:modified_time" content="2022-01-01T18:06:18+08:00" />
 
 <title>Go Scheduler | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+<link rel="stylesheet" href="/book.min.c58292d36b18b675680ab9baea2029204537b839ea72f258746ec0f32ce8d6c8.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.4ca2878e6e369362aa281b4d178fc5a13dbebe010b7f5ff7b56732aca03b96ae.js" ></script>
+  <script defer src="/zh.search.min.661f3dbce865a3818eada8d9dfd61e397ed54959139c340a067c2a48e17ea210.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -34,7 +35,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><span>Exfly Blog</span>
+  <a class="flex align-center" href="/"><span>Exfly Blog</span>
   </a>
 </h2>
 
@@ -44,6 +45,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -83,6 +85,12 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
 </ul>
 
 
@@ -95,7 +103,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -206,170 +214,170 @@ https://github.com/alex-shpak/hugo-book
 <li>coroutine 调度算法</li>
 </ul>
 <p>先看一个简单的使用例子:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/primes.c#L12
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span>
-<span style="color:#a6e22e">primetask</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg)
-{
-	Channel <span style="color:#f92672">*</span>c, <span style="color:#f92672">*</span>nc;
-	<span style="color:#66d9ef">int</span> p, i;
-	c <span style="color:#f92672">=</span> arg;
-
-	p <span style="color:#f92672">=</span> chanrecvul(c);
-	<span style="color:#66d9ef">if</span>(p <span style="color:#f92672">&gt;</span> goal)
-		taskexitall(<span style="color:#ae81ff">0</span>);
-	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>quiet)
-		printf(<span style="color:#e6db74">&#34;%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, p);
-	nc <span style="color:#f92672">=</span> chancreate(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>), buffer);
-	taskcreate(primetask, nc, <span style="color:#ae81ff">32768</span>);
-	<span style="color:#66d9ef">for</span>(;;){
-		i <span style="color:#f92672">=</span> chanrecvul(c);
-		<span style="color:#66d9ef">if</span>(i<span style="color:#f92672">%</span>p)
-			chansendul(nc, i);
-	}
-}
-
-<span style="color:#66d9ef">void</span>
-<span style="color:#a6e22e">taskmain</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv)
-{
-	<span style="color:#66d9ef">int</span> i;
-	Channel <span style="color:#f92672">*</span>c;
-
-	<span style="color:#66d9ef">if</span>(argc<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">1</span>)
-		goal <span style="color:#f92672">=</span> atoi(argv[<span style="color:#ae81ff">1</span>]);
-	<span style="color:#66d9ef">else</span>
-		goal <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>;
-	printf(<span style="color:#e6db74">&#34;goal=%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, goal);
-
-	c <span style="color:#f92672">=</span> chancreate(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>), buffer);
-	taskcreate(primetask, c, <span style="color:#ae81ff">32768</span>); <span style="color:#75715e">// 创建 coroutine，开始执行任务 primetask
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;; i<span style="color:#f92672">++</span>)
-		chansendul(c, i);
-}
-</code></pre></div><p>会发现程序中没有常见的 c main 函数，实际是在 libtask 中实现了。整个程序是在一个线程中执行的，main 中创建了第一个 task，并启动 task 调度器</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/main/task.c#L353
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
-<span style="color:#a6e22e">taskmainstart</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>v)
-{
-	taskname(<span style="color:#e6db74">&#34;taskmain&#34;</span>);
-	taskmain(taskargc, taskargv);
-}
-
-<span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv)
-{
-	<span style="color:#66d9ef">struct</span> sigaction sa, osa;
-
-	memset(<span style="color:#f92672">&amp;</span>sa, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span> sa);
-	sa.sa_handler <span style="color:#f92672">=</span> taskinfo;
-	sa.sa_flags <span style="color:#f92672">=</span> SA_RESTART;
-	sigaction(SIGQUIT, <span style="color:#f92672">&amp;</span>sa, <span style="color:#f92672">&amp;</span>osa);
-
-<span style="color:#75715e">#ifdef SIGINFO
-</span><span style="color:#75715e"></span>	sigaction(SIGINFO, <span style="color:#f92672">&amp;</span>sa, <span style="color:#f92672">&amp;</span>osa);
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>
-	argv0 <span style="color:#f92672">=</span> argv[<span style="color:#ae81ff">0</span>];
-	taskargc <span style="color:#f92672">=</span> argc;
-	taskargv <span style="color:#f92672">=</span> argv;
-
-	<span style="color:#66d9ef">if</span>(mainstacksize <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-		mainstacksize <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1024</span>;
-	taskcreate(taskmainstart, nil, mainstacksize);
-	taskscheduler(); <span style="color:#75715e">// task 调度器启动
-</span><span style="color:#75715e"></span>	fprint(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;taskscheduler returned in main!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-	abort();
-	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div><p>调度器的工作是从 runnable_queue 中获得一个可执行的任务，然后切换过去</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
-<span style="color:#a6e22e">taskscheduler</span>(<span style="color:#66d9ef">void</span>)
-{
-	<span style="color:#66d9ef">int</span> i;
-	Task <span style="color:#f92672">*</span>t;
-
-	taskdebug(<span style="color:#e6db74">&#34;scheduler enter&#34;</span>);
-	<span style="color:#66d9ef">for</span>(;;){
-		<span style="color:#66d9ef">if</span>(taskcount <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
-			exit(taskexitval);
-		t <span style="color:#f92672">=</span> taskrunqueue.head;
-		<span style="color:#66d9ef">if</span>(t <span style="color:#f92672">==</span> nil){
-			fprint(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;no runnable tasks! %d tasks stalled</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, taskcount);
-			exit(<span style="color:#ae81ff">1</span>);
-		}
-		deltask(<span style="color:#f92672">&amp;</span>taskrunqueue, t);
-		t<span style="color:#f92672">-&gt;</span>ready <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-		taskrunning <span style="color:#f92672">=</span> t;
-		tasknswitch<span style="color:#f92672">++</span>;
-		taskdebug(<span style="color:#e6db74">&#34;run %d (%s)&#34;</span>, t<span style="color:#f92672">-&gt;</span>id, t<span style="color:#f92672">-&gt;</span>name);
-		contextswitch(<span style="color:#f92672">&amp;</span>taskschedcontext, <span style="color:#f92672">&amp;</span>t<span style="color:#f92672">-&gt;</span>context);
-<span style="color:#75715e">//print(&#34;back in scheduler\n&#34;);
-</span><span style="color:#75715e"></span>		taskrunning <span style="color:#f92672">=</span> nil;
-		<span style="color:#66d9ef">if</span>(t<span style="color:#f92672">-&gt;</span>exiting){
-			<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>t<span style="color:#f92672">-&gt;</span>system)
-				taskcount<span style="color:#f92672">--</span>;
-			i <span style="color:#f92672">=</span> t<span style="color:#f92672">-&gt;</span>alltaskslot;
-			alltask[i] <span style="color:#f92672">=</span> alltask[<span style="color:#f92672">--</span>nalltask];
-			alltask[i]<span style="color:#f92672">-&gt;</span>alltaskslot <span style="color:#f92672">=</span> i;
-			free(t);
-		}
-	}
-}
-</code></pre></div><p>coroutine 是如何切换的呢？由计算机的工作原理知道，程序的执行是根据 pc 寄存器中的位置取指令执行的，执行 task 需要 stack 和寄存器。寄存器中的数据就是一个 coroutine 的 上下文，记录下来，set 成其他的 上下文的 寄存器的值，即可达到切换 coroutine 的目的。由于不同平台的寄存器不同，指令集不同，需要区分平台做不同的事情:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// linux x86 平台的指令
-</span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/asm.S#L43
-</span><span style="color:#75715e"></span><span style="color:#75715e">#ifdef NEEDX86CONTEXT
-</span><span style="color:#75715e"></span>.globl SET
-SET:
-	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
-
-	movl	<span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>fs
-	movl	<span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>es
-	movl	<span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ds
-	movl	<span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ss
-	movl	<span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edi
-	movl	<span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esi
-	movl	<span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebp
-	movl	<span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebx
-	movl	<span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edx
-	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx
-
-	movl	<span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esp
-	pushl	<span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* new %eip */</span>
-	movl	<span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>eax
-	ret
-
-.globl GET
-GET:
-	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
-
-	movl	<span style="color:#f92672">%</span>fs, <span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>es, <span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>ds, <span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>ss, <span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>edi, <span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>esi, <span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>ebp, <span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>ebx, <span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax)
-	movl	<span style="color:#f92672">%</span>edx, <span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax)		 
-	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax)
-
-	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* %eax */</span>
-	movl	(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %eip */</span>
-	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)
-	leal	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %esp */</span>
-	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax)
-
-	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* restore %ecx */</span>
-	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>, <span style="color:#f92672">%</span>eax
-	ret
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// c 中的 Context
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> Context
-{
-	ucontext_t	uc;
-};
-</code></pre></div><p>到此，用户级 task( coroutine )切换/调度/运行工作基本可以正常工作了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/primes.c#L12
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">primetask</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	Channel <span style="color:#f92672">*</span>c, <span style="color:#f92672">*</span>nc;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> p, i;
+</span></span><span style="display:flex;"><span>	c <span style="color:#f92672">=</span> arg;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	p <span style="color:#f92672">=</span> chanrecvul(c);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(p <span style="color:#f92672">&gt;</span> goal)
+</span></span><span style="display:flex;"><span>		taskexitall(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>quiet)
+</span></span><span style="display:flex;"><span>		printf(<span style="color:#e6db74">&#34;%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, p);
+</span></span><span style="display:flex;"><span>	nc <span style="color:#f92672">=</span> chancreate(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>), buffer);
+</span></span><span style="display:flex;"><span>	taskcreate(primetask, nc, <span style="color:#ae81ff">32768</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(;;){
+</span></span><span style="display:flex;"><span>		i <span style="color:#f92672">=</span> chanrecvul(c);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(i<span style="color:#f92672">%</span>p)
+</span></span><span style="display:flex;"><span>			chansendul(nc, i);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">taskmain</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>	Channel <span style="color:#f92672">*</span>c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(argc<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>		goal <span style="color:#f92672">=</span> atoi(argv[<span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>		goal <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>;
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#e6db74">&#34;goal=%d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, goal);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	c <span style="color:#f92672">=</span> chancreate(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span>), buffer);
+</span></span><span style="display:flex;"><span>	taskcreate(primetask, c, <span style="color:#ae81ff">32768</span>); <span style="color:#75715e">// 创建 coroutine，开始执行任务 primetask
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		chansendul(c, i);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>会发现程序中没有常见的 c main 函数，实际是在 libtask 中实现了。整个程序是在一个线程中执行的，main 中创建了第一个 task，并启动 task 调度器</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/main/task.c#L353
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">taskmainstart</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>v)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	taskname(<span style="color:#e6db74">&#34;taskmain&#34;</span>);
+</span></span><span style="display:flex;"><span>	taskmain(taskargc, taskargv);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span> <span style="color:#f92672">**</span>argv)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">struct</span> sigaction sa, osa;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	memset(<span style="color:#f92672">&amp;</span>sa, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">sizeof</span> sa);
+</span></span><span style="display:flex;"><span>	sa.sa_handler <span style="color:#f92672">=</span> taskinfo;
+</span></span><span style="display:flex;"><span>	sa.sa_flags <span style="color:#f92672">=</span> SA_RESTART;
+</span></span><span style="display:flex;"><span>	sigaction(SIGQUIT, <span style="color:#f92672">&amp;</span>sa, <span style="color:#f92672">&amp;</span>osa);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifdef SIGINFO
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	sigaction(SIGINFO, <span style="color:#f92672">&amp;</span>sa, <span style="color:#f92672">&amp;</span>osa);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	argv0 <span style="color:#f92672">=</span> argv[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>	taskargc <span style="color:#f92672">=</span> argc;
+</span></span><span style="display:flex;"><span>	taskargv <span style="color:#f92672">=</span> argv;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(mainstacksize <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>		mainstacksize <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1024</span>;
+</span></span><span style="display:flex;"><span>	taskcreate(taskmainstart, nil, mainstacksize);
+</span></span><span style="display:flex;"><span>	taskscheduler(); <span style="color:#75715e">// task 调度器启动
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	fprint(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;taskscheduler returned in main!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>	abort();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>调度器的工作是从 runnable_queue 中获得一个可执行的任务，然后切换过去</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">taskscheduler</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>	Task <span style="color:#f92672">*</span>t;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	taskdebug(<span style="color:#e6db74">&#34;scheduler enter&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span>(;;){
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(taskcount <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>			exit(taskexitval);
+</span></span><span style="display:flex;"><span>		t <span style="color:#f92672">=</span> taskrunqueue.head;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(t <span style="color:#f92672">==</span> nil){
+</span></span><span style="display:flex;"><span>			fprint(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;no runnable tasks! %d tasks stalled</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, taskcount);
+</span></span><span style="display:flex;"><span>			exit(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		deltask(<span style="color:#f92672">&amp;</span>taskrunqueue, t);
+</span></span><span style="display:flex;"><span>		t<span style="color:#f92672">-&gt;</span>ready <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>		taskrunning <span style="color:#f92672">=</span> t;
+</span></span><span style="display:flex;"><span>		tasknswitch<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>		taskdebug(<span style="color:#e6db74">&#34;run %d (%s)&#34;</span>, t<span style="color:#f92672">-&gt;</span>id, t<span style="color:#f92672">-&gt;</span>name);
+</span></span><span style="display:flex;"><span>		contextswitch(<span style="color:#f92672">&amp;</span>taskschedcontext, <span style="color:#f92672">&amp;</span>t<span style="color:#f92672">-&gt;</span>context);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//print(&#34;back in scheduler\n&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		taskrunning <span style="color:#f92672">=</span> nil;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span>(t<span style="color:#f92672">-&gt;</span>exiting){
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>t<span style="color:#f92672">-&gt;</span>system)
+</span></span><span style="display:flex;"><span>				taskcount<span style="color:#f92672">--</span>;
+</span></span><span style="display:flex;"><span>			i <span style="color:#f92672">=</span> t<span style="color:#f92672">-&gt;</span>alltaskslot;
+</span></span><span style="display:flex;"><span>			alltask[i] <span style="color:#f92672">=</span> alltask[<span style="color:#f92672">--</span>nalltask];
+</span></span><span style="display:flex;"><span>			alltask[i]<span style="color:#f92672">-&gt;</span>alltaskslot <span style="color:#f92672">=</span> i;
+</span></span><span style="display:flex;"><span>			free(t);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>coroutine 是如何切换的呢？由计算机的工作原理知道，程序的执行是根据 pc 寄存器中的位置取指令执行的，执行 task 需要 stack 和寄存器。寄存器中的数据就是一个 coroutine 的 上下文，记录下来，set 成其他的 上下文的 寄存器的值，即可达到切换 coroutine 的目的。由于不同平台的寄存器不同，指令集不同，需要区分平台做不同的事情:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// linux x86 平台的指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// https://github.com/mixinlib/libtask/blob/651d7b69a4f7b10c798dcd544e6a25fd7505632c/asm.S#L43
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#ifdef NEEDX86CONTEXT
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>.globl SET
+</span></span><span style="display:flex;"><span>SET:
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>fs
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>es
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ds
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ss
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edi
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esi
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebp
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ebx
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>edx
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>esp
+</span></span><span style="display:flex;"><span>	pushl	<span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* new %eip */</span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>eax
+</span></span><span style="display:flex;"><span>	ret
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>.globl GET
+</span></span><span style="display:flex;"><span>GET:
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>eax
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>fs, <span style="color:#ae81ff">8</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>es, <span style="color:#ae81ff">12</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ds, <span style="color:#ae81ff">16</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ss, <span style="color:#ae81ff">76</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>edi, <span style="color:#ae81ff">20</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>esi, <span style="color:#ae81ff">24</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ebp, <span style="color:#ae81ff">28</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ebx, <span style="color:#ae81ff">36</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>edx, <span style="color:#ae81ff">40</span>(<span style="color:#f92672">%</span>eax)		 
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">48</span>(<span style="color:#f92672">%</span>eax)	<span style="color:#75715e">/* %eax */</span>
+</span></span><span style="display:flex;"><span>	movl	(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %eip */</span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">60</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>	leal	<span style="color:#ae81ff">4</span>(<span style="color:#f92672">%</span>esp), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* %esp */</span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#f92672">%</span>ecx, <span style="color:#ae81ff">72</span>(<span style="color:#f92672">%</span>eax)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#ae81ff">44</span>(<span style="color:#f92672">%</span>eax), <span style="color:#f92672">%</span>ecx	<span style="color:#75715e">/* restore %ecx */</span>
+</span></span><span style="display:flex;"><span>	movl	<span style="color:#960050;background-color:#1e0010">$</span><span style="color:#ae81ff">0</span>, <span style="color:#f92672">%</span>eax
+</span></span><span style="display:flex;"><span>	ret
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// c 中的 Context
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> Context
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	ucontext_t	uc;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>到此，用户级 task( coroutine )切换/调度/运行工作基本可以正常工作了。</p>
 <p>总结一下：
 coroutine 是单线程程序，可以串行的跑多个任务；多个任务通过一个 scheduler task 切换；切换的方式是通过替换cpu的寄存器实现的；切换的过程 os kernel 是不知道的; 由于 context switch 只是执行 30+ 个汇编指令，（os context switch 需要至少两次 context switch，以及一些状态维护，相比较来说）开销更小，cpu 的利用率会提高不少；使用同步的方式写出可以异步执行的代码，符合人的普遍思考方式。</p>
 <h3 id="channel-的工作方式">
@@ -528,7 +536,6 @@ chanrecvul task 接受数据时候，如果 channel buf 不为空，则会直接
   <div class="flex flex-wrap justify-between">
 
 
-
   <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/b424636cc44e79e3baeeb64abf6980859bedee5e" title='最后修改者 exfly | January 1, 2022' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>January 1, 2022</span>
@@ -537,11 +544,12 @@ chanrecvul task 接受数据时候，如果 channel buf 不为空，则会直接
 
 
 
+
 </div>
 
 
 
-  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 
 
  

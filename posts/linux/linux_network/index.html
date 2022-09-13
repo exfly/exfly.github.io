@@ -4,19 +4,20 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="文章简介：Linux Network 是如何使用及工作的">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Linux Network 如何配置及工作原理" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Linux Network 如何配置及工作原理" />
 <meta property="og:description" content="文章简介：Linux Network 是如何使用及工作的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/linux/linux_network/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-01-01T20:44:16&#43;08:00" />
-<meta property="article:modified_time" content="2022-01-01T20:44:16&#43;08:00" />
+<meta property="article:published_time" content="2022-01-01T20:44:16+08:00" />
+<meta property="article:modified_time" content="2022-01-03T17:23:51+08:00" />
 
 <title>Linux Network 如何配置及工作原理 | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+<link rel="stylesheet" href="/book.min.c58292d36b18b675680ab9baea2029204537b839ea72f258746ec0f32ce8d6c8.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.4ca2878e6e369362aa281b4d178fc5a13dbebe010b7f5ff7b56732aca03b96ae.js" ></script>
+  <script defer src="/zh.search.min.661f3dbce865a3818eada8d9dfd61e397ed54959139c340a067c2a48e17ea210.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -34,7 +35,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><span>Exfly Blog</span>
+  <a class="flex align-center" href="/"><span>Exfly Blog</span>
   </a>
 </h2>
 
@@ -44,6 +45,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -83,6 +85,12 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
 </ul>
 
 
@@ -95,7 +103,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -214,29 +222,29 @@ network.service 会执行 <code>/etc/rc.d/init.d/network start</code> 启动网�
 <li>/etc/sysconfig/network-scripts</li>
 </ul>
 <p>命令</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">systemctl restart NetworkManager.service <span style="color:#75715e"># 重启服务</span>
-journalctl -u NetworkManager.service -f -n <span style="color:#ae81ff">100</span> <span style="color:#75715e"># 查看日志</span>
-
-<span style="color:#75715e"># 查询连接信息</span>
-nmcli conn
-
-<span style="color:#75715e"># 添加连接</span>
-nmcli conn add type ethernet con-name eth0-static ifname eth0 ipv4.method manual ipv4.addresses <span style="color:#e6db74">&#34;10.0.2.16/24&#34;</span> ipv4.gateway 10.0.2.2 ipv4.dns 114.114.114.114 ipv6.method auto
-
-<span style="color:#75715e"># 修改连接</span>
-nmcli conn modify eth0-static ipv4.method manual ipv4.addresses 10.0.2.254/24 ipv4.gateway 10.0.2.2
-
-<span style="color:#75715e"># interactive edit connection</span>
-nmcli conn edit &lt;conn-name&gt;
-
-<span style="color:#75715e"># 系统 link(设备)</span>
-nmcli dev
-
-<span style="color:#75715e"># 重新应用配置</span>
-nmcli dev reapply eth0
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># TUI</span>
-nmtui
-</code></pre></div><p>我们可以使用 nmcli 配置网络，当出现错误的时候，通过 journalctl 查看日志，分析配置错误原因，继续使用 nmcli 配置网络，直到网络服务配置好.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>systemctl restart NetworkManager.service <span style="color:#75715e"># 重启服务</span>
+</span></span><span style="display:flex;"><span>journalctl -u NetworkManager.service -f -n <span style="color:#ae81ff">100</span> <span style="color:#75715e"># 查看日志</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询连接信息</span>
+</span></span><span style="display:flex;"><span>nmcli conn
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 添加连接</span>
+</span></span><span style="display:flex;"><span>nmcli conn add type ethernet con-name eth0-static ifname eth0 ipv4.method manual ipv4.addresses <span style="color:#e6db74">&#34;10.0.2.16/24&#34;</span> ipv4.gateway 10.0.2.2 ipv4.dns 114.114.114.114 ipv6.method auto
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改连接</span>
+</span></span><span style="display:flex;"><span>nmcli conn modify eth0-static ipv4.method manual ipv4.addresses 10.0.2.254/24 ipv4.gateway 10.0.2.2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># interactive edit connection</span>
+</span></span><span style="display:flex;"><span>nmcli conn edit &lt;conn-name&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 系统 link(设备)</span>
+</span></span><span style="display:flex;"><span>nmcli dev
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重新应用配置</span>
+</span></span><span style="display:flex;"><span>nmcli dev reapply eth0
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># TUI</span>
+</span></span><span style="display:flex;"><span>nmtui
+</span></span></code></pre></div><p>我们可以使用 nmcli 配置网络，当出现错误的时候，通过 journalctl 查看日志，分析配置错误原因，继续使用 nmcli 配置网络，直到网络服务配置好.</p>
 <h3 id="networknanager-工作原理">
   NetworkNanager 工作原理
   <a class="anchor" href="#networknanager-%e5%b7%a5%e4%bd%9c%e5%8e%9f%e7%90%86">#</a>
@@ -249,16 +257,16 @@ nmtui
 </ol>
 <p>NetworkManager daemon 依赖于 
   <a href="https://en.wikipedia.org/wiki/D-Bus">D-Bus</a>, 实现了管理连接的接口，底层使用 netlink 跟 linux 内核交互，获得设备信息，配置连接（比如修改 ipv4 的地址等）。nmcli 跟 D-Bus 交互连接 NetworkManager daemon，获得信息以及配置网络</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># ip 命令也是使用 netlink 跟 kernel 交互的</span>
-strace -fff ip a
-
-socket<span style="color:#f92672">(</span>AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
-sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETLINK, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054708, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifi_family<span style="color:#f92672">=</span>AF_UNSPEC, ifi_type<span style="color:#f92672">=</span>ARPHRD_NETROM, ifi_index<span style="color:#f92672">=</span>0, ifi_flags<span style="color:#f92672">=</span>0, ifi_change<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{{</span>nla_len<span style="color:#f92672">=</span>8, nla_type<span style="color:#f92672">=</span>IFLA_EXT_MASK<span style="color:#f92672">}</span>, 1<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
-recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
-recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>
-sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETADDR, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054709, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifa_family<span style="color:#f92672">=</span>AF_UNSPEC, ifa_prefixlen<span style="color:#f92672">=</span>0, ifa_flags<span style="color:#f92672">=</span>0, ifa_scope<span style="color:#f92672">=</span>RT_SCOPE_UNIVERSE, ifa_index<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>nla_len<span style="color:#f92672">=</span>0, nla_type<span style="color:#f92672">=</span>IFA_UNSPEC<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
-recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
-</code></pre></div><p>TODO: 简单的 demo 使用 netlink 获得 ip 地址和配置 ip 地址 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># ip 命令也是使用 netlink 跟 kernel 交互的</span>
+</span></span><span style="display:flex;"><span>strace -fff ip a
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>socket<span style="color:#f92672">(</span>AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETLINK, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054708, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifi_family<span style="color:#f92672">=</span>AF_UNSPEC, ifi_type<span style="color:#f92672">=</span>ARPHRD_NETROM, ifi_index<span style="color:#f92672">=</span>0, ifi_flags<span style="color:#f92672">=</span>0, ifi_change<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{{</span>nla_len<span style="color:#f92672">=</span>8, nla_type<span style="color:#f92672">=</span>IFLA_EXT_MASK<span style="color:#f92672">}</span>, 1<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>sendto<span style="color:#f92672">(</span>3, <span style="color:#f92672">{{</span>len<span style="color:#f92672">=</span>40, type<span style="color:#f92672">=</span>RTM_GETADDR, flags<span style="color:#f92672">=</span>NLM_F_REQUEST|NLM_F_DUMP, seq<span style="color:#f92672">=</span>1641054709, pid<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>ifa_family<span style="color:#f92672">=</span>AF_UNSPEC, ifa_prefixlen<span style="color:#f92672">=</span>0, ifa_flags<span style="color:#f92672">=</span>0, ifa_scope<span style="color:#f92672">=</span>RT_SCOPE_UNIVERSE, ifa_index<span style="color:#f92672">=</span>0<span style="color:#f92672">}</span>, <span style="color:#f92672">{</span>nla_len<span style="color:#f92672">=</span>0, nla_type<span style="color:#f92672">=</span>IFA_UNSPEC<span style="color:#f92672">}}</span>, 40, 0, NULL, 0<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</span>msg_name<span style="color:#f92672">={</span>sa_family<span style="color:#f92672">=</span>AF_NETLINK, nl_pid<span style="color:#f92672">=</span>0, nl_groups<span style="color:#f92672">=</span>00000000<span style="color:#f92672">}</span>, msg_namelen<span style="color:#f92672">=</span>12, msg_iov<span style="color:#f92672">=[{</span>iov_base<span style="color:#f92672">=</span>NULL, iov_len<span style="color:#f92672">=</span>0<span style="color:#f92672">}]</span>, msg_iovlen<span style="color:#f92672">=</span>1, msg_controllen<span style="color:#f92672">=</span>0, msg_flags<span style="color:#f92672">=</span>MSG_TRUNC<span style="color:#f92672">}</span>, MSG_PEEK|MSG_TRUNC<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>TODO: 简单的 demo 使用 netlink 获得 ip 地址和配置 ip 地址 
   <a href="https://olegkutkov.me/2019/03/24/getting-linux-routing-table-using-netlink/">netlink-demo</a></p>
 <h3 id="networknanager-和-networkservice-如何并存">
   NetworkNanager 和 network.service 如何并存
@@ -282,68 +290,67 @@ recvmsg<span style="color:#f92672">(</span>3, <span style="color:#f92672">{</spa
   <a href="https://netplan.io/design/">netplan design</a></p>
 <p>
   <a href="https://netplan.io/reference/">netplan reference</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ls /<span style="color:#f92672">{</span>lib,etc,run<span style="color:#f92672">}</span>/netplan/*.yaml <span style="color:#75715e"># 配置文件位置</span>
-
-netplan generate <span style="color:#75715e"># 生成配置</span>
-ls /run/systemd/network/
-
-ip a <span style="color:#75715e"># 各接口信息</span>
-lshw -class network <span style="color:#75715e"># 硬件更详细的信息</span>
-ethtool enp0s3
-
-<span style="color:#75715e"># 修改配置 /etc/netplan/*.yaml</span>
-netplan try <span style="color:#75715e"># 测试是否生效</span>
-netplan apply <span style="color:#75715e"># 应用配置</span>
-
-resolvectl status <span style="color:#75715e"># resolve name</span>
-</code></pre></div><p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ls /<span style="color:#f92672">{</span>lib,etc,run<span style="color:#f92672">}</span>/netplan/*.yaml <span style="color:#75715e"># 配置文件位置</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>netplan generate <span style="color:#75715e"># 生成配置</span>
+</span></span><span style="display:flex;"><span>ls /run/systemd/network/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ip a <span style="color:#75715e"># 各接口信息</span>
+</span></span><span style="display:flex;"><span>lshw -class network <span style="color:#75715e"># 硬件更详细的信息</span>
+</span></span><span style="display:flex;"><span>ethtool enp0s3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改配置 /etc/netplan/*.yaml</span>
+</span></span><span style="display:flex;"><span>netplan try <span style="color:#75715e"># 测试是否生效</span>
+</span></span><span style="display:flex;"><span>netplan apply <span style="color:#75715e"># 应用配置</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resolvectl status <span style="color:#75715e"># resolve name</span>
+</span></span></code></pre></div><p>
   <a href="https://ubuntu.com/server/docs/network-configuration">netplan 一些通用的配置模版</a></p>
 <p>netplan 配置 dhcp 自动获取 ip</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cat /etc/netplan/50-cloud-init.yaml
-<span style="color:#75715e"># This file is generated from information provided by the datasource.  Changes</span>
-<span style="color:#75715e"># to it will not persist across an instance reboot.  To disable cloud-init&#39;s</span>
-<span style="color:#75715e"># network configuration capabilities, write a file</span>
-<span style="color:#75715e"># /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:</span>
-<span style="color:#75715e"># network: {config: disabled}</span>
-network:
-  ethernets:
-    enp0s3:
-      dhcp4: true
-      match:
-        macaddress: 02:f6:7f:02:5c:72
-      set-name: enp0s3
-  version: <span style="color:#ae81ff">2</span>
-</code></pre></div><p>netplan 配置 static ip:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">network:
-  version: <span style="color:#ae81ff">2</span>
-  ethernets:
-    enp0s3:
-      match:
-        macaddress: 02:f6:7f:02:5c:72
-      addresses:
-        - 10.10.10.2/24
-	  gateway4: 10.10.10.1
-      set-name: enp0s3
-      nameservers:
-        search: <span style="color:#f92672">[</span>mydomain, otherdomain<span style="color:#f92672">]</span>
-        addresses: <span style="color:#f92672">[</span>10.10.10.1, 1.1.1.1<span style="color:#f92672">]</span>
-      routes:
-        - to: default
-          via: 10.10.10.1
-<span style="color:#75715e"># netplan generate --root-dir /vagrant</span>
-
-</code></pre></div><p>Name resolve</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e"># /run/systemd/resolve/stub-resolv.conf</span>
-man <span style="color:#ae81ff">8</span> systemd-resolved
-
-systemd-resolve --statistics <span style="color:#75715e"># resolve 服务</span>
-systemd-resolve --reset-statistics <span style="color:#75715e"># 重置统计信息</span>
-systemctl restart systemd-resolved <span style="color:#75715e"># 重启 ubuntu resolved 服务</span>
-
-resolvectl flush-caches <span style="color:#75715e"># flush dns cache (old: systemd-resolve --flush-caches)</span>
-<span style="color:#75715e"># flush dns cache</span>
-<span style="color:#75715e"># https://www.linuxuprising.com/2019/07/how-to-flush-dns-cache-on-linux-for.html</span>
-</code></pre></div><h2 id="总结">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cat /etc/netplan/50-cloud-init.yaml
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This file is generated from information provided by the datasource.  Changes</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># to it will not persist across an instance reboot.  To disable cloud-init&#39;s</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># network configuration capabilities, write a file</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># network: {config: disabled}</span>
+</span></span><span style="display:flex;"><span>network:
+</span></span><span style="display:flex;"><span>  ethernets:
+</span></span><span style="display:flex;"><span>    enp0s3:
+</span></span><span style="display:flex;"><span>      dhcp4: true
+</span></span><span style="display:flex;"><span>      match:
+</span></span><span style="display:flex;"><span>        macaddress: 02:f6:7f:02:5c:72
+</span></span><span style="display:flex;"><span>      set-name: enp0s3
+</span></span><span style="display:flex;"><span>  version: <span style="color:#ae81ff">2</span>
+</span></span></code></pre></div><p>netplan 配置 static ip:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>network:
+</span></span><span style="display:flex;"><span>  version: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  ethernets:
+</span></span><span style="display:flex;"><span>    enp0s3:
+</span></span><span style="display:flex;"><span>      match:
+</span></span><span style="display:flex;"><span>        macaddress: 02:f6:7f:02:5c:72
+</span></span><span style="display:flex;"><span>      addresses:
+</span></span><span style="display:flex;"><span>        - 10.10.10.2/24
+</span></span><span style="display:flex;"><span>	  gateway4: 10.10.10.1
+</span></span><span style="display:flex;"><span>      set-name: enp0s3
+</span></span><span style="display:flex;"><span>      nameservers:
+</span></span><span style="display:flex;"><span>        search: <span style="color:#f92672">[</span>mydomain, otherdomain<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        addresses: <span style="color:#f92672">[</span>10.10.10.1, 1.1.1.1<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      routes:
+</span></span><span style="display:flex;"><span>        - to: default
+</span></span><span style="display:flex;"><span>          via: 10.10.10.1
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># netplan generate --root-dir /vagrant</span>
+</span></span></code></pre></div><p>Name resolve</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># /run/systemd/resolve/stub-resolv.conf</span>
+</span></span><span style="display:flex;"><span>man <span style="color:#ae81ff">8</span> systemd-resolved
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>systemd-resolve --statistics <span style="color:#75715e"># resolve 服务</span>
+</span></span><span style="display:flex;"><span>systemd-resolve --reset-statistics <span style="color:#75715e"># 重置统计信息</span>
+</span></span><span style="display:flex;"><span>systemctl restart systemd-resolved <span style="color:#75715e"># 重启 ubuntu resolved 服务</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resolvectl flush-caches <span style="color:#75715e"># flush dns cache (old: systemd-resolve --flush-caches)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># flush dns cache</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.linuxuprising.com/2019/07/how-to-flush-dns-cache-on-linux-for.html</span>
+</span></span></code></pre></div><h2 id="总结">
   总结
   <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
 </h2>
@@ -368,6 +375,12 @@ resolvectl flush-caches <span style="color:#75715e"># flush dns cache (old: syst
   <div class="flex flex-wrap justify-between">
 
 
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/1b0d92f94955cda63363c413e60523c81e76f89d" title='最后修改者 exfly | January 3, 2022' target="_blank" rel="noopener">
+      <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>January 3, 2022</span>
+    </a>
+  </div>
+
 
 
 
@@ -375,7 +388,7 @@ resolvectl flush-caches <span style="color:#75715e"># flush dns cache (old: syst
 
 
 
-  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 
 
  

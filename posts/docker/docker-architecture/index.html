@@ -4,19 +4,20 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Docker 源码阅读: Docker架构介绍" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Docker 源码阅读: Docker架构介绍" />
 <meta property="og:description" content="文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/docker/docker-architecture/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-04-22T21:35:46&#43;08:00" />
-<meta property="article:modified_time" content="2020-09-20T15:25:18&#43;08:00" />
+<meta property="article:published_time" content="2019-04-22T21:35:46+08:00" />
+<meta property="article:modified_time" content="2020-09-20T15:25:18+08:00" />
 
 <title>Docker 源码阅读: Docker架构介绍 | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+<link rel="stylesheet" href="/book.min.c58292d36b18b675680ab9baea2029204537b839ea72f258746ec0f32ce8d6c8.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.4ca2878e6e369362aa281b4d178fc5a13dbebe010b7f5ff7b56732aca03b96ae.js" ></script>
+  <script defer src="/zh.search.min.661f3dbce865a3818eada8d9dfd61e397ed54959139c340a067c2a48e17ea210.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -34,7 +35,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><span>Exfly Blog</span>
+  <a class="flex align-center" href="/"><span>Exfly Blog</span>
   </a>
 </h2>
 
@@ -44,6 +45,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -83,6 +85,12 @@ https://github.com/alex-shpak/hugo-book
       </a>
   </li>
   
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
 </ul>
 
 
@@ -95,7 +103,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -373,7 +381,6 @@ https://github.com/alex-shpak/hugo-book
   <div class="flex flex-wrap justify-between">
 
 
-
   <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" title='最后修改者 exfly | September 20, 2020' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>September 20, 2020</span>
@@ -382,11 +389,12 @@ https://github.com/alex-shpak/hugo-book
 
 
 
+
 </div>
 
 
 
-  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 
 
  

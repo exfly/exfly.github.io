@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
-<meta name="theme-color" content="#FFFFFF">
-<meta name="color-scheme" content="light dark"><meta property="og:title" content="Blog" />
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Blog" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/posts/" />
@@ -13,9 +12,9 @@
 <title>Blog | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.c58292d36b18b675680ab9baea2029204537b839ea72f258746ec0f32ce8d6c8.css" >
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.661f3dbce865a3818eada8d9dfd61e397ed54959139c340a067c2a48e17ea210.js" ></script>
+  <script defer src="/zh.search.min.03391c205e015e5673b16835f18c1d3e8b71f4d746af2ae20481f8e24e26ca82.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <link rel="alternate" type="application/rss+xml" href="/posts/index.xml" title="Exfly Blog" />
@@ -34,7 +33,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a class="flex align-center" href="/"><span>Exfly Blog</span>
+  <a href="/"><span>Exfly Blog</span>
   </a>
 </h2>
 
@@ -44,7 +43,6 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
-
 
 
 
@@ -146,6 +144,11 @@ https://github.com/alex-shpak/hugo-book
     <li class="book-section-flat">
       <strong>Tags</strong>
       <ul>
+      
+        <li class="flex justify-between">
+          <a href="/tags/db/">db</a>
+          <span>1</span>
+        </li>
       
         <li class="flex justify-between">
           <a href="/tags/docker/">docker</a>
@@ -377,6 +380,34 @@ https://github.com/alex-shpak/hugo-book
 
       
       
+  
+  <article class="markdown book-post">
+    <h2>
+      <a href="/posts/Java/spring/beans/">Spring Beans的装配规则总结</a>
+    </h2>
+    
+  <h5>May 20, 2018</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/Spring/">Spring</a>, 
+      <a href="/tags/SSM/">SSM</a>
+  </div>
+  
+
+
+
+
+    <p><p>文章简介：spring中bean的装配有一定规则，在这里进行总结。本文主要讲解一些概念和java配置方法。demo代码见文末。</p>
+        <a href="/posts/Java/spring/beans/">...</a>
+      
+    </p>
+  </article>
   
   <article class="markdown book-post">
     <h2>
@@ -624,34 +655,6 @@ https://github.com/alex-shpak/hugo-book
     </p>
   </article>
   
-  <article class="markdown book-post">
-    <h2>
-      <a href="/posts/linux/linux0.11-read-code/">Linux0.11源码学习环境配置与相关资源汇总</a>
-    </h2>
-    
-  <h5>October 30, 2016</h5>
-
-
-
-  
-
-  
-  <div>
-    
-      <a href="/tags/Linux/">Linux</a>, 
-      <a href="/tags/%E8%B5%84%E6%BA%90/">资源</a>
-  </div>
-  
-
-
-
-
-    <p><p>记录学习Linux操作系统实现时候使用过的资源，一部分笔记，以及调试中用到的技巧。内容有点乱，仅供个人使用。</p>
-        <a href="/posts/linux/linux0.11-read-code/">...</a>
-      
-    </p>
-  </article>
-  
 
   
     <ul class="pagination pagination-default">
@@ -660,9 +663,6 @@ https://github.com/alex-shpak/hugo-book
       </li>
       <li class="page-item">
         <a href="/posts/page/4/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
-      </li>
-      <li class="page-item">
-        <a href="/posts/" aria-label="Page 1" class="page-link" role="button">1</a>
       </li>
       <li class="page-item">
         <a href="/posts/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
@@ -676,11 +676,14 @@ https://github.com/alex-shpak/hugo-book
       <li class="page-item active">
         <a aria-current="page" aria-label="Page 5" class="page-link" role="button">5</a>
       </li>
-      <li class="page-item disabled">
-        <a aria-disabled="true" aria-label="Next" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;</span></a>
+      <li class="page-item">
+        <a href="/posts/page/6/" aria-label="Page 6" class="page-link" role="button">6</a>
       </li>
-      <li class="page-item disabled">
-        <a aria-disabled="true" aria-label="Last" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      <li class="page-item">
+        <a href="/posts/page/6/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/posts/page/6/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
       </li>
     </ul>
  
@@ -691,6 +694,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="flex flex-wrap justify-between">
 
 
+
   <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" title='最后修改者 exfly | September 20, 2020' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>September 20, 2020</span>
@@ -699,12 +703,11 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-
 </div>
 
 
 
-  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
 
 
  
@@ -738,6 +741,11 @@ https://github.com/alex-shpak/hugo-book
     <li class="book-section-flat">
       <strong>Tags</strong>
       <ul>
+      
+        <li class="flex justify-between">
+          <a href="/tags/db/">db</a>
+          <span>1</span>
+        </li>
       
         <li class="flex justify-between">
           <a href="/tags/docker/">docker</a>

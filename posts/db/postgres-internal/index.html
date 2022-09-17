@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Postgres 内部工作机制">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Postgres Internal" />
+<meta property="og:description" content="Postgres 内部工作机制" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/db/postgres-internal/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-14T09:46:01+08:00" />
+<meta property="article:modified_time" content="2022-09-17T15:39:50+08:00" />
+
+<title>Postgres Internal | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.03391c205e015e5673b16835f18c1d3e8b71f4d746af2ae20481f8e24e26ca82.js" ></script>
+
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>home</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/section/">section</a></p>
+</li>
+<li>
+<p>
+  <a href="/about/">about</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Postgres Internal</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍">介绍</a></li>
+    <li><a href="#database-和-tables">Database 和 Tables</a>
+      <ul>
+        <li><a href="#物理结构">物理结构</a></li>
+        <li><a href="#数据库对象在文件存储中的布局">数据库对象在文件存储中的布局</a>
+          <ul>
+            <li><a href="#databasetablesindex-等文件布局">database、tables、index 等文件布局</a></li>
+          </ul>
+        </li>
+        <li><a href="#tablespaces">Tablespaces</a></li>
+        <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
+      </ul>
+    </li>
+    <li><a href="#进程模型与内存模型">进程模型与内存模型</a></li>
+    <li><a href="#并发控制">并发控制</a></li>
+    <li><a href="#vacuum-processing">VACUUM Processing</a></li>
+    <li><a href="#buffer-manager">Buffer Manager</a></li>
+    <li><a href="#write-ahead-logging-wal">Write Ahead Logging (WAL)</a></li>
+    <li><a href="#references">references</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/db/postgres-internal/">Postgres Internal</a>
+  </h1>
+  
+  <h5>September 14, 2022</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/db/">db</a>
+  </div>
+  
+
+
+
+<p>Postgres 内部工作机制</p>
+<h1 id="介绍">
+  介绍
+  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
+</h1>
+<p>TODO: Postgres 介绍</p>
+<h1 id="database-和-tables">
+  Database 和 Tables
+  <a class="anchor" href="#database-%e5%92%8c-tables">#</a>
+</h1>
+<p>一个 Postgres server 中会有多个 database，每个 database 中会有多张 table，每个 table 中会有多条数据记录 (tuple), 每个数据记录会有多个字段。除此之外，每个 database 中还会有很多其他被管理的对象.</p>
+<p>多有的数据库对象多有唯一的 
+  <a href="https://www.postgresql.org/docs/12/datatype-oid.html#DATATYPE-OID-TABLE">OID</a>, 各数据库对象被保存在各自的 
+  <a href="https://www.postgresql.org/docs/current/catalogs.html">system catalogs</a> 中. 例如 database 和 heap tuple 被保存在 <code>pg_database</code> 和 <code>pg_class</code> 中, 所以可以通过如下 sql 查询到</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>postgres<span style="color:#f92672">=#</span> <span style="color:#66d9ef">select</span> datname, oid <span style="color:#66d9ef">from</span> pg_database <span style="color:#66d9ef">where</span> datname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;postgres&#39;</span>;
+</span></span><span style="display:flex;"><span>postgres <span style="color:#f92672">|</span>   <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>postgres<span style="color:#f92672">=#</span> <span style="color:#66d9ef">select</span> relname, oid <span style="color:#66d9ef">from</span> pg_class <span style="color:#66d9ef">where</span> relname<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;actor&#39;</span>;
+</span></span><span style="display:flex;"><span>actor   <span style="color:#f92672">|</span> <span style="color:#ae81ff">16475</span>
+</span></span></code></pre></div><h2 id="物理结构">
+  物理结构
+  <a class="anchor" href="#%e7%89%a9%e7%90%86%e7%bb%93%e6%9e%84">#</a>
+</h2>
+<p>当前我们介绍
+  <a href="https://www.postgresql.org/docs/current/storage-file-layout.html">文件目录存储结构</a>。
+Postgres 的一个数据库实例的数据存储在环境变量 <code>PGDATA</code> 中，通常 <code>PGDATA</code> 的值为 <code>/var/lib/pgsql/data</code>。同一台机器中可以部署多个 Postgres 服务实例，不同的服务实例可以使用不同的 PGDATA 以及不同的端口.
+PGDATA 子目录下包含数据库控制配置文件及数据文件。控制数据库服务实例运行的配置文件 <code>postgresql.conf</code>、<code>pg_hba.conf</code> 和 <code>and pg_ident.conf</code> 通常情况下也存储在 PGDATA 中，也可以把它们放到其他的地方(具体可以看 postgres 命令的启动参数或者 <code>pg_ctl</code> 的启动参数)
+PGDATA 中的文件结构如下:</p>
+<pre tabindex="0"><code># tree -L 2 $PGDATA
+.
+├── PG_VERSION
+├── base
+│   ├── 1
+│   └── pgsql_tmp
+├── global
+│   ├── 1213
+│   ├── 1213_fsm
+│   ├── 1213_vm
+│   ├── pg_control
+│   ├── pg_filenode.map
+│   └── pg_internal.init
+├── pg_commit_ts
+├── pg_dynshmem
+├── pg_hba.conf
+├── pg_ident.conf
+├── pg_logical
+│   ├── mappings
+│   ├── replorigin_checkpoint
+│   └── snapshots
+├── pg_multixact
+│   ├── members
+│   └── offsets
+├── pg_notify
+├── pg_replslot
+├── pg_serial
+├── pg_snapshots
+├── pg_stat
+├── pg_stat_tmp
+├── pg_subtrans
+│   └── 0000
+├── pg_tblspc
+├── pg_twophase
+├── pg_wal
+│   ├── 000000010000000000000004
+│   ├── 000000010000000000000005
+│   └── archive_status
+├── pg_xact
+│   └── 0000
+├── postgresql.auto.conf
+├── postgresql.conf
+├── postmaster.opts
+└── postmaster.pid
+</code></pre><blockquote>
+<p>
+  <a href="https://www.postgresql.org/docs/devel/storage-file-layout.html">https://www.postgresql.org/docs/devel/storage-file-layout.html</a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PG_VERSION</code></td>
+<td>PostgreSQL 主要版本号的文件</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>每个数据库的子目录</td>
+</tr>
+<tr>
+<td><code>global</code></td>
+<td>系统表, 比如 <code>pg_database</code></td>
+</tr>
+<tr>
+<td><code>pg_commit_ts</code></td>
+<td>事务提交时间戳数据, Version 9.5 or later.</td>
+</tr>
+<tr>
+<td><code>pg_dynshmem</code></td>
+<td><code>dynamic shared memory subsystem</code> 使用的文件, Version 9.4 or later.</td>
+</tr>
+<tr>
+<td><code>pg_logical</code></td>
+<td>status data for logical decoding</td>
+</tr>
+<tr>
+<td><code>pg_multixact</code></td>
+<td>multitransaction status data (used for shared row locks)</td>
+</tr>
+<tr>
+<td><code>pg_notify</code></td>
+<td>LISTEN/NOTIFY status data</td>
+</tr>
+<tr>
+<td><code>pg_replslot</code></td>
+<td>replication slot data</td>
+</tr>
+<tr>
+<td><code>pg_serial</code></td>
+<td>information about committed serializable transactions</td>
+</tr>
+<tr>
+<td><code>pg_snapshots</code></td>
+<td>exported snapshots</td>
+</tr>
+<tr>
+<td><code>pg_stat</code></td>
+<td>permanent files for the statistics subsystem</td>
+</tr>
+<tr>
+<td><code>pg_stat_tmp</code></td>
+<td>temporary files for the statistics subsystem</td>
+</tr>
+<tr>
+<td><code>pg_subtrans</code></td>
+<td>subtransaction status data</td>
+</tr>
+<tr>
+<td><code>pg_tblspc</code></td>
+<td>symbolic links to tablespaces</td>
+</tr>
+<tr>
+<td><code>pg_twophase</code></td>
+<td>state files for prepared transactions</td>
+</tr>
+<tr>
+<td><code>pg_wal</code></td>
+<td>WAL (Write Ahead Log) files. It is renamed from pg_xlog in Version 10.</td>
+</tr>
+<tr>
+<td><code>pg_xact</code></td>
+<td>transaction commit status data, It is renamed from pg_clog in Version 10.</td>
+</tr>
+<tr>
+<td><code>postgresql.auto.conf</code></td>
+<td>A file used for storing configuration parameters that are set by <code>ALTER SYSTEM</code></td>
+</tr>
+<tr>
+<td><code>postmaster.opts</code></td>
+<td>A file recording the command-line options the server was last started with</td>
+</tr>
+<tr>
+<td><code>postmaster.pid</code></td>
+<td>A lock file recording the current postmaster process ID (PID), cluster data directory path, postmaster start timestamp, port number, Unix-domain socket directory path (could be empty), first valid listen_address (IP address or <code>*</code>, or empty if not listening on TCP), and shared memory segment ID (this file is not present after server shutdown)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="数据库对象在文件存储中的布局">
+  数据库对象在文件存储中的布局
+  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e5%af%b9%e8%b1%a1%e5%9c%a8%e6%96%87%e4%bb%b6%e5%ad%98%e5%82%a8%e4%b8%ad%e7%9a%84%e5%b8%83%e5%b1%80">#</a>
+</h2>
+<p>表结构如下:</p>
+<pre tabindex="0"><code>create database test;
+
+CREATE TABLE sal_emp (
+    id int primary key,
+    name            text,
+    pay_by_quarter  integer[],
+    schedule        text[][]
+);
+
+INSERT INTO sal_emp
+    VALUES (
+    1,
+    &#39;Bill&#39;,
+    &#39;{10000, 10000, 10000, 10000}&#39;,
+    &#39;{{&#34;meeting&#34;, &#34;lunch&#34;}, {&#34;training&#34;, &#34;presentation&#34;}}&#39;
+);
+
+create index sal_emp_btree ON sal_emp (pay_by_quarter);
+create index sal_emp_gin ON sal_emp USING gin(pay_by_quarter);
+</code></pre><h3 id="databasetablesindex-等文件布局">
+  database、tables、index 等文件布局
+  <a class="anchor" href="#databasetablesindex-%e7%ad%89%e6%96%87%e4%bb%b6%e5%b8%83%e5%b1%80">#</a>
+</h3>
+<p>在 9.0 版本之后，可以通过如下命令查看当前登录数据库的数据目录</p>
+<pre tabindex="0"><code>test=# show data_directory;
+      data_directory
+---------------------------
+ /home/vagrant/pgdata/data
+(1 row)
+</code></pre><p>数据库位于 <code>base</code> 子目录下，数据库目录名字是其 oid。例如 <code>test</code> 的 oid 为 16966，他的目录名字为 16966.</p>
+<pre tabindex="0"><code>test=# select oid,datname from pg_database;
+  oid  |  datname
+-------+-----------
+     5 | postgres
+ 16966 | test
+     1 | template1
+     4 | template0
+
+$ ls -ld base/16966/
+drwx------ 2 vagrant vagrant 12288 Sep 16 01:59 base/16966/
+</code></pre><p>每个不超过 
+  <a href="https://www.postgresql.org/message-id/c2d9e70e0709032149t61b1558v207c12ac943ccd06@mail.gmail.com">1GB</a> 的 table 或者 index 存储在其所属的 database 目录下的一个文件下.</p>
+<pre tabindex="0"><code>test=# SELECT relname, oid, relfilenode FROM pg_class WHERE relname = &#39;sal_emp&#39;;
+ relname |  oid  | relfilenode
+---------+-------+-------------
+ sal_emp | 16967 |       16967
+
+test=# select * from pg_relation_filepath(&#39;sal_emp&#39;);
+ pg_relation_filepath
+----------------------
+ base/16966/16967
+
+$ ls -alh base/16966/16967
+-rw------- 1 vagrant vagrant 8.0K Sep 16 02:03 base/16966/16967
+</code></pre><p>当一个 table 或者 index 的文件大小超过 1GB，PostgreSQL 会创建名字类似于 relfilenode.1, 并使用它。如果新的文件被填满了，下一个新的文件 relfilenode.2 将被创建，以此类推。</p>
+<pre tabindex="0"><code>ls -alh base/16966/16967*
+-rw------- 1 vagrant vagrant 1.0G Sep 16 02:03 base/16966/16967
+-rw------- 1 vagrant vagrant   1M Sep 16 02:03 base/16966/16967.1
+</code></pre><blockquote>
+<p>单个 table/index 索引文件大小是可以配置的, PostgreSQL 编译选项是 &ndash;with-segsize.</p>
+</blockquote>
+<p>仔细看数据库子目录，可以看到一些文件的后缀是 <code>_fsm</code> 和 <code>_vm</code>. 它们分别是对应文件的 <code>free space map</code> <code>visibility map</code>, 分别存储着每个文件中每个 page 的 空闲空间及是否可见。indexs 只有 fsm，没有 vm.</p>
+<p>可以使用如下命令反向查看文件对应的数据库对象</p>
+<pre tabindex="0"><code>test=# SELECT pg_filenode_relation(0, 16967);
+pg_filenode_relation 
+----------------------
+ sal_emp
+(1 row)
+</code></pre><h2 id="tablespaces">
+  Tablespaces
+  <a class="anchor" href="#tablespaces">#</a>
+</h2>
+<p>PostgreSQL 中的 
+  <a href="https://www.postgresql.org/docs/current/manage-ag-tablespaces.html">Tablespaces</a> 是 base 目录之外的附加数据区域。 该功能已在 8.0 版本中实现。</p>
+<p>TODO: 补充更多细节</p>
+<h2 id="heap-table-file-的内部文件格式">
+  Heap Table File 的内部文件格式
+  <a class="anchor" href="#heap-table-file-%e7%9a%84%e5%86%85%e9%83%a8%e6%96%87%e4%bb%b6%e6%a0%bc%e5%bc%8f">#</a>
+</h2>
+<blockquote>
+<p>
+  <a href="https://www.postgresql.org/docs/current/storage-page-layout.html">storage-page-layout</a></p>
+</blockquote>
+<p>数据文件内部存储着大量的 pages, 每个 page 的固定大小为 8192 byte(8KB)。每个数据文件中的 page 从 0 开始编号，这些编号叫 <code>block numbers</code>.</p>
+<blockquote>
+<p>page 大小可以执行 sql 查看, <code>SELECT current_setting('block_size');</code>，其值可以在编译时添加参数修改</p>
+<p>
+  <a href="https://www.postgresql.org/docs/current/install-procedure.html">&ndash;with-blocksize=BLOCKSIZE</a></p>
+<p>eq:</p>
+<p><code>./configure --with-blocksize=BLOCKSIZE --with-wal-blocksize=BLOCKSIZE</code></p>
+</blockquote>
+<p>不同种类的文件的内部布局不相同。如下为 <code>heap table file</code> 的文件布局</p>
+<p>
+  <img src="/media/img/db/log/postgres-internal/postgres-tuple-layout.svg" alt="postgres-tuple-layout" /></p>
+<p>heap table 中的 page包含如下三部分：</p>
+<ol>
+<li>heap tuple(s): 一个 heap tuple 代表 tables 中的一行记录。heap tuple 以栈入顺序添加到 page 中，即新的 tuple 回被插入到旧的前边;</li>
+<li>line pointer(s): line pointer 持有 tuple 的指针。line pointer 是一个变长指针，每个 line pointer 的序号从 1开始，当新的 tuple 被插入到 page 中时，指向新 tuple 的 line pointer 也会被从插入到 line pointer 数组的尾部;</li>
+<li>header data: 位于 page 的开始位置，记录了当前 page 的元数据。其详细构成定义在 
+  <a href="https://github.com/postgres/postgres/blob/master/src/include/storage/bufpage.h">PageHeaderData</a> 中.其主要信息如下:
+<ul>
+<li>pd_lsn: 保存了 WAL 的 LSN，于 WAL 机制相关；</li>
+<li>pd_checksum: 保存了当前 page 的 checksum；</li>
+<li>pd_lower, pd_upper: pd_lower 指向 linepointer 的末尾，pd_upper 指向最新的 tuple 的开始；</li>
+<li>pd_special, 这个变量是给 index 使用的，他指向 page 的末尾最后一个 byte</li>
+</ul>
+</li>
+</ol>
+<p>lin pointer 的最后到最新 tuple 的开始是当前 page 的 空闲空间。
+tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>block number</code> 标识它所在的 page，<code>offset number</code> 标识它在 page 中的位置. 它的典型使用场景的 index.</p>
+<h1 id="进程模型与内存模型">
+  进程模型与内存模型
+  <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e6%a8%a1%e5%9e%8b%e4%b8%8e%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b">#</a>
+</h1>
+<h1 id="并发控制">
+  并发控制
+  <a class="anchor" href="#%e5%b9%b6%e5%8f%91%e6%8e%a7%e5%88%b6">#</a>
+</h1>
+<h1 id="vacuum-processing">
+  VACUUM Processing
+  <a class="anchor" href="#vacuum-processing">#</a>
+</h1>
+<h1 id="buffer-manager">
+  Buffer Manager
+  <a class="anchor" href="#buffer-manager">#</a>
+</h1>
+<h1 id="write-ahead-logging-wal">
+  Write Ahead Logging (WAL)
+  <a class="anchor" href="#write-ahead-logging-wal">#</a>
+</h1>
+<h1 id="references">
+  references
+  <a class="anchor" href="#references">#</a>
+</h1>
+<ul>
+<li>
+  <a href="https://www.interdb.jp/pg/index.html">The Internals of PostgreSQL for database administrators and system developers</a></li>
+</ul></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/69cdd230176baecfeabcfbb4e0d48c20738941ac" title='最后修改者 exfly | September 17, 2022' target="_blank" rel="noopener">
+      <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>September 17, 2022</span>
+    </a>
+  </div>
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#介绍">介绍</a></li>
+    <li><a href="#database-和-tables">Database 和 Tables</a>
+      <ul>
+        <li><a href="#物理结构">物理结构</a></li>
+        <li><a href="#数据库对象在文件存储中的布局">数据库对象在文件存储中的布局</a>
+          <ul>
+            <li><a href="#databasetablesindex-等文件布局">database、tables、index 等文件布局</a></li>
+          </ul>
+        </li>
+        <li><a href="#tablespaces">Tablespaces</a></li>
+        <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
+      </ul>
+    </li>
+    <li><a href="#进程模型与内存模型">进程模型与内存模型</a></li>
+    <li><a href="#并发控制">并发控制</a></li>
+    <li><a href="#vacuum-processing">VACUUM Processing</a></li>
+    <li><a href="#buffer-manager">Buffer Manager</a></li>
+    <li><a href="#write-ahead-logging-wal">Write Ahead Logging (WAL)</a></li>
+    <li><a href="#references">references</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

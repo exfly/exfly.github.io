@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.03391c205e015e5673b16835f18c1d3e8b71f4d746af2ae20481f8e24e26ca82.js" ></script>
+  <script defer src="/zh.search.min.d2386448c6a0ddf0ccecb16ec4f72d4d506eb6516f87bc2b13ab4ef3c63c90e1.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -143,6 +143,12 @@ https://github.com/alex-shpak/hugo-book
         </li>
         <li><a href="#tablespaces">Tablespaces</a></li>
         <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
+        <li><a href="#tuple-的读写">tuple 的读写</a>
+          <ul>
+            <li><a href="#写">写</a></li>
+            <li><a href="#读">读</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#进程模型与内存模型">进程模型与内存模型</a></li>
@@ -194,9 +200,9 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#database-%e5%92%8c-tables">#</a>
 </h1>
 <p>一个 Postgres server 中会有多个 database，每个 database 中会有多张 table，每个 table 中会有多条数据记录 (tuple), 每个数据记录会有多个字段。除此之外，每个 database 中还会有很多其他被管理的对象.</p>
-<p>多有的数据库对象多有唯一的 
+<p>每个数据库对象都有唯一的 
   <a href="https://www.postgresql.org/docs/12/datatype-oid.html#DATATYPE-OID-TABLE">OID</a>, 各数据库对象被保存在各自的 
-  <a href="https://www.postgresql.org/docs/current/catalogs.html">system catalogs</a> 中. 例如 database 和 heap tuple 被保存在 <code>pg_database</code> 和 <code>pg_class</code> 中, 所以可以通过如下 sql 查询到</p>
+  <a href="https://www.postgresql.org/docs/current/catalogs.html">system catalogs</a> 中. 例如 database 和 heap tuple 被保存在 <code>pg_database</code> 和 <code>pg_class</code> 中, 可以通过如下 sql 查询到</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>postgres<span style="color:#f92672">=#</span> <span style="color:#66d9ef">select</span> datname, oid <span style="color:#66d9ef">from</span> pg_database <span style="color:#66d9ef">where</span> datname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;postgres&#39;</span>;
 </span></span><span style="display:flex;"><span>postgres <span style="color:#f92672">|</span>   <span style="color:#ae81ff">5</span>
 </span></span><span style="display:flex;"><span>
@@ -208,9 +214,9 @@ https://github.com/alex-shpak/hugo-book
 </h2>
 <p>当前我们介绍
   <a href="https://www.postgresql.org/docs/current/storage-file-layout.html">文件目录存储结构</a>。
-Postgres 的一个数据库实例的数据存储在环境变量 <code>PGDATA</code> 中，通常 <code>PGDATA</code> 的值为 <code>/var/lib/pgsql/data</code>。同一台机器中可以部署多个 Postgres 服务实例，不同的服务实例可以使用不同的 PGDATA 以及不同的端口.
-PGDATA 子目录下包含数据库控制配置文件及数据文件。控制数据库服务实例运行的配置文件 <code>postgresql.conf</code>、<code>pg_hba.conf</code> 和 <code>and pg_ident.conf</code> 通常情况下也存储在 PGDATA 中，也可以把它们放到其他的地方(具体可以看 postgres 命令的启动参数或者 <code>pg_ctl</code> 的启动参数)
-PGDATA 中的文件结构如下:</p>
+Postgres 的一个数据库实例的数据存储在环境变量 <code>PGDATA</code> 中，通常 <code>PGDATA</code> 的值为 <code>/var/lib/pgsql/data</code>。同一台机器中可以部署多个 Postgres 服务实例，不同的服务实例使用不同的 PGDATA 以及不同的端口.
+PGDATA 子目录下包含数据库控制配置文件及数据文件。控制数据库服务实例运行的配置文件 <code>postgresql.conf</code>、<code>pg_hba.conf</code> 和 <code>pg_ident.conf</code> 通常情况下也存储在 <code>PGDATA</code> 中，也可以把它们放到其他的地方(具体可以看 <code>postgres</code> 命令的启动参数或者 <code>pg_ctl</code> 的启动参数)
+<code>PGDATA</code> 中的文件结构如下:</p>
 <pre tabindex="0"><code># tree -L 2 $PGDATA
 .
 ├── PG_VERSION
@@ -357,7 +363,7 @@ PGDATA 中的文件结构如下:</p>
   数据库对象在文件存储中的布局
   <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e5%ba%93%e5%af%b9%e8%b1%a1%e5%9c%a8%e6%96%87%e4%bb%b6%e5%ad%98%e5%82%a8%e4%b8%ad%e7%9a%84%e5%b8%83%e5%b1%80">#</a>
 </h2>
-<p>表结构如下:</p>
+<p>为了研究数据库数据存储，首先启动数据库实例，创建如下表结构:</p>
 <pre tabindex="0"><code>create database test;
 
 CREATE TABLE sal_emp (
@@ -417,12 +423,12 @@ $ ls -alh base/16966/16967
 -rw------- 1 vagrant vagrant 1.0G Sep 16 02:03 base/16966/16967
 -rw------- 1 vagrant vagrant   1M Sep 16 02:03 base/16966/16967.1
 </code></pre><blockquote>
-<p>单个 table/index 索引文件大小是可以配置的, PostgreSQL 编译选项是 &ndash;with-segsize.</p>
+<p>单个 table/index 索引文件大小是可以配置的, PostgreSQL 编译选项是 <code>--with-segsize</code> .</p>
 </blockquote>
-<p>仔细看数据库子目录，可以看到一些文件的后缀是 <code>_fsm</code> 和 <code>_vm</code>. 它们分别是对应文件的 <code>free space map</code> <code>visibility map</code>, 分别存储着每个文件中每个 page 的 空闲空间及是否可见。indexs 只有 fsm，没有 vm.</p>
-<p>可以使用如下命令反向查看文件对应的数据库对象</p>
+<p>仔细观察数据库子目录，可以发现一些文件的后缀是 <code>_fsm</code> 和 <code>_vm</code>, 它们分别是对应文件的 <code>free space map</code> <code>visibility map</code>, 分别存储着每个文件中每个 page 的 空闲空间及是否可见。indexs 只有 fsm，没有 vm.</p>
+<p>可以使用如下命令反向查看文件对应的数据库对象.</p>
 <pre tabindex="0"><code>test=# SELECT pg_filenode_relation(0, 16967);
-pg_filenode_relation 
+pg_filenode_relation
 ----------------------
  sal_emp
 (1 row)
@@ -452,10 +458,10 @@ pg_filenode_relation
 <p>不同种类的文件的内部布局不相同。如下为 <code>heap table file</code> 的文件布局</p>
 <p>
   <img src="/media/img/db/log/postgres-internal/postgres-tuple-layout.svg" alt="postgres-tuple-layout" /></p>
-<p>heap table 中的 page包含如下三部分：</p>
+<p>heap table 中的 page 包含如下三部分：</p>
 <ol>
 <li>heap tuple(s): 一个 heap tuple 代表 tables 中的一行记录。heap tuple 以栈入顺序添加到 page 中，即新的 tuple 回被插入到旧的前边;</li>
-<li>line pointer(s): line pointer 持有 tuple 的指针。line pointer 是一个变长指针，每个 line pointer 的序号从 1开始，当新的 tuple 被插入到 page 中时，指向新 tuple 的 line pointer 也会被从插入到 line pointer 数组的尾部;</li>
+<li>line pointer(s): line pointer 持有 tuple 的指针。line pointer 是一个变长指针，每个 line pointer 的序号从 1 开始，当新的 tuple 被插入到 page 中时，指向新 tuple 的 line pointer 也会被从插入到 line pointer 数组的尾部;</li>
 <li>header data: 位于 page 的开始位置，记录了当前 page 的元数据。其详细构成定义在 
   <a href="https://github.com/postgres/postgres/blob/master/src/include/storage/bufpage.h">PageHeaderData</a> 中.其主要信息如下:
 <ul>
@@ -468,31 +474,59 @@ pg_filenode_relation
 </ol>
 <p>lin pointer 的最后到最新 tuple 的开始是当前 page 的 空闲空间。
 tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>block number</code> 标识它所在的 page，<code>offset number</code> 标识它在 page 中的位置. 它的典型使用场景的 index.</p>
+<p>另外，当 <code>heap tuple</code> 的大下超过 2k(1/4 <code>page size 8k</code>) 时候，存储会使用 TOAST(The Oversized-Attribute Storage Technique), 详细信息见 
+  <a href="https://www.postgresql.org/docs/current/storage-toast.html">Postgres 文档</a></p>
+<p>tuple 最多 <code>MaxHeapAttributeNumber=1664</code> 个 column.</p>
+<h2 id="tuple-的读写">
+  tuple 的读写
+  <a class="anchor" href="#tuple-%e7%9a%84%e8%af%bb%e5%86%99">#</a>
+</h2>
+<h3 id="写">
+  写
+  <a class="anchor" href="#%e5%86%99">#</a>
+</h3>
+<p>如下图所示, 假设当前 table 只有一页数据，当前页中有一条数据. pg_lower 指向 linp 最后一项的末尾, pg_upper 指向最后一个 tuple 的开始.</p>
+<p>
+  <img src="/media/img/db/log/postgres-internal/postgres-tuple-write-before.png" alt="before write" /></p>
+<p>tuple 的增长方向是从每页的尾部到头部。第二个 tuple 会插入到第一个 tuple 的前边(地址更小的位置), 新的 linp 会插入到第一个 linp 后边，pg_lower 会指向新的 linp 尾部, 原本指向第一个 tuple 头部的 pg_upper 会修改为指向第二个 tuple 头部, 其他 page header 中的数据(eq: pd_lsn, pg_checksum, pg_flag)也会被修改. 修改后的 page 布局如下图所示</p>
+<p>
+  <img src="/media/img/db/log/postgres-internal/postgres-tuple-write-after.png" alt="after write" /></p>
+<h3 id="读">
+  读
+  <a class="anchor" href="#%e8%af%bb">#</a>
+</h3>
 <h1 id="进程模型与内存模型">
   进程模型与内存模型
   <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e6%a8%a1%e5%9e%8b%e4%b8%8e%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b">#</a>
 </h1>
+<p>TODO</p>
 <h1 id="并发控制">
   并发控制
   <a class="anchor" href="#%e5%b9%b6%e5%8f%91%e6%8e%a7%e5%88%b6">#</a>
 </h1>
+<p>TODO</p>
 <h1 id="vacuum-processing">
   VACUUM Processing
   <a class="anchor" href="#vacuum-processing">#</a>
 </h1>
+<p>TODO</p>
 <h1 id="buffer-manager">
   Buffer Manager
   <a class="anchor" href="#buffer-manager">#</a>
 </h1>
+<p>TODO</p>
 <h1 id="write-ahead-logging-wal">
   Write Ahead Logging (WAL)
   <a class="anchor" href="#write-ahead-logging-wal">#</a>
 </h1>
+<p>TODO</p>
 <h1 id="references">
   references
   <a class="anchor" href="#references">#</a>
 </h1>
 <ul>
+<li>
+  <a href="https://github.com/postgres/postgres">postgres-src</a></li>
 <li>
   <a href="https://www.interdb.jp/pg/index.html">The Internals of PostgreSQL for database administrators and system developers</a></li>
 </ul></article>
@@ -553,6 +587,12 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
         </li>
         <li><a href="#tablespaces">Tablespaces</a></li>
         <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
+        <li><a href="#tuple-的读写">tuple 的读写</a>
+          <ul>
+            <li><a href="#写">写</a></li>
+            <li><a href="#读">读</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#进程模型与内存模型">进程模型与内存模型</a></li>

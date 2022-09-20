@@ -9,14 +9,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/db/postgres-internal/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-14T09:46:01+08:00" />
-<meta property="article:modified_time" content="2022-09-17T15:39:50+08:00" />
+<meta property="article:modified_time" content="2022-09-19T20:59:09+08:00" />
 
 <title>Postgres Internal | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.d2386448c6a0ddf0ccecb16ec4f72d4d506eb6516f87bc2b13ab4ef3c63c90e1.js" ></script>
+  <script defer src="/zh.search.min.ed440790c4dd407a960a65dec5e5785fd74d5e9e0c44d335e4c805c92227a31c.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -143,10 +143,10 @@ https://github.com/alex-shpak/hugo-book
         </li>
         <li><a href="#tablespaces">Tablespaces</a></li>
         <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
-        <li><a href="#tuple-的读写">tuple 的读写</a>
+        <li><a href="#heap-tuple-的读写">heap tuple 的读写</a>
           <ul>
-            <li><a href="#写">写</a></li>
-            <li><a href="#读">读</a></li>
+            <li><a href="#heap-tuple-写">heap tuple 写</a></li>
+            <li><a href="#heap-tuple-读">heap tuple 读</a></li>
           </ul>
         </li>
       </ul>
@@ -477,13 +477,13 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
 <p>另外，当 <code>heap tuple</code> 的大下超过 2k(1/4 <code>page size 8k</code>) 时候，存储会使用 TOAST(The Oversized-Attribute Storage Technique), 详细信息见 
   <a href="https://www.postgresql.org/docs/current/storage-toast.html">Postgres 文档</a></p>
 <p>tuple 最多 <code>MaxHeapAttributeNumber=1664</code> 个 column.</p>
-<h2 id="tuple-的读写">
-  tuple 的读写
-  <a class="anchor" href="#tuple-%e7%9a%84%e8%af%bb%e5%86%99">#</a>
+<h2 id="heap-tuple-的读写">
+  heap tuple 的读写
+  <a class="anchor" href="#heap-tuple-%e7%9a%84%e8%af%bb%e5%86%99">#</a>
 </h2>
-<h3 id="写">
-  写
-  <a class="anchor" href="#%e5%86%99">#</a>
+<h3 id="heap-tuple-写">
+  heap tuple 写
+  <a class="anchor" href="#heap-tuple-%e5%86%99">#</a>
 </h3>
 <p>如下图所示, 假设当前 table 只有一页数据，当前页中有一条数据. pg_lower 指向 linp 最后一项的末尾, pg_upper 指向最后一个 tuple 的开始.</p>
 <p>
@@ -491,10 +491,17 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
 <p>tuple 的增长方向是从每页的尾部到头部。第二个 tuple 会插入到第一个 tuple 的前边(地址更小的位置), 新的 linp 会插入到第一个 linp 后边，pg_lower 会指向新的 linp 尾部, 原本指向第一个 tuple 头部的 pg_upper 会修改为指向第二个 tuple 头部, 其他 page header 中的数据(eq: pd_lsn, pg_checksum, pg_flag)也会被修改. 修改后的 page 布局如下图所示</p>
 <p>
   <img src="/media/img/db/log/postgres-internal/postgres-tuple-write-after.png" alt="after write" /></p>
-<h3 id="读">
-  读
-  <a class="anchor" href="#%e8%af%bb">#</a>
+<p>TODO: 执行 sql 配合 pg_inspect 分析插入读取过程</p>
+<h3 id="heap-tuple-读">
+  heap tuple 读
+  <a class="anchor" href="#heap-tuple-%e8%af%bb">#</a>
 </h3>
+<p>heap tuple 的读有两种方式： <code>sequential scan</code> 和 <code>index scan</code>:</p>
+<ol>
+<li><code>sequential scan</code>: 每个 tables 会有多个文件，每个文件中会有很多固定大小的 page 顺序存储，每个 page 中会有很多 tuple。<code>sequential scan</code> 会扫描所有文件中所有 page 中的 所有 tuple.</li>
+<li><code>index scan</code>: index 是一棵搜索树，index 中包含很多 <code>index tuple</code>，这些 <code>index tuple</code> 中包含 <code>index key</code> 和 指向 <code>heap tuple</code> 的 TID。假设 <code>index tuple</code> 中包含如下内容 &lsquo;(block=3, offset=7)&rsquo;. 当 <code>index scan</code> 找到某个 <code>index tuple</code> 符合条件时，获得到 <code>index tuple</code> 中的 <code>TID</code>. 由于 page 是固定大小的，可以直接使用类似于 
+  <a href="https://man7.org/linux/man-pages/man2/lseek.2.html">lseek调用</a> 定位到对应的 page 后将数据 load 到内存，再由 offset 定位到 内存中 linp 的位置，linp 中包含 tuple 的指针及状态，数据即可定位到并读出来。</li>
+</ol>
 <h1 id="进程模型与内存模型">
   进程模型与内存模型
   <a class="anchor" href="#%e8%bf%9b%e7%a8%8b%e6%a8%a1%e5%9e%8b%e4%b8%8e%e5%86%85%e5%ad%98%e6%a8%a1%e5%9e%8b">#</a>
@@ -539,9 +546,9 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
 
 
 
-  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/69cdd230176baecfeabcfbb4e0d48c20738941ac" title='最后修改者 exfly | September 17, 2022' target="_blank" rel="noopener">
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/ccb1541672fa9808991d12c1131ce73aea200994" title='最后修改者 exfly | September 19, 2022' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
-      <span>September 17, 2022</span>
+      <span>September 19, 2022</span>
     </a>
   </div>
 
@@ -587,10 +594,10 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
         </li>
         <li><a href="#tablespaces">Tablespaces</a></li>
         <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
-        <li><a href="#tuple-的读写">tuple 的读写</a>
+        <li><a href="#heap-tuple-的读写">heap tuple 的读写</a>
           <ul>
-            <li><a href="#写">写</a></li>
-            <li><a href="#读">读</a></li>
+            <li><a href="#heap-tuple-写">heap tuple 写</a></li>
+            <li><a href="#heap-tuple-读">heap tuple 读</a></li>
           </ul>
         </li>
       </ul>

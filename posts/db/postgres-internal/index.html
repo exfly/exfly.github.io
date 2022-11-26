@@ -9,14 +9,14 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/posts/db/postgres-internal/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-14T09:46:01+08:00" />
-<meta property="article:modified_time" content="2022-09-25T12:44:14+08:00" />
+<meta property="article:modified_time" content="2022-11-10T21:18:35+08:00" />
 
 <title>Postgres Internal | Exfly Blog</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.7c402591b52f4467609aeb4954a85ce067eadcb73acccf996e645188631796c8.js" ></script>
+  <script defer src="/zh.search.min.1c27fd9fe6370b93a53294cbd9ac6b81fe813bb8b9438fe464d90c25ff037773.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -181,6 +181,7 @@ https://github.com/alex-shpak/hugo-book
           </ul>
         </li>
         <li><a href="#transaction-snapshot">Transaction Snapshot</a></li>
+        <li><a href="#可见性规则">可见性规则</a></li>
         <li><a href="#toast">TOAST</a></li>
       </ul>
     </li>
@@ -903,7 +904,80 @@ Tuple3:
 <p><code>transaction manager</code> 管理 <code>transaction snapshots</code>。<code>transaction snapshots</code> 用于在事务执行过程中判断 tuple 是否可见。相同的 tuple 及相同的 <code>transaction snapshots</code> 下，不同的事务隔离级别会有不同的可见结果。</p>
 <p>
   <img src="/media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg" alt="postgres-internal-tx-manager" /></p>
-<h2 id="toast">
+<p><code>transaction manager</code> 中持有当前正在执行的事务的执行状态。如图，三个事务相继执行，TxA 和 TxB 的事务隔离级别是 <code>READ COMMITTED</code>，TxC 的是 <code>REPREATABLE READ</code>.</p>
+<pre tabindex="0"><code>T1: 
+    TxA 开始执行第一个 SELECT 命令。当执行第一个命令时候，TxA请求获得 txid 和 快照。transaction manager 分配 txid=200, transation snapshot &#39;200:200:&#39;
+T2:
+    TxB 开始执行第一个 SELECT 命令，transaction manager 分配 tx=201，transaction snapshot &#39;200:200:&#39;, 因此 TxB 中无法看到 TxA
+T3:
+    TxC 开始执行第一个 SELECT 命令，分配 tx=202，tx snapshot &#39;200:200:&#39;. TxC 看不到 TxA 和 TxB
+T4:
+    TxA 提交。transaction manager 移除他的事务信息
+T5:
+    TxB 和 TxC 再次执行 SELECT命令。
+    TxB 请求获得 tx snapshoot，因为他的事务隔离级别是 `READ COMMITTED`，TxB 获得的 tx snapshot 是 &#39;201:201:&#39;。 TxA 已经 commited 了，故 TxB 可以看到 TxA
+    TxC 因为其事务隔离级别是 `REPEATABLE READ`，应该继续使用之前获得的 snapshot &#39;200:200:&#39;. TxC 看不到 TxA 和 TxB
+</code></pre><h2 id="可见性规则">
+  可见性规则
+  <a class="anchor" href="#%e5%8f%af%e8%a7%81%e6%80%a7%e8%a7%84%e5%88%99">#</a>
+</h2>
+<p>基于现在的堆文件的实现，一个事务如何判断当前获取到的 tuple 是可见的呢？
+  <a href="https://www.interdb.jp/pg/pgsql05.html">interdb</a> 做的检查规则如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">/*</span> t_xmin status <span style="color:#f92672">=</span> ABORTED <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">1</span>: IF t_xmin status <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;ABORTED&#39;</span> THEN
+</span></span><span style="display:flex;"><span>            RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>        END IF
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">/*</span> t_xmin status <span style="color:#f92672">=</span> IN_PROGRESS <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>        IF t_xmin status <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;IN_PROGRESS&#39;</span> THEN
+</span></span><span style="display:flex;"><span>    	       IF t_xmin <span style="color:#f92672">=</span> current_txid THEN
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">2</span>:          IF t_xmax <span style="color:#f92672">=</span> INVALID THEN
+</span></span><span style="display:flex;"><span>			            RETURN <span style="color:#e6db74">&#39;Visible&#39;</span>
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">3</span>:          ELSE  <span style="color:#f92672">/*</span> this tuple has been deleted <span style="color:#f92672">or</span> updated by the current transaction itself<span style="color:#f92672">.</span> <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>			             RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>                 END IF
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">4</span>:        ELSE   <span style="color:#f92672">/*</span> t_xmin <span style="color:#960050;background-color:#1e0010">≠</span> current_txid <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>		              RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>               END IF
+</span></span><span style="display:flex;"><span>        END IF
+</span></span><span style="display:flex;"><span>             
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">/*</span> t_xmin status <span style="color:#f92672">=</span> COMMITTED <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>        IF t_xmin status <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;COMMITTED&#39;</span> THEN
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">5</span>:     IF t_xmin <span style="color:#f92672">is</span> active <span style="color:#f92672">in</span> the obtained transaction snapshot THEN
+</span></span><span style="display:flex;"><span>                RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">6</span>:     ELSE IF t_xmax <span style="color:#f92672">=</span> INVALID OR status of t_xmax <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;ABORTED&#39;</span> THEN
+</span></span><span style="display:flex;"><span>                RETURN <span style="color:#e6db74">&#39;Visible&#39;</span>
+</span></span><span style="display:flex;"><span>            ELSE IF t_xmax status <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;IN_PROGRESS&#39;</span> THEN
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">7</span>:         IF t_xmax <span style="color:#f92672">=</span>  current_txid THEN
+</span></span><span style="display:flex;"><span>                    RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">8</span>:         ELSE  <span style="color:#f92672">/*</span> t_xmax <span style="color:#960050;background-color:#1e0010">≠</span> current_txid <span style="color:#f92672">*/</span>
+</span></span><span style="display:flex;"><span>                    RETURN <span style="color:#e6db74">&#39;Visible&#39;</span>
+</span></span><span style="display:flex;"><span>                END IF
+</span></span><span style="display:flex;"><span>            ELSE IF t_xmax status <span style="color:#f92672">is</span> <span style="color:#e6db74">&#39;COMMITTED&#39;</span> THEN
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">9</span>:         IF t_xmax <span style="color:#f92672">is</span> active <span style="color:#f92672">in</span> the obtained transaction snapshot THEN
+</span></span><span style="display:flex;"><span>                    RETURN <span style="color:#e6db74">&#39;Visible&#39;</span>
+</span></span><span style="display:flex;"><span>Rule <span style="color:#ae81ff">10</span>:        ELSE
+</span></span><span style="display:flex;"><span>                    RETURN <span style="color:#e6db74">&#39;Invisible&#39;</span>
+</span></span><span style="display:flex;"><span>                END IF
+</span></span><span style="display:flex;"><span>            END IF
+</span></span><span style="display:flex;"><span>        END IF
+</span></span></code></pre></div><p>被 ABORTED 的 tuple 不可见（Rule 1）。</p>
+<p>正在执行的事务，当前事务自己可见(Rule 2, Rule 3, Rule 4).</p>
+<p>Rule 7, tuple 被当前事务删除了</p>
+<p>Rule 8，其他的事务的删除没有提交，当前事务是可见的</p>
+<pre tabindex="0"><code>Rule 1: If Status(t_xmin) = ABORTED =&gt; Invisible
+
+Rule 2: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin = current_txid ∧ t_xmax = INVAILD =&gt; Visible
+Rule 3: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin = current_txid ∧ t_xmax != INVAILD =&gt; Invisible
+Rule 4: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin != current_txid =&gt; Invisible
+
+Rule 5: If Status(t_xmin) = COMMITTED ∧ Snapshot(t_xmin) = active =&gt; Invisible
+Rule 6: If Status(t_xmin) = COMMITTED ∧ (t_xmax = INVALID ∨ Status(t_xmax) = ABORTED) =&gt; Visible
+Rule 7: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = IN_PROGRESS ∧ t_xmax = current_txid =&gt; Invisible
+Rule 8: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = IN_PROGRESS ∧ t_xmax != current_txid =&gt; Visible
+Rule 9: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = COMMITTED ∧ Snapshot(t_xmax) = active =&gt; Visible
+Rule 10: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = COMMITTED ∧ Snapshot(t_xmax) != active =&gt; Invisible
+</code></pre><h2 id="toast">
   TOAST
   <a class="anchor" href="#toast">#</a>
 </h2>
@@ -942,9 +1016,9 @@ Tuple3:
 
 
 
-  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/79dd0be1583fa8aad3300bc4325ea0cf0dcdfe82" title='最后修改者 exfly | September 25, 2022' target="_blank" rel="noopener">
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/1b0bb5c3c00bc94faf32cf423071e0708c4d937e" title='最后修改者 exfly | November 10, 2022' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
-      <span>September 25, 2022</span>
+      <span>November 10, 2022</span>
     </a>
   </div>
 
@@ -1028,6 +1102,7 @@ Tuple3:
           </ul>
         </li>
         <li><a href="#transaction-snapshot">Transaction Snapshot</a></li>
+        <li><a href="#可见性规则">可见性规则</a></li>
         <li><a href="#toast">TOAST</a></li>
       </ul>
     </li>

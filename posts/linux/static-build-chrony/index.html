@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介：chrony 静态编译及跨操作系统安装 systemd service">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="chrony 静态编译及跨 Linux 发行版安装 systemd service" />
+<meta property="og:description" content="文章简介：chrony 静态编译及跨操作系统安装 systemd service" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/linux/static-build-chrony/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-26T12:56:31+08:00" />
+<meta property="article:modified_time" content="2022-11-25T13:46:57+08:00" />
+
+<title>chrony 静态编译及跨 Linux 发行版安装 systemd service | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.1c27fd9fe6370b93a53294cbd9ac6b81fe813bb8b9438fe464d90c25ff037773.js" ></script>
+
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>home</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/section/">section</a></p>
+</li>
+<li>
+<p>
+  <a href="/about/">about</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>chrony 静态编译及跨 Linux 发行版安装 systemd service</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#有了二进制文件该如何部署服务呢">有了二进制文件该如何部署服务呢？</a></li>
+        <li><a href="#到这里就可以了吗">到这里就可以了吗？</a></li>
+        <li><a href="#安装-chrony-service-的完整脚本">安装 chrony service 的完整脚本</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/linux/static-build-chrony/">chrony 静态编译及跨 Linux 发行版安装 systemd service</a>
+  </h1>
+  
+  <h5>November 26, 2022</h5>
+
+
+
+  
+
+  
+
+
+
+<p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>
+<p>最近一段时间做的需求主要是适配 kylinsec 国产化操作系统. 因为产品是 tob 私有化部署 k8s 集群，并且多机器需要同步时间。经过调研后发现 
+  <a href="https://en.wikipedia.org/wiki/Chrony">chrony</a> 已经作为 redhat 8 等多种发行版的默认选项，决定统一使用 chrony 作为我们的时间同步 daemon.</p>
+<p>应用的自动化部署方案使用了 ansible，不同 Linux 发行版软件包不相同，所以适配一种 Linux 发行版，就需要为这种 Linux 发行版下载对应软件包。比如 chrony 在 centos 7/8/9, ubuntu 20.04/18.04, kylinsec &hellip; 等都需要单独下载一遍 chrony 安装包，整体总共适配了 6 遍，十分麻烦。当需要适配的软件包更多后，成本就凸显出来了. 可以选择静态编译，抹平各发行版的差异，一次搞定。</p>
+<p>还好，静态编译的工作已经有大佬做过了
+  <a href="https://zhangguanzhang.github.io/2021/01/23/chrony/#/">静态编译 chrony</a>,</p>
+<p>dockerfile 如下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#75715e"># docker buildx build -f Dockerfile.chrony --platform linux/amd64 --target bin --output installer</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ubuntu:20.04 as build</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ARG</span> branch<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>.2<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> DEBIAN_FRONTEND noninteractive<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> sed -ri <span style="color:#e6db74">&#39;s/(ports|deb|security|archive).(debian.org|ubuntu.com)/mirrors.tuna.tsinghua.edu.cn/g&#39;</span> /etc/apt/sources.list <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> apt-get update<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /opt</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># COPY chrony . # 二选一</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e">#RUN apt-get install -y git &amp;&amp; git clone --branch ${branch} https://git.tuxfamily.org/chrony/chrony.git</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> apt-get install -y wget <span style="color:#f92672">&amp;&amp;</span> wget https://download.tuxfamily.org/chrony/chrony-<span style="color:#e6db74">${</span>branch<span style="color:#e6db74">}</span>.tar.gz <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> tar zxf chrony-<span style="color:#e6db74">${</span>branch<span style="color:#e6db74">}</span>.tar.gz <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> mv chrony-<span style="color:#e6db74">${</span>branch<span style="color:#e6db74">}</span> chrony <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> rm -f chrony-<span style="color:#e6db74">${</span>branch<span style="color:#e6db74">}</span>.tar.gz<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> apt-get install -y <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    bison asciidoctor <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    gcc <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    make <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    pkg-config <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libcap-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    pps-tools <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libedit-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    nettle-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libnss3-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libtomcrypt-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libgnutls28-dev <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    libseccomp-dev<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> cd chrony; <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    CFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;-static -s&#39;</span> LDFLAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;-static -lm&#39;</span>  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      ./configure <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --enable-scfilter <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      --enable-ntp-signd <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> make; echo $?; <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    mkdir -p /install_root; <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    make DESTDIR<span style="color:#f92672">=</span>/install_root install <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> find /install_root<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> rm -rf /install_root/usr/local/share <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#f92672">&amp;&amp;</span> rmdir /install_root/var/lib/chrony/ /install_root/etc<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> scratch AS bin</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /install_root /<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>buildx 一步编译出软件包</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker buildx build -f Dockerfile.chrony --platform linux/amd64 --target bin --output installer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>file installer/<span style="color:#f92672">{</span>usr/local/bin/chronyc,usr/local/sbin/chronyd<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>installer/usr/local/bin/chronyc:  ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>a8851c783b1074f3414d8b38bb337cb10a8b016d, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span style="display:flex;"><span>installer/usr/local/sbin/chronyd: ELF 64-bit LSB executable, x86-64, version <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>SYSV<span style="color:#f92672">)</span>, statically linked, BuildID<span style="color:#f92672">[</span>sha1<span style="color:#f92672">]=</span>a7ed52ca561252969d5e0f29b8894380b70bd8c5, <span style="color:#66d9ef">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 多平台编译</span>
+</span></span><span style="display:flex;"><span>docker buildx build  . --platform linux/amd64,linux/arm64  --target bin --output installer
+</span></span></code></pre></div><h2 id="有了二进制文件该如何部署服务呢">
+  有了二进制文件该如何部署服务呢？
+  <a class="anchor" href="#%e6%9c%89%e4%ba%86%e4%ba%8c%e8%bf%9b%e5%88%b6%e6%96%87%e4%bb%b6%e8%af%a5%e5%a6%82%e4%bd%95%e9%83%a8%e7%bd%b2%e6%9c%8d%e5%8a%a1%e5%91%a2">#</a>
+</h2>
+<p>如下是写好的 systemd service 文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/chrony.conf
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Generated by TODO
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Use public servers from the pool.ntp.org project.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Please consider joining the pool (http://www.pool.ntp.org/join.html).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">server pool.ntp.org iburst
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">driftfile /var/lib/chrony/drift
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">makestep 1.0 3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Enable kernel synchronization of the real-time clock (RTC).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">rtcsync
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">allow 0.0.0.0/0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">local stratum 10
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">logdir /var/log/chrony
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">log measurements statistics tracking
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/chrony.keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># This file is solely used for NTP authentication with symmetric keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># as defined by RFC 1305 and RFC 5905.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># It can contain ID/key pairs which can be generated using the “keygen” option
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># from “chronyc”; for example:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># chronyc keygen 1 SHA256 256 &gt;&gt; /etc/chrony/chrony.keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># would generate a 256-bit SHA-256 key using ID 1.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># A list of supported hash functions and output encoding is available by
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># consulting the &#34;keyfile&#34; directive in the chrony.conf(5) man page.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/systemd/system/chrony.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Unit]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Description=chrony, an NTP client/server
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Documentation=man:chronyd(8) man:chronyc(1) man:chrony.conf(5)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Conflicts=openntpd.service ntp.service ntpsec.service systemd-timesyncd.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Wants=time-sync.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Before=time-sync.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">After=network.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># ConditionCapability=CAP_SYS_TIME
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Service]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Type=forking
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># PIDFile=/run/chronyd.pid
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># EnvironmentFile=-/etc/default/chrony
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Starter takes care of special cases mostly for containers
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ExecStart=/usr/sbin/chronyd -F -1 -d -f /etc/chrony.conf
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PrivateTmp=yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ProtectHome=yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ProtectSystem=full
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Install]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Alias=chronyd.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">WantedBy=multi-user.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>systemctl enable --now chrony
+</span></span></code></pre></div><h2 id="到这里就可以了吗">
+  到这里就可以了吗？
+  <a class="anchor" href="#%e5%88%b0%e8%bf%99%e9%87%8c%e5%b0%b1%e5%8f%af%e4%bb%a5%e4%ba%86%e5%90%97">#</a>
+</h2>
+<p>当我们执行 <code>timedatectl set-ntp off</code> 后, chronyd 服务并没有按照预期停止时间同步。根据
+  <a href="http://www.freedesktop.org/wiki/Software/systemd/timedated">文档 timedated</a> , 命令 <code>timedatectl set-ntp off</code> 会启动或停止 <code>systemd-timedated.service</code>; 
+  <a href="https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html">文档 systemd-timedated.service</a> 描述, systemd-timedated.service 会从 <code>/usr/lib/systemd/ntp-units.d/50-chronyd.list</code> 文件中启停系统时间同步服务。当前使用的时间服务是 chrony，需要覆盖文件<code>/usr/lib/systemd/ntp-units.d/50-chronyd.list</code>中的值，使得 <code>timedatectl set-ntp off</code> 能够按照预期启停时间同步.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;chrony.service&#39;</span> &gt;/usr/lib/systemd/ntp-units.d/50-chronyd.list
+</span></span></code></pre></div><p>到这里，chrony 正式工作了.</p>
+<h2 id="安装-chrony-service-的完整脚本">
+  安装 chrony service 的完整脚本
+  <a class="anchor" href="#%e5%ae%89%e8%a3%85-chrony-service-%e7%9a%84%e5%ae%8c%e6%95%b4%e8%84%9a%e6%9c%ac">#</a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>set -o errtrace
+</span></span><span style="display:flex;"><span>set -o errexit
+</span></span><span style="display:flex;"><span>set -o nounset
+</span></span><span style="display:flex;"><span>set -o pipefail
+</span></span><span style="display:flex;"><span>set -o xtrace
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd <span style="color:#66d9ef">$(</span>dirname <span style="color:#e6db74">&#34;</span>$0<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $EUID -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;This script must be run as root&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DIR<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>dirname <span style="color:#66d9ef">$(</span>realpath $0<span style="color:#66d9ef">))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>install_chrony<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    systemctl stop chrony <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>    systemctl disable chrony <span style="color:#f92672">||</span> true <span style="color:#75715e"># 向前兼容 ubuntu 20.04 中可能会安装有 chrony</span>
+</span></span><span style="display:flex;"><span>    systemctl stop chronyd <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>    systemctl disable chronyd <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># ubuntu 20.04 中会有此服务</span>
+</span></span><span style="display:flex;"><span>    systemctl stop systemd-timesyncd <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>    systemctl disable systemd-timesyncd <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    chown root:root /var/run/chrony <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># for chrony logdir on ubuntu</span>
+</span></span><span style="display:flex;"><span>    rm -rf /var/log/chrony
+</span></span><span style="display:flex;"><span>    mkdir -p /var/log/chrony
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    mkdir -p /var/lib/chrony/
+</span></span><span style="display:flex;"><span>    mkdir -p /etc/chrony/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># ubuntu 默认的配置文件位置是 /etc/chrony/chrony.conf</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># centos7 默认的配置文件位置是 /etc/chrony.conf</span>
+</span></span><span style="display:flex;"><span>    test -f <span style="color:#e6db74">&#34;/etc/chrony/chrony.conf&#34;</span> <span style="color:#f92672">&amp;&amp;</span> mv /etc/chrony/chrony.conf /etc/chrony/chrony.conf.<span style="color:#66d9ef">$(</span>date <span style="color:#e6db74">&#34;+%Y-%m-%d_%H%M%S&#34;</span><span style="color:#66d9ef">)</span>.bak
+</span></span><span style="display:flex;"><span>    test -f /etc/chrony.conf <span style="color:#f92672">&amp;&amp;</span> mv /etc/chrony.conf /etc/chrony.conf.<span style="color:#66d9ef">$(</span>date <span style="color:#e6db74">&#34;+%Y-%m-%d_%H%M%S&#34;</span><span style="color:#66d9ef">)</span>.bak
+</span></span><span style="display:flex;"><span>    ln -s -f /etc/chrony.conf /etc/chrony/chrony.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/chrony.conf
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Generated by TODO
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Use public servers from the pool.ntp.org project.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Please consider joining the pool (http://www.pool.ntp.org/join.html).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">server pool.ntp.org iburst
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">driftfile /var/lib/chrony/drift
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">makestep 1.0 3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Enable kernel synchronization of the real-time clock (RTC).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">rtcsync
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">allow 0.0.0.0/0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">local stratum 10
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">logdir /var/log/chrony
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">log measurements statistics tracking
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/chrony.keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># This file is solely used for NTP authentication with symmetric keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># as defined by RFC 1305 and RFC 5905.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># It can contain ID/key pairs which can be generated using the “keygen” option
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># from “chronyc”; for example:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># chronyc keygen 1 SHA256 256 &gt;&gt; /etc/chrony/chrony.keys
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># would generate a 256-bit SHA-256 key using ID 1.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># A list of supported hash functions and output encoding is available by
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># consulting the &#34;keyfile&#34; directive in the chrony.conf(5) man page.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cat <span style="color:#e6db74">&lt;&lt;EOF &gt;/etc/systemd/system/chrony.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Unit]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Description=chrony, an NTP client/server
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Documentation=man:chronyd(8) man:chronyc(1) man:chrony.conf(5)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Conflicts=openntpd.service ntp.service ntpsec.service systemd-timesyncd.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Wants=time-sync.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Before=time-sync.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">After=network.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># ConditionCapability=CAP_SYS_TIME
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Service]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Type=forking
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># PIDFile=/run/chronyd.pid
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># EnvironmentFile=-/etc/default/chrony
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Starter takes care of special cases mostly for containers
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ExecStart=/usr/sbin/chronyd -F -1 -d -f /etc/chrony.conf
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">PrivateTmp=yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ProtectHome=yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ProtectSystem=full
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[Install]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Alias=chronyd.service
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">WantedBy=multi-user.target
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cp usr/local/sbin/chronyd /usr/sbin/chronyd
+</span></span><span style="display:flex;"><span>    cp usr/local/bin/chronyc /usr/bin/chronyc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># timedatectl set-ntp off 会触发</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># http://www.freedesktop.org/wiki/Software/systemd/timedated</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># systemctl status systemd-timedated</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html#</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># STEP: centos7.9</span>
+</span></span><span style="display:flex;"><span>    ls /usr/lib/systemd/ntp-units.d/
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#39;chrony.service&#39;</span> &gt;/usr/lib/systemd/ntp-units.d/50-chronyd.list <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># /usr/sbin/chronyd -f /etc/chrony/chrony.conf -d -R</span>
+</span></span><span style="display:flex;"><span>    systemctl enable --now chrony <span style="color:#f92672">||</span> true
+</span></span><span style="display:flex;"><span>    systemctl restart chrony
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>install_chrony
+</span></span></code></pre></div><h2 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h2>
+<ul>
+<li>
+  <a href="https://en.wikipedia.org/wiki/Chrony">chrony</a></li>
+<li>
+  <a href="https://zhangguanzhang.github.io/2021/01/23/chrony/#/">静态编译 chrony</a></li>
+<li>
+  <a href="http://www.freedesktop.org/wiki/Software/systemd/timedated">文档 timedated</a></li>
+<li>
+  <a href="https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html">文档 systemd-timedated.service</a></li>
+</ul></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/5a63be04782939aee7958c9fa5563c5b2968fa90" title='最后修改者 exfly | November 25, 2022' target="_blank" rel="noopener">
+      <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>November 25, 2022</span>
+    </a>
+  </div>
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#有了二进制文件该如何部署服务呢">有了二进制文件该如何部署服务呢？</a></li>
+        <li><a href="#到这里就可以了吗">到这里就可以了吗？</a></li>
+        <li><a href="#安装-chrony-service-的完整脚本">安装 chrony service 的完整脚本</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

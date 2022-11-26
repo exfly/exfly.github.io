@@ -5,7 +5,7 @@
     <link>/</link>
     <description>Recent content on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 14 Sep 2022 09:46:01 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 26 Nov 2022 12:56:31 +0800</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>友链</title>
       <link>/links/</link>
@@ -26,6 +26,15 @@ zhile.io # zhile.io</description>
       <description>ExFly Keep It Simple &amp;amp; Stupid.
 Description # Focusing on computer technology, has basic operating system, computer network, data structure and algorithm knowledge, good at back-end, distributed, master certain data analysis knowledge, understand basic Linux server maintenance, understand the basic maintenance of the database, understand Basic network security, convinced that technology changes the world, and hopes to have a place in the computer industry.
 Skills # Golang &amp;gt; Java &amp;gt; Python &amp;gt; others Distribution, Microservice Linux Docker DevOps k8s Project # newdb # Implement RDBMS</description>
+    </item>
+    
+    <item>
+      <title>chrony 静态编译及跨 Linux 发行版安装 systemd service</title>
+      <link>/posts/linux/static-build-chrony/</link>
+      <pubDate>Sat, 26 Nov 2022 12:56:31 +0800</pubDate>
+      
+      <guid>/posts/linux/static-build-chrony/</guid>
+      <description>&lt;p&gt;文章简介：chrony 静态编译及跨操作系统安装 systemd service&lt;/p&gt;</description>
     </item>
     
     <item>

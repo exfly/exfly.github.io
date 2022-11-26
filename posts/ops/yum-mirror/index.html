@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介: 使用 nginx 制作一个 yum mirror">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="使用 nginx 制作一个 yum mirror" />
+<meta property="og:description" content="文章简介: 使用 nginx 制作一个 yum mirror" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/ops/yum-mirror/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-25T17:07:58+08:00" />
+<meta property="article:modified_time" content="2021-10-25T17:07:58+08:00" />
+
+<title>使用 nginx 制作一个 yum mirror | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.6d5bc90571ab54cef63ef19cd89657a7a11c6517509c2694c8af149895989893.js" ></script>
+
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>home</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/section/">section</a></p>
+</li>
+<li>
+<p>
+  <a href="/about/">about</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>使用 nginx 制作一个 yum mirror</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents"></nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/ops/yum-mirror/">使用 nginx 制作一个 yum mirror</a>
+  </h1>
+  
+  <h5>October 25, 2021</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/nginx/">nginx</a>, 
+      <a href="/tags/Linux/">Linux</a>
+  </div>
+  
+
+
+
+<p>文章简介: 使用 nginx 制作一个 yum mirror</p>
+<p>nginx 可以支持缓存文件，故将 nginx 配置成 yum 包 mirror server，带文件自动过期, 并限制最大文件过期时间.</p>
+<pre tabindex="0"><code>#内容存储到 pkg_mirror.conf 文件中
+
+upstream centos_mirror {
+    server mirrors.tuna.tsinghua.edu.cn;
+}
+
+# centos 7 yum local source
+server {
+    listen 7000;
+    server_name $host;
+    index index.html ;
+    root /opt/nginx/cache/;
+
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Headers X-Requested-With;
+    add_header Access-Control-Allow-Methods GET,POST,OPTIONS;
+
+    location / {
+        location ~ (.xml|.gz|.bz2|.rpm)$ {
+            proxy_store on;
+            proxy_temp_path &#34;/opt/nginx/cache/&#34;;
+            proxy_set_header Accept-Encoding identity;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Host mirrors.tuna.tsinghua.edu.cn;
+            proxy_next_upstream error http_502;
+            if ( !-e $request_filename ) {
+                proxy_pass http://centos_mirror;
+            }
+            if ( -e $request_filename ) {
+                expires 6h; #保存1天
+            }
+        }
+
+        proxy_pass http://centos_mirror;
+    }
+}
+</code></pre><pre tabindex="0"><code># 将文件存储到 docker-compose.yaml 中
+version: &#34;3&#34;
+services:
+  repo_mirror:
+    container_name: repo_mirror
+    image: nginx:latest
+    ports:
+      - 7000:7000
+    volumes:
+      - ./config/pkg_mirror.conf:/etc/nginx/conf.d/pkg_mirror.conf
+      - ./mirror_cache:/opt/nginx/cache
+    logging:
+      driver: &#34;json-file&#34;
+      options:
+        max-size: &#34;512m&#34;
+    restart: always
+</code></pre><pre tabindex="0"><code>docker-compose up -d
+
+# 对于 CentOS 7
+sudo sed -e &#39;s|^mirrorlist=|#mirrorlist=|g&#39; \
+         -e &#39;s|^#baseurl=http://mirror.centos.org|baseurl=http://HOST_IP:7000|g&#39; \
+         -i.bak \
+         /etc/yum.repos.d/CentOS-*.repo
+
+# 对于 CentOS 8
+sudo sed -e &#39;s|^mirrorlist=|#mirrorlist=|g&#39; \
+         -e &#39;s|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=http://HOST_IP:7000/centos|g&#39; \
+         -i.bak \
+         /etc/yum.repos.d/CentOS-*.repo
+
+sudo yum makecache
+</code></pre></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents"></nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

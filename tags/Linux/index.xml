@@ -43,6 +43,15 @@
     </item>
     
     <item>
+      <title>使用 nginx 制作一个 yum mirror</title>
+      <link>/posts/ops/yum-mirror/</link>
+      <pubDate>Mon, 25 Oct 2021 17:07:58 +0800</pubDate>
+      
+      <guid>/posts/ops/yum-mirror/</guid>
+      <description>&lt;p&gt;文章简介: 使用 nginx 制作一个 yum mirror&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Vim学习</title>
       <link>/posts/tools/vim/</link>
       <pubDate>Wed, 10 Jan 2018 11:24:31 +0800</pubDate>

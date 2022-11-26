@@ -5,7 +5,16 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 14 Sep 2022 09:46:01 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 26 Nov 2022 12:56:31 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux</title>
+      <link>/tags/Linux/</link>
+      <pubDate>Sat, 26 Nov 2022 12:56:31 +0800</pubDate>
+      
+      <guid>/tags/Linux/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>db</title>
       <link>/tags/db/</link>
@@ -30,15 +39,6 @@
       <pubDate>Thu, 23 Jun 2022 09:39:38 +0800</pubDate>
       
       <guid>/tags/fix/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Linux</title>
-      <link>/tags/Linux/</link>
-      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
-      
-      <guid>/tags/Linux/</guid>
       <description></description>
     </item>
     

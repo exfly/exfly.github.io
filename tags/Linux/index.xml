@@ -5,7 +5,16 @@
     <link>/tags/Linux/</link>
     <description>Recent content in Linux on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 01 Jan 2022 20:44:16 +0800</lastBuildDate><atom:link href="/tags/Linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 26 Nov 2022 12:56:31 +0800</lastBuildDate><atom:link href="/tags/Linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>chrony 静态编译及跨 Linux 发行版安装 systemd service</title>
+      <link>/posts/linux/static-build-chrony/</link>
+      <pubDate>Sat, 26 Nov 2022 12:56:31 +0800</pubDate>
+      
+      <guid>/posts/linux/static-build-chrony/</guid>
+      <description>&lt;p&gt;文章简介：chrony 静态编译及跨操作系统安装 systemd service&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Linux Network 如何配置及工作原理</title>
       <link>/posts/linux/linux_network/</link>

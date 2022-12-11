@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/zh.search.min.05c96a2d411cdbad25f4fd4070e57cbbef0142ef4abcdae12af3e597de6d6223.js" ></script>
+  <script defer src="/zh.search.min.61877fc14c660848d5ab677069edb7c0f539ed104034656074d6656eb01a75da.js" ></script>
 
   <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
 <!--
@@ -138,6 +138,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#处理方法">处理方法</a>
           <ul>
             <li><a href="#ubuntu-2204">ubuntu 22.04</a></li>
+            <li><a href="#rocylinux-9">rocylinux 9</a></li>
           </ul>
         </li>
         <li><a href="#原因">原因</a></li>
@@ -275,7 +276,12 @@ systemctl restart sshd
 ==&gt; default: Checking for guest additions in VM...
 ==&gt; default: Mounting shared folders...
     default: /vagrant =&gt; /Volumes/code/
-</code></pre><h2 id="原因">
+</code></pre><h3 id="rocylinux-9">
+  rocylinux 9
+  <a class="anchor" href="#rocylinux-9">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>update-crypto-policies --set LEGACY
+</span></span></code></pre></div><h2 id="原因">
   原因
   <a class="anchor" href="#%e5%8e%9f%e5%9b%a0">#</a>
 </h2>
@@ -308,7 +314,7 @@ systemctl restart sshd
 
 
 
-  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/bcce6074d475cb7959cd7d1dc31912ad82a1919c" title='最后修改者 exfly | December 11, 2022' target="_blank" rel="noopener">
+  <div><a class="flex align-center" href="https://github.com/exfly/HugoBlog/commit/f4f80d67d60324f4ae8d8798db7c1ccf6c218286" title='最后修改者 exfly | December 11, 2022' target="_blank" rel="noopener">
       <img src="/svg/calendar.svg" class="book-icon" alt="Calendar" />
       <span>December 11, 2022</span>
     </a>
@@ -351,6 +357,7 @@ systemctl restart sshd
         <li><a href="#处理方法">处理方法</a>
           <ul>
             <li><a href="#ubuntu-2204">ubuntu 22.04</a></li>
+            <li><a href="#rocylinux-9">rocylinux 9</a></li>
           </ul>
         </li>
         <li><a href="#原因">原因</a></li>

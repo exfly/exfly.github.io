@@ -43,11 +43,29 @@
     </item>
     
     <item>
+      <title>bug</title>
+      <link>/tags/bug/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/tags/bug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>network</title>
       <link>/tags/network/</link>
       <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
       
       <guid>/tags/network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vagrant</title>
+      <link>/tags/vagrant/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/tags/vagrant/</guid>
       <description></description>
     </item>
     

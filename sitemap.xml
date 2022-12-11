@@ -39,11 +39,20 @@
     <loc>/tags/fix/</loc>
     <lastmod>2022-06-23T10:08:19+08:00</lastmod>
   </url><url>
+    <loc>/tags/bug/</loc>
+    <lastmod>2022-01-01T20:44:16+08:00</lastmod>
+  </url><url>
     <loc>/posts/linux/linux_network/</loc>
     <lastmod>2022-01-03T17:23:51+08:00</lastmod>
   </url><url>
     <loc>/tags/network/</loc>
     <lastmod>2022-01-03T17:23:51+08:00</lastmod>
+  </url><url>
+    <loc>/tags/vagrant/</loc>
+    <lastmod>2022-01-01T20:44:16+08:00</lastmod>
+  </url><url>
+    <loc>/posts/linux/vagrant-Authentication-failure-Retrying/</loc>
+    <lastmod>2022-01-01T20:44:16+08:00</lastmod>
   </url><url>
     <loc>/tags/commands/</loc>
     <lastmod>2022-01-03T17:23:51+08:00</lastmod>

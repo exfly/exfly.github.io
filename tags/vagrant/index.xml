@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vagrant on Exfly Blog</title>
+    <link>/tags/vagrant/</link>
+    <description>Recent content in vagrant on Exfly Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 01 Jan 2022 20:44:16 +0800</lastBuildDate><atom:link href="/tags/vagrant/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>vagrant up Authentication failure. Retrying</title>
+      <link>/posts/linux/vagrant-Authentication-failure-Retrying/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/posts/linux/vagrant-Authentication-failure-Retrying/</guid>
+      <description>&lt;p&gt;文章简介：&lt;code&gt;ubuntu 22.04&lt;/code&gt; &lt;code&gt;vagrant up&lt;/code&gt; &lt;code&gt;Authentication failure. Retrying&lt;/code&gt;, &lt;code&gt;vagrant ssh&lt;/code&gt; 可以登录进 vm 问题处理&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

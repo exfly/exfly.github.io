@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="文章简介：ubuntu 22.04 vagrant up Authentication failure. Retrying, vagrant ssh 可以登录进 vm 问题处理">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="vagrant up Authentication failure. Retrying" />
+<meta property="og:description" content="文章简介：ubuntu 22.04 vagrant up Authentication failure. Retrying, vagrant ssh 可以登录进 vm 问题处理" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/linux/vagrant-Authentication-failure-Retrying/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-01T20:44:16+08:00" />
+<meta property="article:modified_time" content="2022-01-01T20:44:16+08:00" />
+
+<title>vagrant up Authentication failure. Retrying | Exfly Blog</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" >
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/zh.search.min.bd6b8b6d5038518599442b3d393a52e0e60ff57952439be8082da8ad47f60525.js" ></script>
+
+  <script defer src="/sw.min.6f6f90fcb8eb1c49ec389838e6b801d0de19430b8e516902f8d75c3c8bd98739.js" ></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><span>Exfly Blog</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="搜索" aria-label="搜索" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li>
+<p><strong>home</strong></p>
+</li>
+<li>
+<p>
+  <a href="/docs/section/">section</a></p>
+</li>
+<li>
+<p>
+  <a href="/about/">about</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+  
+<ul>
+  
+  <li>
+    <a href="/posts/" >
+        Blog
+      </a>
+  </li>
+  
+  <li>
+    <a href="https://github.com/exfly/" target="_blank" rel="noopener">
+        Github
+      </a>
+  </li>
+  
+</ul>
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>vagrant up Authentication failure. Retrying</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#问题现象">问题现象</a></li>
+        <li><a href="#处理方法">处理方法</a>
+          <ul>
+            <li><a href="#ubuntu-2204">ubuntu 22.04</a></li>
+          </ul>
+        </li>
+        <li><a href="#原因">原因</a></li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#ref">ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+<article class="markdown">
+  <h1>
+    <a href="/posts/linux/vagrant-Authentication-failure-Retrying/">vagrant up Authentication failure. Retrying</a>
+  </h1>
+  
+  <h5>January 1, 2022</h5>
+
+
+
+  
+
+  
+  <div>
+    
+      <a href="/tags/Linux/">Linux</a>, 
+      <a href="/tags/vagrant/">vagrant</a>, 
+      <a href="/tags/bug/">bug</a>
+  </div>
+  
+
+
+
+<p>文章简介：<code>ubuntu 22.04</code> <code>vagrant up</code> <code>Authentication failure. Retrying</code>, <code>vagrant ssh</code> 可以登录进 vm 问题处理</p>
+<h2 id="问题现象">
+  问题现象
+  <a class="anchor" href="#%e9%97%ae%e9%a2%98%e7%8e%b0%e8%b1%a1">#</a>
+</h2>
+<p><code>vagrant up</code> 会报错 <code>    default: Warning: Authentication failure. Retrying...</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ vagrant init ubuntu/jammy64 <span style="color:#75715e"># ubuntu 22.04</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ vagrant up
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Bringing machine <span style="color:#e6db74">&#39;default&#39;</span> up with <span style="color:#e6db74">&#39;virtualbox&#39;</span> provider...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Importing base box <span style="color:#e6db74">&#39;rockylinux/9&#39;</span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Matching MAC address <span style="color:#66d9ef">for</span> NAT networking...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Checking <span style="color:#66d9ef">if</span> box <span style="color:#e6db74">&#39;rockylinux/9&#39;</span> version <span style="color:#e6db74">&#39;1.0.0&#39;</span> is up to date...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Setting the name of the VM: network_default_1670762466033_92955
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Clearing any previously set network interfaces...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Preparing network interfaces based on configuration...
+</span></span><span style="display:flex;"><span>    default: Adapter 1: nat
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Forwarding ports...
+</span></span><span style="display:flex;"><span>    default: <span style="color:#ae81ff">22</span> <span style="color:#f92672">(</span>guest<span style="color:#f92672">)</span> <span style="color:#f92672">=</span>&gt; <span style="color:#ae81ff">2222</span> <span style="color:#f92672">(</span>host<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>adapter 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Booting VM...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span>&gt; default: Waiting <span style="color:#66d9ef">for</span> machine to boot. This may take a few minutes...
+</span></span><span style="display:flex;"><span>    default: SSH address: 127.0.0.1:2222
+</span></span><span style="display:flex;"><span>    default: SSH username: vagrant
+</span></span><span style="display:flex;"><span>    default: SSH auth method: private key
+</span></span><span style="display:flex;"><span>    default: Warning: Authentication failure. Retrying...
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ vagrant --debug up
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.807561 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.session[20120]: allowed methods: publickey</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.807635 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.methods.none[20134]: none failed</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.807714 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.session[20120]: trying publickey</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.809423 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.agent[20148]: connecting to ssh-agent</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.809776 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.agent[20148]: sending agent request 1 len 48</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.810239 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.agent[20148]: received agent packet 5 len 1</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.810303 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.agent[20148]: sending agent request 11 len 0</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.810656 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.agent[20148]: received agent packet 12 len 841</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.811330 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.methods.publickey[20170]: trying publickey (dd:3b:b8:2e:85:04:06:e9:ab:ff:a8:0a:c0:04:6e:d6)</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.811474 <span style="color:#75715e">#278356] DEBUG -- socket[2010c]: using encrypt-then-mac</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.811624 <span style="color:#75715e">#278356] DEBUG -- socket[2010c]: queueing packet nr 5 type 50 len 352</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.811724 <span style="color:#75715e">#278356] DEBUG -- socket[2010c]: sent 420 bytes</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.819401 <span style="color:#75715e">#278356] DEBUG -- socket[2010c]: read 100 bytes</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.819740 <span style="color:#75715e">#278356] DEBUG -- socket[2010c]: received packet nr 5 type 51 len 32</span>
+</span></span><span style="display:flex;"><span>D, <span style="color:#f92672">[</span>2022-08-18T08:41:57.819872 <span style="color:#75715e">#278356] DEBUG -- net.ssh.authentication.session[20120]: allowed methods: publickey</span>
+</span></span><span style="display:flex;"><span>E, <span style="color:#f92672">[</span>2022-08-18T08:41:57.819952 <span style="color:#75715e">#278356] ERROR -- net.ssh.authentication.session[20120]: all authorization methods failed (tried none, publickey)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DEBUG ssh: <span style="color:#f92672">==</span> Net-SSH connection debug-level log END <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span> INFO ssh: SSH not ready: <span style="color:#75715e">#&lt;Vagrant::Errors::SSHAuthenticationFailed: SSH authentication failed! This is typically caused by the public/private</span>
+</span></span><span style="display:flex;"><span>keypair <span style="color:#66d9ef">for</span> the SSH user not being properly set on the guest VM. Please
+</span></span><span style="display:flex;"><span>verify that the guest VM is setup with the proper public key, and that
+</span></span><span style="display:flex;"><span>the private key path <span style="color:#66d9ef">for</span> Vagrant is setup properly as well.&gt;
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p><code>vagrant ssh</code> 可以登录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ journalctl -u sshd -f -n <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>Dec <span style="color:#ae81ff">11</span> 12:42:49 10.0.2.15 sshd<span style="color:#f92672">[</span>1466<span style="color:#f92672">]</span>: userauth_pubkey: key type ssh-rsa not in PubkeyAcceptedAlgorithms <span style="color:#f92672">[</span>preauth<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Dec <span style="color:#ae81ff">11</span> 12:42:49 10.0.2.15 sshd<span style="color:#f92672">[</span>1466<span style="color:#f92672">]</span>: Connection closed by authenticating user vagrant 10.0.2.2 port <span style="color:#ae81ff">58914</span> <span style="color:#f92672">[</span>preauth<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Dec <span style="color:#ae81ff">11</span> 12:42:49 10.0.2.15 sshd<span style="color:#f92672">[</span>1458<span style="color:#f92672">]</span>: pam_unix<span style="color:#f92672">(</span>sshd:session<span style="color:#f92672">)</span>: session opened <span style="color:#66d9ef">for</span> user vagrant<span style="color:#f92672">(</span>uid<span style="color:#f92672">=</span>1000<span style="color:#f92672">)</span> by <span style="color:#f92672">(</span>uid<span style="color:#f92672">=</span>0<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>可以看到错误原因是 <code>userauth_pubkey: key type ssh-rsa not in PubkeyAcceptedAlgorithms</code>.</p>
+<h2 id="处理方法">
+  处理方法
+  <a class="anchor" href="#%e5%a4%84%e7%90%86%e6%96%b9%e6%b3%95">#</a>
+</h2>
+<h3 id="ubuntu-2204">
+  ubuntu 22.04
+  <a class="anchor" href="#ubuntu-2204">#</a>
+</h3>
+<p>需要预先准备两个 terminal: term1 和 term2.</p>
+<pre tabindex="0"><code># term1:
+vagrant up # 执行完后切换到 term2
+
+# term2:
+vagrant ssh
+echo &#39;PubkeyAcceptedKeyTypes=+ssh-rsa&#39; &gt;&gt; /etc/ssh/sshd_config
+systemctl restart sshd
+
+# term1
+# 可以看到日志, 可以看到问题已经解决了
+
+==&gt; default: Booting VM...
+==&gt; default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2222
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+    default: Warning: Authentication failure. Retrying...
+    default: Warning: Authentication failure. Retrying...
+    default: Warning: Authentication failure. Retrying...
+    default:
+    default: Vagrant insecure key detected. Vagrant will automatically replace
+    default: this with a newly generated keypair for better security.
+    default:
+    default: Inserting generated public key within guest...
+    default: Removing insecure key from the guest if it&#39;s present...
+    default: Key inserted! Disconnecting and reconnecting using new SSH key...
+==&gt; default: Machine booted and ready!
+==&gt; default: Checking for guest additions in VM...
+==&gt; default: Mounting shared folders...
+    default: /vagrant =&gt; /Volumes/code/
+</code></pre><h2 id="原因">
+  原因
+  <a class="anchor" href="#%e5%8e%9f%e5%9b%a0">#</a>
+</h2>
+<p>TODO</p>
+<p>
+  <a href="https://github.com/hashicorp/vagrant/issues/12840">https://github.com/hashicorp/vagrant/issues/12840</a>
+
+  <a href="https://bugzilla.redhat.com/show_bug.cgi?id=2061607">https://bugzilla.redhat.com/show_bug.cgi?id=2061607</a>
+
+  <a href="https://bbs.archlinux.org/viewtopic.php?id=270005">https://bbs.archlinux.org/viewtopic.php?id=270005</a></p>
+<h2 id="总结">
+  总结
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93">#</a>
+</h2>
+<p>TODO</p>
+<h2 id="ref">
+  ref
+  <a class="anchor" href="#ref">#</a>
+</h2>
+<ul>
+<li>
+  <a href="https://netplan.io/">network_configuration</a></li>
+</ul></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#问题现象">问题现象</a></li>
+        <li><a href="#处理方法">处理方法</a>
+          <ul>
+            <li><a href="#ubuntu-2204">ubuntu 22.04</a></li>
+          </ul>
+        </li>
+        <li><a href="#原因">原因</a></li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#ref">ref</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

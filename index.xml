@@ -65,6 +65,15 @@ Skills # Golang &amp;gt; Java &amp;gt; Python &amp;gt; others Distribution, Micr
     </item>
     
     <item>
+      <title>vagrant up Authentication failure. Retrying</title>
+      <link>/posts/linux/vagrant-Authentication-failure-Retrying/</link>
+      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/posts/linux/vagrant-Authentication-failure-Retrying/</guid>
+      <description>&lt;p&gt;文章简介：&lt;code&gt;ubuntu 22.04&lt;/code&gt; &lt;code&gt;vagrant up&lt;/code&gt; &lt;code&gt;Authentication failure. Retrying&lt;/code&gt;, &lt;code&gt;vagrant ssh&lt;/code&gt; 可以登录进 vm 问题处理&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Linux 开机自启动脚本机器实现原理</title>
       <link>/posts/linux/boot_script/</link>
       <pubDate>Sat, 01 Jan 2022 18:11:44 +0800</pubDate>

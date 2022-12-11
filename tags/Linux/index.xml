@@ -5,7 +5,16 @@
     <link>/tags/Linux/</link>
     <description>Recent content in Linux on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 26 Nov 2022 12:56:31 +0800</lastBuildDate><atom:link href="/tags/Linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Dec 2022 20:44:16 +0800</lastBuildDate><atom:link href="/tags/Linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>vagrant up Authentication failure. Retrying</title>
+      <link>/posts/linux/vagrant-Authentication-failure-Retrying/</link>
+      <pubDate>Sun, 11 Dec 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/posts/linux/vagrant-Authentication-failure-Retrying/</guid>
+      <description>&lt;p&gt;文章简介：&lt;code&gt;ubuntu 22.04&lt;/code&gt; &lt;code&gt;vagrant up&lt;/code&gt; &lt;code&gt;Authentication failure. Retrying&lt;/code&gt;, &lt;code&gt;vagrant ssh&lt;/code&gt; 可以登录进 vm 问题处理&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>chrony 静态编译及跨 Linux 发行版安装 systemd service</title>
       <link>/posts/linux/static-build-chrony/</link>
@@ -22,15 +31,6 @@
       
       <guid>/posts/linux/linux_network/</guid>
       <description>&lt;p&gt;文章简介：Linux Network 是如何使用及工作的&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>vagrant up Authentication failure. Retrying</title>
-      <link>/posts/linux/vagrant-Authentication-failure-Retrying/</link>
-      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
-      
-      <guid>/posts/linux/vagrant-Authentication-failure-Retrying/</guid>
-      <description>&lt;p&gt;文章简介：&lt;code&gt;ubuntu 22.04&lt;/code&gt; &lt;code&gt;vagrant up&lt;/code&gt; &lt;code&gt;Authentication failure. Retrying&lt;/code&gt;, &lt;code&gt;vagrant ssh&lt;/code&gt; 可以登录进 vm 问题处理&lt;/p&gt;</description>
     </item>
     
     <item>

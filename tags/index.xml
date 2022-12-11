@@ -5,13 +5,31 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Exfly Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 26 Nov 2022 12:56:31 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Dec 2022 20:44:16 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bug</title>
+      <link>/tags/bug/</link>
+      <pubDate>Sun, 11 Dec 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/tags/bug/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Linux</title>
       <link>/tags/Linux/</link>
-      <pubDate>Sat, 26 Nov 2022 12:56:31 +0800</pubDate>
+      <pubDate>Sun, 11 Dec 2022 20:44:16 +0800</pubDate>
       
       <guid>/tags/Linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>vagrant</title>
+      <link>/tags/vagrant/</link>
+      <pubDate>Sun, 11 Dec 2022 20:44:16 +0800</pubDate>
+      
+      <guid>/tags/vagrant/</guid>
       <description></description>
     </item>
     
@@ -43,29 +61,11 @@
     </item>
     
     <item>
-      <title>bug</title>
-      <link>/tags/bug/</link>
-      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
-      
-      <guid>/tags/bug/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>network</title>
       <link>/tags/network/</link>
       <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
       
       <guid>/tags/network/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>vagrant</title>
-      <link>/tags/vagrant/</link>
-      <pubDate>Sat, 01 Jan 2022 20:44:16 +0800</pubDate>
-      
-      <guid>/tags/vagrant/</guid>
       <description></description>
     </item>
     

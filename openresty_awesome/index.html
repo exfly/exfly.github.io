@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>OpenResty最佳实践 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="OpenResty最佳实践" />
+<meta property="og:description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/openresty_awesome/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-06-12T16:01:38+08:00" />
+<meta property="article:modified_time" content="2020-09-20T15:25:18+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="OpenResty最佳实践"/>
+<meta name="twitter:description" content="如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/openresty_awesome/" /><link rel="prev" href="https://exfly.github.io/beans/" /><link rel="next" href="https://exfly.github.io/gradle_maven/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "OpenResty最佳实践",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/openresty_awesome\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Lua, OpenResty","wordcount":  2166 ,
+        "url": "https:\/\/exfly.github.io\/openresty_awesome\/","datePublished": "2018-06-12T16:01:38+08:00","dateModified": "2020-09-20T15:25:18+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/openresty_awesome/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/openresty_awesome/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">OpenResty最佳实践</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-06-12">2018-06-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2166 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/openresty_awesome/" class="leancloud_visitors" data-flag-title="OpenResty最佳实践">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装luarocks">安装luarocks</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>如果你正在学Lua与openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些lua开发的最佳实践。</p>
+<h1 id="简介">简介</h1>
+<p>openresty中lua ide调试，单元测试比较麻烦；lua对库的管理比较散漫。在公司生产环境，一般没有外网环境，OpenResty的安装和lua项目的部署都比较麻烦。
+结合Python的一些经验，在这里整理一下自己对Lua的理解，以及Lua最佳实践。</p>
+<h1 id="openresty安装">OpenResty安装</h1>
+<p>对于软件，使用编译方式安装比较好，比如Ubuntu，apt-get安装的包一般都会比较旧。如下介绍我的编译参数。这里需要自己下载自己的依赖包：naxsi, nginx-goodies-nginx-sticky-module-ng，pcre，openssl，zlib，并根据我的配置进行修改相应参数</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/openresty <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --add-module<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/third/naxsi-0.55.3/naxsi_src <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --add-module<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/third/nginx-goodies-nginx-sticky-module-ng <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-pcre<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/pcre-8.41 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-openssl<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/openssl-1.0.2k <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-zlib<span class="o">=</span><span class="nv">$HOME</span>/openresty/setupfile/depency/zlib-1.2.11 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-http_v2_module <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-http_sub_module <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-http_stub_status_module <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-http_realip_module <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-cc-opt<span class="o">=</span>-O2 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span> --with-luajit
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="http://blog.51cto.com/1992tao/1865611" target="_blank" rel="noopener noreffer ">这里</a>是一个比较好的 nginx的笔记，可以过一遍</li>
+<li>我在学习的时候，看了这本书<a href="#" rel="">深入理解Nginx模块开发与架构解析</a>,毕竟讲的比较系统，可以借鉴一下</li>
+<li>有问题，知乎，搜索引擎</li>
+</ul>
+<h2 id="安装luarocks">安装luarocks</h2>
+<ul>
+<li>下载地址 <a href="http://luarocks.github.io/luarocks/releases/" target="_blank" rel="noopener noreffer ">http://luarocks.github.io/luarocks/releases/</a></li>
+<li>编译安装</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --with-lua<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --lua-suffix<span class="o">=</span>jit <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --with-lua-include<span class="o">=</span><span class="nv">$HOME</span>/openresty/luajit/include/luajit-2.1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">--prefix 设定 luarocks 的安装目录
+</span></span><span class="line"><span class="cl">--with-lua 则是系统中安装的 lua 的根目录
+</span></span><span class="line"><span class="cl">--lua-suffix 版本后缀，此处因为openresyt的lua解释器使用的是 luajit ,所以此处得写 jit
+</span></span><span class="line"><span class="cl">--with-lua-include 设置 lua 引入一些头文件头文件的目录
+</span></span><span class="line"><span class="cl">make build <span class="o">&amp;&amp;</span> make install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="lua面向对象">lua面向对象</h1>
+<p>lua 借助table以及metatable的概念进行oo的。这里摘了一个博客的代码，看起来还可以。以后可以使用这个。<a href="https://blog.codingnow.com/2006/06/oo_lua.html" target="_blank" rel="noopener noreffer ">Lua 中实现面向对象</a>。
+这里要说一下lua中<a href="https://www.kancloud.cn/digest/luanote/119940" target="_blank" rel="noopener noreffer ">.运算和:的区别</a>，a={};a.fun(a, arg) 等价于 a:fun(arg)，其实就是<code>:</code>可以省略self参数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">_class</span><span class="o">=</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="kr">function</span> <span class="nf">class</span><span class="p">(</span><span class="n">super</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">local</span> <span class="n">class_type</span><span class="o">=</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">class_type.ctor</span><span class="o">=</span><span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="n">class_type.super</span><span class="o">=</span><span class="n">super</span>
+</span></span><span class="line"><span class="cl">    <span class="n">class_type.new</span><span class="o">=</span><span class="kr">function</span><span class="p">(...)</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">local</span> <span class="n">obj</span><span class="o">=</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">local</span> <span class="n">create</span>
+</span></span><span class="line"><span class="cl">                <span class="n">create</span> <span class="o">=</span> <span class="kr">function</span><span class="p">(</span><span class="n">c</span><span class="p">,...)</span>
+</span></span><span class="line"><span class="cl">                    <span class="kr">if</span> <span class="n">c.super</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">create</span><span class="p">(</span><span class="n">c.super</span><span class="p">,...)</span>
+</span></span><span class="line"><span class="cl">                    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">                    <span class="kr">if</span> <span class="n">c.ctor</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">c.ctor</span><span class="p">(</span><span class="n">obj</span><span class="p">,...)</span>
+</span></span><span class="line"><span class="cl">                    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">                <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">                <span class="n">create</span><span class="p">(</span><span class="n">class_type</span><span class="p">,...)</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">            <span class="n">setmetatable</span><span class="p">(</span><span class="n">obj</span><span class="p">,{</span> <span class="n">__index</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">return</span> <span class="n">obj</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">local</span> <span class="n">vtbl</span><span class="o">=</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">_class</span><span class="p">[</span><span class="n">class_type</span><span class="p">]</span><span class="o">=</span><span class="n">vtbl</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="n">setmetatable</span><span class="p">(</span><span class="n">class_type</span><span class="p">,{</span><span class="n">__newindex</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">v</span>
+</span></span><span class="line"><span class="cl">        <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="n">super</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">        <span class="n">setmetatable</span><span class="p">(</span><span class="n">vtbl</span><span class="p">,{</span><span class="n">__index</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">function</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">local</span> <span class="n">ret</span><span class="o">=</span><span class="n">_class</span><span class="p">[</span><span class="n">super</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">vtbl</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">ret</span>
+</span></span><span class="line"><span class="cl">                <span class="kr">return</span> <span class="n">ret</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">end</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="n">class_type</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="基本编码规范-设计">基本编码规范 设计</h1>
+<p><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/web/code_style.html" target="_blank" rel="noopener noreffer ">可以参考OpenResty的最佳实践</a>，平时用起来，大部分跟c的风格差不多吧。主要是所使用的代码风格要统一。</p>
+<h1 id="包管理">包管理</h1>
+<p>lua下有两个包管理系统，LuaDist和LuaRocks</p>
+<h1 id="单元测试">单元测试</h1>
+<ul>
+<li><strong>重点</strong> 如下方法请在命令行中使用类似<code>curl localhost/unittest</code>进行测试，浏览器中看会很痛苦</li>
+<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices/test/unittest.html" target="_blank" rel="noopener noreffer ">OpenResty最佳实践-单元测试</a>给出一种方法。我的处理方法是，在nginx.conf中的server中建一个单独的location，content_by_lua_file 设置unittest.lua。公司用的verynginx，所以我把此配置放到了router.lua中(当然配置方法类似，这个很容易研究，就不放到这里了)。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- file: unittest.lua</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">_M</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">csrf_test</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;test.test_csrf&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">tmp_test</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;test.tmp_test&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">function</span> <span class="nc">_M</span><span class="p">:</span><span class="nf">run_unittest</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">csrf_test</span><span class="p">:</span><span class="n">run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">return</span> <span class="n">_M</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- file: test_csrf.lua</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">iresty_test</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;resty.iresty_test&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">json</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;json&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">config</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;config&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">csrf_config</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;csrf_config&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">token</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;token&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">tabletls</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&#34;tabletls&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">iresty_test.new</span><span class="p">({</span><span class="n">unit_name</span><span class="o">=</span><span class="s2">&#34;test_csrf&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="kr">function</span> <span class="nf">assert_eq</span><span class="p">(</span><span class="n">wanted</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="n">wanted</span> <span class="o">~=</span> <span class="n">real</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">        <span class="n">error</span><span class="p">(</span><span class="n">msg</span> <span class="ow">or</span> <span class="s2">&#34;error&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">-- 请注意参数 2</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="kr">function</span> <span class="nf">assert_not_eq</span><span class="p">(</span><span class="n">wanted</span><span class="p">,</span> <span class="n">real</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="n">wanted</span> <span class="o">==</span> <span class="n">real</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">        <span class="n">error</span><span class="p">(</span><span class="n">msg</span> <span class="ow">or</span> <span class="s2">&#34;error&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">test_geturl</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">assert_eq</span><span class="p">(</span><span class="s2">&#34;/unittest&#34;</span><span class="p">,</span> <span class="n">ngx.var</span><span class="p">.</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&#34;the unittest url changed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">function</span> <span class="nc">tb</span><span class="p">:</span><span class="nf">run_unittest</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tb</span><span class="p">:</span><span class="n">run</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="kr">return</span> <span class="n">tb</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如上有一个很有意思的地方，<code>error(msg or &quot;error&quot;, 2)</code>,其中的2有些讲究，表示返回调用函数所在行，还有0（忽略行号），1（error调用位置行号）</li>
+<li>性能测试 代码覆盖率 API测试等，都可以去<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/" target="_blank" rel="noopener noreffer ">OpenResty最佳实践</a>中找，配置很简单。</li>
+</ul>
+<h1 id="远程调试-openresty">远程调试 OpenResty</h1>
+<ul>
+<li>对于此部分，对于有些人来说，使用日志就已经足够了。可对于有些时候，在代码中太多的日志有不利于维护。这里自己要尽力做好日志和调试的平衡吧。</li>
+<li>此调试方法适用于 win linux osx</li>
+<li>先贴这里用到的luaIDE地址：<a href="https://github.com/pkulchenko/ZeroBraneStudio" target="_blank" rel="noopener noreffer ">ZeroBraneStudio</a></li>
+<li>如下为安装步骤：</li>
+<li>下载这个项目，<a href="https://github.com/pkulchenko/ZeroBraneStudio/archive/master.zip" target="_blank" rel="noopener noreffer ">ZeroBraneStudio</a>，解压可以直接用【调试方法在下载好的文件中README.md中有相应的链接】</li>
+<li>启动ZBS，Project -&gt; Start Debugger Server</li>
+<li>复制<ZBS>/lualibs/mobdebug/mobdebug.lua -&gt; nginx lua path,</li>
+<li>复制<ZBS>/lualibs/socket.lua -&gt; nginx lua path，</li>
+<li>复制<ZBS>/bin/clibs/socket/core -&gt; socket设为nginx lua cpath（调试时候，使用的是require(&ldquo;socket.core&rdquo;)形式导入包。这里需要注意core文件后缀，win是dll，linux是so，）</li>
+<li>nginx配置好,将如上依赖加到nginx.conf中，让lua可以找到这些文件即可</li>
+<li>创建需要调试的lua文件</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">require(&#39;mobdebug&#39;).start(&#39;192.168.1.22&#39;)
+</span></span><span class="line"><span class="cl">local name = ngx.var.arg_name or &#34;Anonymous&#34;
+</span></span><span class="line"><span class="cl">ngx.say(&#34;Hello, &#34;, name, &#34;!&#34;)
+</span></span><span class="line"><span class="cl">ngx.say(&#34;Done debugging.&#34;)
+</span></span><span class="line"><span class="cl">require(&#39;mobdebug&#39;).done()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注：start()呼叫需要运行IDE的计算机的IP 。默认情况下使用“localhost”，但是由于您的nginx实例正在运行，因此您需要指定运行IDE的计算机的IP地址（在我的例子中192.168.1.22）</p>
+<ul>
+<li>在ide中打开需要调试的如上lua文件</li>
+<li>Project -&gt; Project Directory -&gt; Set From Current File。</li>
+<li>此时，打开浏览器，访问需要此文件处理的链接</li>
+<li>此时开始调试
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Lua/openresty_awesome/debug.png"
+        data-srcset="/media/img/Lua/openresty_awesome/debug.png, /media/img/Lua/openresty_awesome/debug.png 1.5x, /media/img/Lua/openresty_awesome/debug.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Lua/openresty_awesome/debug.png"
+        title="ZeroBrane Studio调试OpenResty" /></li>
+<li>注：在最下侧有Remote console，在这里可以执行任何ngx lua语句</li>
+<li>如上流程没有截图，或者没有说清楚，可以来<a href="http://ju.outofmemory.cn/entry/326200" target="_blank" rel="noopener noreffer ">这里</a></li>
+</ul>
+<h1 id="nginx一些技巧">nginx一些技巧</h1>
+<ul>
+<li>看我配置的nginx.conf</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">lua_package_path &#39;$prefix/lua_script/?.lua;;&#39;;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Server/nginx_lua.md" target="_blank" rel="noopener noreffer ">我的笔记</a></li>
+</ul>
+<h1 id="资料">资料</h1>
+<ul>
+<li><a href="http://agentzh.org/" target="_blank" rel="noopener noreffer ">章亦春</a></li>
+<li><a href="https://openresty.org/" target="_blank" rel="noopener noreffer ">OpenResty</a></li>
+<li><a href="https://moonbingbing.gitbooks.io/openresty-best-practices" target="_blank" rel="noopener noreffer ">OpenResty最佳实践</a></li>
+<li><a href="https://www.codingnow.com/2000/download/lua_manual.html" target="_blank" rel="noopener noreffer ">Lua 5.1 参考手册</a></li>
+<li><a href="http://cloudwu.github.io/lua53doc/contents.html" target="_blank" rel="noopener noreffer ">Lua 5.3 参考手册</a></li>
+<li><a href="https://github.com/cloudwu" target="_blank" rel="noopener noreffer ">云风 github</a></li>
+<li><a href="https://github.com/LewisJEllis/awesome-lua" target="_blank" rel="noopener noreffer ">awesome-lua</a></li>
+<li><a href="https://github.com/bungle/awesome-resty" target="_blank" rel="noopener noreffer ">awesome-resty</a></li>
+<li><a href="https://github.com/fcambus/nginx-resources" target="_blank" rel="noopener noreffer ">Nginx-Lua-OpenResty-Resources</a>A collection of resources covering Nginx, Nginx + Lua, OpenResty and Tengine</li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-09-20&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" target="_blank" title="commit by exfly(exflyg@gmail.com) 42171d4ea1daba8d54716474ab08466a64c37b9a: refactor: blog to book">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>42171d4</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/openresty_awesome/" data-title="OpenResty最佳实践" data-hashtags="Lua,OpenResty"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/openresty_awesome/" data-hashtag="Lua"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/openresty_awesome/" data-title="OpenResty最佳实践"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/openresty_awesome/" data-title="OpenResty最佳实践"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/openresty_awesome/" data-title="OpenResty最佳实践"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/lua/">Lua</a>,&nbsp;<a href="/tags/openresty/">OpenResty</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/beans/" class="prev" rel="prev" title="Spring Beans的装配规则总结"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Spring Beans的装配规则总结</a>
+            <a href="/gradle_maven/" class="next" rel="next" title="Gradle和Maven使用方法总结">Gradle和Maven使用方法总结<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

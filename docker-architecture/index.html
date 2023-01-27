@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Docker 源码阅读: Docker架构介绍 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Docker 源码阅读: Docker架构介绍" />
+<meta property="og:description" content="文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/docker-architecture/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-04-22T21:35:46+08:00" />
+<meta property="article:modified_time" content="2020-09-20T15:25:18+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="Docker 源码阅读: Docker架构介绍"/>
+<meta name="twitter:description" content="文章简介：docker基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/docker-architecture/" /><link rel="prev" href="https://exfly.github.io/docker-contents/" /><link rel="next" href="https://exfly.github.io/docker-source-dev-install/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Docker 源码阅读: Docker架构介绍",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/docker-architecture\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, 源码","wordcount":  2280 ,
+        "url": "https:\/\/exfly.github.io\/docker-architecture\/","datePublished": "2019-04-22T21:35:46+08:00","dateModified": "2020-09-20T15:25:18+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/docker-architecture/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/docker-architecture/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Docker 源码阅读: Docker架构介绍</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-04-22">2019-04-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2280 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;<span id="/docker-architecture/" class="leancloud_visitors" data-flag-title="Docker 源码阅读: Docker架构介绍">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#我们可以使用-docker-做什么">我们可以使用 Docker 做什么</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#the-docker-daemon">The Docker daemon</a></li>
+    <li><a href="#the-docker-client">The Docker client</a></li>
+    <li><a href="#docker-registries">Docker registries</a></li>
+    <li><a href="#docker-objects">Docker objects</a>
+      <ul>
+        <li><a href="#images">IMAGES</a></li>
+        <li><a href="#containers">CONTAINERS</a></li>
+        <li><a href="#services">SERVICES</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#namespaces">namespaces</a></li>
+    <li><a href="#cgroups">cgroups</a></li>
+    <li><a href="#union-file-systems">Union file systems</a></li>
+    <li><a href="#container-format">Container format</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#docker-如何运行容器">Docker 如何运行容器？</a></li>
+    <li><a href="#这个模型的两个主要好处是">这个模型的两个主要好处是</a></li>
+    <li><a href="#containerd">containerd</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：<code>docker</code>基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的</p>
+<h1 id="docker">Docker?</h1>
+<h2 id="我们可以使用-docker-做什么">我们可以使用 Docker 做什么</h2>
+<p>快速，一致地交付您的应用程序</p>
+<p>Docker 允许开发人员使用提供应用程序和服务的本地容器在标准化环境中工作，从而简化了开发生命周期。 容器非常适合持续集成和持续交付（CI / CD）工作流程。</p>
+<h1 id="docker-全局架构">docker 全局架构</h1>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/docker/engine-components-flow.png"
+        data-srcset="/media/img/docker/engine-components-flow.png, /media/img/docker/engine-components-flow.png 1.5x, /media/img/docker/engine-components-flow.png 2x"
+        data-sizes="auto"
+        alt="/media/img/docker/engine-components-flow.png"
+        title="docker架构图" /></p>
+<p>CLI 使用 Docker REST API 通过脚本或直接 CLI 命令控制 Docker 守护程序或与 Docker 守护程序交互。 许多其他 Docker 应用程序使用底层 API 和 CLI。</p>
+<p>Docker daemon 创建和管理 Docker 对象，例如 images，containers，networks 和 volumes。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/docker/architecture.svg"
+        data-srcset="/media/img/docker/architecture.svg, /media/img/docker/architecture.svg 1.5x, /media/img/docker/architecture.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/docker/architecture.svg"
+        title="docker架构图2" /></p>
+<h2 id="the-docker-daemon">The Docker daemon</h2>
+<p>Docker daemon（dockerd）监听 Docker API 请求并管理 Docker 对象，例如 images，containers，networks 和 volumes。 Docker daemon 还可以与其他守护程序通信以管理 Docker 服务。</p>
+<blockquote>
+<p>Note: 例如 dockerd 通过 rest 接口与 containnerd 进行交互，containerd 与 runc 通过 grpc 进行通信</p>
+</blockquote>
+<h2 id="the-docker-client">The Docker client</h2>
+<p>Docker 客户端（docker）是许多 Docker 用户与 Docker 交互的主要方式。 当您使用诸如 docker run 之类的命令时，客户端会将这些命令发送到 dockerd，dockerd 将其执行。 docker (CLI) 命令调用 REST 风格的 Docker API。 Docker 客户端可以与多个守护进程通信。</p>
+<blockquote>
+<p>Note: docker 可以通过配置环境变量 <code>DOCKER_HOST</code>或者修改配置变量，或者命令行参数的方式连接 dockerd</p>
+</blockquote>
+<h2 id="docker-registries">Docker registries</h2>
+<p>Docker registry 存储 Docker 镜像。 Docker Hub 是任何人都可以使用的公共注册中心，Docker 配置为默认在 Docker Hub 上查找 images。 您甚至可以运行自己的私人 registry。 如果您使用 Docker Datacenter（DDC），它包含 Docker Trusted Registry（DTR）。</p>
+<blockquote>
+<p>Note: 可以通过配置不同的 Docker registry 作为 images 下载源，比如公司内部搭建 registry 私服，在平时 CI/CD 中提高工作速度。</p>
+</blockquote>
+<h2 id="docker-objects">Docker objects</h2>
+<p>使用 Docker 时，您正在创建和使用 images，containers，networks 和 volumes，plugins 和其他对象。 本节简要介绍其中一些对象。</p>
+<h3 id="images">IMAGES</h3>
+<p>images 是一个只读模板，其中包含有关创建 Docker 容器的说明。 通常，images 基于另一个 images，并带有一些额外的自定义。 例如，您可以构建基于 ubuntu images 的 images，但安装 Apache Web 服务器和应用程序，以及运行应用程序所需的配置详细信息。</p>
+<p>您可以创建自己的 images，也可以只使用其他人创建的 images 并在 registries 中发布。 要构建自己的 images，可以使用简单的语法创建 Dockerfile，以定义创建 images 并运行 images 所需的步骤。 Dockerfile 中的每条指令都在 images 中创建一个 layer。 更改 Dockerfile 并重建 images 时，仅重建已更改的那些层。 与其他虚拟化技术相比，这是使 images 如此轻量，小巧和快速的部分原因。</p>
+<blockquote>
+<p>Note: 比较详细的工作原理可以看下文 <code>Union file systems</code>部分</p>
+</blockquote>
+<h3 id="containers">CONTAINERS</h3>
+<p>CONTAINERS 是 images 的可运行实例。 您可以使用 Docker API 或 CLI 创建，启动，停止，移动或删除容器。 您可以将容器连接到一个或多个网络，将存储连接到它，甚至可以根据其当前状态创建新 images。</p>
+<p>默认情况下，CONTAINERS 与其他 CONTAINERS 及其主机相对隔离。 您可以控制 CONTAINERS 的网络，存储或其他基础子系统与其他 CONTAINERS 或主机的隔离程度。</p>
+<p>CONTAINERS 由其 images 以及您在创建或启动时为其提供的任何配置选项定义。 删除 containers 后，对其状态的任何未存储在持久存储中的更改都将消失。</p>
+<h3 id="services">SERVICES</h3>
+<p>services 允许您跨多个 Docker 守护程序扩展容器，这些守护程序一起作为具有多个管理器和工作程序的群组一起工作。 swarm 的每个成员都是 Docker 守护程序，守护进程都使用 Docker API 进行通信。 服务允许您定义所需的状态，例如在任何给定时间必须可用的服务的副本数。 默认情况下，服务在所有工作节点之间进行负载平衡。 对于消费者来说，Docker 服务似乎是一个单独的应用程序。 Docker Engine 支持 Docker 1.12 及更高版本中的 swarm 模式。</p>
+<h1 id="docker-底层技术">Docker 底层技术</h1>
+<p>Docker 是用 <code>Go</code> 编写的，它利用 Linux 内核的几个功能来提供其功能。使用到的内核特性包括 namespaces、cgroups、Union file systems</p>
+<h2 id="namespaces">namespaces</h2>
+<p>Docker 使用称为 namespaces 的技术来提供称为容器的隔离工作空间。 运行容器时，Docker 会为该容器创建一组 namespaces。</p>
+<p>这些 namespaces 提供了一层隔离。 容器的每个方面都在一个单独的命名空间中运行，其访问权限仅限于该 namespaces。</p>
+<p>Docker Engine 在 Linux 上使用以下命名空间：</p>
+<ul>
+<li>pid 命名空间：进程隔离（PID：进程 ID）。</li>
+<li>net 命名空间：管理网络接口（NET：Networking）。</li>
+<li>ipc 名称空间：管理对 IPC 资源的访问（IPC：进程间通信）。</li>
+<li>mnt 名称空间：管理文件系统挂载点（MNT：Mount）。</li>
+<li>uts 命名空间：隔离内核和版本标识符。 （悉尼科技大学：Unix 分时系统）。</li>
+</ul>
+<h2 id="cgroups">cgroups</h2>
+<p>Linux 上的 Docker Engine 还依赖于另一种称为控制组（cgroups）的技术。 cgroup 将应用程序限制为特定的资源集。 cgroups 允许 Docker Engine 将可用的硬件资源共享给容器，并可选择强制执行限制和约束。 例如，您可以限制特定容器的可用内存。</p>
+<h2 id="union-file-systems">Union file systems</h2>
+<p>联合文件系统或 UnionFS 是通过创建 layers 来操作的文件系统，使它们非常轻量和快速。 Docker Engine 使用 UnionFS 为容器提供构建块。 Docker Engine 可以使用多种 UnionFS 变体，包括 AUFS，btrfs，vfs 和 DeviceMapper。</p>
+<blockquote>
+<p>Note: Docker 默认为 overylay2</p>
+</blockquote>
+<h2 id="container-format">Container format</h2>
+<p>Docker Engine 将 namespaces，cgroups 和 UnionFS 组合成一个称为容器格式的包装器。 默认容器格式是 libcontainer。 将来，Docker 可以通过与 BSD Jails 或 Solaris Zones 等技术集成来支持其他容器格式。</p>
+<blockquote>
+<p>Note: 如上部分翻译自 <a href="https://docs.docker.com/engine/docker-overview/" target="_blank" rel="noopener noreffer ">docker overview</a>，同时添加自己本人理解。</p>
+</blockquote>
+<h1 id="moby-等代码的依赖介绍相关调用方式架构">moby 等代码的依赖介绍，相关调用方式，架构</h1>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/docker/docker-components.png"
+        data-srcset="/media/img/docker/docker-components.png, /media/img/docker/docker-components.png 1.5x, /media/img/docker/docker-components.png 2x"
+        data-sizes="auto"
+        alt="/media/img/docker/docker-components.png"
+        title="docker-components" /></p>
+<p>Docker 从一个单一的软件转移到一组独立的组件和项目。</p>
+<h2 id="docker-如何运行容器">Docker 如何运行容器？</h2>
+<ul>
+<li>Docker 引擎创建 images，</li>
+<li>把 images 传递给 containerd，</li>
+<li>containerd 调用 containerd-shim，</li>
+<li>containerd-shim 使用 runC 来运行 container，</li>
+<li>containerd-shim 允许运行时（在本例中为 runC）在启动容器后退出</li>
+</ul>
+<h2 id="这个模型的两个主要好处是">这个模型的两个主要好处是</h2>
+<ul>
+<li>deamon 运行较少的容器</li>
+<li>能够在不破坏正在运行的容器的情况下重启或升级引擎</li>
+</ul>
+<h2 id="containerd">containerd</h2>
+<p>containerd 架构
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/docker/containerd-architecture.png"
+        data-srcset="/media/img/docker/containerd-architecture.png, /media/img/docker/containerd-architecture.png 1.5x, /media/img/docker/containerd-architecture.png 2x"
+        data-sizes="auto"
+        alt="/media/img/docker/containerd-architecture.png"
+        title="containerd-architecture" /></p>
+<h1 id="related-link">related link</h1>
+<ul>
+<li>
+<p><a href="https://github.com/moby/moby" target="_blank" rel="noopener noreffer ">moby</a></p>
+</li>
+<li>
+<p><a href="https://github.com/docker/libnetwork" target="_blank" rel="noopener noreffer ">libnetwork</a></p>
+</li>
+<li>
+<p><a href="https://github.com/containerd/containerd" target="_blank" rel="noopener noreffer ">containerd</a></p>
+</li>
+<li>
+<p><a href="https://github.com/opencontainers/runc" target="_blank" rel="noopener noreffer ">runc</a></p>
+</li>
+<li>
+<p><a href="http://merrigrove.blogspot.com/2015/10/visualizing-docker-containers-and-images.html" target="_blank" rel="noopener noreffer ">Visualizing Docker Containers and Images</a></p>
+</li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-09-20&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/42171d4ea1daba8d54716474ab08466a64c37b9a" target="_blank" title="commit by exfly(exflyg@gmail.com) 42171d4ea1daba8d54716474ab08466a64c37b9a: refactor: blog to book">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>42171d4</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/docker-architecture/" data-title="Docker 源码阅读: Docker架构介绍" data-hashtags="docker,源码"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/docker-architecture/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/docker-architecture/" data-title="Docker 源码阅读: Docker架构介绍"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/docker-architecture/" data-title="Docker 源码阅读: Docker架构介绍"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/docker-architecture/" data-title="Docker 源码阅读: Docker架构介绍"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/%E6%BA%90%E7%A0%81/">源码</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/docker-contents/" class="prev" rel="prev" title="Docker 源码阅读: 目录"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Docker 源码阅读: 目录</a>
+            <a href="/docker-source-dev-install/" class="next" rel="next" title="Docker 源码阅读: 开发环境搭建">Docker 源码阅读: 开发环境搭建<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

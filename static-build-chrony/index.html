@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>chrony 静态编译及跨 Linux 发行版安装 systemd service - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="chrony 静态编译及跨 Linux 发行版安装 systemd service" />
+<meta property="og:description" content="文章简介：chrony 静态编译及跨操作系统安装 systemd service" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/static-build-chrony/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-26T12:56:31+08:00" />
+<meta property="article:modified_time" content="2022-11-26T15:05:41+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="chrony 静态编译及跨 Linux 发行版安装 systemd service"/>
+<meta name="twitter:description" content="文章简介：chrony 静态编译及跨操作系统安装 systemd service"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/static-build-chrony/" /><link rel="prev" href="https://exfly.github.io/postgres-internal/" /><link rel="next" href="https://exfly.github.io/vagrant-authentication-failure-retrying/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "chrony 静态编译及跨 Linux 发行版安装 systemd service",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/static-build-chrony\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Linux","wordcount":  1602 ,
+        "url": "https:\/\/exfly.github.io\/static-build-chrony\/","datePublished": "2022-11-26T12:56:31+08:00","dateModified": "2022-11-26T15:05:41+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/static-build-chrony/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/static-build-chrony/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">chrony 静态编译及跨 Linux 发行版安装 systemd service</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-26">2022-11-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1602 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;<span id="/static-build-chrony/" class="leancloud_visitors" data-flag-title="chrony 静态编译及跨 Linux 发行版安装 systemd service">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#有了二进制文件该如何部署服务呢">有了二进制文件该如何部署服务呢？</a></li>
+    <li><a href="#到这里就可以了吗">到这里就可以了吗？</a></li>
+    <li><a href="#安装-chrony-service-的完整脚本">安装 chrony service 的完整脚本</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>
+<p>最近一段时间做的需求主要是适配 kylinsec 国产化操作系统. 因为产品是 tob 私有化部署 k8s 集群，并且多机器需要同步时间。经过调研后发现 <a href="https://en.wikipedia.org/wiki/Chrony" target="_blank" rel="noopener noreffer ">chrony</a> 已经作为 redhat 8 等多种发行版的默认选项，决定统一使用 chrony 作为我们的时间同步 daemon.</p>
+<p>应用的自动化部署方案使用了 ansible，不同 Linux 发行版软件包不相同，所以适配一种 Linux 发行版，就需要为这种 Linux 发行版下载对应软件包。比如 chrony 在 centos 7/8/9, ubuntu 20.04/18.04, kylinsec &hellip; 等都需要单独下载一遍 chrony 安装包，整体总共适配了 6 遍，十分麻烦。当需要适配的软件包更多后，成本就凸显出来了. 可以选择静态编译，抹平各发行版的差异，一次搞定。</p>
+<p>还好，静态编译的工作已经有大佬做过了<a href="https://zhangguanzhang.github.io/2021/01/23/chrony/#/" target="_blank" rel="noopener noreffer ">静态编译 chrony</a>,</p>
+<p>dockerfile 如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># docker buildx build -f Dockerfile.chrony --platform linux/amd64 --target bin --output installer</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> ubuntu:20.04 as build</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ARG</span> <span class="nv">branch</span><span class="o">=</span><span class="m">4</span>.2<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENV</span> DEBIAN_FRONTEND noninteractive<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -ri <span class="s1">&#39;s/(ports|deb|security|archive).(debian.org|ubuntu.com)/mirrors.tuna.tsinghua.edu.cn/g&#39;</span> /etc/apt/sources.list <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> apt-get update<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /opt</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># COPY chrony . # 二选一</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c">#RUN apt-get install -y git &amp;&amp; git clone --branch ${branch} https://git.tuxfamily.org/chrony/chrony.git</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apt-get install -y wget <span class="o">&amp;&amp;</span> wget https://download.tuxfamily.org/chrony/chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> tar zxf chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> mv chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span> chrony <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -f chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apt-get install -y <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    bison asciidoctor <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    gcc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    make <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    pkg-config <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libcap-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    pps-tools <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libedit-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    nettle-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libnss3-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libtomcrypt-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libgnutls28-dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libseccomp-dev<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">cd</span> chrony<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">&#39;-static -s&#39;</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s1">&#39;-static -lm&#39;</span>  <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      ./configure <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      --enable-scfilter <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      --enable-ntp-signd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> make<span class="p">;</span> <span class="nb">echo</span> <span class="nv">$?</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    mkdir -p /install_root<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    make <span class="nv">DESTDIR</span><span class="o">=</span>/install_root install <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> find /install_root<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> rm -rf /install_root/usr/local/share <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rmdir /install_root/var/lib/chrony/ /install_root/etc<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> scratch AS bin</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>build /install_root /<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>buildx 一步编译出软件包</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker buildx build -f Dockerfile.chrony --platform linux/amd64 --target bin --output installer
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">file installer/<span class="o">{</span>usr/local/bin/chronyc,usr/local/sbin/chronyd<span class="o">}</span>
+</span></span><span class="line"><span class="cl">installer/usr/local/bin/chronyc:  ELF 64-bit LSB executable, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, statically linked, BuildID<span class="o">[</span>sha1<span class="o">]=</span>a8851c783b1074f3414d8b38bb337cb10a8b016d, <span class="k">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span class="line"><span class="cl">installer/usr/local/sbin/chronyd: ELF 64-bit LSB executable, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, statically linked, BuildID<span class="o">[</span>sha1<span class="o">]=</span>a7ed52ca561252969d5e0f29b8894380b70bd8c5, <span class="k">for</span> GNU/Linux 3.2.0, stripped
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 多平台编译</span>
+</span></span><span class="line"><span class="cl">docker buildx build  . --platform linux/amd64,linux/arm64  --target bin --output installer
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="有了二进制文件该如何部署服务呢">有了二进制文件该如何部署服务呢？</h2>
+<p>如下是写好的 systemd service 文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt;/etc/chrony.conf
+</span></span></span><span class="line"><span class="cl"><span class="s"># Generated by TODO
+</span></span></span><span class="line"><span class="cl"><span class="s"># Use public servers from the pool.ntp.org project.
+</span></span></span><span class="line"><span class="cl"><span class="s"># Please consider joining the pool (http://www.pool.ntp.org/join.html).
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">server pool.ntp.org iburst
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">driftfile /var/lib/chrony/drift
+</span></span></span><span class="line"><span class="cl"><span class="s">makestep 1.0 3
+</span></span></span><span class="line"><span class="cl"><span class="s"># Enable kernel synchronization of the real-time clock (RTC).
+</span></span></span><span class="line"><span class="cl"><span class="s">rtcsync
+</span></span></span><span class="line"><span class="cl"><span class="s">allow 0.0.0.0/0
+</span></span></span><span class="line"><span class="cl"><span class="s">local stratum 10
+</span></span></span><span class="line"><span class="cl"><span class="s">logdir /var/log/chrony
+</span></span></span><span class="line"><span class="cl"><span class="s">log measurements statistics tracking
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt;/etc/chrony.keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># This file is solely used for NTP authentication with symmetric keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># as defined by RFC 1305 and RFC 5905.
+</span></span></span><span class="line"><span class="cl"><span class="s">#
+</span></span></span><span class="line"><span class="cl"><span class="s"># It can contain ID/key pairs which can be generated using the “keygen” option
+</span></span></span><span class="line"><span class="cl"><span class="s"># from “chronyc”; for example:
+</span></span></span><span class="line"><span class="cl"><span class="s"># chronyc keygen 1 SHA256 256 &gt;&gt; /etc/chrony/chrony.keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># would generate a 256-bit SHA-256 key using ID 1.
+</span></span></span><span class="line"><span class="cl"><span class="s">#
+</span></span></span><span class="line"><span class="cl"><span class="s"># A list of supported hash functions and output encoding is available by
+</span></span></span><span class="line"><span class="cl"><span class="s"># consulting the &#34;keyfile&#34; directive in the chrony.conf(5) man page.
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt;/etc/systemd/system/chrony.service
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=chrony, an NTP client/server
+</span></span></span><span class="line"><span class="cl"><span class="s">Documentation=man:chronyd(8) man:chronyc(1) man:chrony.conf(5)
+</span></span></span><span class="line"><span class="cl"><span class="s">Conflicts=openntpd.service ntp.service ntpsec.service systemd-timesyncd.service
+</span></span></span><span class="line"><span class="cl"><span class="s">Wants=time-sync.target
+</span></span></span><span class="line"><span class="cl"><span class="s">Before=time-sync.target
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network.target
+</span></span></span><span class="line"><span class="cl"><span class="s"># ConditionCapability=CAP_SYS_TIME
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s"># Type=forking
+</span></span></span><span class="line"><span class="cl"><span class="s"># PIDFile=/run/chronyd.pid
+</span></span></span><span class="line"><span class="cl"><span class="s"># EnvironmentFile=-/etc/default/chrony
+</span></span></span><span class="line"><span class="cl"><span class="s"># Starter takes care of special cases mostly for containers
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/sbin/chronyd -F -1 -d -f /etc/chrony.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">PrivateTmp=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">ProtectHome=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">ProtectSystem=full
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">Alias=chronyd.service
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=multi-user.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">systemctl <span class="nb">enable</span> --now chrony
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="到这里就可以了吗">到这里就可以了吗？</h2>
+<p>当我们执行 <code>timedatectl set-ntp off</code> 后, chronyd 服务并没有按照预期停止时间同步。根据<a href="http://www.freedesktop.org/wiki/Software/systemd/timedated" target="_blank" rel="noopener noreffer ">文档 timedated</a> , 命令 <code>timedatectl set-ntp off</code> 会启动或停止 <code>systemd-timedated.service</code>; <a href="https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html" target="_blank" rel="noopener noreffer ">文档 systemd-timedated.service</a> 描述, systemd-timedated.service 会从 <code>/usr/lib/systemd/ntp-units.d/50-chronyd.list</code> 文件中启停系统时间同步服务。当前使用的时间服务是 chrony，需要覆盖文件<code>/usr/lib/systemd/ntp-units.d/50-chronyd.list</code>中的值，使得 <code>timedatectl set-ntp off</code> 能够按照预期启停时间同步.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;chrony.service&#39;</span> &gt;/usr/lib/systemd/ntp-units.d/50-chronyd.list
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>到这里，chrony 正式工作了.</p>
+<h2 id="安装-chrony-service-的完整脚本">安装 chrony service 的完整脚本</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errtrace
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errexit
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o nounset
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o pipefail
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o xtrace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="k">$(</span>dirname <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[[</span> <span class="nv">$EUID</span> -ne <span class="m">0</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;This script must be run as root&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">exit</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">DIR</span><span class="o">=</span><span class="k">$(</span>dirname <span class="k">$(</span>realpath <span class="nv">$0</span><span class="k">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">install_chrony<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    systemctl stop chrony <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">    systemctl disable chrony <span class="o">||</span> <span class="nb">true</span> <span class="c1"># 向前兼容 ubuntu 20.04 中可能会安装有 chrony</span>
+</span></span><span class="line"><span class="cl">    systemctl stop chronyd <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">    systemctl disable chronyd <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># ubuntu 20.04 中会有此服务</span>
+</span></span><span class="line"><span class="cl">    systemctl stop systemd-timesyncd <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">    systemctl disable systemd-timesyncd <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    chown root:root /var/run/chrony <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># for chrony logdir on ubuntu</span>
+</span></span><span class="line"><span class="cl">    rm -rf /var/log/chrony
+</span></span><span class="line"><span class="cl">    mkdir -p /var/log/chrony
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    mkdir -p /var/lib/chrony/
+</span></span><span class="line"><span class="cl">    mkdir -p /etc/chrony/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># ubuntu 默认的配置文件位置是 /etc/chrony/chrony.conf</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># centos7 默认的配置文件位置是 /etc/chrony.conf</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">test</span> -f <span class="s2">&#34;/etc/chrony/chrony.conf&#34;</span> <span class="o">&amp;&amp;</span> mv /etc/chrony/chrony.conf /etc/chrony/chrony.conf.<span class="k">$(</span>date <span class="s2">&#34;+%Y-%m-%d_%H%M%S&#34;</span><span class="k">)</span>.bak
+</span></span><span class="line"><span class="cl">    <span class="nb">test</span> -f /etc/chrony.conf <span class="o">&amp;&amp;</span> mv /etc/chrony.conf /etc/chrony.conf.<span class="k">$(</span>date <span class="s2">&#34;+%Y-%m-%d_%H%M%S&#34;</span><span class="k">)</span>.bak
+</span></span><span class="line"><span class="cl">    ln -s -f /etc/chrony.conf /etc/chrony/chrony.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    cat <span class="s">&lt;&lt;EOF &gt;/etc/chrony.conf
+</span></span></span><span class="line"><span class="cl"><span class="s"># Generated by TODO
+</span></span></span><span class="line"><span class="cl"><span class="s"># Use public servers from the pool.ntp.org project.
+</span></span></span><span class="line"><span class="cl"><span class="s"># Please consider joining the pool (http://www.pool.ntp.org/join.html).
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">server pool.ntp.org iburst
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">driftfile /var/lib/chrony/drift
+</span></span></span><span class="line"><span class="cl"><span class="s">makestep 1.0 3
+</span></span></span><span class="line"><span class="cl"><span class="s"># Enable kernel synchronization of the real-time clock (RTC).
+</span></span></span><span class="line"><span class="cl"><span class="s">rtcsync
+</span></span></span><span class="line"><span class="cl"><span class="s">allow 0.0.0.0/0
+</span></span></span><span class="line"><span class="cl"><span class="s">local stratum 10
+</span></span></span><span class="line"><span class="cl"><span class="s">logdir /var/log/chrony
+</span></span></span><span class="line"><span class="cl"><span class="s">log measurements statistics tracking
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    cat <span class="s">&lt;&lt;EOF &gt;/etc/chrony.keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># This file is solely used for NTP authentication with symmetric keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># as defined by RFC 1305 and RFC 5905.
+</span></span></span><span class="line"><span class="cl"><span class="s">#
+</span></span></span><span class="line"><span class="cl"><span class="s"># It can contain ID/key pairs which can be generated using the “keygen” option
+</span></span></span><span class="line"><span class="cl"><span class="s"># from “chronyc”; for example:
+</span></span></span><span class="line"><span class="cl"><span class="s"># chronyc keygen 1 SHA256 256 &gt;&gt; /etc/chrony/chrony.keys
+</span></span></span><span class="line"><span class="cl"><span class="s"># would generate a 256-bit SHA-256 key using ID 1.
+</span></span></span><span class="line"><span class="cl"><span class="s">#
+</span></span></span><span class="line"><span class="cl"><span class="s"># A list of supported hash functions and output encoding is available by
+</span></span></span><span class="line"><span class="cl"><span class="s"># consulting the &#34;keyfile&#34; directive in the chrony.conf(5) man page.
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    cat <span class="s">&lt;&lt;EOF &gt;/etc/systemd/system/chrony.service
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=chrony, an NTP client/server
+</span></span></span><span class="line"><span class="cl"><span class="s">Documentation=man:chronyd(8) man:chronyc(1) man:chrony.conf(5)
+</span></span></span><span class="line"><span class="cl"><span class="s">Conflicts=openntpd.service ntp.service ntpsec.service systemd-timesyncd.service
+</span></span></span><span class="line"><span class="cl"><span class="s">Wants=time-sync.target
+</span></span></span><span class="line"><span class="cl"><span class="s">Before=time-sync.target
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network.target
+</span></span></span><span class="line"><span class="cl"><span class="s"># ConditionCapability=CAP_SYS_TIME
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s"># Type=forking
+</span></span></span><span class="line"><span class="cl"><span class="s"># PIDFile=/run/chronyd.pid
+</span></span></span><span class="line"><span class="cl"><span class="s"># EnvironmentFile=-/etc/default/chrony
+</span></span></span><span class="line"><span class="cl"><span class="s"># Starter takes care of special cases mostly for containers
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/sbin/chronyd -F -1 -d -f /etc/chrony.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">PrivateTmp=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">ProtectHome=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">ProtectSystem=full
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">Alias=chronyd.service
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=multi-user.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    cp usr/local/sbin/chronyd /usr/sbin/chronyd
+</span></span><span class="line"><span class="cl">    cp usr/local/bin/chronyc /usr/bin/chronyc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># timedatectl set-ntp off 会触发</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># http://www.freedesktop.org/wiki/Software/systemd/timedated</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># systemctl status systemd-timedated</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html#</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># STEP: centos7.9</span>
+</span></span><span class="line"><span class="cl">    ls /usr/lib/systemd/ntp-units.d/
+</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s1">&#39;chrony.service&#39;</span> &gt;/usr/lib/systemd/ntp-units.d/50-chronyd.list <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># /usr/sbin/chronyd -f /etc/chrony/chrony.conf -d -R</span>
+</span></span><span class="line"><span class="cl">    systemctl <span class="nb">enable</span> --now chrony <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">    systemctl restart chrony
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">install_chrony
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Chrony" target="_blank" rel="noopener noreffer ">chrony</a></li>
+<li><a href="https://zhangguanzhang.github.io/2021/01/23/chrony/#/" target="_blank" rel="noopener noreffer ">静态编译 chrony</a></li>
+<li><a href="http://www.freedesktop.org/wiki/Software/systemd/timedated" target="_blank" rel="noopener noreffer ">文档 timedated</a></li>
+<li><a href="https://www.freedesktop.org/software/systemd/man/systemd-timedated.service.html" target="_blank" rel="noopener noreffer ">文档 systemd-timedated.service</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-11-26&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/6a7b9610413210c1ff08bd10509d92f3f86747ed" target="_blank" title="commit by exfly(exflyg@gmail.com) 6a7b9610413210c1ff08bd10509d92f3f86747ed: feat: chrony 静态编译及跨 Linux 发行版安装 systemd service">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>6a7b961</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/static-build-chrony/" data-title="chrony 静态编译及跨 Linux 发行版安装 systemd service" data-hashtags="Linux"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/static-build-chrony/" data-hashtag="Linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/static-build-chrony/" data-title="chrony 静态编译及跨 Linux 发行版安装 systemd service"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/static-build-chrony/" data-title="chrony 静态编译及跨 Linux 发行版安装 systemd service"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/static-build-chrony/" data-title="chrony 静态编译及跨 Linux 发行版安装 systemd service"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/postgres-internal/" class="prev" rel="prev" title="Postgres Internal"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Postgres Internal</a>
+            <a href="/vagrant-authentication-failure-retrying/" class="next" rel="next" title="vagrant up Authentication failure. Retrying">vagrant up Authentication failure. Retrying<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Postgres Internal - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Postgres Internal" />
+<meta property="og:description" content="Postgres 内部工作机制" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/postgres-internal/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-09-14T09:46:01+08:00" />
+<meta property="article:modified_time" content="2022-11-10T21:18:35+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="Postgres Internal"/>
+<meta name="twitter:description" content="Postgres 内部工作机制"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/postgres-internal/" /><link rel="prev" href="https://exfly.github.io/docker-change-default-bridge-ip/" /><link rel="next" href="https://exfly.github.io/static-build-chrony/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Postgres Internal",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/postgres-internal\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "db","wordcount":  6696 ,
+        "url": "https:\/\/exfly.github.io\/postgres-internal\/","datePublished": "2022-09-14T09:46:01+08:00","dateModified": "2022-11-10T21:18:35+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/postgres-internal/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/postgres-internal/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Postgres Internal</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-14">2022-09-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6696 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;<span id="/postgres-internal/" class="leancloud_visitors" data-flag-title="Postgres Internal">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#物理结构">物理结构</a></li>
+    <li><a href="#数据库对象在文件存储中的布局">数据库对象在文件存储中的布局</a>
+      <ul>
+        <li><a href="#databasetablesindex-等文件布局">database、tables、index 等文件布局</a></li>
+      </ul>
+    </li>
+    <li><a href="#tablespaces">Tablespaces</a></li>
+    <li><a href="#heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</a></li>
+    <li><a href="#heap-tuple-的读写">heap tuple 的读写</a>
+      <ul>
+        <li><a href="#heap-tuple-写">heap tuple 写</a></li>
+        <li><a href="#heap-tuple-读">heap tuple 读</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#进程模型">进程模型</a></li>
+    <li><a href="#内存模型">内存模型</a>
+      <ul>
+        <li><a href="#本地内存区">本地内存区</a></li>
+        <li><a href="#共享内存区">共享内存区</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#事务-id">事务 ID</a></li>
+    <li><a href="#tuple-的结构">Tuple 的结构</a></li>
+    <li><a href="#tuple-insert-update-delete">Tuple Insert Update Delete</a>
+      <ul>
+        <li><a href="#insert">Insert</a></li>
+        <li><a href="#delete">Delete</a></li>
+        <li><a href="#update">Update</a></li>
+        <li><a href="#free-space-map">Free Space Map</a></li>
+      </ul>
+    </li>
+    <li><a href="#commit-log-clog">Commit Log (clog)</a>
+      <ul>
+        <li><a href="#transaction-status">Transaction Status</a></li>
+        <li><a href="#clog-如何工作的">Clog 如何工作的</a></li>
+      </ul>
+    </li>
+    <li><a href="#transaction-snapshot">Transaction Snapshot</a></li>
+    <li><a href="#可见性规则">可见性规则</a></li>
+    <li><a href="#toast">TOAST</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Postgres 内部工作机制</p>
+<h1 id="介绍">介绍</h1>
+<p>TODO: Postgres 介绍</p>
+<h1 id="database-和-tables">Database 和 Tables</h1>
+<p>一个 Postgres server 中会有多个 database，每个 database 中会有多张 table，每个 table 中会有多条数据记录 (tuple), 每个数据记录会有多个字段。除此之外，每个 database 中还会有很多其他被管理的对象.</p>
+<p>每个数据库对象都有唯一的 <a href="https://www.postgresql.org/docs/12/datatype-oid.html#DATATYPE-OID-TABLE" target="_blank" rel="noopener noreffer ">OID</a>, 各数据库对象被保存在各自的 <a href="https://www.postgresql.org/docs/current/catalogs.html" target="_blank" rel="noopener noreffer ">system catalogs</a> 中. 例如 database 和 heap tuple 被保存在 <code>pg_database</code> 和 <code>pg_class</code> 中, 可以通过如下 sql 查询到</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">datname</span><span class="p">,</span><span class="w"> </span><span class="n">oid</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">pg_database</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">datname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;postgres&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">postgres</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">postgres</span><span class="o">=#</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">relname</span><span class="p">,</span><span class="w"> </span><span class="n">oid</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">pg_class</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">relname</span><span class="o">=</span><span class="s1">&#39;actor&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">actor</span><span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="mi">16475</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="物理结构">物理结构</h2>
+<p>当前我们介绍<a href="https://www.postgresql.org/docs/current/storage-file-layout.html" target="_blank" rel="noopener noreffer ">文件目录存储结构</a>。
+Postgres 的一个数据库实例的数据存储在环境变量 <code>PGDATA</code> 中，通常 <code>PGDATA</code> 的值为 <code>/var/lib/pgsql/data</code>。同一台机器中可以部署多个 Postgres 服务实例，不同的服务实例使用不同的 PGDATA 以及不同的端口.
+PGDATA 子目录下包含数据库控制配置文件及数据文件。控制数据库服务实例运行的配置文件 <code>postgresql.conf</code>、<code>pg_hba.conf</code> 和 <code>pg_ident.conf</code> 通常情况下也存储在 <code>PGDATA</code> 中，也可以把它们放到其他的地方(具体可以看 <code>postgres</code> 命令的启动参数或者 <code>pg_ctl</code> 的启动参数)
+<code>PGDATA</code> 中的文件结构如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># tree -L 2 $PGDATA
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── PG_VERSION
+</span></span><span class="line"><span class="cl">├── base
+</span></span><span class="line"><span class="cl">│   ├── 1
+</span></span><span class="line"><span class="cl">│   └── pgsql_tmp
+</span></span><span class="line"><span class="cl">├── global
+</span></span><span class="line"><span class="cl">│   ├── 1213
+</span></span><span class="line"><span class="cl">│   ├── 1213_fsm
+</span></span><span class="line"><span class="cl">│   ├── 1213_vm
+</span></span><span class="line"><span class="cl">│   ├── pg_control
+</span></span><span class="line"><span class="cl">│   ├── pg_filenode.map
+</span></span><span class="line"><span class="cl">│   └── pg_internal.init
+</span></span><span class="line"><span class="cl">├── pg_commit_ts
+</span></span><span class="line"><span class="cl">├── pg_dynshmem
+</span></span><span class="line"><span class="cl">├── pg_hba.conf
+</span></span><span class="line"><span class="cl">├── pg_ident.conf
+</span></span><span class="line"><span class="cl">├── pg_logical
+</span></span><span class="line"><span class="cl">│   ├── mappings
+</span></span><span class="line"><span class="cl">│   ├── replorigin_checkpoint
+</span></span><span class="line"><span class="cl">│   └── snapshots
+</span></span><span class="line"><span class="cl">├── pg_multixact
+</span></span><span class="line"><span class="cl">│   ├── members
+</span></span><span class="line"><span class="cl">│   └── offsets
+</span></span><span class="line"><span class="cl">├── pg_notify
+</span></span><span class="line"><span class="cl">├── pg_replslot
+</span></span><span class="line"><span class="cl">├── pg_serial
+</span></span><span class="line"><span class="cl">├── pg_snapshots
+</span></span><span class="line"><span class="cl">├── pg_stat
+</span></span><span class="line"><span class="cl">├── pg_stat_tmp
+</span></span><span class="line"><span class="cl">├── pg_subtrans
+</span></span><span class="line"><span class="cl">│   └── 0000
+</span></span><span class="line"><span class="cl">├── pg_tblspc
+</span></span><span class="line"><span class="cl">├── pg_twophase
+</span></span><span class="line"><span class="cl">├── pg_wal
+</span></span><span class="line"><span class="cl">│   ├── 000000010000000000000004
+</span></span><span class="line"><span class="cl">│   ├── 000000010000000000000005
+</span></span><span class="line"><span class="cl">│   └── archive_status
+</span></span><span class="line"><span class="cl">├── pg_xact
+</span></span><span class="line"><span class="cl">│   └── 0000
+</span></span><span class="line"><span class="cl">├── postgresql.auto.conf
+</span></span><span class="line"><span class="cl">├── postgresql.conf
+</span></span><span class="line"><span class="cl">├── postmaster.opts
+</span></span><span class="line"><span class="cl">└── postmaster.pid
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><a href="https://www.postgresql.org/docs/devel/storage-file-layout.html" target="_blank" rel="noopener noreffer ">https://www.postgresql.org/docs/devel/storage-file-layout.html</a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PG_VERSION</code></td>
+<td>PostgreSQL 主要版本号的文件</td>
+</tr>
+<tr>
+<td><code>base</code></td>
+<td>每个数据库的子目录</td>
+</tr>
+<tr>
+<td><code>global</code></td>
+<td>系统表, 比如 <code>pg_database</code></td>
+</tr>
+<tr>
+<td><code>pg_commit_ts</code></td>
+<td>事务提交时间戳数据, Version 9.5 or later.</td>
+</tr>
+<tr>
+<td><code>pg_dynshmem</code></td>
+<td><code>dynamic shared memory subsystem</code> 使用的文件, Version 9.4 or later.</td>
+</tr>
+<tr>
+<td><code>pg_logical</code></td>
+<td>status data for logical decoding</td>
+</tr>
+<tr>
+<td><code>pg_multixact</code></td>
+<td>multitransaction status data (used for shared row locks)</td>
+</tr>
+<tr>
+<td><code>pg_notify</code></td>
+<td>LISTEN/NOTIFY status data</td>
+</tr>
+<tr>
+<td><code>pg_replslot</code></td>
+<td>replication slot data</td>
+</tr>
+<tr>
+<td><code>pg_serial</code></td>
+<td>information about committed serializable transactions</td>
+</tr>
+<tr>
+<td><code>pg_snapshots</code></td>
+<td>exported snapshots</td>
+</tr>
+<tr>
+<td><code>pg_stat</code></td>
+<td>permanent files for the statistics subsystem</td>
+</tr>
+<tr>
+<td><code>pg_stat_tmp</code></td>
+<td>temporary files for the statistics subsystem</td>
+</tr>
+<tr>
+<td><code>pg_subtrans</code></td>
+<td>subtransaction status data</td>
+</tr>
+<tr>
+<td><code>pg_tblspc</code></td>
+<td>symbolic links to tablespaces</td>
+</tr>
+<tr>
+<td><code>pg_twophase</code></td>
+<td>state files for prepared transactions</td>
+</tr>
+<tr>
+<td><code>pg_wal</code></td>
+<td>WAL (Write Ahead Log) files. It is renamed from pg_xlog in Version 10.</td>
+</tr>
+<tr>
+<td><code>pg_xact</code></td>
+<td>transaction commit status data, It is renamed from pg_clog in Version 10.</td>
+</tr>
+<tr>
+<td><code>postgresql.auto.conf</code></td>
+<td>A file used for storing configuration parameters that are set by <code>ALTER SYSTEM</code></td>
+</tr>
+<tr>
+<td><code>postmaster.opts</code></td>
+<td>A file recording the command-line options the server was last started with</td>
+</tr>
+<tr>
+<td><code>postmaster.pid</code></td>
+<td>A lock file recording the current postmaster process ID (PID), cluster data directory path, postmaster start timestamp, port number, Unix-domain socket directory path (could be empty), first valid listen_address (IP address or <code>*</code>, or empty if not listening on TCP), and shared memory segment ID (this file is not present after server shutdown)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="数据库对象在文件存储中的布局">数据库对象在文件存储中的布局</h2>
+<p>为了研究数据库数据存储，首先启动数据库实例，创建如下表结构:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">create database test;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CREATE TABLE sal_emp (
+</span></span><span class="line"><span class="cl">    id int primary key,
+</span></span><span class="line"><span class="cl">    name            text,
+</span></span><span class="line"><span class="cl">    pay_by_quarter  integer[],
+</span></span><span class="line"><span class="cl">    schedule        text[][]
+</span></span><span class="line"><span class="cl">);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">INSERT INTO sal_emp
+</span></span><span class="line"><span class="cl">    VALUES (
+</span></span><span class="line"><span class="cl">    1,
+</span></span><span class="line"><span class="cl">    &#39;Bill&#39;,
+</span></span><span class="line"><span class="cl">    &#39;{10000, 10000, 10000, 10000}&#39;,
+</span></span><span class="line"><span class="cl">    &#39;{{&#34;meeting&#34;, &#34;lunch&#34;}, {&#34;training&#34;, &#34;presentation&#34;}}&#39;
+</span></span><span class="line"><span class="cl">);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">create index sal_emp_btree ON sal_emp (pay_by_quarter);
+</span></span><span class="line"><span class="cl">create index sal_emp_gin ON sal_emp USING gin(pay_by_quarter);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="databasetablesindex-等文件布局">database、tables、index 等文件布局</h3>
+<p>在 9.0 版本之后，可以通过如下命令查看当前登录数据库的数据目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test=# show data_directory;
+</span></span><span class="line"><span class="cl">      data_directory
+</span></span><span class="line"><span class="cl">---------------------------
+</span></span><span class="line"><span class="cl"> /home/vagrant/pgdata/data
+</span></span><span class="line"><span class="cl">(1 row)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>数据库位于 <code>base</code> 子目录下，数据库目录名字是其 oid。例如 <code>test</code> 的 oid 为 16966，他的目录名字为 16966.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test=# select oid,datname from pg_database;
+</span></span><span class="line"><span class="cl">  oid  |  datname
+</span></span><span class="line"><span class="cl">-------+-----------
+</span></span><span class="line"><span class="cl">     5 | postgres
+</span></span><span class="line"><span class="cl"> 16966 | test
+</span></span><span class="line"><span class="cl">     1 | template1
+</span></span><span class="line"><span class="cl">     4 | template0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ ls -ld base/16966/
+</span></span><span class="line"><span class="cl">drwx------ 2 vagrant vagrant 12288 Sep 16 01:59 base/16966/
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>每个不超过 <a href="https://www.postgresql.org/message-id/c2d9e70e0709032149t61b1558v207c12ac943ccd06@mail.gmail.com" target="_blank" rel="noopener noreffer ">1GB</a> 的 table 或者 index 存储在其所属的 database 目录下的一个文件下.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test=# SELECT relname, oid, relfilenode FROM pg_class WHERE relname = &#39;sal_emp&#39;;
+</span></span><span class="line"><span class="cl"> relname |  oid  | relfilenode
+</span></span><span class="line"><span class="cl">---------+-------+-------------
+</span></span><span class="line"><span class="cl"> sal_emp | 16967 |       16967
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">test=# select * from pg_relation_filepath(&#39;sal_emp&#39;);
+</span></span><span class="line"><span class="cl"> pg_relation_filepath
+</span></span><span class="line"><span class="cl">----------------------
+</span></span><span class="line"><span class="cl"> base/16966/16967
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ ls -alh base/16966/16967
+</span></span><span class="line"><span class="cl">-rw------- 1 vagrant vagrant 8.0K Sep 16 02:03 base/16966/16967
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当一个 table 或者 index 的文件大小超过 1GB，PostgreSQL 会创建名字类似于 relfilenode.1, 并使用它。如果新的文件被填满了，下一个新的文件 relfilenode.2 将被创建，以此类推。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ls -alh base/16966/16967*
+</span></span><span class="line"><span class="cl">-rw------- 1 vagrant vagrant 1.0G Sep 16 02:03 base/16966/16967
+</span></span><span class="line"><span class="cl">-rw------- 1 vagrant vagrant   1M Sep 16 02:03 base/16966/16967.1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>单个 table/index 索引文件大小是可以配置的, PostgreSQL 编译选项是 <code>--with-segsize</code> .</p>
+</blockquote>
+<p>仔细观察数据库子目录，可以发现一些文件的后缀是 <code>_fsm</code> 和 <code>_vm</code>, 它们分别是对应文件的 <code>free space map</code> <code>visibility map</code>, 分别存储着每个文件中每个 page 的 空闲空间及是否可见。indexs 只有 fsm，没有 vm.</p>
+<p>可以使用如下命令反向查看文件对应的数据库对象.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">test=# SELECT pg_filenode_relation(0, 16967);
+</span></span><span class="line"><span class="cl">pg_filenode_relation
+</span></span><span class="line"><span class="cl">----------------------
+</span></span><span class="line"><span class="cl"> sal_emp
+</span></span><span class="line"><span class="cl">(1 row)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="tablespaces">Tablespaces</h2>
+<p>PostgreSQL 中的 <a href="https://www.postgresql.org/docs/current/manage-ag-tablespaces.html" target="_blank" rel="noopener noreffer ">Tablespaces</a> 是 base 目录之外的附加数据区域。 该功能已在 8.0 版本中实现。</p>
+<p>TODO: 补充更多细节</p>
+<h2 id="heap-table-file-的内部文件格式">Heap Table File 的内部文件格式</h2>
+<blockquote>
+<p><a href="https://www.postgresql.org/docs/current/storage-page-layout.html" target="_blank" rel="noopener noreffer ">storage-page-layout</a></p>
+</blockquote>
+<p>数据文件内部存储着大量的 pages, 每个 page 的固定大小为 8192 byte(8KB)。每个数据文件中的 page 从 0 开始编号，这些编号叫 <code>block numbers</code>.</p>
+<blockquote>
+<p>page 大小可以执行 sql 查看, <code>SELECT current_setting('block_size');</code>，其值可以在编译时添加参数修改</p>
+<p><a href="https://www.postgresql.org/docs/current/install-procedure.html" target="_blank" rel="noopener noreffer ">&ndash;with-blocksize=BLOCKSIZE</a></p>
+<p>eq:</p>
+<p><code>./configure --with-blocksize=BLOCKSIZE --with-wal-blocksize=BLOCKSIZE</code></p>
+</blockquote>
+<p>不同种类的文件的内部布局不相同。如下为 <code>heap table file</code> 的文件布局</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-tuple-layout.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-tuple-layout.svg, /media/img/db/log/postgres-internal/postgres-tuple-layout.svg 1.5x, /media/img/db/log/postgres-internal/postgres-tuple-layout.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-tuple-layout.svg"
+        title="postgres-tuple-layout" /></p>
+<p>heap table 中的 page 包含如下三部分：</p>
+<ol>
+<li>heap tuple(s): 一个 heap tuple 代表 tables 中的一行记录。heap tuple 以栈入顺序添加到 page 中，即新的 tuple 回被插入到旧的前边;</li>
+<li>line pointer(s): line pointer 持有 tuple 的指针。line pointer 是一个变长指针，每个 line pointer 的序号从 1 开始，当新的 tuple 被插入到 page 中时，指向新 tuple 的 line pointer 也会被从插入到 line pointer 数组的尾部;</li>
+<li>header data: 位于 page 的开始位置，记录了当前 page 的元数据。其详细构成定义在 <a href="https://github.com/postgres/postgres/blob/master/src/include/storage/bufpage.h" target="_blank" rel="noopener noreffer ">PageHeaderData</a> 中.其主要信息如下:
+<ul>
+<li>pd_lsn: 保存了 WAL 的 LSN，于 WAL 机制相关；</li>
+<li>pd_checksum: 保存了当前 page 的 checksum；</li>
+<li>pd_lower, pd_upper: pd_lower 指向 linepointer 的末尾，pd_upper 指向最新的 tuple 的开始；</li>
+<li>pd_special, 这个变量是给 index 使用的，他指向 page 的末尾最后一个 byte</li>
+</ul>
+</li>
+</ol>
+<p>lin pointer 的最后到最新 tuple 的开始是当前 page 的 空闲空间。
+tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>block number</code> 标识它所在的 page，<code>offset number</code> 标识它在 page 中的位置. 它的典型使用场景的 index.</p>
+<p>另外，当 <code>heap tuple</code> 的大下超过 2k(1/4 <code>page size 8k</code>) 时候，存储会使用 TOAST(The Oversized-Attribute Storage Technique), 详细信息见 <a href="https://www.postgresql.org/docs/current/storage-toast.html" target="_blank" rel="noopener noreffer ">Postgres 文档</a></p>
+<p>tuple 最多 <code>MaxHeapAttributeNumber=1664</code> 个 column.</p>
+<h2 id="heap-tuple-的读写">heap tuple 的读写</h2>
+<h3 id="heap-tuple-写">heap tuple 写</h3>
+<p>如下图所示, 假设当前 table 只有一页数据，当前页中有一条数据. pg_lower 指向 linp 最后一项的末尾, pg_upper 指向最后一个 tuple 的开始.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-tuple-write-before.png"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-tuple-write-before.png, /media/img/db/log/postgres-internal/postgres-tuple-write-before.png 1.5x, /media/img/db/log/postgres-internal/postgres-tuple-write-before.png 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-tuple-write-before.png"
+        title="before write" /></p>
+<p>tuple 的增长方向是从每页的尾部到头部。第二个 tuple 会插入到第一个 tuple 的前边(地址更小的位置), 新的 linp 会插入到第一个 linp 后边，pg_lower 会指向新的 linp 尾部, 原本指向第一个 tuple 头部的 pg_upper 会修改为指向第二个 tuple 头部, 其他 page header 中的数据(eq: pd_lsn, pg_checksum, pg_flag)也会被修改. 修改后的 page 布局如下图所示</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-tuple-write-after.png"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-tuple-write-after.png, /media/img/db/log/postgres-internal/postgres-tuple-write-after.png 1.5x, /media/img/db/log/postgres-internal/postgres-tuple-write-after.png 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-tuple-write-after.png"
+        title="after write" /></p>
+<p>TODO: 执行 sql 配合 pg_inspect 分析插入读取过程</p>
+<h3 id="heap-tuple-读">heap tuple 读</h3>
+<p>heap tuple 的读有两种方式： <code>sequential scan</code> 和 <code>index scan</code>:</p>
+<ol>
+<li><code>sequential scan</code>: 每个 tables 会有多个文件，每个文件中会有很多固定大小的 page 顺序存储，每个 page 中会有很多 tuple。<code>sequential scan</code> 会扫描所有文件中所有 page 中的 所有 tuple.</li>
+<li><code>index scan</code>: index 是一棵搜索树，index 中包含很多 <code>index tuple</code>，这些 <code>index tuple</code> 中包含 <code>index key</code> 和 指向 <code>heap tuple</code> 的 TID。假设 <code>index tuple</code> 中包含如下内容 &lsquo;(block=3, offset=7)&rsquo;. 当 <code>index scan</code> 找到某个 <code>index tuple</code> 符合条件时，获得到 <code>index tuple</code> 中的 <code>TID</code>. 由于 page 是固定大小的，可以直接使用类似于 <a href="https://man7.org/linux/man-pages/man2/lseek.2.html" target="_blank" rel="noopener noreffer ">lseek 调用</a> 定位到对应的 page 后将数据 load 到内存，再由 offset 定位到 内存中 linp 的位置，linp 中包含 tuple 的指针及状态，数据即可定位到并读出来。</li>
+</ol>
+<p>TODO: 这里最好可以画个图</p>
+<h1 id="进程模型与内存模型">进程模型与内存模型</h1>
+<h2 id="进程模型">进程模型</h2>
+<p>Postgres server 是多进程模型，多个进程协同工作完成所有的数据库管理工作，它包含如下进程：</p>
+<ol>
+<li><code>postgres server</code> 进程是所有 pg 进程的父进程，监听 tcp 端口并对外提供服务</li>
+<li><code>backend</code> 进程处理从客户端接收到的请求</li>
+<li>各种 <code>background processes</code> （包括 VACUUM、CHECKPOINT 等）</li>
+<li><code>replication associated processes</code> 处理流复制</li>
+<li><code>background worker process</code> 用户定义的后台进程，详细信息见 <a href="https://www.postgresql.org/docs/current/bgworker.html" target="_blank" rel="noopener noreffer ">office docs</a></li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-process-model.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-process-model.svg, /media/img/db/log/postgres-internal/postgres-internal-process-model.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-process-model.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-process-model.svg"
+        title="postgres-internal-process-model" /></p>
+<p>查看 Postgres 进程进程树的方法如下，其中假设 pg 的进程 id 为 503065</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PID</span><span class="o">=</span><span class="m">503065</span>
+</span></span><span class="line"><span class="cl">ps f -p <span class="k">$(</span>pstree -p <span class="si">${</span><span class="nv">PID</span><span class="si">}</span> <span class="p">|</span> sed <span class="s1">&#39;s/(/\n(/g&#39;</span> <span class="p">|</span> grep <span class="s1">&#39;(&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/(\(.*\)).*/\1/&#39;</span> <span class="p">|</span> tr <span class="s2">&#34;\n&#34;</span> <span class="s2">&#34; &#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    PID TTY      STAT   TIME COMMAND
+</span></span><span class="line"><span class="cl"> <span class="m">503065</span> pts/1    S+     0:00 ./src/backend/postgres
+</span></span><span class="line"><span class="cl"> <span class="m">503068</span> ?        Ss     0:00  <span class="se">\_</span> postgres: checkpointer
+</span></span><span class="line"><span class="cl"> <span class="m">503069</span> ?        Ss     0:00  <span class="se">\_</span> postgres: background writer
+</span></span><span class="line"><span class="cl"> <span class="m">503071</span> ?        Ss     0:00  <span class="se">\_</span> postgres: walwriter
+</span></span><span class="line"><span class="cl"> <span class="m">503072</span> ?        Ss     0:00  <span class="se">\_</span> postgres: autovacuum launcher
+</span></span><span class="line"><span class="cl"> <span class="m">503073</span> ?        Ss     0:00  <span class="se">\_</span> postgres: logical replication launcher
+</span></span><span class="line"><span class="cl"> <span class="m">503265</span> ?        Ss     0:00  <span class="se">\_</span> postgres: vagrant postgres <span class="o">[</span>local<span class="o">]</span> idle
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>postgres server</code> 进程是所有进程的父进程，负责启动并管理各后台进程；另外会监听 tcp 端口。当有新的连接请求过来时，主进程会初始化并 fork 子进程，由子进程处理请求。</p>
+<p><code>backend</code> 进程由 <code>postgres server</code> 启动，处理客户端请求，直到客户端断开 tcp 连接后， <code>backend</code> 进程也会一起退出。Postgres 支持有多个客户端同时连接并操作数据库。客户端数量的上限由配置项 <a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-MAX-CONNECTIONS" target="_blank" rel="noopener noreffer ">max_connections</a> 决定，默认值是 100。当客户端连接数超过 max_connections 后，服务会拒绝新的连接，直到当前连接数少于 max_connections 为止。另外，当连接数量超过 max_connections 后，服务器无法接受新的连接，此时如果想连接上 postgres 做一些维护工作将会被拒绝。配置了选项<a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-SUPERUSER-RESERVED-CONNECTIONS" target="_blank" rel="noopener noreffer ">superuser_reserved_connections</a> ，即使连接数超过了 max_connections ，超级管理员也可以登录到服务器。</p>
+<p>如果很多客户端（如 WEB 应用）频繁重复与 PostgreSQL 服务器的连接和断开连接，会增加建立连接和创建后端进程的成本，因为 PostgreSQL 没有实现原生的连接池特性.这会在一些情况下严重的影响数据库的性能。一些数据库中间件可以解决此问题(<a href="https://pgbouncer.github.io/" target="_blank" rel="noopener noreffer ">pgbouncer</a> 、<a href="https://www.pgpool.net/mediawiki/index.php/Main_Page" target="_blank" rel="noopener noreffer ">pgpool-II</a>)</p>
+<h2 id="内存模型">内存模型</h2>
+<p>宽泛的给 Postgres 中的内存可以被分成两类</p>
+<ol>
+<li>本地内存区 - 每个 backend 分配来自己使用</li>
+<li>共享内存区 - <code>Postgres server</code> 进程分配，由所有进程共享使用的内存区</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-mem-model.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-mem-model.svg, /media/img/db/log/postgres-internal/postgres-internal-mem-model.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-mem-model.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-mem-model.svg"
+        title="postgres-internal-mem-model" /></p>
+<h3 id="本地内存区">本地内存区</h3>
+<p>每个本地内存区会分配一个本地内存区用于处理查询，每个本地内存区有多个子内存区，这些子内存区一些是固定大小的，一些是可变大小的。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">子区域</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><a href="https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-WORK-MEM" target="_blank" rel="noopener noreffer ">work_mem</a></td>
+<td style="text-align:left">此区域用于 <code>ORDER BY</code> 和 <code>DISTINCT</code> 排序 tuple, 以及 join 操作中的 <code>merge-join</code> 和 <code>hash-join</code>.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM" target="_blank" rel="noopener noreffer ">maintenance_work_mem</a></td>
+<td style="text-align:left">一些维护工作 (VACUUM, REINDEX) 使用的内存.</td>
+</tr>
+<tr>
+<td style="text-align:left"><a href="https://www.postgresql.org/docs/current/runtime-config-resource.html#GUC-TEMP-BUFFERS" target="_blank" rel="noopener noreffer ">temp_buffers</a></td>
+<td style="text-align:left">用于存储临时表.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="共享内存区">共享内存区</h3>
+<p>Postgres 启动的时候会分配固定大小的多个内存区</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">子区域</th>
+<th style="text-align:left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">shared buffer pool</td>
+<td style="text-align:left">PostgreSQL 从持久存储中加载表和索引中的 page 到此区域, 之后直接原地操作.</td>
+</tr>
+<tr>
+<td style="text-align:left">WAL buffer</td>
+<td style="text-align:left">为了保证数据库失败不对数据，Postgres 支持 WAL 机制. WAL 是 Postgres 的事务日志; WAL buffer 是 WAL 数据写回持久存储前的缓存区域。</td>
+</tr>
+<tr>
+<td style="text-align:left">commit log</td>
+<td style="text-align:left">Commit Log(CLOG) 保存事务提交状态，用于 MVCC 机制.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="并发控制">并发控制</h1>
+<blockquote>
+<p><a href="https://www.postgresql.org/docs/current/tutorial-transactions.html" target="_blank" rel="noopener noreffer ">tutorial-transactions</a></p>
+</blockquote>
+<h2 id="事务-id">事务 ID</h2>
+<p>TODO:</p>
+<h2 id="tuple-的结构">Tuple 的结构</h2>
+<p>HeapTuple 分为 <code>普通 tuple</code> 和 <code>TOAST tuple</code>。 我们只阐述 普通 tuple。
+一个 HeapTuple 包含三部分</p>
+<ol>
+<li>HeapTupleHeaderData structure</li>
+<li>NULL bitmap</li>
+<li>用户数据</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-heap-tuple-header.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-heap-tuple-header.svg, /media/img/db/log/postgres-internal/postgres-internal-heap-tuple-header.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-heap-tuple-header.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-heap-tuple-header.svg"
+        title="postgres-internal-heap-tuple-header" /></p>
+<p><a href="https://github.com/postgres/postgres/blob/master/src/include/access/htup_details.h" target="_blank" rel="noopener noreffer ">HeapTupleHeaderData</a> 包含很多字段，其中跟并发控制相关的字段如下：</p>
+<ol>
+<li><strong>t_xmin</strong> 插入此 tuple 的事务的 txid</li>
+<li><strong>t_xmax</strong> 更新或删除此 tuple 的事务的 txid。如果 tuple 没有被删除或更新过，此指为 0，标识 INVALID.</li>
+<li><strong>t_cid</strong> 在当前事务下，执行此命令前执行过多少 sql；从 0 开始。例如我们在一个事务下执行多个 INSERT sql, &ldquo;BEGIN;INSERT;INSERT;INSERT;COMMIT;&rdquo;, 第一个 INSERT 命令执行，t_cid=0； 第二个值为 1，一次类推。</li>
+<li><strong>t_ctid</strong> 当前 tuple 的 tid 或者新的 tuple 的 tid. tid 标识一个 tuple。如果此 tuple 有被更新，则指向新的 tuple，否则指向自己.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="nb">text</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">BEGIN</span><span class="p">;</span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">);</span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">);</span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">);</span><span class="k">COMMIT</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">lp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">tuple</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_infomask2</span><span class="p">,</span><span class="w"> </span><span class="n">t_infomask</span><span class="p">,</span><span class="w"> </span><span class="n">t_hoff</span><span class="p">,</span><span class="w"> </span><span class="n">t_bits</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">tuple</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_infomask2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_infomask</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_hoff</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_bits</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+--------+--------+-------+--------+-------------+------------+--------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1130</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">           </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">       </span><span class="mi">2050</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">24</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1130</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">           </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">       </span><span class="mi">2050</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">24</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0542</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="mi">3</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1130</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">           </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">       </span><span class="mi">2050</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">24</span><span class="w"> </span><span class="o">|</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0543</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><details>
+  <summary>点我展开 <a href='https://github.com/postgres/postgres/blob/master/src/include/access/htup_details.h'>HeapTupleHeaderData</a> 声明</summary>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">HeapTupleFields</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TransactionId</span> <span class="n">t_xmin</span><span class="p">;</span>		   <span class="cm">/* inserting xact ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TransactionId</span> <span class="n">t_xmax</span><span class="p">;</span>              <span class="cm">/* deleting or locking xact ID */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">union</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">CommandId</span>       <span class="n">t_cid</span><span class="p">;</span>     <span class="cm">/* inserting or deleting command ID, or both */</span>
+</span></span><span class="line"><span class="cl">            <span class="n">TransactionId</span> 	<span class="n">t_xvac</span><span class="p">;</span>    <span class="cm">/* old-style VACUUM FULL xact ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">t_field3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">HeapTupleFields</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">DatumTupleFields</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">int32</span>          <span class="n">datum_len_</span><span class="p">;</span>          <span class="cm">/* varlena header (do not touch directly!) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">int32</span>          <span class="n">datum_typmod</span><span class="p">;</span>   	    <span class="cm">/* -1, or identifier of a record type */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Oid</span>            <span class="n">datum_typeid</span><span class="p">;</span>   	    <span class="cm">/* composite type OID, or RECORDOID */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">        * Note: field ordering is chosen with thought that Oid might someday
+</span></span></span><span class="line"><span class="cl"><span class="cm">        * widen to 64 bits.
+</span></span></span><span class="line"><span class="cl"><span class="cm">        */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">DatumTupleFields</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">HeapTupleHeaderData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">HeapTupleFields</span> <span class="n">t_heap</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">DatumTupleFields</span> <span class="n">t_datum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">t_choice</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ItemPointerData</span> <span class="n">t_ctid</span><span class="p">;</span>         <span class="cm">/* current TID of this or newer tuple */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Fields below here must match MinimalTupleData! */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uint16</span>          <span class="n">t_infomask2</span><span class="p">;</span>    <span class="cm">/* number of attributes + various flags */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uint16</span>          <span class="n">t_infomask</span><span class="p">;</span>     <span class="cm">/* various flag bits, see below */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uint8</span>           <span class="n">t_hoff</span><span class="p">;</span>         <span class="cm">/* sizeof header incl. bitmap, padding */</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* ^ - 23 bytes - ^ */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bits8</span>           <span class="n">t_bits</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>      <span class="cm">/* bitmap of NULLs -- VARIABLE LENGTH */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* MORE DATA FOLLOWS AT END OF STRUCT */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">HeapTupleHeaderData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="n">HeapTupleHeaderData</span> <span class="o">*</span><span class="n">HeapTupleHeader</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></details>
+<h2 id="tuple-insert-update-delete">Tuple Insert Update Delete</h2>
+<p>当前节主要描述 tuple，下面没有表示 page header 、linp。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="nb">text</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">);</span><span class="k">UPDATE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">data</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_bits</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_bits</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">--------+--------+-------+--------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">   </span><span class="mi">99</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="mi">100</span><span class="w">  </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="mi">100</span><span class="w">  </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w">        </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0542</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="insert">Insert</h3>
+<p>insert 操作会直接将 tuple 插入到 page 中.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="nb">text</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">--------+--------+-------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">   </span><span class="mi">99</span><span class="w">   </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>t_xmin 为 99，这个 tuple 是在事务 txid=99 插入的</li>
+<li>t_xmax 为 0，当前 tuple 没有被更新或删除过</li>
+<li>t_cid 为 0，表示 tid=99 第一个 sql</li>
+<li>t_ctid 为 &lsquo;(0,1)&rsquo;, 指向他自己，因为他是第一个 tuple</li>
+</ol>
+<h3 id="delete">Delete</h3>
+<p>删除操作是逻辑删除. 执行 DELETE 操作实际的操作是将 t_xmax 的值修改为 txid=100 的 txid</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="nb">text</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">);</span><span class="w"> </span><span class="c1">-- txid=99
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">Delete</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">data</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">;</span><span class="w"> </span><span class="c1">-- txid=100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">lp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">tuple</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">tuple</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+--------+--------+-------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">99</span><span class="w">   </span><span class="o">|</span><span class="w">   </span><span class="mi">100</span><span class="w">  </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>当事务被提交之后，tuple1 已经不需要了。通常这种不需要的 tuple 被称为 <code>dead tuples</code>.
+<code>dead tuples</code> 最终会被清理掉。清理 <code>dead tuples</code> 工作由 VACUUM 执行。</p>
+<h3 id="update">Update</h3>
+<p>更新操作会删除(t_xmax 修改为当前 txid)旧的 tuple，插入一个新的 tuple. 如下，我们在一个事务中执行一次插入，后续在同一个事务下执行两个 UPDATE。</p>
+<p>TODO: 画图把数据变化过程可视化一下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="p">(</span><span class="k">data</span><span class="w"> </span><span class="nb">text</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">);</span><span class="w"> </span><span class="c1">-- txid=99
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">lp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">tuple</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">BEGIN</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">data</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">lp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">tuple</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">tbl</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">data</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">COMMIT</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">lp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">tuple</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmin</span><span class="p">,</span><span class="w"> </span><span class="n">t_xmax</span><span class="p">,</span><span class="w"> </span><span class="n">t_field3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">t_cid</span><span class="p">,</span><span class="w"> </span><span class="n">t_ctid</span><span class="p">,</span><span class="w"> </span><span class="n">t_data</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">heap_page_items</span><span class="p">(</span><span class="n">get_raw_page</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 执行 insert
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w"> </span><span class="n">tuple</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+--------+--------+-------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1168</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 执行第一次 update
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w"> </span><span class="n">tuple</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+--------+--------+-------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1168</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0542</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 执行第二次 update
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w"> </span><span class="n">tuple</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmin</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_xmax</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_cid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_ctid</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">t_data</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+--------+--------+-------+--------+--------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1168</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0541</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="mi">2</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0542</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="mi">3</span><span class="w"> </span><span class="o">|</span><span class="w">   </span><span class="mi">1169</span><span class="w"> </span><span class="o">|</span><span class="w">      </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="err">\</span><span class="n">x0543</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>假设第二个事务的 txid=1169
+执行第一个 Update 的时候, 通过设置 t_xmax=txid 删除 Tuple1; t_ctid 指向新的 tuple Tuple2. tuple 的 head 变化如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Tuple1:
+</span></span><span class="line"><span class="cl">    t_xmax=txid
+</span></span><span class="line"><span class="cl">    t_ctid &#39;(0,1)&#39; 修改为 &#39;(0,2)&#39;
+</span></span><span class="line"><span class="cl">Tuple2:
+</span></span><span class="line"><span class="cl">    t_xmin=txid
+</span></span><span class="line"><span class="cl">    t_xmax=0
+</span></span><span class="line"><span class="cl">    t_cid=0
+</span></span><span class="line"><span class="cl">    t_ctid=&#39;(0,2)&#39;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>执行第二个 Update 的时候，通过设置 t_xmax=txid 删除 Tuple2; t_ctid 指向 Tuple3</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Tuple2:
+</span></span><span class="line"><span class="cl">    t_xmax=txid
+</span></span><span class="line"><span class="cl">    t_ctid &#39;(0,2)&#39; 修改为 &#39;(0,3)&#39;
+</span></span><span class="line"><span class="cl">Tuple3:
+</span></span><span class="line"><span class="cl">    t_xmin=txid
+</span></span><span class="line"><span class="cl">    t_xmax=0
+</span></span><span class="line"><span class="cl">    t_cid=1
+</span></span><span class="line"><span class="cl">    t_ctid=&#39;(0,3)&#39;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果 txid 事务 commited，Tuple1、Tuple2 会变成 <code>dead tuple</code>；如果 txid 事务 aborded，Tuple2、Tuple3 会变成 <code>dead tuple</code></p>
+<h3 id="free-space-map">Free Space Map</h3>
+<p><a href="https://www.postgresql.org/docs/current/storage-fsm.html" target="_blank" rel="noopener noreffer ">Free Space Map</a> 用于跟踪数据库关系的可用空间. 当插入 heap/index tuple 的时候，PostgreSQL 使用 <strong>FSM</strong> 寻找合适的 page 插入 tuple.</p>
+<p>FSM 文件命名为其关系的 filenode 数字加后缀 <code>_fsm</code>. 例如，关系 public.user 保存的文件的 filenode 为 1000，则它的 FSM 文件为同目录下的 <code>1000_fsm</code> 文件。FSM 文件会在需要的时候加载到 <code>shared memory</code> 中。</p>
+<p><a href="https://www.postgresql.org/docs/current/pgfreespacemap.html" target="_blank" rel="noopener noreffer ">pg_freespacemap</a> 扩展可以查看关系的空闲空间大小。如下查询关系 tbl 的空闲空间百分率。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="n">EXTENSION</span><span class="w"> </span><span class="n">pg_freespacemap</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">avail</span><span class="o">/</span><span class="mi">8192</span><span class="w"> </span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s2">&#34;freespace ratio&#34;</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_freespace</span><span class="p">(</span><span class="s1">&#39;tbl&#39;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">blkno</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">avail</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">freespace</span><span class="w"> </span><span class="n">ratio</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-------+-------+-----------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">     </span><span class="mi">0</span><span class="w"> </span><span class="o">|</span><span class="w">            </span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="commit-log-clog">Commit Log (clog)</h2>
+<p><code>Commit Log</code> 保存着事务状态。Commit Log 通常也被叫做 clog，被分配在 <code>shared memory</code>, 贯穿在整个事务的处理过程中。</p>
+<h3 id="transaction-status">Transaction Status</h3>
+<p>Postgres 定义了4中事务状态 N_PROGRESS, COMMITTED, ABORTED, and SUB_COMMITTED.</p>
+<h3 id="clog-如何工作的">Clog 如何工作的</h3>
+<p>clog 由 <code>shared memory</code> 中一个到多个 8kb 大小的 page 构成. clog 是逻辑上的数组。数组的 index 表示事务的 id，数组的各项</p>
+<p>如图</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-clog-01.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-clog-01.svg, /media/img/db/log/postgres-internal/postgres-internal-clog-01.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-clog-01.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-clog-01.svg"
+        title="postgres-internal-clog-01" /></p>
+<ul>
+<li>T1: txid=200 commit, 状态由 IN_PROGRESS 变为 COMMITTED</li>
+<li>T2: txid=201 abort, 状态由 IN_PROGRESS 变为 ABORTED</li>
+</ul>
+<p>后续会讲述 clog 是如何使用的。</p>
+<h2 id="transaction-snapshot">Transaction Snapshot</h2>
+<p><code>transaction snapshot</code> 保存了所有事务的的执行状态信息。Postgres 内部定义了文本格式的 <code>transaction Snapshot</code> 如 &lsquo;100💯&rsquo;. &lsquo;100💯&rsquo; 意思是txids&lt;=99 没有在活跃， txids&gt;=100 在活跃。</p>
+<p>内置的函数 <code>txid_current_snapshot</code> 展示当前事务的快照</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">txid_current_snapshot</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="n">txid_current_snapshot</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-----------------------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w"> </span><span class="mi">100</span><span class="p">:</span><span class="mi">104</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="mi">102</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>文本格式的 txid_current_snapshot 是 &lsquo;xmin:xmax:xip_list&rsquo;, 每部分的含义如下：</p>
+<ul>
+<li>xmin 最早的活跃事务。早于它的事务要么 committed 事务可见，要么 rollback 提交内容不生效/不可见</li>
+<li>xmax 第一个尚未分配的 txid。 所有 &gt;=txid 的事务尚未启动，是不可见的</li>
+<li>xip_list 活跃的事务。这个列表只包含 xmin 和 xmax 之间的事务</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg, /media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg"
+        title="postgres-internal-tx-snapshot" /></p>
+<p>如上图，第一个例子 &lsquo;100💯&rsquo;</p>
+<ul>
+<li>xmin=100，表示 txids&lt;100 的没活跃</li>
+<li>xmax=100，表示 txids&gt;=100 的活跃</li>
+</ul>
+<p>第二个例子 &lsquo;100:104:100,102&rsquo;</p>
+<ul>
+<li>xmin=100，表示 txids&lt;100 的没有活跃</li>
+<li>xmax=104，表示 txids&gt;=104 的正在活跃</li>
+<li>xip_list=100,102，表示 100和102 正常执行</li>
+</ul>
+<p><code>transaction manager</code> 管理 <code>transaction snapshots</code>。<code>transaction snapshots</code> 用于在事务执行过程中判断 tuple 是否可见。相同的 tuple 及相同的 <code>transaction snapshots</code> 下，不同的事务隔离级别会有不同的可见结果。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg"
+        data-srcset="/media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg, /media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg 1.5x, /media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg 2x"
+        data-sizes="auto"
+        alt="/media/img/db/log/postgres-internal/postgres-internal-tx-manager.svg"
+        title="postgres-internal-tx-manager" /></p>
+<p><code>transaction manager</code> 中持有当前正在执行的事务的执行状态。如图，三个事务相继执行，TxA 和 TxB 的事务隔离级别是 <code>READ COMMITTED</code>，TxC 的是 <code>REPREATABLE READ</code>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">T1: 
+</span></span><span class="line"><span class="cl">    TxA 开始执行第一个 SELECT 命令。当执行第一个命令时候，TxA请求获得 txid 和 快照。transaction manager 分配 txid=200, transation snapshot &#39;200:200:&#39;
+</span></span><span class="line"><span class="cl">T2:
+</span></span><span class="line"><span class="cl">    TxB 开始执行第一个 SELECT 命令，transaction manager 分配 tx=201，transaction snapshot &#39;200:200:&#39;, 因此 TxB 中无法看到 TxA
+</span></span><span class="line"><span class="cl">T3:
+</span></span><span class="line"><span class="cl">    TxC 开始执行第一个 SELECT 命令，分配 tx=202，tx snapshot &#39;200:200:&#39;. TxC 看不到 TxA 和 TxB
+</span></span><span class="line"><span class="cl">T4:
+</span></span><span class="line"><span class="cl">    TxA 提交。transaction manager 移除他的事务信息
+</span></span><span class="line"><span class="cl">T5:
+</span></span><span class="line"><span class="cl">    TxB 和 TxC 再次执行 SELECT命令。
+</span></span><span class="line"><span class="cl">    TxB 请求获得 tx snapshoot，因为他的事务隔离级别是 `READ COMMITTED`，TxB 获得的 tx snapshot 是 &#39;201:201:&#39;。 TxA 已经 commited 了，故 TxB 可以看到 TxA
+</span></span><span class="line"><span class="cl">    TxC 因为其事务隔离级别是 `REPEATABLE READ`，应该继续使用之前获得的 snapshot &#39;200:200:&#39;. TxC 看不到 TxA 和 TxB
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="可见性规则">可见性规则</h2>
+<p>基于现在的堆文件的实现，一个事务如何判断当前获取到的 tuple 是可见的呢？<a href="https://www.interdb.jp/pg/pgsql05.html" target="_blank" rel="noopener noreffer ">interdb</a> 做的检查规则如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">/*</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="o">=</span> <span class="n">ABORTED</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">1</span><span class="p">:</span> <span class="n">IF</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="ow">is</span> <span class="s1">&#39;ABORTED&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">            <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="o">/*</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="o">=</span> <span class="n">IN_PROGRESS</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">        <span class="n">IF</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="ow">is</span> <span class="s1">&#39;IN_PROGRESS&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">    	       <span class="n">IF</span> <span class="n">t_xmin</span> <span class="o">=</span> <span class="n">current_txid</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">2</span><span class="p">:</span>          <span class="n">IF</span> <span class="n">t_xmax</span> <span class="o">=</span> <span class="n">INVALID</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">			            <span class="n">RETURN</span> <span class="s1">&#39;Visible&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">3</span><span class="p">:</span>          <span class="n">ELSE</span>  <span class="o">/*</span> <span class="n">this</span> <span class="nb">tuple</span> <span class="n">has</span> <span class="n">been</span> <span class="n">deleted</span> <span class="ow">or</span> <span class="n">updated</span> <span class="n">by</span> <span class="n">the</span> <span class="n">current</span> <span class="n">transaction</span> <span class="n">itself</span><span class="o">.</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">			             <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl">                 <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">4</span><span class="p">:</span>        <span class="n">ELSE</span>   <span class="o">/*</span> <span class="n">t_xmin</span> <span class="err">≠</span> <span class="n">current_txid</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">		              <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl">               <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">        <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">             
+</span></span><span class="line"><span class="cl">        <span class="o">/*</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="o">=</span> <span class="n">COMMITTED</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">        <span class="n">IF</span> <span class="n">t_xmin</span> <span class="n">status</span> <span class="ow">is</span> <span class="s1">&#39;COMMITTED&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">5</span><span class="p">:</span>     <span class="n">IF</span> <span class="n">t_xmin</span> <span class="ow">is</span> <span class="n">active</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">obtained</span> <span class="n">transaction</span> <span class="n">snapshot</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">                <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">6</span><span class="p">:</span>     <span class="n">ELSE</span> <span class="n">IF</span> <span class="n">t_xmax</span> <span class="o">=</span> <span class="n">INVALID</span> <span class="n">OR</span> <span class="n">status</span> <span class="n">of</span> <span class="n">t_xmax</span> <span class="ow">is</span> <span class="s1">&#39;ABORTED&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">                <span class="n">RETURN</span> <span class="s1">&#39;Visible&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ELSE</span> <span class="n">IF</span> <span class="n">t_xmax</span> <span class="n">status</span> <span class="ow">is</span> <span class="s1">&#39;IN_PROGRESS&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">7</span><span class="p">:</span>         <span class="n">IF</span> <span class="n">t_xmax</span> <span class="o">=</span>  <span class="n">current_txid</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">8</span><span class="p">:</span>         <span class="n">ELSE</span>  <span class="o">/*</span> <span class="n">t_xmax</span> <span class="err">≠</span> <span class="n">current_txid</span> <span class="o">*/</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">RETURN</span> <span class="s1">&#39;Visible&#39;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ELSE</span> <span class="n">IF</span> <span class="n">t_xmax</span> <span class="n">status</span> <span class="ow">is</span> <span class="s1">&#39;COMMITTED&#39;</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">9</span><span class="p">:</span>         <span class="n">IF</span> <span class="n">t_xmax</span> <span class="ow">is</span> <span class="n">active</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">obtained</span> <span class="n">transaction</span> <span class="n">snapshot</span> <span class="n">THEN</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">RETURN</span> <span class="s1">&#39;Visible&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Rule</span> <span class="mi">10</span><span class="p">:</span>        <span class="n">ELSE</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">RETURN</span> <span class="s1">&#39;Invisible&#39;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">            <span class="n">END</span> <span class="n">IF</span>
+</span></span><span class="line"><span class="cl">        <span class="n">END</span> <span class="n">IF</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>被 ABORTED 的 tuple 不可见（Rule 1）。</p>
+<p>正在执行的事务，当前事务自己可见(Rule 2, Rule 3, Rule 4).</p>
+<p>Rule 7, tuple 被当前事务删除了</p>
+<p>Rule 8，其他的事务的删除没有提交，当前事务是可见的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Rule 1: If Status(t_xmin) = ABORTED =&gt; Invisible
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Rule 2: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin = current_txid ∧ t_xmax = INVAILD =&gt; Visible
+</span></span><span class="line"><span class="cl">Rule 3: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin = current_txid ∧ t_xmax != INVAILD =&gt; Invisible
+</span></span><span class="line"><span class="cl">Rule 4: If Status(t_xmin) = IN_PROGRESS ∧ t_xmin != current_txid =&gt; Invisible
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Rule 5: If Status(t_xmin) = COMMITTED ∧ Snapshot(t_xmin) = active =&gt; Invisible
+</span></span><span class="line"><span class="cl">Rule 6: If Status(t_xmin) = COMMITTED ∧ (t_xmax = INVALID ∨ Status(t_xmax) = ABORTED) =&gt; Visible
+</span></span><span class="line"><span class="cl">Rule 7: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = IN_PROGRESS ∧ t_xmax = current_txid =&gt; Invisible
+</span></span><span class="line"><span class="cl">Rule 8: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = IN_PROGRESS ∧ t_xmax != current_txid =&gt; Visible
+</span></span><span class="line"><span class="cl">Rule 9: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = COMMITTED ∧ Snapshot(t_xmax) = active =&gt; Visible
+</span></span><span class="line"><span class="cl">Rule 10: If Status(t_xmin) = COMMITTED ∧ Status(t_xmax) = COMMITTED ∧ Snapshot(t_xmax) != active =&gt; Invisible
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="toast">TOAST</h2>
+<p>TODO</p>
+<h1 id="vacuum-processing">VACUUM Processing</h1>
+<p>TODO</p>
+<h1 id="buffer-manager">Buffer Manager</h1>
+<p>TODO</p>
+<h1 id="write-ahead-logging-wal">Write Ahead Logging (WAL)</h1>
+<p>TODO</p>
+<h1 id="references">references</h1>
+<ul>
+<li><a href="https://github.com/postgres/postgres" target="_blank" rel="noopener noreffer ">postgres-src</a></li>
+<li><a href="https://www.interdb.jp/pg/index.html" target="_blank" rel="noopener noreffer ">The Internals of PostgreSQL for database administrators and system developers</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-11-10&nbsp;<a class="git-hash" href="https://github.com/dillonzq/LoveIt/commit/1b0bb5c3c00bc94faf32cf423071e0708c4d937e" target="_blank" title="commit by exfly(exflyg@gmail.com) 1b0bb5c3c00bc94faf32cf423071e0708c4d937e: feat: postgres internal">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>1b0bb5c</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/postgres-internal/" data-title="Postgres Internal" data-hashtags="db"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/postgres-internal/" data-hashtag="db"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/postgres-internal/" data-title="Postgres Internal"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/postgres-internal/" data-title="Postgres Internal"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/postgres-internal/" data-title="Postgres Internal"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/db/">db</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/docker-change-default-bridge-ip/" class="prev" rel="prev" title="Docker 修改内置 bridge ip 不生效, 原因及解决办法"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Docker 修改内置 bridge ip 不生效, 原因及解决办法</a>
+            <a href="/static-build-chrony/" class="next" rel="next" title="chrony 静态编译及跨 Linux 发行版安装 systemd service">chrony 静态编译及跨 Linux 发行版安装 systemd service<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.5.0/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"valine":{"appId":"QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI","appKey":"WBmoGyJtbqUswvfLh6L8iEBr","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-CN","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"serverURLs":"https://leancloud.hugoloveit.com","visitor":true}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

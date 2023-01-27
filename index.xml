@@ -23,7 +23,23 @@
     <description><![CDATA[<p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>]]></description>
 </item>
 <item>
-    <title>Postgres Internal</title>
+    <title>golang jinzhu/gorm no valid transactions</title>
+    <link>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</link>
+    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</guid>
+    <description><![CDATA[<p>gorm no valid transactions</p>]]></description>
+</item>
+<item>
+    <title>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存问题处理</title>
+    <link>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</link>
+    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</guid>
+    <description><![CDATA[<p>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存</p>]]></description>
+</item>
+<item>
+    <title>Postgres 内部工作原理</title>
     <link>https://exfly.github.io/postgres-internal/</link>
     <pubDate>Wed, 14 Sep 2022 09:46:01 &#43;0800</pubDate>
     <author>exfly</author>
@@ -40,51 +56,35 @@
 </item>
 <item>
     <title>Linux Network 如何配置及工作原理</title>
-    <link>https://exfly.github.io/linux_network/</link>
+    <link>https://exfly.github.io/linux_config_network/</link>
     <pubDate>Sat, 01 Jan 2022 20:44:16 &#43;0800</pubDate>
     <author>Exfly</author>
-    <guid>https://exfly.github.io/linux_network/</guid>
+    <guid>https://exfly.github.io/linux_config_network/</guid>
     <description><![CDATA[<p>文章简介：Linux Network 是如何使用及工作的</p>]]></description>
 </item>
 <item>
     <title>Linux 开机自启动脚本机器实现原理</title>
-    <link>https://exfly.github.io/boot_script/</link>
+    <link>https://exfly.github.io/linux_boot_script/</link>
     <pubDate>Sat, 01 Jan 2022 18:11:44 &#43;0800</pubDate>
     <author>Exfly</author>
-    <guid>https://exfly.github.io/boot_script/</guid>
+    <guid>https://exfly.github.io/linux_boot_script/</guid>
     <description><![CDATA[<p>文章简介：linux 设置开机自启动脚本的几种方式</p>]]></description>
 </item>
 <item>
     <title>Systemd 简单介绍，使用及如何 Debug</title>
-    <link>https://exfly.github.io/systemd/</link>
+    <link>https://exfly.github.io/systemd-usages/</link>
     <pubDate>Sat, 01 Jan 2022 16:47:40 &#43;0800</pubDate>
     <author>Exfly</author>
-    <guid>https://exfly.github.io/systemd/</guid>
+    <guid>https://exfly.github.io/systemd-usages/</guid>
     <description><![CDATA[<p>文章简介：学习 systemd 笔记</p>]]></description>
 </item>
 <item>
     <title>使用 nginx 制作一个 yum mirror</title>
-    <link>https://exfly.github.io/yum-mirror/</link>
+    <link>https://exfly.github.io/build-yum-mirror-with-nginx/</link>
     <pubDate>Mon, 25 Oct 2021 17:07:58 &#43;0800</pubDate>
     <author>exfly</author>
-    <guid>https://exfly.github.io/yum-mirror/</guid>
+    <guid>https://exfly.github.io/build-yum-mirror-with-nginx/</guid>
     <description><![CDATA[<p>文章简介: 使用 nginx 制作一个 yum mirror</p>]]></description>
-</item>
-<item>
-    <title>Go Scheduler</title>
-    <link>https://exfly.github.io/go-scheduler/</link>
-    <pubDate>Sun, 08 Aug 2021 07:33:02 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/go-scheduler/</guid>
-    <description><![CDATA[<p>文章简介：golang scheduler 相关的内容</p>]]></description>
-</item>
-<item>
-    <title>(翻译)Go 高性能研讨讲座 - High Performance Go Workshop</title>
-    <link>https://exfly.github.io/high-performance-go-workshop/</link>
-    <pubDate>Sun, 27 Sep 2020 08:57:31 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/high-performance-go-workshop/</guid>
-    <description><![CDATA[<p>文章简介：优化Go程序</p>]]></description>
 </item>
 </channel>
 </rss>

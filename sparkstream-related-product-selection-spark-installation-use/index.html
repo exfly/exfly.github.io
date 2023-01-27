@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>SparkStream等相关产品选型以及Spark安装与简单使用 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="SparkStream等相关产品选型以及Spark安装与简单使用" />
+<meta property="og:description" content="比较 SparkStream 类似产品如 Samza、Storm，介绍 Spark 和 Spark Stream 安装和简单使用方法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-07-04T17:36:24+08:00" />
+<meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="SparkStream等相关产品选型以及Spark安装与简单使用"/>
+<meta name="twitter:description" content="比较 SparkStream 类似产品如 Samza、Storm，介绍 Spark 和 Spark Stream 安装和简单使用方法"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" /><link rel="prev" href="https://exfly.github.io/summary-of-theories-methods-for-consistency-of-distributed-data/" /><link rel="next" href="https://exfly.github.io/realize/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "SparkStream等相关产品选型以及Spark安装与简单使用",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/sparkstream-related-product-selection-spark-installation-use\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "BigData, Spark, Stream, 技术选型","wordcount":  3318 ,
+        "url": "https:\/\/exfly.github.io\/sparkstream-related-product-selection-spark-installation-use\/","datePublished": "2018-07-04T17:36:24+08:00","dateModified": "2023-01-27T21:51:00+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/sparkstream-related-product-selection-spark-installation-use/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/sparkstream-related-product-selection-spark-installation-use/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">SparkStream等相关产品选型以及Spark安装与简单使用</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-07-04">2018-07-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3318 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#各产品比较">各产品比较</a>
+      <ul>
+        <li><a href="#samza">Samza</a></li>
+        <li><a href="#storm">Storm</a></li>
+        <li><a href="#spark-streaming">Spark Streaming</a></li>
+        <li><a href="#kafka-sreeam">Kafka Sreeam</a></li>
+      </ul>
+    </li>
+    <li><a href="#主要比较-spark-stream-和-storm-和选择">主要比较 Spark Stream 和 Storm 和选择</a></li>
+    <li><a href="#spark-介绍-spark-生态">Spark 介绍 Spark 生态</a></li>
+    <li><a href="#spark-和-spark-stream-的安装和使用">Spark 和 Spark Stream 的安装和使用</a>
+      <ul>
+        <li><a href="#spark-介绍">Spark 介绍</a></li>
+        <li><a href="#spark-安装">Spark 安装</a>
+          <ul>
+            <li><a href="#方式-1">方式 1</a></li>
+            <li><a href="#方式二">方式二</a></li>
+            <li><a href="#spark-集群">spark 集群</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>比较 SparkStream 类似产品如 Samza、Storm，介绍 Spark 和 Spark Stream 安装和简单使用方法</p>
+<p>sparkstream-related-product-selection-spark-installation-use</p>
+<h2 id="各产品比较">各产品比较</h2>
+<h3 id="samza">Samza</h3>
+<p>Samza 是一个分布式的流式数据处理框架（streaming processing），Linkedin 开源的产品， 它是基于 Kafka 消息队列来实现类实时的流式数据处理的。更为准确的说法是，Samza 是通过模块化的形式来使用 Apache Kafka 的，因此可以构架在其他消息队列框架上，但出发点和默认实现是基于 Apache Kafka。</p>
+<p>本质上说，Samza 是在消息队列系统上的更高层的抽象，是一种应用流式处理框架在消息队列系统上的一种应用模式的实现。</p>
+<p>总的来说，Samza 与 Storm 相比，传输上完全基于 Apache Kafka，集群管理基于 Hadoop YARN，即 Samza 只负责处理这一块具体业务，再加上基于 RocksDB 的状态管理。由于受限于 Kafka 和 YARN，所以它的拓扑结构不够灵活。</p>
+<h3 id="storm">Storm</h3>
+<p>Storm 框架与其他大数据解决方案的不同之处，在于它的处理方式。Apcahe Hadoop 本质上来说是一个批处理系统，即目标应用模式是针对离线分析为主。数据被引入 Hadoop 的分布式文件系统 (HDFS)，并被均匀地分发到各个节点进行处理，HDFS 的数据平衡规则可以参照本文作者发表于 IBM 的文章《HDFS 数据平衡规则及实验介绍》，进行深入了解。当处理完成时，结果数据返回到 HDFS，然后可以供处理发起者使用。Storm 则支持创建拓扑结构来转换没有终点的数据流。不同于 Hadoop 作业，这些转换从不会自动停止，它们会持续处理到达的数据，即 Storm 的流式实时处理方式。</p>
+<h3 id="spark-streaming">Spark Streaming</h3>
+<p>Spark Streaming 类似于 Apache Storm，用于流式数据的处理。根据其官方文档介绍，Spark Streaming 有高吞吐量和容错能力强这两个特点。Spark Streaming 支持的数据输入源很多，例如：Kafka、Flume、Twitter、ZeroMQ 和简单的 TCP 套接字等等。数据输入后可以用 Spark 的高度抽象原语如：map、reduce、join、window 等进行运算。而结果也能保存在很多地方，如 HDFS，数据库等。另外 Spark Streaming 也能和 MLlib（机器学习）以及 Graphx 完美融合。</p>
+<p>在 Spark Streaming 中，处理数据的单位是一批而不是单条，而数据采集却是逐条进行的，因此 Spark Streaming 系统需要设置间隔使得数据汇总到一定的量后再一并操作，这个间隔就是批处理间隔。批处理间隔（0.2s-2s）是 Spark Streaming 的核心概念和关键参数，它决定了 Spark Streaming 提交作业的频率和数据处理的延迟，同时也影响着数据处理的吞吐量和性能。</p>
+<h3 id="kafka-sreeam">Kafka Sreeam</h3>
+<p>Kafka Streams 是一个用于处理和分析数据的客户端库。它先把存储在 Kafka 中的数据进行处理和分析，然后将最终所得的数据结果回写到 Kafka 或发送到外部系统去。它建立在一些非常重要的流式处理概念之上，例如适当区分事件时间和处理时间、窗口支持，以及应用程序状态的简单（高效）管理。同时，它也基于 Kafka 中的许多概念，例如通过划分主题进行扩展。此外，由于这个原因，它作为一个轻量级的库可以集成到应用程序中去。这个应用程序可以根据需要独立运行、在应用程序服务器中运行、作为 Docker 容器，或通过资源管理器（如 Mesos）进行操作。</p>
+<p>Kafka Sreeam 直接解决了流式处理中的很多困难问题:毫秒级延迟的逐个事件处理。有状态的处理，包括分布式连接和聚合。方便的 DSL。使用类似 DataFlow 的模型对无序数据进行窗口化。具有快速故障切换的分布式处理和容错能力。无停机滚动部署。</p>
+<h2 id="主要比较-spark-stream-和-storm-和选择">主要比较 Spark Stream 和 Storm 和选择</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">比较项</th>
+<th style="text-align:center">SparkStream</th>
+<th style="text-align:center">Storm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">血统</td>
+<td style="text-align:center">UC Berkeley AMP lab</td>
+<td style="text-align:center">Twitter</td>
+</tr>
+<tr>
+<td style="text-align:center">开源时间</td>
+<td style="text-align:center">2011.05</td>
+<td style="text-align:center">2011.09</td>
+</tr>
+<tr>
+<td style="text-align:center">依赖环境</td>
+<td style="text-align:center">Java</td>
+<td style="text-align:center">Zookeeper Java Python</td>
+</tr>
+<tr>
+<td style="text-align:center">开发语言</td>
+<td style="text-align:center">Scala</td>
+<td style="text-align:center">Java Clojure</td>
+</tr>
+<tr>
+<td style="text-align:center">支持语言</td>
+<td style="text-align:center">Scala Java Python R</td>
+<td style="text-align:center">Any</td>
+</tr>
+<tr>
+<td style="text-align:center">硬盘 IO</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">一般</td>
+</tr>
+<tr>
+<td style="text-align:center">集群支持</td>
+<td style="text-align:center">超过 1000 节点</td>
+<td style="text-align:center">好</td>
+</tr>
+<tr>
+<td style="text-align:center">吞吐量</td>
+<td style="text-align:center">好</td>
+<td style="text-align:center">较好</td>
+</tr>
+<tr>
+<td style="text-align:center">使用公司</td>
+<td style="text-align:center">intel 腾讯 淘宝 中移动 Goole</td>
+<td style="text-align:center">淘宝 百度 Twitter 雅虎</td>
+</tr>
+<tr>
+<td style="text-align:center">适用场景</td>
+<td style="text-align:center">较大数据块&amp;需要高时效性的小批量计算</td>
+<td style="text-align:center">实时小数据块的分析计算</td>
+</tr>
+<tr>
+<td style="text-align:center">延时</td>
+<td style="text-align:center">准实时：一次处理一个即将到达的事件</td>
+<td style="text-align:center">实时：处理在一定的时间内（时间间隔可自己设置）在窗口中收到的一批事件</td>
+</tr>
+<tr>
+<td style="text-align:center">容错</td>
+<td style="text-align:center">在批处理级别进行跟踪处理，因此即使发生节点故障等故障，也可以有效地保证每个小批量都能够被精确处理一次</td>
+<td style="text-align:center">每个单独的记录必须在其通过系统时被跟踪，因此 Storm 仅保证每个记录至少被处理一次，但是从故障中恢复期间允许出现重复。 这意味着可变状态可能不正确地更新了两次</td>
+</tr>
+</tbody>
+</table>
+<p>1.<strong>处理模型以及延迟</strong></p>
+<p>虽然这两个框架都提供可扩展性(Scalability)和可容错性(Fault Tolerance),但是它们的处理模型从根本上说是不一样的。Storm 处理的是每次传入的一个事件，而 Spark Streaming 是处理某个时间段窗口内的事件流。因此，Storm 处理一个事件可以达到亚秒级的延迟，而 Spark Streaming 则有秒级的延迟。</p>
+<p>2.<strong>容错和数据保证</strong></p>
+<p>在容错数据保证方面的权衡方面，Spark Streaming 提供了更好的支持容错状态计算。在 Storm 中，当每条单独的记录通过系统时必须被跟踪，所以 Storm 能够至少保证每条记录将被处理一次，但是在从错误中恢复过来时候允许出现重复记录，这意味着可变状态可能不正确地被更新两次。而 Spark Streaming 只需要在批处理级别对记录进行跟踪处理，因此可以有效地保证每条记录将完全被处理一次，即便一个节点发生故障。虽然 Storm 的 Trident library 库也提供了完全一次处理的功能。但是它依赖于事务更新状态，而这个过程是很慢的，并且通常必须由用户实现。</p>
+<p>简而言之,如果你需要亚秒级的延迟，Storm 是一个不错的选择，而且没有数据丢失。如果你需要有状态的计算，而且要完全保证每个事件只被处理一次，Spark Streaming 则更好。Spark Streaming 编程逻辑也可能更容易，因为它类似于批处理程序，特别是在你使用批次(尽管是很小的)时。</p>
+<p>3.<strong>实现和编程 API</strong></p>
+<p>Storm 主要是由 Clojure 语言实现，Spark Streaming 是由 Scala 实现。如果你想看看这两个框架是如何实现的或者你想自定义一些东西你就得记住这一点。Storm 是由 BackType 和 Twitter 开发，而 Spark Streaming 是在 UC Berkeley 开发的。</p>
+<p>Storm 提供了 Java API，同时也支持其他语言的 API。 Spark Streaming 支持 Scala 和 Java 语言(其实也支持 Python)。另外 Spark Streaming 的一个很棒的特性就是它是在 Spark 框架上运行的。这样你就可以想使用其他批处理代码一样来写 Spark Streaming 程序，或者是在 Spark 中交互查询。这就减少了单独编写流批量处理程序和历史数据处理程序。</p>
+<p>4.<strong>生产支持</strong></p>
+<p>Storm 已经出现好多年了，而且自从 2011 年开始就在 Twitter 内部生产环境中使用，还有其他一些公司。而 Spark Streaming 是一个新的项目，并且在 2013 年仅仅被 Sharethrough 使用(据作者了解)。</p>
+<p>Storm 是 Hortonworks Hadoop 数据平台中流处理的解决方案，而 Spark Streaming 出现在 MapR 的分布式平台和 Cloudera 的企业数据平台中。除此之外，Databricks 是为 Spark 提供技术支持的公司，包括了 Spark Streaming。</p>
+<p>5.<strong>集群管理集成</strong></p>
+<p>尽管两个系统都运行在它们自己的集群上，Storm 也能运行在 Mesos，而 Spark Streaming 能运行在 YARN 和 Mesos 上。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://www.cnblogs.com/junneyang/p/8267374.html" target="_blank" rel="noopener noreffer ">这里</a>总结了 Kafka Stream-Spark Streaming-Storm 流式计算框架比较选型的相关资料。</p>
+<p>这里由更多的相关产品的差异比较资源：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/Jack47/p/storm_intro-1.html" target="_blank" rel="noopener noreffer ">Storm 介绍</a></li>
+<li><a href="http://baijiahao.baidu.com/s?id=1571275750794628&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener noreffer ">Spark Streaming vs. Kafka Stream 哪个更适合你？</a></li>
+<li><a href="http://www.infoq.com/cn/articles/hadoop-storm-samza-spark-flink" target="_blank" rel="noopener noreffer ">大数据框架对比：Hadoop、Storm、Samza、Spark 和 Flink
+</a></li>
+<li><a href="https://blog.csdn.net/kwu_ganymede/article/details/50296831" target="_blank" rel="noopener noreffer ">Spark Streaming 与 Storm 的对比分析</a></li>
+<li><a href="https://www.jianshu.com/p/11f7dec5aa07" target="_blank" rel="noopener noreffer ">Storm 和 Spark Streaming 的横向比较</a></li>
+<li><a href="https://www.zhihu.com/question/29092950/answer/131543255" target="_blank" rel="noopener noreffer ">Spark Streaming 和 Storm 如何选择？搭建流式实时计算平台，广告日志实时花费</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-spark-streaming/index.html" target="_blank" rel="noopener noreffer ">Spark Streaming 新手指南</a></li>
+</ul>
+<h2 id="spark-介绍-spark-生态">Spark 介绍 Spark 生态</h2>
+<p><a href="https://spark.apache.org/" target="_blank" rel="noopener noreffer ">Spark 官网</a>简单介绍了 spark 的的优势。</p>
+<p><a href="http://www.10tiao.com/html/357/201708/2247485473/1.html" target="_blank" rel="noopener noreffer ">这里</a>非常详细了介绍 Spark 生态、各大厂应用场景、Spark 基本原理。</p>
+<h2 id="spark-和-spark-stream-的安装和使用">Spark 和 Spark Stream 的安装和使用</h2>
+<h3 id="spark-介绍">Spark 介绍</h3>
+<p>Spark Streaming 是 Spark Core API 的扩展, 它支持弹性的, 高吞吐的, 容错的实时数据流的处理. 数据可以通过多种数据源获取, 例如 Kafka, Flume, Kinesis 以及 TCP sockets, 也可以通过例如 map, reduce, join, window 等的高级函数组成的复杂算法处理. 最终, 处理后的数据可以输出到文件系统, 数据库以及实时仪表盘中.事实上,你还可以在 data streams（数据流）上使用<a href="http://spark.apachecn.org/docs/cn/2.2.0/ml-guide.html" target="_blank" rel="noopener noreffer ">机器学习</a>以及<a href="http://spark.apachecn.org/docs/cn/2.2.0/graphx-programming-guide.html" target="_blank" rel="noopener noreffer ">图计算</a> 算法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Bigdata/spark/streaming-arch.png"
+        data-srcset="/media/img/Bigdata/spark/streaming-arch.png, /media/img/Bigdata/spark/streaming-arch.png 1.5x, /media/img/Bigdata/spark/streaming-arch.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Bigdata/spark/streaming-arch.png"
+        title="/media/img/Bigdata/spark/streaming-arch.png" /></p>
+<p>在内部, 它工作原理如下, Spark Streaming 接收实时输入数据流并将数据切分成多个 batch（批）数据, 然后由 Spark 引擎处理它们以生成最终的 stream of results in batches（分批流结果）.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Bigdata/spark/streaming-flow.png"
+        data-srcset="/media/img/Bigdata/spark/streaming-flow.png, /media/img/Bigdata/spark/streaming-flow.png 1.5x, /media/img/Bigdata/spark/streaming-flow.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Bigdata/spark/streaming-flow.png"
+        title="/media/img/Bigdata/spark/streaming-flow.png" />
+Spark Streaming 提供了一个名为 discretized stream 或 DStream 的高级抽象, 它代表一个连续的数据流. DStream 可以从数据源的输入数据流创建, 例如 Kafka, Flume 以及 Kinesis, 或者在其他 DStream 上进行高层次的操作以创建. 在内部, 一个 DStream 是通过一系列的 RDDs 来表示.</p>
+<p>你可以使用 Scala , Java 或者 Python（Spark 1.2 版本后引进）来编写 Spark Streaming 程序.</p>
+<p><a href="http://spark.apachecn.org/docs/cn/2.2.0/streaming-programming-guide.html" target="_blank" rel="noopener noreffer ">这里是一篇官方编程指南</a></p>
+<h3 id="spark-安装">Spark 安装</h3>
+<h4 id="方式-1">方式 1</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget http://mirror.bit.edu.cn/apache/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz
+</span></span><span class="line"><span class="cl">tar -xzf spark-2.3.1-bin-hadoop2.7.tgz
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 运行一个例子</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> spark-2.3.1-bin-hadoop2.7
+</span></span><span class="line"><span class="cl">./bin/run-example SparkPi
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="方式二">方式二</h4>
+<p><strong>推荐这种方式</strong>这里总结了自己搭建各种开发环境的就自动化安装脚本。第一次安装会比较麻烦，之后实现一条命令自动安装。需要 vagrant&amp;virtual。有一些依赖 docker</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/ExFly/ComputSciLab.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> ComputSciLab
+</span></span><span class="line"><span class="cl">vagrant up
+</span></span><span class="line"><span class="cl">vagrant ssh
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /vagrant/Java
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> install-small.sh
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /vagrant/Spark
+</span></span><span class="line"><span class="cl">./install.sh
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /vagrant/.softwenv/spark-2.3.1-bin-hadoop2.7
+</span></span><span class="line"><span class="cl">./bin/run-example SparkPi
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>结果图：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Bigdata/spark/exfly-spark.png"
+        data-srcset="/media/img/Bigdata/spark/exfly-spark.png, /media/img/Bigdata/spark/exfly-spark.png 1.5x, /media/img/Bigdata/spark/exfly-spark.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Bigdata/spark/exfly-spark.png"
+        title="/media/img/Bigdata/spark/exfly-spark.png" /></p>
+<h4 id="spark-集群">spark 集群</h4>
+<p>找到一个<a href="http://spark.apachecn.org/docs/cn/2.2.0/index.html" target="_blank" rel="noopener noreffer ">中文的文档</a>,可以看一下，部署很简单</p>
+<h1 id="总结">总结</h1>
+<p>如上</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-01-27&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/bbce58a8aef682eeae15cb251ddac0c2ca595768" target="_blank" title="commit by exfly(exflyg@gmail.com) bbce58a8aef682eeae15cb251ddac0c2ca595768: refactor: rename all simple posts">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>bbce58a</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" data-title="SparkStream等相关产品选型以及Spark安装与简单使用" data-hashtags="BigData,Spark,Stream,技术选型"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" data-hashtag="BigData"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" data-title="SparkStream等相关产品选型以及Spark安装与简单使用"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" data-title="SparkStream等相关产品选型以及Spark安装与简单使用"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/" data-title="SparkStream等相关产品选型以及Spark安装与简单使用"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/bigdata/">bigdata</a>,&nbsp;<a href="/tags/spark/">Spark</a>,&nbsp;<a href="/tags/stream/">Stream</a>,&nbsp;<a href="/tags/%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B/">技术选型</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/summary-of-theories-methods-for-consistency-of-distributed-data/" class="prev" rel="prev" title="分布式数据的一致性的一些理论及方法总结"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>分布式数据的一致性的一些理论及方法总结</a>
+            <a href="/realize/" class="next" rel="next" title="Realize代码分析">Realize代码分析<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

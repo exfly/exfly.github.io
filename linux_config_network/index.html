@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Linux Network 如何配置及工作原理 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Linux Network 如何配置及工作原理" />
+<meta property="og:description" content="文章简介：Linux Network 是如何使用及工作的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/linux_config_network/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-01T20:44:16+08:00" />
+<meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="Linux Network 如何配置及工作原理"/>
+<meta name="twitter:description" content="文章简介：Linux Network 是如何使用及工作的"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/linux_config_network/" /><link rel="prev" href="https://exfly.github.io/linux_boot_script/" /><link rel="next" href="https://exfly.github.io/docker-change-default-bridge-ip/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Linux Network 如何配置及工作原理",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/linux_config_network\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Linux, network","wordcount":  1279 ,
+        "url": "https:\/\/exfly.github.io\/linux_config_network\/","datePublished": "2022-01-01T20:44:16+08:00","dateModified": "2023-01-27T21:51:00+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/linux_config_network/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/linux_config_network/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux Network 如何配置及工作原理</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-01-01">2022-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1279 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#linux-网络设备">Linux 网络设备</a>
+      <ul>
+        <li><a href="#networkservice-使用方法">network.service 使用方法</a></li>
+        <li><a href="#networknanager-使用方法">NetworkNanager 使用方法</a></li>
+        <li><a href="#networknanager-工作原理">NetworkNanager 工作原理</a></li>
+        <li><a href="#networknanager-和-networkservice-如何并存">NetworkNanager 和 network.service 如何并存</a></li>
+        <li><a href="#netplan">netplan</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#ref">ref</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：Linux Network 是如何使用及工作的</p>
+<p>Linux Network 非常复杂，其本身的机制非常复杂，每一种 Linux 发行版的网络也有差别，管理工具也纷繁复杂。这里先简单的描述在 Centos7 和 Ubuntu20.04 下如何配置网络，后简单的描述一下 network 是怎样工作的.</p>
+<ul>
+<li>Centos6 使用 network.service</li>
+<li>Centos7 network.service 和 NetworkManager.service 并存</li>
+<li>Centos8 之后只使用 NetworkManager.service</li>
+<li>Ubuntu 使用 netplan 前端，NetworkManager/networkd 后端</li>
+</ul>
+<h2 id="linux-网络设备">Linux 网络设备</h2>
+<p>TODO: 网络设备架构</p>
+<p>TODO: 网络接口命名</p>
+<h3 id="networkservice-使用方法">network.service 使用方法</h3>
+<p>修改 <code>/etc/sysconfig/network-scripts</code> 下的 <code>ifcfg-*</code>文件，之后执行 <code>service network restart</code>，配置即可生效。</p>
+<blockquote>
+<p>注意: 网络配置修改可能会停掉当前的 ssh 连接</p>
+</blockquote>
+<p>原理：
+network.service 会执行 <code>/etc/rc.d/init.d/network start</code> 启动网络服务，启动的过程中，使用 ip 命令启动各 device，使用 route 配置系统路由，使用 sysctl 配置等。</p>
+<h3 id="networknanager-使用方法">NetworkNanager 使用方法</h3>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/networking_guide/index#part-Managing_IP_Networking" target="_blank" rel="noopener noreffer ">Managing IP Networking</a> 包含优点及如何使用</p>
+<blockquote>
+<p>D-Bus 的 unix socket: /var/run/dbus/system_bus_socket</p>
+<p>udev 配置: /etc/udev/udev.conf</p>
+</blockquote>
+<p>配置文件目录</p>
+<ul>
+<li>/etc/NetworkManager</li>
+<li>/etc/sysconfig/network-scripts</li>
+</ul>
+<p>命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">systemctl restart NetworkManager.service <span class="c1"># 重启服务</span>
+</span></span><span class="line"><span class="cl">journalctl -u NetworkManager.service -f -n <span class="m">100</span> <span class="c1"># 查看日志</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查询连接信息</span>
+</span></span><span class="line"><span class="cl">nmcli conn
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 添加连接</span>
+</span></span><span class="line"><span class="cl">nmcli conn add <span class="nb">type</span> ethernet con-name eth0-static ifname eth0 ipv4.method manual ipv4.addresses <span class="s2">&#34;10.0.2.16/24&#34;</span> ipv4.gateway 10.0.2.2 ipv4.dns 114.114.114.114 ipv6.method auto
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 修改连接</span>
+</span></span><span class="line"><span class="cl">nmcli conn modify eth0-static ipv4.method manual ipv4.addresses 10.0.2.254/24 ipv4.gateway 10.0.2.2
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># interactive edit connection</span>
+</span></span><span class="line"><span class="cl">nmcli conn edit &lt;conn-name&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 系统 link(设备)</span>
+</span></span><span class="line"><span class="cl">nmcli dev
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 重新应用配置</span>
+</span></span><span class="line"><span class="cl">nmcli dev reapply eth0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># TUI</span>
+</span></span><span class="line"><span class="cl">nmtui
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们可以使用 nmcli 配置网络，当出现错误的时候，通过 journalctl 查看日志，分析配置错误原因，继续使用 nmcli 配置网络，直到网络服务配置好.</p>
+<h3 id="networknanager-工作原理">NetworkNanager 工作原理</h3>
+<p><a href="https://en.wikipedia.org/wiki/NetworkManager" target="_blank" rel="noopener noreffer ">NetworkNanager</a> 有两个组件:</p>
+<ol>
+<li>NetworkManager daemon, 管理连接和监听并报告网络变化</li>
+<li>一些管理前端（front-ends）, 比如 nmcli,一些 GUI 程序等</li>
+</ol>
+<p>NetworkManager daemon 依赖于 <a href="https://en.wikipedia.org/wiki/D-Bus" target="_blank" rel="noopener noreffer ">D-Bus</a>, 实现了管理连接的接口，底层使用 netlink 跟 linux 内核交互，获得设备信息，配置连接（比如修改 ipv4 的地址等）。nmcli 跟 D-Bus 交互连接 NetworkManager daemon，获得信息以及配置网络</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># ip 命令也是使用 netlink 跟 kernel 交互的</span>
+</span></span><span class="line"><span class="cl">strace -fff ip a
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">socket<span class="o">(</span>AF_NETLINK, SOCK_RAW<span class="p">|</span>SOCK_CLOEXEC, NETLINK_ROUTE<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>
+</span></span><span class="line"><span class="cl">sendto<span class="o">(</span>3, <span class="o">{{</span><span class="nv">len</span><span class="o">=</span>40, <span class="nv">type</span><span class="o">=</span>RTM_GETLINK, <span class="nv">flags</span><span class="o">=</span>NLM_F_REQUEST<span class="p">|</span>NLM_F_DUMP, <span class="nv">seq</span><span class="o">=</span>1641054708, <span class="nv">pid</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">{</span><span class="nv">ifi_family</span><span class="o">=</span>AF_UNSPEC, <span class="nv">ifi_type</span><span class="o">=</span>ARPHRD_NETROM, <span class="nv">ifi_index</span><span class="o">=</span>0, <span class="nv">ifi_flags</span><span class="o">=</span>0, <span class="nv">ifi_change</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">{{</span><span class="nv">nla_len</span><span class="o">=</span>8, <span class="nv">nla_type</span><span class="o">=</span>IFLA_EXT_MASK<span class="o">}</span>, 1<span class="o">}}</span>, 40, 0, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">40</span>
+</span></span><span class="line"><span class="cl">recvmsg<span class="o">(</span>3, <span class="o">{</span><span class="nv">msg_name</span><span class="o">={</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span>0, <span class="nv">nl_groups</span><span class="o">=</span>00000000<span class="o">}</span>, <span class="nv">msg_namelen</span><span class="o">=</span>12, <span class="nv">msg_iov</span><span class="o">=[{</span><span class="nv">iov_base</span><span class="o">=</span>NULL, <span class="nv">iov_len</span><span class="o">=</span>0<span class="o">}]</span>, <span class="nv">msg_iovlen</span><span class="o">=</span>1, <span class="nv">msg_controllen</span><span class="o">=</span>0, <span class="nv">msg_flags</span><span class="o">=</span>MSG_TRUNC<span class="o">}</span>, MSG_PEEK<span class="p">|</span>MSG_TRUNC<span class="o">)</span>
+</span></span><span class="line"><span class="cl">recvmsg<span class="o">(</span>3, <span class="o">{</span><span class="nv">msg_name</span><span class="o">={</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span>0, <span class="nv">nl_groups</span><span class="o">=</span>00000000<span class="o">}</span>
+</span></span><span class="line"><span class="cl">sendto<span class="o">(</span>3, <span class="o">{{</span><span class="nv">len</span><span class="o">=</span>40, <span class="nv">type</span><span class="o">=</span>RTM_GETADDR, <span class="nv">flags</span><span class="o">=</span>NLM_F_REQUEST<span class="p">|</span>NLM_F_DUMP, <span class="nv">seq</span><span class="o">=</span>1641054709, <span class="nv">pid</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">{</span><span class="nv">ifa_family</span><span class="o">=</span>AF_UNSPEC, <span class="nv">ifa_prefixlen</span><span class="o">=</span>0, <span class="nv">ifa_flags</span><span class="o">=</span>0, <span class="nv">ifa_scope</span><span class="o">=</span>RT_SCOPE_UNIVERSE, <span class="nv">ifa_index</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">{</span><span class="nv">nla_len</span><span class="o">=</span>0, <span class="nv">nla_type</span><span class="o">=</span>IFA_UNSPEC<span class="o">}}</span>, 40, 0, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">40</span>
+</span></span><span class="line"><span class="cl">recvmsg<span class="o">(</span>3, <span class="o">{</span><span class="nv">msg_name</span><span class="o">={</span><span class="nv">sa_family</span><span class="o">=</span>AF_NETLINK, <span class="nv">nl_pid</span><span class="o">=</span>0, <span class="nv">nl_groups</span><span class="o">=</span>00000000<span class="o">}</span>, <span class="nv">msg_namelen</span><span class="o">=</span>12, <span class="nv">msg_iov</span><span class="o">=[{</span><span class="nv">iov_base</span><span class="o">=</span>NULL, <span class="nv">iov_len</span><span class="o">=</span>0<span class="o">}]</span>, <span class="nv">msg_iovlen</span><span class="o">=</span>1, <span class="nv">msg_controllen</span><span class="o">=</span>0, <span class="nv">msg_flags</span><span class="o">=</span>MSG_TRUNC<span class="o">}</span>, MSG_PEEK<span class="p">|</span>MSG_TRUNC<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>TODO: 简单的 demo 使用 netlink 获得 ip 地址和配置 ip 地址 <a href="https://olegkutkov.me/2019/03/24/getting-linux-routing-table-using-netlink/" target="_blank" rel="noopener noreffer ">netlink-demo</a></p>
+<h3 id="networknanager-和-networkservice-如何并存">NetworkNanager 和 network.service 如何并存</h3>
+<p>TODO:</p>
+<h3 id="netplan">netplan</h3>
+<blockquote>
+<p>The network configuration abstraction renderer</p>
+</blockquote>
+<p><a href="https://netplan.io/" target="_blank" rel="noopener noreffer ">netplan</a> 是一个方便在 linux 系统下配置网络的工具。我们通过 yaml 文件描述网络配置，netplan 会为我们生成我们选择的网络后端所需要的配置。当前支持后端 Systemd-networkd(default) 和 NetworkManager. Ubuntu 20.04 使用 netplan 作为网络配置工具.</p>
+<p>配置文件在 <code>ls /{lib,etc,run}/netplan/*.yaml</code>.</p>
+<blockquote>
+<p><code>ls /etc/netplan</code></p>
+</blockquote>
+<p><a href="https://netplan.io/design/" target="_blank" rel="noopener noreffer ">netplan design</a></p>
+<p><a href="https://netplan.io/reference/" target="_blank" rel="noopener noreffer ">netplan reference</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">ls /<span class="o">{</span>lib,etc,run<span class="o">}</span>/netplan/*.yaml <span class="c1"># 配置文件位置</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">netplan generate <span class="c1"># 生成配置</span>
+</span></span><span class="line"><span class="cl">ls /run/systemd/network/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ip a <span class="c1"># 各接口信息</span>
+</span></span><span class="line"><span class="cl">lshw -class network <span class="c1"># 硬件更详细的信息</span>
+</span></span><span class="line"><span class="cl">ethtool enp0s3
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 修改配置 /etc/netplan/*.yaml</span>
+</span></span><span class="line"><span class="cl">netplan try <span class="c1"># 测试是否生效</span>
+</span></span><span class="line"><span class="cl">netplan apply <span class="c1"># 应用配置</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">resolvectl status <span class="c1"># resolve name</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://ubuntu.com/server/docs/network-configuration" target="_blank" rel="noopener noreffer ">netplan 一些通用的配置模版</a></p>
+<p>netplan 配置 dhcp 自动获取 ip</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">cat /etc/netplan/50-cloud-init.yaml
+</span></span><span class="line"><span class="cl"><span class="c1"># This file is generated from information provided by the datasource.  Changes</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># to it will not persist across an instance reboot.  To disable cloud-init&#39;s</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># network configuration capabilities, write a file</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># network: {config: disabled}</span>
+</span></span><span class="line"><span class="cl">network:
+</span></span><span class="line"><span class="cl">  ethernets:
+</span></span><span class="line"><span class="cl">    enp0s3:
+</span></span><span class="line"><span class="cl">      dhcp4: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">      match:
+</span></span><span class="line"><span class="cl">        macaddress: 02:f6:7f:02:5c:72
+</span></span><span class="line"><span class="cl">      set-name: enp0s3
+</span></span><span class="line"><span class="cl">  version: <span class="m">2</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>netplan 配置 static ip:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">network:
+</span></span><span class="line"><span class="cl">  version: <span class="m">2</span>
+</span></span><span class="line"><span class="cl">  ethernets:
+</span></span><span class="line"><span class="cl">    enp0s3:
+</span></span><span class="line"><span class="cl">      match:
+</span></span><span class="line"><span class="cl">        macaddress: 02:f6:7f:02:5c:72
+</span></span><span class="line"><span class="cl">      addresses:
+</span></span><span class="line"><span class="cl">        - 10.10.10.2/24
+</span></span><span class="line"><span class="cl">	  gateway4: 10.10.10.1
+</span></span><span class="line"><span class="cl">      set-name: enp0s3
+</span></span><span class="line"><span class="cl">      nameservers:
+</span></span><span class="line"><span class="cl">        search: <span class="o">[</span>mydomain, otherdomain<span class="o">]</span>
+</span></span><span class="line"><span class="cl">        addresses: <span class="o">[</span>10.10.10.1, 1.1.1.1<span class="o">]</span>
+</span></span><span class="line"><span class="cl">      routes:
+</span></span><span class="line"><span class="cl">        - to: default
+</span></span><span class="line"><span class="cl">          via: 10.10.10.1
+</span></span><span class="line"><span class="cl"><span class="c1"># netplan generate --root-dir /vagrant</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Name resolve</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># /run/systemd/resolve/stub-resolv.conf</span>
+</span></span><span class="line"><span class="cl">man <span class="m">8</span> systemd-resolved
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">systemd-resolve --statistics <span class="c1"># resolve 服务</span>
+</span></span><span class="line"><span class="cl">systemd-resolve --reset-statistics <span class="c1"># 重置统计信息</span>
+</span></span><span class="line"><span class="cl">systemctl restart systemd-resolved <span class="c1"># 重启 ubuntu resolved 服务</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">resolvectl flush-caches <span class="c1"># flush dns cache (old: systemd-resolve --flush-caches)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># flush dns cache</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://www.linuxuprising.com/2019/07/how-to-flush-dns-cache-on-linux-for.html</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="总结">总结</h2>
+<p>网络配置最终都是跟内核用 netlink 沟通，告诉 linux 内核网络配置，由 kernel 生效并工作。用户态管理程序典型代表： NetworkManager 和 systemd-networkd。熟悉了这些，便有了手段指挥 linux kernel 网络如何工作。剩下的就需要我们慢慢了解和学习 linux 网络提供了哪些功能。</p>
+<h2 id="ref">ref</h2>
+<ul>
+<li><a href="https://wiki.archlinux.org/title/Network_configuration_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29" target="_blank" rel="noopener noreffer ">network_configuration</a></li>
+<li><a href="https://www.kernel.org/doc/html/latest/networking/index.html" target="_blank" rel="noopener noreffer ">linux kernel network docs</a></li>
+<li><a href="https://netplan.io/examples/" target="_blank" rel="noopener noreffer ">Netplan configuration examples</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-01-27&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/bbce58a8aef682eeae15cb251ddac0c2ca595768" target="_blank" title="commit by exfly(exflyg@gmail.com) bbce58a8aef682eeae15cb251ddac0c2ca595768: refactor: rename all simple posts">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>bbce58a</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/linux_config_network/" data-title="Linux Network 如何配置及工作原理" data-hashtags="Linux,network"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/linux_config_network/" data-hashtag="Linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/linux_config_network/" data-title="Linux Network 如何配置及工作原理"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/linux_config_network/" data-title="Linux Network 如何配置及工作原理"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/linux_config_network/" data-title="Linux Network 如何配置及工作原理"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/network/">network</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/linux_boot_script/" class="prev" rel="prev" title="Linux 开机自启动脚本机器实现原理"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Linux 开机自启动脚本机器实现原理</a>
+            <a href="/docker-change-default-bridge-ip/" class="next" rel="next" title="Docker 修改内置 bridge ip 不生效, 原因及解决办法">Docker 修改内置 bridge ip 不生效, 原因及解决办法<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

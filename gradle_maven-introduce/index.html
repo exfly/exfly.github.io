@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Gradle和Maven使用方法总结 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Gradle和Maven使用方法总结" />
+<meta property="og:description" content="文章简介： 1.总结 gradle 和 maven 正确使用方法 2.开箱即用 maven&amp;gradle 同时支持的项目配置。Gradle 和 Maven 使用起来都比较方便，而 Gradle 使用更灵活，配置更方便。而公司环境一般使用 Maven。因此就有了取舍，是迁移到 Gradle，还是继续使用 Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/gradle_maven-introduce/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-06-24T17:38:17+08:00" />
+<meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="Gradle和Maven使用方法总结"/>
+<meta name="twitter:description" content="文章简介： 1.总结 gradle 和 maven 正确使用方法 2.开箱即用 maven&amp;gradle 同时支持的项目配置。Gradle 和 Maven 使用起来都比较方便，而 Gradle 使用更灵活，配置更方便。而公司环境一般使用 Maven。因此就有了取舍，是迁移到 Gradle，还是继续使用 Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/gradle_maven-introduce/" /><link rel="prev" href="https://exfly.github.io/openresty-best-practice/" /><link rel="next" href="https://exfly.github.io/summary-of-theories-methods-for-consistency-of-distributed-data/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Gradle和Maven使用方法总结",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/gradle_maven-introduce\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Java","wordcount":  2376 ,
+        "url": "https:\/\/exfly.github.io\/gradle_maven-introduce\/","datePublished": "2018-06-24T17:38:17+08:00","dateModified": "2023-01-27T21:51:00+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "Exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/gradle_maven-introduce/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/gradle_maven-introduce/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Gradle和Maven使用方法总结</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-06-24">2018-06-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2376 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#maven-版本不相同问题">maven 版本不相同问题</a></li>
+    <li><a href="#使用dependencymanagementhttpszhuanlanzhihucomp31020263集中管理版本依赖">使用<a href="https://zhuanlan.zhihu.com/p/31020263">dependencyManagement</a>集中管理版本依赖</a></li>
+    <li><a href="#多模块项目管理方法">多模块项目管理方法</a></li>
+    <li><a href="#如何更好的使用-maven-进行项目管理-几点建议">如何更好的使用 maven 进行项目管理 几点建议</a></li>
+    <li><a href="#我的-maven-常用命令笔记httpsgithubcomexflycslearningblobmasternotebookfordevelope69687e6a1a3javae5b7a5e585b7mavenmd"><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md">我的 maven 常用命令笔记</a></a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#maven---gradle">maven -&gt; gradle</a></li>
+    <li><a href="#gradle---maven">gradle -&gt; maven</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介： <br>1.总结 gradle 和 maven 正确使用方法 <br>2.开箱即用 maven&amp;gradle 同时支持的项目配置。<br>Gradle 和 Maven 使用起来都比较方便，而 Gradle 使用更灵活，配置更方便。而公司环境一般使用 Maven。因此就有了取舍，是迁移到 Gradle，还是继续使用 Maven？其实不需要纠结，谁说必须取舍的，两个都用起来就是了！！！</p>
+<h1 id="说在前面">说在前面</h1>
+<p>Gradle 和 Maven 都是项目自动构建工具，编译源代码只是整个过程的一个方面，更重要的是，你要把你的软件发布到生产环境中来产生商业价值，所以，你要运行测试，构建分布、分析代码质量、甚至为不同目标环境提供不同版本，然后部署。整个过程进行自动化操作是很有必要的。</p>
+<p>整个过程可以分成以下几个步骤：</p>
+<ul>
+<li>编译源代码</li>
+<li>运行单元测试和集成测试</li>
+<li>执行静态代码分析、生成分析报告</li>
+<li>创建发布版本</li>
+<li>部署到目标环境</li>
+<li>部署传递过程</li>
+<li>执行冒烟测试和自动功能测试</li>
+</ul>
+<p>两者都是项目工具，但是 maven 使用的最多，Gradle 是后起之秀，想 spring 等都是使用 gradle 构建的。Gradle 抛弃了 Maven 的基于 XML 的繁琐配置，采用了领域特定语言 Groovy 的配置，大大简化了构建代码的行数。</p>
+<p>比如 maven 要 这么写</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;dependency&gt;
+</span></span><span class="line"><span class="cl">	&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+</span></span><span class="line"><span class="cl">	&lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+</span></span><span class="line"><span class="cl">	&lt;version&gt;${spring.version}&lt;/version&gt;
+</span></span><span class="line"><span class="cl">&lt;/dependency&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>gradle 这么写</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">compile(&#39;org.springframework:spring-core:2.5.6&#39;)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>详细的 Gradle 和 Maven 比较看<a href="https://www.tianmaying.com/tutorial/Gradle" target="_blank" rel="noopener noreffer ">这里</a>讲的很好了。<a href="https://gradle.org/maven-vs-gradle/" target="_blank" rel="noopener noreffer ">gradle 官方</a>也对两个工具进行了比较。</p>
+<p>我们可以使用其中一个，或者两个一起使用！！！这是可行的，当然前提是，有一个人在整个过程中维护相同功能的两份配置。实际上并不难。抽一个周末空余时间，自己把这两个都熟悉了一下，整理了一套 Gradle&amp;Maven 日常开发中常用的包和插件的集合，作为项目的开始。<strong>比较通用，所以需要根据公司或个人项目实际情况<em>加入私服</em>的配置，以及你想使用的<em>jar 包</em></strong>，如此简单。如果使用过程中遇到什么问题，请联系我。别忘了，帮我 star 一下。</p>
+<p>接下来涉及到的内容：</p>
+<ul>
+<li>maven 正确使用方法</li>
+<li>gradle 正确使用方法</li>
+<li>gradle 项目和 maven 项目相互转化</li>
+<li>一个项目同时支持 maven 和 gradle 配置：一个好的开始</li>
+</ul>
+<h1 id="maven-正确使用方法">maven 正确使用方法</h1>
+<h2 id="maven-版本不相同问题">maven 版本不相同问题</h2>
+<p>我们大部分时候使用 IDE 进行项目开发的时候，大部分时候会直接使用 IDE 创建 MAVEN 项目，这是正确的。可是，您有没有发现，大家合作的时候，由于 maven 版本不相同，哪怕是 3.5.1 和 3.5.2 的区别，都会引发一场血案！我的可以正常打开项目，而其他人却会出现问题。除了 IDE 下载包损坏外，就是 maven 的版本不相同。其实通过一些工具，已经可以让这种情况不在发生，那就是<a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html" target="_blank" rel="noopener noreffer ">Wrapper</a>。请看如下图(图没配错，maven 的 wrapper 和 gradle 的 wrapper 流程上完全相同)</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Java/gradle_maven/wrapper-workflow.png"
+        data-srcset="/media/img/Java/gradle_maven/wrapper-workflow.png, /media/img/Java/gradle_maven/wrapper-workflow.png 1.5x, /media/img/Java/gradle_maven/wrapper-workflow.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Java/gradle_maven/wrapper-workflow.png"
+        title="wrapper-workflow" /></p>
+<p><strong>前提条件</strong>：</p>
+<ul>
+<li>项目创建者系统中已经由 maven 的命令</li>
+<li>其他人没有要求，mvn 可有可无（原因之后说）</li>
+</ul>
+<p>具体如何做：</p>
+<ul>
+<li>项目创建者执行 <code>mvn -N io.takari:maven:wrapper -Dmaven=3.5.3</code>
+<ul>
+<li>此时，项目目录会生成<code>mvnw.cmd</code>和<code>mvnw</code>，之后的所有操作都是基于此，也就是说，项目开发者不需要由任何依赖，除了 jdk-_!!!</li>
+</ul>
+</li>
+<li>项目创建者执行 <code>mvnw archetype:generate</code>
+<ul>
+<li>此步是自动生成项目目录结构。同时，项目管理者需要搭建好基础的代码框架。之后可以开发了</li>
+</ul>
+</li>
+<li>项目开发者
+<ul>
+<li><code>mvnw.cmd compiler:compile</code></li>
+<li><code>mvnw.cmd exec:java -Dexec.mainClass=&quot;org.exfly.LombokL.LombokLApplication&quot; -q</code></li>
+<li><code>mvn.cmd clean</code></li>
+<li><code>mvn.cmd test</code></li>
+<li>。。。</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意</strong>:</p>
+<ol>
+<li>当第一次执行<code>mvnw.cmd</code>时候，会自动下载对应版本的 Maven，maven 的<code>$HOME/.m2/wrapper/dists/&lt;version&gt;/</code>下。</li>
+<li>初网络问题，如果出现错误，依赖包已经下好，只需要到<code>1</code>所说的位置去掉后缀.pack，重新运行即可。</li>
+</ol>
+<h2 id="使用dependencymanagementhttpszhuanlanzhihucomp31020263集中管理版本依赖">使用<a href="https://zhuanlan.zhihu.com/p/31020263" target="_blank" rel="noopener noreffer ">dependencyManagement</a>集中管理版本依赖</h2>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/31020263" target="_blank" rel="noopener noreffer ">dependencyManagement</a>这里已经很好的解释如何做。同时可以借鉴 springboot-parent</li>
+</ul>
+<h2 id="多模块项目管理方法">多模块项目管理方法</h2>
+<ul>
+<li><a href="http://www.infoq.com/cn/news/2011/01/xxb-maven-3-pom-refactoring" target="_blank" rel="noopener noreffer ">多模块项目的 POM 重构</a></li>
+<li>通过 parent 的方式，将多模块依赖集中管理，</li>
+</ul>
+<h2 id="如何更好的使用-maven-进行项目管理-几点建议">如何更好的使用 maven 进行项目管理 几点建议</h2>
+<ul>
+<li>尽量使用 wapper 多</li>
+<li>使用<a href="https://zhuanlan.zhihu.com/p/31020263" target="_blank" rel="noopener noreffer ">dependencyManagement</a>集中管理版本依赖</li>
+<li>bin 下有 mvn 和 mvnDebug(运行 mvn 时开始 debug)</li>
+<li>M2_HOME maven 主程序的安装目录</li>
+<li>~/.m2 本地包下载位置</li>
+<li>http 代理
+<ul>
+<li>setting.xml 中的 proxies</li>
+</ul>
+</li>
+<li>MAVEN_OPTS
+<ul>
+<li>运行 mvn 时候相当于运行 java 命令，MAVEN_OPTS 可以配置为任何 java 的命令参数</li>
+</ul>
+</li>
+<li>设置 MAVEN_OPTS 环境变量</li>
+<li>配置用户范围 settings.xml
+<ul>
+<li>%M2_HOME%/conf/settings.xml 为全局配置文件</li>
+<li>~/.m2/settings.xml 为用户配置文件</li>
+</ul>
+</li>
+<li>不要使用 IDE 内嵌的 Maven，应该配置 IDE 中为自己安装的 maven</li>
+<li>显示声明所有用到的依赖</li>
+</ul>
+<h2 id="我的-maven-常用命令笔记httpsgithubcomexflycslearningblobmasternotebookfordevelope69687e6a1a3javae5b7a5e585b7mavenmd"><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md" target="_blank" rel="noopener noreffer ">我的 maven 常用命令笔记</a></h2>
+<p><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md" target="_blank" rel="noopener noreffer ">我的 maven 常用命令笔记</a></p>
+<h1 id="gradle-正确使用方法">gradle 正确使用方法</h1>
+<p>理由同上节，直接说使用方法。可以对照<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Gradle.md" target="_blank" rel="noopener noreffer ">我的笔记查看</a>。</p>
+<ul>
+<li>gradle init &ndash;type java-library
+<ul>
+<li>这里自动生成 gradlew，并创建项目目录结构</li>
+</ul>
+</li>
+<li>之后所有命令使用 gradlew 即可</li>
+</ul>
+<h1 id="gradle-项目和-maven-项目相互转化">gradle 项目和 maven 项目相互转化</h1>
+<p>gradle 和 maven 可以相互转化，意味着，我们可以使用 gradle 为主的开发，之后导出为 maven 项目，供生产环境使用。前提，你足够了解 gradle 和 maven。</p>
+<h2 id="maven---gradle">maven -&gt; gradle</h2>
+<ul>
+<li>cd /path/to/mavenproject</li>
+<li>gradle init</li>
+<li>gradle wrapper</li>
+</ul>
+<h2 id="gradle---maven">gradle -&gt; maven</h2>
+<ul>
+<li>cd /path/to/gradleproject</li>
+<li>gradlew install</li>
+</ul>
+<p>将项目转换为 maven 和 gradle 项目后，目录结构如下：
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/Java/gradle_maven/dir_frame.png"
+        data-srcset="/media/img/Java/gradle_maven/dir_frame.png, /media/img/Java/gradle_maven/dir_frame.png 1.5x, /media/img/Java/gradle_maven/dir_frame.png 2x"
+        data-sizes="auto"
+        alt="/media/img/Java/gradle_maven/dir_frame.png"
+        title="dir_frame.png" />
+之后，我们习惯使用 mavnw 或者 gradlew，都可以。如此，做到了共存。</p>
+<h1 id="一个项目同时支持-maven-和-gradle-配置一个好的开始">一个项目同时支持 maven 和 gradle 配置：一个好的开始</h1>
+<p>抽时间，做了常用 jar 包和插件整合包，一个项目同时支持 maven 和 gradle。</p>
+<p><strong>共同的依赖</strong>：</p>
+<ul>
+<li>内容包括： 日志、通用工具库、单元测试、代码质量度量、文档生成等</li>
+<li>jar: slf4j、logback、lombok、guava、junit、mockito</li>
+</ul>
+<p><strong>配置中整合的工具</strong>：</p>
+<ul>
+<li>代码质量分析报告工具：pmd、findbugs、checkstyle、jdepend</li>
+<li>单元测试报告工具、javadoc、依赖管理、项目信息汇总等可视化信息</li>
+</ul>
+<p><strong>maven 具体内容</strong></p>
+<ul>
+<li>maven-compiler-plugin、maven-javadoc-plugin、cobertura-maven-plugin、maven-checkstyle-plugin、findbugs-maven-plugin、maven-pmd-plugin、jdepend-maven-plugin、maven-jar-plugin、maven-surefire-plugin、maven-surefire-report-plugin</li>
+</ul>
+<p><strong>gradle 具体内容</strong></p>
+<ul>
+<li>java、maven、checkstyle、pmd、findbugs、jdepend、eclipse、idea、javadoc</li>
+</ul>
+<p>首先 maven 配置见<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/pom.common.xml" target="_blank" rel="noopener noreffer ">此文件</a></p>
+<p>其次 gradle 配置见<a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/build.common.gradle" target="_blank" rel="noopener noreffer ">此文件</a></p>
+<h1 id="资料汇总">资料汇总</h1>
+<ul>
+<li><a href="https://raw.githubusercontent.com/ExFly/CsLearning/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/LombokL.zip" target="_blank" rel="noopener noreffer ">完整的整合项目，支持 maven 和 gradle，点我下载</a></li>
+<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Gradle.md" target="_blank" rel="noopener noreffer ">我的 Gradle 笔记，点我查看</a></li>
+<li><a href="https://github.com/ExFly/CsLearning/blob/master/NoteBookForDevelop/%E6%96%87%E6%A1%A3/Java/%E5%B7%A5%E5%85%B7/Maven.md" target="_blank" rel="noopener noreffer ">我的 maven 笔记，点我查看</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-01-27&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/bbce58a8aef682eeae15cb251ddac0c2ca595768" target="_blank" title="commit by exfly(exflyg@gmail.com) bbce58a8aef682eeae15cb251ddac0c2ca595768: refactor: rename all simple posts">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>bbce58a</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/gradle_maven-introduce/" data-title="Gradle和Maven使用方法总结" data-hashtags="Java"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/gradle_maven-introduce/" data-hashtag="Java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/gradle_maven-introduce/" data-title="Gradle和Maven使用方法总结"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/gradle_maven-introduce/" data-title="Gradle和Maven使用方法总结"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/gradle_maven-introduce/" data-title="Gradle和Maven使用方法总结"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/openresty-best-practice/" class="prev" rel="prev" title="OpenResty最佳实践"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>OpenResty最佳实践</a>
+            <a href="/summary-of-theories-methods-for-consistency-of-distributed-data/" class="next" rel="next" title="分布式数据的一致性的一些理论及方法总结">分布式数据的一致性的一些理论及方法总结<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":true,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

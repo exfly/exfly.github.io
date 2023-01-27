@@ -1,0 +1,25 @@
+version: "3"
+services:
+  repo_mirror:
+    container_name: repo_mirror
+    image: nginx:alpine
+    ports:
+      - 7000:7000
+    volumes:
+      - ./pkg_mirror.conf:/etc/nginx/conf.d/pkg_mirror.conf
+      - ./mirror_cache:/opt/nginx/cache
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "512m"
+    restart: always
+
+  tcpdump:
+    image: alpine:edge
+    command:
+      - sh
+      - -c
+      - 'apk add tcpdump && tcpdump -i any tcp port 80 -X -vvvvvvvvxxxxxxx'
+    cap_add:
+      - NET_ADMIN
+    network_mode: 'service:repo_mirror'

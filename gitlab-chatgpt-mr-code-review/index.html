@@ -4,34 +4,34 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>读写操作到底有多慢, 操作系统相关一些参数 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="读写操作到底有多慢, 操作系统相关一些参数" />
-<meta property="og:description" content="文章简介：Latency numbers every programmer should know" />
+        <title>在 gitlab 中使用 chatgpt 做 code review - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="在 gitlab 中使用 chatgpt 做 code review" />
+<meta property="og:description" content="文章简介：介绍在 gitlab 中使用 chatgpt 做 code review 的方法和代码" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/how-fast-the-read-write/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-11-30T13:11:38+08:00" />
+<meta property="og:url" content="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-28T08:50:33+08:00" />
 <meta property="article:modified_time" content="2023-02-28T09:10:27+08:00" /><meta property="og:site_name" content="ExflyBlog" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
-<meta name="twitter:title" content="读写操作到底有多慢, 操作系统相关一些参数"/>
-<meta name="twitter:description" content="文章简介：Latency numbers every programmer should know"/>
+<meta name="twitter:title" content="在 gitlab 中使用 chatgpt 做 code review"/>
+<meta name="twitter:description" content="文章简介：介绍在 gitlab 中使用 chatgpt 做 code review 的方法和代码"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/how-fast-the-read-write/" /><link rel="prev" href="https://exfly.github.io/exfly-dotfiles/" /><link rel="next" href="https://exfly.github.io/linux_epoll/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" /><link rel="prev" href="https://exfly.github.io/vagrant-authentication-failure-retrying/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "读写操作到底有多慢, 操作系统相关一些参数",
+        "headline": "在 gitlab 中使用 chatgpt 做 code review",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/exfly.github.io\/how-fast-the-read-write\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "os, cs","wordcount":  254 ,
-        "url": "https:\/\/exfly.github.io\/how-fast-the-read-write\/","datePublished": "2019-11-30T13:11:38+08:00","dateModified": "2023-02-28T09:10:27+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@id": "https:\/\/exfly.github.io\/gitlab-chatgpt-mr-code-review\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  377 ,
+        "url": "https:\/\/exfly.github.io\/gitlab-chatgpt-mr-code-review\/","datePublished": "2023-02-28T08:50:33+08:00","dateModified": "2023-02-28T09:10:27+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
                 "@type": "Person",
@@ -62,7 +62,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/how-fast-the-read-write/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/gitlab-chatgpt-mr-code-review/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -96,7 +96,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/how-fast-the-read-write/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/gitlab-chatgpt-mr-code-review/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -108,17 +108,36 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">读写操作到底有多慢, 操作系统相关一些参数</h1><div class="post-meta">
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">在 gitlab 中使用 chatgpt 做 code review</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-11-30">2019-11-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 254 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-02-28">2023-02-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 377 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
                     <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
-            </div><div class="content" id="content"><p>文章简介：Latency numbers every programmer should know</p>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#准备">准备</a></li>
+    <li><a href="#开始制作-code-review-脚本">开始制作 code review 脚本</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：介绍在 gitlab 中使用 chatgpt 做 code review 的方法和代码</p>
+<p>最近 chatgpt 非常火暴，实际体验感受了一下，其在作为辅助工具上还是可以使用的.</p>
+<blockquote>
+<p>当前 chatgpt apitoken 接入在国内是可以直接访问的.</p>
+</blockquote>
+<h2 id="准备">准备</h2>
+<p>首先，我们需要一些魔法手段获得一个账号以及生成一个 chatgpt 的 apitoken.</p>
+<h2 id="开始制作-code-review-脚本">开始制作 code review 脚本</h2>
+<p>CI 中使用 chatgpt 做 code review 的主要实现思路是:</p>
+<ol>
+<li>使用 git diff 生成当前 mr 的 patch</li>
+<li>向我的后端转发服务器发送 patch， 返回 code review 的结果</li>
+<li>向当前 mr 创建评论，评论内容为 code review 的结果</li>
+</ol>
+<p>如下是我们自动 code review 脚本,其中 http://1.1.1.1:5151/ 是我开发的一个后端服务，将的请求代理到 chatgpt中.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -133,54 +152,60 @@
 </span><span class="lnt">10
 </span><span class="lnt">11
 </span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">L1 cache reference ......................... 0.5 ns
-</span></span><span class="line"><span class="cl">Branch mispredict ............................ 5 ns
-</span></span><span class="line"><span class="cl">L2 cache reference ........................... 7 ns
-</span></span><span class="line"><span class="cl">Mutex lock/unlock ........................... 25 ns
-</span></span><span class="line"><span class="cl">Main memory reference ...................... 100 ns
-</span></span><span class="line"><span class="cl">Compress 1K bytes with Zippy ............. 3,000 ns  =   3 µs
-</span></span><span class="line"><span class="cl">Send 2K bytes over 1 Gbps network ....... 20,000 ns  =  20 µs
-</span></span><span class="line"><span class="cl">SSD random read ........................ 150,000 ns  = 150 µs
-</span></span><span class="line"><span class="cl">Read 1 MB sequentially from memory ..... 250,000 ns  = 250 µs
-</span></span><span class="line"><span class="cl">Round trip within same datacenter ...... 500,000 ns  = 0.5 ms
-</span></span><span class="line"><span class="cl">Read 1 MB sequentially from SSD* ..... 1,000,000 ns  =   1 ms
-</span></span><span class="line"><span class="cl">Disk seek ........................... 10,000,000 ns  =  10 ms
-</span></span><span class="line"><span class="cl">Read 1 MB sequentially from disk .... 20,000,000 ns  =  20 ms
-</span></span><span class="line"><span class="cl">Send packet CA-&gt;Netherlands-&gt;CA .... 150,000,000 ns  = 150 ms
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git fetch
+</span></span><span class="line"><span class="cl">git diff origin/<span class="si">${</span><span class="nv">CI_MERGE_REQUEST_TARGET_BRANCH_NAME</span><span class="k">:-</span><span class="s2">&#34;main&#34;</span><span class="si">}</span>...origin/<span class="si">${</span><span class="nv">CI_COMMIT_REF_NAME</span><span class="si">}</span> <span class="p">|</span> tee mr.patch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;patch&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CHATBODY</span><span class="o">=</span><span class="k">$(</span>jq --null-input --arg category <span class="s2">&#34;code_review&#34;</span> --arg prompt <span class="s2">&#34;</span><span class="k">$(</span>cat mr.patch<span class="k">)</span><span class="s2">&#34;</span> <span class="s1">&#39;{&#34;category&#34;: $category, &#34;prompt&#34;: $prompt}&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;code reviews&#34;</span>
+</span></span><span class="line"><span class="cl">curl -X <span class="s1">&#39;POST&#39;</span> <span class="s1">&#39;http://1.1.1.1:5151/api/v1/chat/conversation&#39;</span> -H <span class="s1">&#39;accept: text/plain&#39;</span> -H <span class="s1">&#39;Content-Type: application/json&#39;</span>  -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CHATBODY</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> tee code_review.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># echo &#34;comments&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NOTES</span><span class="o">=</span><span class="k">$(</span>jq --null-input --arg body <span class="s2">&#34;</span><span class="k">$(</span>cat code_review.txt<span class="k">)</span><span class="s2">&#34;</span> <span class="s1">&#39;{&#34;body&#34;: $body}&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">curl --location --request POST --header <span class="s2">&#34;PRIVATE-TOKEN: </span><span class="nv">$ADMIN_ACCESS_TOKEN</span><span class="s2">&#34;</span> --header <span class="s2">&#34;Content-Type: application/json&#34;</span> <span class="s2">&#34;https://git.example.com/api/v4/projects/</span><span class="nv">$CI_MERGE_REQUEST_PROJECT_ID</span><span class="s2">/merge_requests/</span><span class="nv">$CI_MERGE_REQUEST_IID</span><span class="s2">/notes&#34;</span> -d <span class="s2">&#34;</span><span class="nv">$NOTES</span><span class="s2">&#34;</span> -k
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><a href="https://gist.github.com/exfly/03434b3b064593ddc78ec911ba2f3e7c#file-latency-markdown" target="_blank" rel="noopener noreffer ">src</a></p>
-<p><a href="http://daiyuwen.freeshell.org/gb/misc/21-days-cn.html#answers" target="_blank" rel="noopener noreffer ">2001年夏天典型的1GHz PC的各种操作要花的时间</a></p>
-<table>
-<thead>
-<tr>
-<th>执行一条指令</th>
-<th>1 nsec = (1/1,000,000,000) sec</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>从L1 cache memory 中取一个字</td>
-<td>2 nsec</td>
-</tr>
-<tr>
-<td>从内存中取一个字</td>
-<td>10 nsec</td>
-</tr>
-<tr>
-<td>从磁盘的连续位置取一个字</td>
-<td>200 nsec</td>
-</tr>
-<tr>
-<td>从磁盘的新位置取一个字(seek)</td>
-<td>8,000,000nsec = 8msec</td>
-</tr>
-</tbody>
-</table></div><div class="post-footer" id="post-footer">
+</div><p>我的 chatgpt code review 计划在提交 mr 以及 mr 的每次 commit 的时候执行。</p>
+<p>.gitlab.yaml 文件部分内容如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">chatgpt</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l">check</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">alpine:edge</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">script</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">apk add git curl</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">ci/chatgpt.sh</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">allow_failure</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l">$CI_PIPELINE_SOURCE == &#34;merge_request_event&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l">manual</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">when</span><span class="p">:</span><span class="w"> </span><span class="l">never</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png"
+        data-srcset="/media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png, /media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png 1.5x, /media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png 2x"
+        data-sizes="auto"
+        alt="/media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png"
+        title="/media/img/ai/gitlab-chatgpt-mr-code-review/image-20230227135358028.png" /></p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -190,20 +215,19 @@
         <div class="post-info-line">
             <div class="post-info-md"></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/how-fast-the-read-write/" data-title="读写操作到底有多慢, 操作系统相关一些参数" data-hashtags="os,cs"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/how-fast-the-read-write/" data-hashtag="os"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/how-fast-the-read-write/" data-title="读写操作到底有多慢, 操作系统相关一些参数"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/how-fast-the-read-write/" data-title="读写操作到底有多慢, 操作系统相关一些参数"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/how-fast-the-read-write/" data-title="读写操作到底有多慢, 操作系统相关一些参数"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" data-title="在 gitlab 中使用 chatgpt 做 code review"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/gitlab-chatgpt-mr-code-review/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" data-title="在 gitlab 中使用 chatgpt 做 code review"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" data-title="在 gitlab 中使用 chatgpt 做 code review"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/gitlab-chatgpt-mr-code-review/" data-title="在 gitlab 中使用 chatgpt 做 code review"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/os/">os</a>,&nbsp;<a href="/tags/cs/">cs</a></section>
+        <section class="post-tags"></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/exfly-dotfiles/" class="prev" rel="prev" title="整理了一套 dotfiles 自用"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>整理了一套 dotfiles 自用</a>
-            <a href="/linux_epoll/" class="next" rel="next" title="Linux epoll">Linux epoll<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/vagrant-authentication-failure-retrying/" class="prev" rel="prev" title="vagrant up Authentication failure. Retrying"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>vagrant up Authentication failure. Retrying</a></div>
 </div>
 <div id="comments"><div id="giscus" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.

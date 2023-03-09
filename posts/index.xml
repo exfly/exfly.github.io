@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>tcpdump 可以收到包，udp server 无法收包，最终发现是 uRPF 的锅 DRAFT</title>
+    <link>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</link>
+    <pubDate>Thu, 09 Mar 2023 10:00:05 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</guid>
+    <description><![CDATA[<p>文章简介：tcpdump 可以收到包，udp server 无法收包，简单的排查过程</p>]]></description>
+</item>
+<item>
     <title>在 gitlab 中使用 chatgpt 做 code review</title>
     <link>https://exfly.github.io/gitlab-chatgpt-mr-code-review/</link>
     <pubDate>Tue, 28 Feb 2023 08:50:33 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>Exfly</author>
     <guid>https://exfly.github.io/linux_boot_script/</guid>
     <description><![CDATA[<p>文章简介：linux 设置开机自启动脚本的几种方式</p>]]></description>
-</item>
-<item>
-    <title>Systemd 简单介绍，使用及如何 Debug</title>
-    <link>https://exfly.github.io/systemd-usages/</link>
-    <pubDate>Sat, 01 Jan 2022 16:47:40 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/systemd-usages/</guid>
-    <description><![CDATA[<p>文章简介：学习 systemd 笔记</p>]]></description>
 </item>
 </channel>
 </rss>

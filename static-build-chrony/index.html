@@ -30,7 +30,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/static-build-chrony\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Linux","wordcount":  1602 ,
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Linux","wordcount":  1806 ,
         "url": "https:\/\/exfly.github.io\/static-build-chrony\/","datePublished": "2022-11-26T12:56:31+08:00","dateModified": "2022-11-26T15:05:41+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
@@ -110,7 +110,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">chrony 静态编译及跨 Linux 发行版安装 systemd service</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-26">2022-11-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1602 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-26">2022-11-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1806 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -119,6 +119,8 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
+    <li><a href="#更新">更新</a></li>
+    <li><a href="#正文">正文</a></li>
     <li><a href="#有了二进制文件该如何部署服务呢">有了二进制文件该如何部署服务呢？</a></li>
     <li><a href="#到这里就可以了吗">到这里就可以了吗？</a></li>
     <li><a href="#安装-chrony-service-的完整脚本">安装 chrony service 的完整脚本</a></li>
@@ -126,6 +128,71 @@
   </ul>
 </nav></div>
             </div><div class="content" id="content"><p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>
+<h2 id="更新">更新</h2>
+<p>基于 ubuntu 的镜像编译出的 chronyc 在 centos7.9 下执行 <code>chronyc sources -v</code> 会 <code>Segmentation fault</code>, 初步断定是由于 glibc 静态编译时有部分动态依赖的 wake link 被使用到导致的。替换成基于 alpine 的 musl 即可解决问题.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine:edge as build</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ARG</span> <span class="nv">branch</span><span class="o">=</span><span class="m">4</span>.2<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENV</span> DEBIAN_FRONTEND noninteractive<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g&#39;</span> /etc/apk/repositories<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /opt</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># COPY chrony . # 二选一</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apk add build-base libcap-dev texinfo nettle-dev gnutls-dev bash wget tar gcc make <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> wget https://download.tuxfamily.org/chrony/chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> tar zxf chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> mv chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span> chrony <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -f chrony-<span class="si">${</span><span class="nv">branch</span><span class="si">}</span>.tar.gz<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nb">cd</span> chrony<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">CFLAGS</span><span class="o">=</span><span class="s1">&#39;-static -g&#39;</span> <span class="nv">LDFLAGS</span><span class="o">=</span><span class="s1">&#39;-static -lm&#39;</span>  <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      ./configure <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      --enable-scfilter <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>      --enable-ntp-signd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> make<span class="p">;</span> <span class="nb">echo</span> <span class="nv">$?</span><span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    mkdir -p /install_root<span class="p">;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    make <span class="nv">DESTDIR</span><span class="o">=</span>/install_root install <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> find /install_root<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> rm -rf /install_root/usr/local/share <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rmdir /install_root/var/lib/chrony/ /install_root/etc<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> scratch AS bin</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>build /install_root /<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="正文">正文</h2>
 <p>最近一段时间做的需求主要是适配 kylinsec 国产化操作系统. 因为产品是 tob 私有化部署 k8s 集群，并且多机器需要同步时间。经过调研后发现 <a href="https://en.wikipedia.org/wiki/Chrony" target="_blank" rel="noopener noreffer ">chrony</a> 已经作为 redhat 8 等多种发行版的默认选项，决定统一使用 chrony 作为我们的时间同步 daemon.</p>
 <p>应用的自动化部署方案使用了 ansible，不同 Linux 发行版软件包不相同，所以适配一种 Linux 发行版，就需要为这种 Linux 发行版下载对应软件包。比如 chrony 在 centos 7/8/9, ubuntu 20.04/18.04, kylinsec &hellip; 等都需要单独下载一遍 chrony 安装包，整体总共适配了 6 遍，十分麻烦。当需要适配的软件包更多后，成本就凸显出来了. 可以选择静态编译，抹平各发行版的差异，一次搞定。</p>
 <p>还好，静态编译的工作已经有大佬做过了<a href="https://zhangguanzhang.github.io/2021/01/23/chrony/#/" target="_blank" rel="noopener noreffer ">静态编译 chrony</a>,</p>
@@ -354,7 +421,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="s"># PIDFile=/run/chronyd.pid
 </span></span></span><span class="line"><span class="cl"><span class="s"># EnvironmentFile=-/etc/default/chrony
 </span></span></span><span class="line"><span class="cl"><span class="s"># Starter takes care of special cases mostly for containers
-</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/sbin/chronyd -F -1 -d -f /etc/chrony.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/sbin/chronyd -F -0 -d -f /etc/chrony.conf
 </span></span></span><span class="line"><span class="cl"><span class="s">PrivateTmp=yes
 </span></span></span><span class="line"><span class="cl"><span class="s">ProtectHome=yes
 </span></span></span><span class="line"><span class="cl"><span class="s">ProtectSystem=full

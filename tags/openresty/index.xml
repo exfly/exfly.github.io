@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>OpenResty - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/openresty/</link>
+        <description>OpenResty - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 12 Jun 2018 16:01:38 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/openresty/" rel="self" type="application/rss+xml" /><item>
+    <title>OpenResty最佳实践</title>
+    <link>https://exfly.github.io/openresty-best-practice/</link>
+    <pubDate>Tue, 12 Jun 2018 16:01:38 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/openresty-best-practice/</guid>
+    <description><![CDATA[<p>如果你正在学 Lua 与 openresty，那你就一定知道在开发过程中，调试代码、单元测试是多么的麻烦。这里整理了一些 lua 开发的最佳实践。</p>]]></description>
+</item>
+</channel>
+</rss>

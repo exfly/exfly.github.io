@@ -1,0 +1,25 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>安全 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/</link>
+        <description>安全 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 19 Dec 2017 10:21:19 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E5%AE%89%E5%85%A8/" rel="self" type="application/rss+xml" /><item>
+    <title>个人密码管理&#43;Android装机指南</title>
+    <link>https://exfly.github.io/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</link>
+    <pubDate>Tue, 19 Dec 2017 10:21:19 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/2017.12.19-%E4%B8%AA%E4%BA%BA%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86-android%E8%A3%85%E6%9C%BA%E6%8C%87%E5%8D%97/</guid>
+    <description><![CDATA[<p>分享自己的密码管理体系:<a href="https://keepass.info/" target="_blank" rel="noopener noreffer ">keepass</a>+<a href="https://www.jianguoyun.com/" target="_blank" rel="noopener noreffer ">坚果云</a>+<a href="https://github.com/PhilippC/keepass2android/releases/download/v1.03/keepass2android.keepass2android-1.03.apk" target="_blank" rel="noopener noreffer ">keepass2Android</a>，以及使用<a href="https://github.com/codehz/container/releases/download/0.428571428571/app-release.apk" target="_blank" rel="noopener noreffer ">容器</a>，搭建防止手机越用越卡的日常使用 app 体系，该应用不需要 root。</p>]]></description>
+</item>
+<item>
+    <title>oneplus one 刷Kali Linux NetHunter</title>
+    <link>https://exfly.github.io/2017.09.17-black-phone/</link>
+    <pubDate>Sun, 17 Sep 2017 14:35:34 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/2017.09.17-black-phone/</guid>
+    <description><![CDATA[<p>看了余弦大大的知乎 live 后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝 500 大洋买了一部 oneplus one，刷 kali。
+这里记录使用 oneplus one 手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>]]></description>
+</item>
+</channel>
+</rss>

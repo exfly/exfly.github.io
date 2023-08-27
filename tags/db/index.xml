@@ -1,0 +1,40 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>db - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/db/</link>
+        <description>db - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/db/" rel="self" type="application/rss+xml" /><item>
+    <title>golang jinzhu/gorm no valid transactions</title>
+    <link>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</link>
+    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</guid>
+    <description><![CDATA[<p>gorm no valid transactions</p>]]></description>
+</item>
+<item>
+    <title>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存问题处理</title>
+    <link>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</link>
+    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</guid>
+    <description><![CDATA[<p>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存</p>]]></description>
+</item>
+<item>
+    <title>Postgres 内部工作原理</title>
+    <link>https://exfly.github.io/postgres-internal/</link>
+    <pubDate>Wed, 14 Sep 2022 09:46:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/postgres-internal/</guid>
+    <description><![CDATA[<p>Postgres 内部工作机制</p>]]></description>
+</item>
+<item>
+    <title>一个简单的数据存储引擎</title>
+    <link>https://exfly.github.io/go-simple-db-storage-engine/</link>
+    <pubDate>Sat, 29 Jun 2019 15:13:28 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/go-simple-db-storage-engine/</guid>
+    <description><![CDATA[<p>文章简介：简单介绍最近自己最近设计实现 newdb 的工作</p>]]></description>
+</item>
+</channel>
+</rss>

@@ -1,0 +1,48 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>工具 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/</link>
+        <description>工具 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 09 Sep 2019 10:28:44 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E5%B7%A5%E5%85%B7/" rel="self" type="application/rss+xml" /><item>
+    <title>整理 Git 学习资源</title>
+    <link>https://exfly.github.io/share-git-resources/</link>
+    <pubDate>Mon, 09 Sep 2019 10:28:44 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/share-git-resources/</guid>
+    <description><![CDATA[<p>文章简介：整理 Git 学习资源</p>]]></description>
+</item>
+<item>
+    <title>WSL(windows subsystem for linux) win 子系统安装与基本使用注意事项</title>
+    <link>https://exfly.github.io/window-install-wsl-and-usages/</link>
+    <pubDate>Sat, 08 Dec 2018 16:00:59 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/window-install-wsl-and-usages/</guid>
+    <description><![CDATA[<p>win 子系统安装与 cmder+zsh 开发环境搭建</p>]]></description>
+</item>
+<item>
+    <title>Realize代码分析</title>
+    <link>https://exfly.github.io/realize/</link>
+    <pubDate>Thu, 11 Oct 2018 12:55:03 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/realize/</guid>
+    <description><![CDATA[<p><a href="https://github.com/oxequa/realize" target="_blank" rel="noopener noreffer ">realize</a> 代码分析</p>]]></description>
+</item>
+<item>
+    <title>Wox&#43;Everything改变日常使用电脑的流程神器，墙裂推荐</title>
+    <link>https://exfly.github.io/wox_everything_production/</link>
+    <pubDate>Sat, 24 Feb 2018 19:15:55 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/wox_everything_production/</guid>
+    <description><![CDATA[<p>文章简介：你可以将 Wox 看作一个高效的本地快速搜索框，通过快捷键呼出（默认 alt+空格），然后输入关键字（支持拼音模糊查询）来搜索程序进行快速启动，或者搜索本地硬盘的文件，打开百度、Google 进行搜索，甚至是通过一些插件的功能实现单词翻译、关闭屏幕、查询剪贴板历史、查询编程文档、查询天气等更多功能。</p>]]></description>
+</item>
+<item>
+    <title>记录 Vim 学习资源</title>
+    <link>https://exfly.github.io/share-vim-resources/</link>
+    <pubDate>Wed, 10 Jan 2018 11:24:31 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/share-vim-resources/</guid>
+    <description><![CDATA[<p>记录 vim 学习资源</p>]]></description>
+</item>
+</channel>
+</rss>

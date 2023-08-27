@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>内存泄漏 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
+        <description>内存泄漏 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</title>
+    <link>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</link>
+    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</guid>
+    <description><![CDATA[<p>文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</p>]]></description>
+</item>
+</channel>
+</rss>

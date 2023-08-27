@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>笔记 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E7%AC%94%E8%AE%B0/</link>
+        <description>笔记 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 07 Jul 2019 22:50:19 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E7%AC%94%E8%AE%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>高可用系统设计问题、微服务设计笔记 脑图</title>
+    <link>https://exfly.github.io/microservicedesign/</link>
+    <pubDate>Sun, 07 Jul 2019 22:50:19 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/microservicedesign/</guid>
+    <description><![CDATA[<p>《<a href="https://book.douban.com/subject/26772677/" target="_blank" rel="noopener noreffer ">微服务设计</a>》学习笔记：高可用系统设计，有哪些问题需要解决</p>]]></description>
+</item>
+</channel>
+</rss>

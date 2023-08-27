@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>es - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/es/</link>
+        <description>es - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 16 Apr 2020 08:49:16 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/es/" rel="self" type="application/rss+xml" /><item>
+    <title>ElasticSearch 是如何工作的</title>
+    <link>https://exfly.github.io/how-elastic-works/</link>
+    <pubDate>Thu, 16 Apr 2020 08:49:16 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/how-elastic-works/</guid>
+    <description><![CDATA[<p>整理一下 ElasticSearch 知识点</p>]]></description>
+</item>
+</channel>
+</rss>

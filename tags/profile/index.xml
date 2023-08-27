@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>profile - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/profile/</link>
+        <description>profile - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 27 Sep 2020 08:57:31 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/profile/" rel="self" type="application/rss+xml" /><item>
+    <title>(翻译)Go 高性能研讨讲座 - High Performance Go Workshop</title>
+    <link>https://exfly.github.io/high-performance-go-workshop/</link>
+    <pubDate>Sun, 27 Sep 2020 08:57:31 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/high-performance-go-workshop/</guid>
+    <description><![CDATA[<p>文章简介：Go 高性能研讨讲座 - High Performance Go Workshop 翻译, 使用正确的工具分析程序行为</p>]]></description>
+</item>
+</channel>
+</rss>

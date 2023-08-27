@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>实现 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E5%AE%9E%E7%8E%B0/</link>
+        <description>实现 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 16 Sep 2017 16:08:44 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E5%AE%9E%E7%8E%B0/" rel="self" type="application/rss+xml" /><item>
+    <title>各种排序算法实现方法</title>
+    <link>https://exfly.github.io/sort-algorithm-compare-and-impl/</link>
+    <pubDate>Sat, 16 Sep 2017 16:08:44 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/sort-algorithm-compare-and-impl/</guid>
+    <description><![CDATA[<p>总结一些常用的排序算法，如冒泡排序、插入排序、快速排序、计数排序、二分排序、归并排序等。</p>]]></description>
+</item>
+</channel>
+</rss>

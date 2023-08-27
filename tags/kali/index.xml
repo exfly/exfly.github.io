@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>kali - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/kali/</link>
+        <description>kali - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 17 Sep 2017 14:35:34 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/kali/" rel="self" type="application/rss+xml" /><item>
+    <title>oneplus one 刷Kali Linux NetHunter</title>
+    <link>https://exfly.github.io/2017.09.17-black-phone/</link>
+    <pubDate>Sun, 17 Sep 2017 14:35:34 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/2017.09.17-black-phone/</guid>
+    <description><![CDATA[<p>看了余弦大大的知乎 live 后，发现真的需要对自己的隐私安全做点什么了。一激动，淘宝 500 大洋买了一部 oneplus one，刷 kali。
+这里记录使用 oneplus one 手机打造黑手全过程，以及一些使用到的资源，以及经验汇总。</p>]]></description>
+</item>
+</channel>
+</rss>

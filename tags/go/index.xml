@@ -1,0 +1,64 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>go - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/go/</link>
+        <description>go - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/go/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</title>
+    <link>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</link>
+    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</guid>
+    <description><![CDATA[<p>文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</p>]]></description>
+</item>
+<item>
+    <title>golang jinzhu/gorm no valid transactions</title>
+    <link>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</link>
+    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</guid>
+    <description><![CDATA[<p>gorm no valid transactions</p>]]></description>
+</item>
+<item>
+    <title>(翻译)Go 高性能研讨讲座 - High Performance Go Workshop</title>
+    <link>https://exfly.github.io/high-performance-go-workshop/</link>
+    <pubDate>Sun, 27 Sep 2020 08:57:31 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/high-performance-go-workshop/</guid>
+    <description><![CDATA[<p>文章简介：Go 高性能研讨讲座 - High Performance Go Workshop 翻译, 使用正确的工具分析程序行为</p>]]></description>
+</item>
+<item>
+    <title>Opentracing - jaeger 源码分析</title>
+    <link>https://exfly.github.io/opentracing-jaeger-agent-src-code-introduce/</link>
+    <pubDate>Fri, 24 Apr 2020 08:41:08 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/opentracing-jaeger-agent-src-code-introduce/</guid>
+    <description><![CDATA[<p>文章简介：源码层面分析 Opentracing 一个实现 jaeger 的工作原理</p>]]></description>
+</item>
+<item>
+    <title>一个简单的数据存储引擎</title>
+    <link>https://exfly.github.io/go-simple-db-storage-engine/</link>
+    <pubDate>Sat, 29 Jun 2019 15:13:28 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/go-simple-db-storage-engine/</guid>
+    <description><![CDATA[<p>文章简介：简单介绍最近自己最近设计实现 newdb 的工作</p>]]></description>
+</item>
+<item>
+    <title>Go 启动多个程序，及 IPC 和 RPC 交互例子,以及 Gracefully Shutdown</title>
+    <link>https://exfly.github.io/go-rpc-ipc-demo/</link>
+    <pubDate>Sun, 05 May 2019 18:54:46 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/go-rpc-ipc-demo/</guid>
+    <description><![CDATA[<p>文章简介：Go 程序启动 RPC 子进程，通过 pipe 进行交互，以及通过 RPC 交互</p>]]></description>
+</item>
+<item>
+    <title>Realize代码分析</title>
+    <link>https://exfly.github.io/realize/</link>
+    <pubDate>Thu, 11 Oct 2018 12:55:03 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/realize/</guid>
+    <description><![CDATA[<p><a href="https://github.com/oxequa/realize" target="_blank" rel="noopener noreffer ">realize</a> 代码分析</p>]]></description>
+</item>
+</channel>
+</rss>

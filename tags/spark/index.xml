@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Spark - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/spark/</link>
+        <description>Spark - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 04 Jul 2018 17:36:24 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/spark/" rel="self" type="application/rss+xml" /><item>
+    <title>SparkStream等相关产品选型以及Spark安装与简单使用</title>
+    <link>https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/</link>
+    <pubDate>Wed, 04 Jul 2018 17:36:24 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/sparkstream-related-product-selection-spark-installation-use/</guid>
+    <description><![CDATA[<p>比较 SparkStream 类似产品如 Samza、Storm，介绍 Spark 和 Spark Stream 安装和简单使用方法</p>]]></description>
+</item>
+</channel>
+</rss>

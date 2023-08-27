@@ -1,0 +1,48 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Architecture - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/architecture/</link>
+        <description>Architecture - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 29 Jul 2019 08:04:30 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/architecture/" rel="self" type="application/rss+xml" /><item>
+    <title>消息队列中需要解决的问题</title>
+    <link>https://exfly.github.io/problems-mq-need-to-be-solved/</link>
+    <pubDate>Mon, 29 Jul 2019 08:04:30 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/problems-mq-need-to-be-solved/</guid>
+    <description><![CDATA[<p>文章简介：消息队列中需要解决的问题</p>]]></description>
+</item>
+<item>
+    <title>高可用系统设计问题、微服务设计笔记 脑图</title>
+    <link>https://exfly.github.io/microservicedesign/</link>
+    <pubDate>Sun, 07 Jul 2019 22:50:19 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/microservicedesign/</guid>
+    <description><![CDATA[<p>《<a href="https://book.douban.com/subject/26772677/" target="_blank" rel="noopener noreffer ">微服务设计</a>》学习笔记：高可用系统设计，有哪些问题需要解决</p>]]></description>
+</item>
+<item>
+    <title>K8s Scheduler</title>
+    <link>https://exfly.github.io/k8s-scheduler-introduce/</link>
+    <pubDate>Fri, 10 May 2019 09:26:35 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/k8s-scheduler-introduce/</guid>
+    <description><![CDATA[<p>文章简介：梳理 k8s scheduler 工作原理</p>]]></description>
+</item>
+<item>
+    <title>K8s 架构介绍</title>
+    <link>https://exfly.github.io/k8s-architecture-introduce/</link>
+    <pubDate>Fri, 10 May 2019 08:52:13 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/k8s-architecture-introduce/</guid>
+    <description><![CDATA[<p>文章简介：k8s 架构描述</p>]]></description>
+</item>
+<item>
+    <title>分布式数据的一致性的一些理论及方法总结</title>
+    <link>https://exfly.github.io/summary-of-theories-methods-for-consistency-of-distributed-data/</link>
+    <pubDate>Thu, 28 Jun 2018 16:34:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/summary-of-theories-methods-for-consistency-of-distributed-data/</guid>
+    <description><![CDATA[<p>单体应用，需要借助分库分表、复制技术、读写分离提高服务并发访问量。微服务为代表的分布式系统，其高并发和微服务事务一致性该如何保证？</p>]]></description>
+</item>
+</channel>
+</rss>

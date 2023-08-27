@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>word2vec - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/word2vec/</link>
+        <description>word2vec - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 14 Feb 2018 11:04:36 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/word2vec/" rel="self" type="application/rss+xml" /><item>
+    <title>使用gensim训练word2vec模型--中文维基百科语料</title>
+    <link>https://exfly.github.io/wiki_zh_practice_word2vec/</link>
+    <pubDate>Wed, 14 Feb 2018 11:04:36 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/wiki_zh_practice_word2vec/</guid>
+    <description><![CDATA[<p>文章简介：为了写论文，使用 gensim 训练 word2vec 模型，如下记录了进行训练的过程</p>]]></description>
+</item>
+</channel>
+</rss>

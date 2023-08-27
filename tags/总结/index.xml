@@ -1,0 +1,24 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>总结 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E6%80%BB%E7%BB%93/</link>
+        <description>总结 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 25 Oct 2018 17:07:58 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E6%80%BB%E7%BB%93/" rel="self" type="application/rss+xml" /><item>
+    <title>分布式技术产生的背景及其解决的问题概述</title>
+    <link>https://exfly.github.io/overview-distributed-technology-and-the-problems-it-solves/</link>
+    <pubDate>Thu, 25 Oct 2018 17:07:58 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/overview-distributed-technology-and-the-problems-it-solves/</guid>
+    <description><![CDATA[<p>总结一下数据库、分布式等技术产生的场景的使用场景。包括数据库、缓存、分布式、容器</p>]]></description>
+</item>
+<item>
+    <title>2016年终总结，未来规划</title>
+    <link>https://exfly.github.io/2017.01.01-2016-holiday-summary/</link>
+    <pubDate>Sun, 01 Jan 2017 14:24:40 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/2017.01.01-2016-holiday-summary/</guid>
+    <description><![CDATA[<p>对 2016 年全年的总结，并为未来做一些安排。</p>]]></description>
+</item>
+</channel>
+</rss>

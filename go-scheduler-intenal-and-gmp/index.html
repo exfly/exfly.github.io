@@ -10,7 +10,6 @@
 <meta property="og:url" content="https://exfly.github.io/go-scheduler-intenal-and-gmp/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-08T07:33:02+08:00" />
 <meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
@@ -215,17 +214,17 @@
 </span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">	<span class="n">c</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">p</span> <span class="o">=</span> <span class="n">chanrecvul</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">p</span> <span class="o">=</span> <span class="nf">chanrecvul</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="n">goal</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="n">taskexitall</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">taskexitall</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">quiet</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">nc</span> <span class="o">=</span> <span class="n">chancreate</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">),</span> <span class="n">buffer</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskcreate</span><span class="p">(</span><span class="n">primetask</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="mi">32768</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">nc</span> <span class="o">=</span> <span class="nf">chancreate</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">),</span> <span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskcreate</span><span class="p">(</span><span class="n">primetask</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="mi">32768</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="k">for</span><span class="p">(;;){</span>
-</span></span><span class="line"><span class="cl">		<span class="n">i</span> <span class="o">=</span> <span class="n">chanrecvul</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">i</span> <span class="o">=</span> <span class="nf">chanrecvul</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">%</span><span class="n">p</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">			<span class="n">chansendul</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">chansendul</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
@@ -236,15 +235,15 @@
 </span></span><span class="line"><span class="cl">	<span class="n">Channel</span> <span class="o">*</span><span class="n">c</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="n">argc</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="n">goal</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">		<span class="n">goal</span> <span class="o">=</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </span></span><span class="line"><span class="cl">	<span class="k">else</span>
 </span></span><span class="line"><span class="cl">		<span class="n">goal</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;goal=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">goal</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">printf</span><span class="p">(</span><span class="s">&#34;goal=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">goal</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">c</span> <span class="o">=</span> <span class="n">chancreate</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">),</span> <span class="n">buffer</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskcreate</span><span class="p">(</span><span class="n">primetask</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">32768</span><span class="p">);</span> <span class="c1">// 创建 coroutine，开始执行任务 primetask
+</span></span><span class="line"><span class="cl">	<span class="n">c</span> <span class="o">=</span> <span class="nf">chancreate</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">),</span> <span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskcreate</span><span class="p">(</span><span class="n">primetask</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="mi">32768</span><span class="p">);</span> <span class="c1">// 创建 coroutine，开始执行任务 primetask
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">		<span class="n">chansendul</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">chansendul</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -291,8 +290,8 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">static</span> <span class="kt">void</span>
 </span></span><span class="line"><span class="cl"><span class="nf">taskmainstart</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskname</span><span class="p">(</span><span class="s">&#34;taskmain&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskmain</span><span class="p">(</span><span class="n">taskargc</span><span class="p">,</span> <span class="n">taskargv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskname</span><span class="p">(</span><span class="s">&#34;taskmain&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskmain</span><span class="p">(</span><span class="n">taskargc</span><span class="p">,</span> <span class="n">taskargv</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span>
@@ -300,13 +299,13 @@
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">sigaction</span> <span class="n">sa</span><span class="p">,</span> <span class="n">osa</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">sa</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">sa</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="n">sa</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">taskinfo</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">	<span class="n">sa</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="n">SA_RESTART</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">sigaction</span><span class="p">(</span><span class="n">SIGQUIT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">osa</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">sigaction</span><span class="p">(</span><span class="n">SIGQUIT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">osa</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="cp">#ifdef SIGINFO
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>	<span class="n">sigaction</span><span class="p">(</span><span class="n">SIGINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">osa</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>	<span class="nf">sigaction</span><span class="p">(</span><span class="n">SIGINFO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">osa</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="cp">#endif
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl">	<span class="n">argv0</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
@@ -315,10 +314,10 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="n">mainstacksize</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">		<span class="n">mainstacksize</span> <span class="o">=</span> <span class="mi">256</span><span class="o">*</span><span class="mi">1024</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskcreate</span><span class="p">(</span><span class="n">taskmainstart</span><span class="p">,</span> <span class="n">nil</span><span class="p">,</span> <span class="n">mainstacksize</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">taskscheduler</span><span class="p">();</span> <span class="c1">// task 调度器启动
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">fprint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;taskscheduler returned in main!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">	<span class="n">abort</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskcreate</span><span class="p">(</span><span class="n">taskmainstart</span><span class="p">,</span> <span class="n">nil</span><span class="p">,</span> <span class="n">mainstacksize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskscheduler</span><span class="p">();</span> <span class="c1">// task 调度器启动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">fprint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;taskscheduler returned in main!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">abort</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -367,21 +366,21 @@
 </span></span><span class="line"><span class="cl">	<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">	<span class="n">Task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">	<span class="n">taskdebug</span><span class="p">(</span><span class="s">&#34;scheduler enter&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">taskdebug</span><span class="p">(</span><span class="s">&#34;scheduler enter&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">	<span class="k">for</span><span class="p">(;;){</span>
 </span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">taskcount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">			<span class="n">exit</span><span class="p">(</span><span class="n">taskexitval</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">exit</span><span class="p">(</span><span class="n">taskexitval</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">		<span class="n">t</span> <span class="o">=</span> <span class="n">taskrunqueue</span><span class="p">.</span><span class="n">head</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">nil</span><span class="p">){</span>
-</span></span><span class="line"><span class="cl">			<span class="n">fprint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;no runnable tasks! %d tasks stalled</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">taskcount</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">			<span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">fprint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;no runnable tasks! %d tasks stalled</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">taskcount</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">		<span class="p">}</span>
-</span></span><span class="line"><span class="cl">		<span class="n">deltask</span><span class="p">(</span><span class="o">&amp;</span><span class="n">taskrunqueue</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">deltask</span><span class="p">(</span><span class="o">&amp;</span><span class="n">taskrunqueue</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">		<span class="n">t</span><span class="o">-&gt;</span><span class="n">ready</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">		<span class="n">taskrunning</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">		<span class="n">tasknswitch</span><span class="o">++</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">		<span class="n">taskdebug</span><span class="p">(</span><span class="s">&#34;run %d (%s)&#34;</span><span class="p">,</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">		<span class="n">contextswitch</span><span class="p">(</span><span class="o">&amp;</span><span class="n">taskschedcontext</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">taskdebug</span><span class="p">(</span><span class="s">&#34;run %d (%s)&#34;</span><span class="p">,</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">contextswitch</span><span class="p">(</span><span class="o">&amp;</span><span class="n">taskschedcontext</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">context</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="c1">//print(&#34;back in scheduler\n&#34;);
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">taskrunning</span> <span class="o">=</span> <span class="n">nil</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">		<span class="k">if</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">exiting</span><span class="p">){</span>
@@ -390,7 +389,7 @@
 </span></span><span class="line"><span class="cl">			<span class="n">i</span> <span class="o">=</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">alltaskslot</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">			<span class="n">alltask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">alltask</span><span class="p">[</span><span class="o">--</span><span class="n">nalltask</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">			<span class="n">alltask</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">alltaskslot</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">			<span class="n">free</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="nf">free</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">		<span class="p">}</span>
 </span></span><span class="line"><span class="cl">	<span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -494,7 +493,7 @@
 </span></span><span class="line"><span class="cl">	<span class="n">movl</span>	<span class="o">%</span><span class="n">ecx</span><span class="p">,</span> <span class="mi">44</span><span class="p">(</span><span class="o">%</span><span class="n">eax</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">	<span class="n">movl</span>	<span class="err">$</span><span class="mi">1</span><span class="p">,</span> <span class="mi">48</span><span class="p">(</span><span class="o">%</span><span class="n">eax</span><span class="p">)</span>	<span class="cm">/* %eax */</span>
-</span></span><span class="line"><span class="cl">	<span class="n">movl</span>	<span class="p">(</span><span class="o">%</span><span class="n">esp</span><span class="p">),</span> <span class="o">%</span><span class="n">ecx</span>	<span class="cm">/* %eip */</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">movl</span>	<span class="p">(</span><span class="o">%</span><span class="n">esp</span><span class="p">),</span> <span class="o">%</span><span class="n">ecx</span>	<span class="cm">/* %eip */</span>
 </span></span><span class="line"><span class="cl">	<span class="n">movl</span>	<span class="o">%</span><span class="n">ecx</span><span class="p">,</span> <span class="mi">60</span><span class="p">(</span><span class="o">%</span><span class="n">eax</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">	<span class="n">leal</span>	<span class="mi">4</span><span class="p">(</span><span class="o">%</span><span class="n">esp</span><span class="p">),</span> <span class="o">%</span><span class="n">ecx</span>	<span class="cm">/* %esp */</span>
 </span></span><span class="line"><span class="cl">	<span class="n">movl</span>	<span class="o">%</span><span class="n">ecx</span><span class="p">,</span> <span class="mi">72</span><span class="p">(</span><span class="o">%</span><span class="n">eax</span><span class="p">)</span>
@@ -507,7 +506,7 @@
 </span></span><span class="line"><span class="cl"><span class="c1">// c 中的 Context
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">Context</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="n">ucontext_t</span>	<span class="n">uc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">ucontext_t</span>	<span class="n">uc</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -649,7 +648,7 @@ chanrecvul task 接受数据时候，如果 channel buf 不为空，则会直接
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.102.3">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>SSM - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/ssm/</link>
+        <description>SSM - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 20 May 2018 16:49:06 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/ssm/" rel="self" type="application/rss+xml" /><item>
+    <title>Spring Beans的装配规则总结</title>
+    <link>https://exfly.github.io/sprint-beans-waire-notebook/</link>
+    <pubDate>Sun, 20 May 2018 16:49:06 &#43;0800</pubDate>
+    <author>Exfly</author>
+    <guid>https://exfly.github.io/sprint-beans-waire-notebook/</guid>
+    <description><![CDATA[<p>文章简介：spring 中 bean 的装配有一定规则，在这里进行总结。本文主要讲解一些概念和 java 配置方法。demo 代码见文末。</p>]]></description>
+</item>
+</channel>
+</rss>

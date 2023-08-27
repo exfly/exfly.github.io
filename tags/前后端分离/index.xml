@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>前后端分离 - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/</link>
+        <description>前后端分离 - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 28 Oct 2018 09:47:12 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/" rel="self" type="application/rss+xml" /><item>
+    <title>前后端分离架构的Vue环境搭建指南</title>
+    <link>https://exfly.github.io/front-end-separation-architecture-environment-construction/</link>
+    <pubDate>Sun, 28 Oct 2018 09:47:12 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/front-end-separation-architecture-environment-construction/</guid>
+    <description><![CDATA[<p>使用 Vue 前后端+Go 后端，基于 webpack 代理转发，配置前后端分离架构开发环境</p>]]></description>
+</item>
+</channel>
+</rss>

@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Portable Python如何配置一个跨 linux 发行版解压即用的 python 运行环境</title>
+    <link>https://exfly.github.io/portable-python/</link>
+    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/portable-python/</guid>
+    <description><![CDATA[<p>文章简介：如何配置一个跨 linux 发行版解压即用的 python 运行环境</p>]]></description>
+</item>
+<item>
     <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</title>
     <link>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</link>
     <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>Exfly</author>
     <guid>https://exfly.github.io/docker-change-default-bridge-ip/</guid>
     <description><![CDATA[<p>文章简介: docker 内置 bridge 的 ip 修改方法</p>]]></description>
-</item>
-<item>
-    <title>Linux Network 如何配置及工作原理</title>
-    <link>https://exfly.github.io/linux_config_network/</link>
-    <pubDate>Sat, 01 Jan 2022 20:44:16 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/linux_config_network/</guid>
-    <description><![CDATA[<p>文章简介：Linux Network 是如何使用及工作的</p>]]></description>
 </item>
 </channel>
 </rss>

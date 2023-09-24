@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>portable - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/portable/</link>
+        <description>portable - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/portable/" rel="self" type="application/rss+xml" /><item>
+    <title>Portable Python如何配置一个跨 linux 发行版解压即用的 python 运行环境</title>
+    <link>https://exfly.github.io/portable-python/</link>
+    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/portable-python/</guid>
+    <description><![CDATA[<p>文章简介：如何配置一个跨 linux 发行版解压即用的 python 运行环境</p>]]></description>
+</item>
+</channel>
+</rss>

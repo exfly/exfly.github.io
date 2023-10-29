@@ -5,7 +5,23 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
-    <title>Portable Python如何配置一个跨 linux 发行版解压即用的 python 运行环境</title>
+    <title>跨平台命令行渲染 draw.io 方法</title>
+    <link>https://exfly.github.io/draw.io-cli-render/</link>
+    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/draw.io-cli-render/</guid>
+    <description><![CDATA[<p>文章简介：本文介绍了一种跨平台（支持 Mac，Linux，Windows）的命令行渲染 draw.io 图表文件为图片的方法.</p>]]></description>
+</item>
+<item>
+    <title>Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面</title>
+    <link>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</guid>
+    <description><![CDATA[<p>文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry + Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。</p>]]></description>
+</item>
+<item>
+    <title>如何配置一个跨 linux 发行版解压即用的 python 运行环境(Portable Python)</title>
     <link>https://exfly.github.io/portable-python/</link>
     <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
     <author>exfly</author>
@@ -67,22 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</guid>
     <description><![CDATA[<p>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存</p>]]></description>
-</item>
-<item>
-    <title>Postgres 内部工作原理</title>
-    <link>https://exfly.github.io/postgres-internal/</link>
-    <pubDate>Wed, 14 Sep 2022 09:46:01 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/postgres-internal/</guid>
-    <description><![CDATA[<p>Postgres 内部工作机制</p>]]></description>
-</item>
-<item>
-    <title>Docker 修改内置 bridge ip 不生效, 原因及解决办法</title>
-    <link>https://exfly.github.io/docker-change-default-bridge-ip/</link>
-    <pubDate>Thu, 23 Jun 2022 09:39:38 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/docker-change-default-bridge-ip/</guid>
-    <description><![CDATA[<p>文章简介: docker 内置 bridge 的 ip 修改方法</p>]]></description>
 </item>
 </channel>
 </rss>

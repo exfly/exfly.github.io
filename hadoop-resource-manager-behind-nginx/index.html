@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面" />
+<meta property="og:description" content="文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry &#43; Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-10-22T16:46:52+08:00" />
+<meta property="article:modified_time" content="2023-10-22T16:46:52+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面"/>
+<meta name="twitter:description" content="文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry &#43; Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" /><link rel="prev" href="https://exfly.github.io/portable-python/" /><link rel="next" href="https://exfly.github.io/draw.io-cli-render/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/hadoop-resource-manager-behind-nginx\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1922 ,
+        "url": "https:\/\/exfly.github.io\/hadoop-resource-manager-behind-nginx\/","datePublished": "2023-10-22T16:46:52+08:00","dateModified": "2023-10-22T16:46:52+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/hadoop-resource-manager-behind-nginx/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/hadoop-resource-manager-behind-nginx/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-10-22">2023-10-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1922 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#问题场景">问题场景</a></li>
+    <li><a href="#解决办法">解决办法</a>
+      <ul>
+        <li><a href="#nginx">nginx</a></li>
+        <li><a href="#openrestylua">openresty+lua</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#ref">ref</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry + Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。</p>
+<h2 id="问题场景">问题场景</h2>
+<p>Hadoop Resource Manager(RM) 的管理页面采用了类似客户端负载均衡的 HA 方案。Resource Manager 分为两部分，Master/Standby。当 http 请求到 Standby，Standby 将重定向到 Master，这样浏览器即可访问到实际工作的 RM 了。而这种场景下，使用 Nginx 作为 Load Balance 代理 RM 就不合适，因为对 nginx 来说，nginx 期望所有的实例都可以对外提供服务。Nginx 是否可以提供一种机制，找到实际的 RM master 节点，将所有请求发送到这个节点呢?</p>
+<h2 id="解决办法">解决办法</h2>
+<p><a href="https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html" target="_blank" rel="noopener noreffer ">HadoopResourceManagerHA 文档</a> 对于 Load Balancer 有如下描述</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">If you are running a set of ResourceManagers behind a Load Balancer (e.g. Azure or AWS ) and would like the Load Balancer to point to the active RM, you can use the /isActive HTTP endpoint as a health probe. http://RM_HOSTNAME/isActive will return a 200 status code response if the RM is in Active HA State, 405 otherwise.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>在使用的 HadoopResourceManager 版本 没有 <code>/isActive</code> 这个路由，所以不能使用这个办法。</li>
+<li>查看资料的时候，发现 <code>http://ip:8088/jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics</code> 中会有主节点的 hostname, 并且这个接口只有 Master 才会有响应。基于这个特征，我们可以通过检查是否可以返回主节点信息判断是否为主。</li>
+<li>另外，Standby 307 的 response body 中也明确标识了当前是 standby，此行为也可以作为判断是否为主的标识。</li>
+</ol>
+<p>当前我们各组建版本:
+ResourceManager 版本<code>3.1.1.3.1.0.0-78 from e4f82af51faec922b4804d0232a637422ec29e64 by jenkins source checksum 47cebb2682958b68f58d47415f5d2555 on 2018-12-06T12:28Z</code>
+Hadoop version: <code>3.1.1.3.1.0.0-78 from e4f82af51faec922b4804d0232a637422ec29e64 by jenkins source checksum eab9fa2a6aa38c6362c66d8df75774 on 2018-12-06T12:26Z</code></p>
+<p>具体的响应的样子如下图</p>
+<p>尝试请求 Standby 看下效果:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl xx.xx.xx.xx:8088/ -k -v
+</span></span><span class="line"><span class="cl">*   Trying xx.xx.xx.xx:8088...
+</span></span><span class="line"><span class="cl">* Connected to xx.xx.xx.xx (xx.xx.xx.xx) port 8088 (#0)
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Host: xx.xx.xx.xx:8088
+</span></span><span class="line"><span class="cl">&gt; User-Agent: curl/7.88.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 307 Temporary Redirect
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:05:48 GMT
+</span></span><span class="line"><span class="cl">&lt; Cache-Control: no-cache
+</span></span><span class="line"><span class="cl">&lt; Expires: Wed, 25 Oct 2023 02:05:48 GMT
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:05:48 GMT
+</span></span><span class="line"><span class="cl">&lt; Pragma: no-cache
+</span></span><span class="line"><span class="cl">&lt; Content-Type: text/plain;charset=utf-8
+</span></span><span class="line"><span class="cl">&lt; X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">&lt; Location: http://bigdata3:8088/
+</span></span><span class="line"><span class="cl">&lt; Content-Length: 43
+</span></span><span class="line"><span class="cl">&lt;
+</span></span><span class="line"><span class="cl">This is standby RM. The redirect url is: /
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">curl &#39;http://xx.xx.xx.xx:8088/jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics&#39; -k -v
+</span></span><span class="line"><span class="cl">*   Trying xx.xx.xx.xx:8088...
+</span></span><span class="line"><span class="cl">* Connected to xx.xx.xx.xx (xx.xx.xx.xx) port 8088 (#0)
+</span></span><span class="line"><span class="cl">&gt; GET /jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Host: xx.xx.xx.xx:8088
+</span></span><span class="line"><span class="cl">&gt; User-Agent: curl/7.88.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 307 Temporary Redirect
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:10:32 GMT
+</span></span><span class="line"><span class="cl">&lt; Cache-Control: no-cache
+</span></span><span class="line"><span class="cl">&lt; Expires: Wed, 25 Oct 2023 02:10:32 GMT
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:10:32 GMT
+</span></span><span class="line"><span class="cl">&lt; Pragma: no-cache
+</span></span><span class="line"><span class="cl">&lt; Content-Type: text/plain;charset=utf-8
+</span></span><span class="line"><span class="cl">&lt; X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">&lt; Location: http://bigdata3:8088/jmx?qry=Hadoop%3Aservice%3DResourceManager%2Cname%3DClusterMetrics
+</span></span><span class="line"><span class="cl">&lt; Content-Length: 109
+</span></span><span class="line"><span class="cl">&lt;
+</span></span><span class="line"><span class="cl">This is standby RM. The redirect url is: /jmx?qry=Hadoop%3Aservice%3DResourceManager%2Cname%3DClusterMetrics
+</span></span><span class="line"><span class="cl">* Connection #0 to host xx.xx.xx.xx left intact
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>请求 Master 节点，看下请求是什么样子的:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">curl xx.xx.xx.xx:8088/ -k -v
+</span></span><span class="line"><span class="cl">*   Trying xx.xx.xx.xx:8088...
+</span></span><span class="line"><span class="cl">* Connected to xx.xx.xx.xx (xx.xx.xx.xx) port 8088 (#0)
+</span></span><span class="line"><span class="cl">&gt; GET / HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Host: xx.xx.xx.xx:8088
+</span></span><span class="line"><span class="cl">&gt; User-Agent: curl/7.88.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 302 Found
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:06:01 GMT
+</span></span><span class="line"><span class="cl">&lt; Cache-Control: no-cache
+</span></span><span class="line"><span class="cl">&lt; Expires: Wed, 25 Oct 2023 02:06:01 GMT
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:06:01 GMT
+</span></span><span class="line"><span class="cl">&lt; Pragma: no-cache
+</span></span><span class="line"><span class="cl">&lt; Content-Type: text/plain;charset=utf-8
+</span></span><span class="line"><span class="cl">&lt; X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">&lt; Vary: Accept-Encoding
+</span></span><span class="line"><span class="cl">&lt; Location: http://xx.xx.xx.xx:8088/cluster
+</span></span><span class="line"><span class="cl">&lt; Content-Length: 0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">curl &#39;http://xx.xx.xx.xx:8088/jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics&#39; -k -v
+</span></span><span class="line"><span class="cl">*   Trying xx.xx.xx.xx:8088...
+</span></span><span class="line"><span class="cl">* Connected to xx.xx.xx.xx (xx.xx.xx.xx) port 8088 (#0)
+</span></span><span class="line"><span class="cl">&gt; GET /jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics HTTP/1.1
+</span></span><span class="line"><span class="cl">&gt; Host: xx.xx.xx.xx:8088
+</span></span><span class="line"><span class="cl">&gt; User-Agent: curl/7.88.1
+</span></span><span class="line"><span class="cl">&gt; Accept: */*
+</span></span><span class="line"><span class="cl">&gt;
+</span></span><span class="line"><span class="cl">&lt; HTTP/1.1 200 OK
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:09:49 GMT
+</span></span><span class="line"><span class="cl">&lt; Cache-Control: no-cache
+</span></span><span class="line"><span class="cl">&lt; Expires: Wed, 25 Oct 2023 02:09:49 GMT
+</span></span><span class="line"><span class="cl">&lt; Date: Wed, 25 Oct 2023 02:09:49 GMT
+</span></span><span class="line"><span class="cl">&lt; Pragma: no-cache
+</span></span><span class="line"><span class="cl">&lt; Content-Type: application/json; charset=utf8
+</span></span><span class="line"><span class="cl">&lt; X-Frame-Options: SAMEORIGIN
+</span></span><span class="line"><span class="cl">&lt; Vary: Accept-Encoding
+</span></span><span class="line"><span class="cl">&lt; Access-Control-Allow-Methods: GET
+</span></span><span class="line"><span class="cl">&lt; Access-Control-Allow-Origin: *
+</span></span><span class="line"><span class="cl">&lt; Transfer-Encoding: chunked
+</span></span><span class="line"><span class="cl">&lt;
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">  &#34;beans&#34; : [ {
+</span></span><span class="line"><span class="cl">    &#34;name&#34; : &#34;Hadoop:service=ResourceManager,name=ClusterMetrics&#34;,
+</span></span><span class="line"><span class="cl">    &#34;modelerType&#34; : &#34;ClusterMetrics&#34;,
+</span></span><span class="line"><span class="cl">    &#34;tag.ClusterMetrics&#34; : &#34;ResourceManager&#34;,
+</span></span><span class="line"><span class="cl">    &#34;tag.Context&#34; : &#34;yarn&#34;,
+</span></span><span class="line"><span class="cl">    &#34;tag.Hostname&#34; : &#34;bigdata3&#34;,
+</span></span><span class="line"><span class="cl">    &#34;NumActiveNMs&#34; : 3,
+</span></span><span class="line"><span class="cl">    &#34;NumDecommissioningNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;NumDecommissionedNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;NumLostNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;NumUnhealthyNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;NumRebootedNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;NumShutdownNMs&#34; : 0,
+</span></span><span class="line"><span class="cl">    &#34;AMLaunchDelayNumOps&#34; : 1713,
+</span></span><span class="line"><span class="cl">    &#34;AMLaunchDelayAvgTime&#34; : 63.0,
+</span></span><span class="line"><span class="cl">    &#34;AMRegisterDelayNumOps&#34; : 1700,
+</span></span><span class="line"><span class="cl">    &#34;AMRegisterDelayAvgTime&#34; : 33170.0
+</span></span><span class="line"><span class="cl">  } ]
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="nginx">nginx</h3>
+<p>使用 nginx 原生支持的能力判断主 upstream 的方法可以考虑 1，2，3 三种方法。</p>
+<p>翻了下 <a href="http://nginx.org/en/docs/stream/ngx_stream_upstream_module.html" target="_blank" rel="noopener noreffer ">nginx upstream 的文档</a>, <a href="http://nginx.org/en/docs/http/ngx_http_upstream_module.html" target="_blank" rel="noopener noreffer ">Dynamically configurable group with periodic health checks is available as part of our commercial subscription:</a>. 所以准备尝试一下 <code>ngx_http_upstream_hc_module</code>。我们直接使用 <code>nginx:latest</code> 镜像，配置如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">upstream backend {
+</span></span><span class="line"><span class="cl">        server bing.com:80;
+</span></span><span class="line"><span class="cl">        # server www.baidu.com:80;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">server {
+</span></span><span class="line"><span class="cl">    listen       8080;
+</span></span><span class="line"><span class="cl">    server_name  localhost;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    location / {
+</span></span><span class="line"><span class="cl">		proxy_set_header Host &#39;bing.com&#39;;
+</span></span><span class="line"><span class="cl">        proxy_pass http://backend;
+</span></span><span class="line"><span class="cl">		health_check;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>启动 nginx 会报如下错误:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">2023/10/23 01:56:53 [emerg] 1#1: unknown directive &#34;health_check&#34; in /etc/nginx/conf.d/default.conf:13
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>错误表示内置的 nginx 没编译 <code>ngx_http_upstream_hc_module</code>。如果希望使用这种方式，需要自编译 nginx 添加此模块。暂不想自编译 nginx，此方法弃用。</p>
+<h3 id="openrestylua">openresty+lua</h3>
+<p>换一个思路，如果我们期望的行为是在请求的时候，能够区分开，使用基于 nginx 的 更动态的 openresty+lua 组合写脚本方案找到当前的主，问题即可解决了。</p>
+<blockquote>
+<p><a href="https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html" target="_blank" rel="noopener noreffer ">https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html</a></p>
+</blockquote>
+<p>首先准备一下 openresty 的 docker 镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="line"><span class="cl">docker build --platform linux/amd64 -t openresty:dev -f Dockerfile .<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> openresty/openresty:latest</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -E -i <span class="s1">&#39;s/(deb|security).debian.org/mirrors.tuna.tsinghua.edu.cn/g&#39;</span> /etc/apt/sources.list<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive apt-get update <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive apt-get install -y --no-install-recommends <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        wget <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>        curl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> rm -rf /var/lib/apt/lists/*<span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>nginx.conf 文件如下</p>
+<blockquote>
+<p>nginx.conf_root</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">daemon</span> <span class="n">off</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">worker_processes</span>  <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">user</span> <span class="n">root</span> <span class="n">root</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">events</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">worker_connections</span>  <span class="mi">1024</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">http</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">default_type</span>  <span class="n">application</span><span class="o">/</span><span class="n">octet</span><span class="o">-</span><span class="n">stream</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">include</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">conf.d</span><span class="o">/*</span><span class="p">.</span><span class="n">conf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>默认路由核心逻辑如下，请求进来后，通过执行 shell 请求所有节点，找出当前的主的 hostname, 然后将请求路由到 hostname 对应的 upstream</p>
+<blockquote>
+<p>default.conf</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">server</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">listen</span>       <span class="mi">80</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_name</span>  <span class="n">localhost</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">access_by_lua_block</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">os.execute</span><span class="p">(</span><span class="s2">&#34;/bin/bash /etc/nginx/conf.d/hadoop-status.sh &gt; /tmp/hadoop-status.tmp&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">handle</span> <span class="o">=</span> <span class="n">io.open</span><span class="p">(</span><span class="s2">&#34;/tmp/hadoop-status.tmp&#34;</span><span class="p">,</span> <span class="s2">&#34;r&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">result</span> <span class="o">=</span> <span class="n">handle</span><span class="p">:</span><span class="n">read</span><span class="p">(</span><span class="s2">&#34;*a&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">handle</span><span class="p">:</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">ngx.log</span><span class="p">(</span><span class="n">ngx.ERR</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ngx.exec</span><span class="p">(</span><span class="s2">&#34;@&#34;</span><span class="o">..</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">location</span> <span class="err">@</span><span class="n">bigdata1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">proxy_pass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.100.41</span><span class="p">:</span><span class="mi">8088</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">location</span> <span class="err">@</span><span class="n">bigdata2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">proxy_pass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.100.42</span><span class="p">:</span><span class="mi">8088</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">location</span> <span class="err">@</span><span class="n">bigdata3</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">proxy_pass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">192.168.100.43</span><span class="p">:</span><span class="mi">8088</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>找到主的节点的方法比较简单，遍历所有的节点，有 jmx 返回的即为 Master。Master 中包含当前的 hostname，从脚本返回，传递给 nginx 做路由选择即可. 代码如下:</p>
+<blockquote>
+<p>hadoop-status.sh</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errtrace
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errexit
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o nounset
+</span></span><span class="line"><span class="cl"><span class="c1"># set -o pipefail</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># set -o xtrace</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>dirname <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># cat /etc/nginx/conf.d/host_ip.txt | while read line;</span>
+</span></span><span class="line"><span class="cl">cat /etc/nginx/conf.d/host_ip.txt <span class="p">|</span> <span class="k">while</span> <span class="nb">read</span> line<span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 忽略备注行</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$line</span> <span class="o">==</span> <span class="se">\#</span>* <span class="o">]]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">    <span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nv">linearray</span><span class="o">=(</span> <span class="nv">$line</span> <span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nv">RAW_IP</span><span class="o">=</span><span class="si">${</span><span class="nv">linearray</span><span class="p">[0]</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nv">RAW_HOSTNAME</span><span class="o">=</span><span class="si">${</span><span class="nv">linearray</span><span class="p">[1]</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nv">MASTER_NODE</span><span class="o">=</span><span class="k">$(</span>wget -qO- <span class="s2">&#34;http://</span><span class="si">${</span><span class="nv">RAW_IP</span><span class="si">}</span><span class="s2">:8088/jmx?qry=Hadoop:service=ResourceManager,name=ClusterMetrics&#34;</span> <span class="p">|</span> sed <span class="s1">&#39;s/,/\n/g&#39;</span> <span class="p">|</span> grep <span class="s1">&#39;tag.Hostname&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/tag.Hostname&#34; : &#34;//g&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;s/[&#34; ]//g&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">RAW_HOSTNAME</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">==</span> <span class="s2">&#34;</span><span class="si">${</span><span class="nv">MASTER_NODE</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">echo</span> -n <span class="nv">$RAW_HOSTNAME</span>
+</span></span><span class="line"><span class="cl">	<span class="k">fi</span>
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>host_ip.txt 中包含所有节点 ip 和 hostname</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">192.168.100.41 bigdata1
+</span></span><span class="line"><span class="cl">192.168.100.42 bigdata2
+</span></span><span class="line"><span class="cl">192.168.100.43 bigdata3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>执行下边命令后，访问 127.0.0.1:12346 看下效果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --rm -it -p 12346:80 -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/:/etc/nginx/conf.d/ openresty:dev nginx -c /etc/nginx/conf.d/nginx.conf_root
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="总结">总结</h2>
+<p>如上，使用 openresty+lua 编写检查下游 upstream 中所有节点主为何，然后 nginx 请求路由到主。</p>
+<h2 id="ref">ref</h2>
+<ul>
+<li><a href="https://www.shaoqun.com/m/a/235175.html" target="_blank" rel="noopener noreffer ">使用 Nginx+Lua 代理 Hadoop HA</a>, 思路来自于此，此文中的方法只接受两个节点，生产基本不可用</li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-10-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" data-title="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/hadoop-resource-manager-behind-nginx/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" data-title="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" data-title="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/hadoop-resource-manager-behind-nginx/" data-title="Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/portable-python/" class="prev" rel="prev" title="如何配置一个跨 linux 发行版解压即用的 python 运行环境(Portable Python)"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>如何配置一个跨 linux 发行版解压即用的 python 运行环境(Portable Python)</a>
+            <a href="/draw.io-cli-render/" class="next" rel="next" title="跨平台命令行渲染 draw.io 方法">跨平台命令行渲染 draw.io 方法<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

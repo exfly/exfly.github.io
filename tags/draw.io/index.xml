@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>draw.io - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/draw.io/</link>
+        <description>draw.io - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/draw.io/" rel="self" type="application/rss+xml" /><item>
+    <title>跨平台命令行渲染 draw.io 方法</title>
+    <link>https://exfly.github.io/draw.io-cli-render/</link>
+    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/draw.io-cli-render/</guid>
+    <description><![CDATA[<p>文章简介：本文介绍了一种跨平台（支持 Mac，Linux，Windows）的命令行渲染 draw.io 图表文件为图片的方法.</p>]]></description>
+</item>
+</channel>
+</rss>

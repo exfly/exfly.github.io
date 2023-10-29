@@ -4,7 +4,63 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>cli</title>
+    <link>https://exfly.github.io/tags/cli/</link>
+    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/cli/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>draw.io</title>
+    <link>https://exfly.github.io/tags/draw.io/</link>
+    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/draw.io/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>tools</title>
+    <link>https://exfly.github.io/tags/tools/</link>
+    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/tools/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>bigdata</title>
+    <link>https://exfly.github.io/tags/bigdata/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/bigdata/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Lua</title>
+    <link>https://exfly.github.io/tags/lua/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/lua/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>nginx</title>
+    <link>https://exfly.github.io/tags/nginx/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/nginx/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>OpenResty</title>
+    <link>https://exfly.github.io/tags/openresty/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/openresty/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>linux</title>
     <link>https://exfly.github.io/tags/linux/</link>
     <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
@@ -26,62 +82,6 @@
     <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/portable/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>python</title>
-    <link>https://exfly.github.io/tags/python/</link>
-    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/python/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>bug</title>
-    <link>https://exfly.github.io/tags/bug/</link>
-    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/bug/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>go</title>
-    <link>https://exfly.github.io/tags/go/</link>
-    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/go/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>grpc</title>
-    <link>https://exfly.github.io/tags/grpc/</link>
-    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/grpc/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>内存泄漏</title>
-    <link>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
-    <pubDate>Thu, 24 Aug 2023 19:50:28 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>chatgpt</title>
-    <link>https://exfly.github.io/tags/chatgpt/</link>
-    <pubDate>Tue, 28 Feb 2023 08:50:33 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/chatgpt/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>code_review</title>
-    <link>https://exfly.github.io/tags/code_review/</link>
-    <pubDate>Tue, 28 Feb 2023 08:50:33 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/code_review/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

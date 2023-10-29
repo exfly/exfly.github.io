@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/nginx/</link>
         <description>nginx - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 25 Oct 2021 17:07:58 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/nginx/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/nginx/" rel="self" type="application/rss+xml" /><item>
+    <title>Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面</title>
+    <link>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</link>
+    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</guid>
+    <description><![CDATA[<p>文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry + Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。</p>]]></description>
+</item>
+<item>
     <title>使用 nginx 制作一个 yum mirror</title>
     <link>https://exfly.github.io/build-yum-mirror-with-nginx/</link>
     <pubDate>Mon, 25 Oct 2021 17:07:58 &#43;0800</pubDate>

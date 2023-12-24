@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pgupgrade
+spec:
+  completions: 1
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: data-sharedx-pgha-0
+          persistentVolumeClaim:
+            claimName: data-shared-postgresql-ha-postgresql-0
+        - name: entrypoints
+          configMap:
+            name: sharedx-pg-upgrade-entrypoints
+            defaultMode: 0777
+      containers:
+        - name: pg-upgrade
+          image: tianon/postgres-upgrade:14-to-15
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/opt/pgupgrade/entrypoints.sh"
+          env:
+            - name: PGDATABASE
+              value: /bitnami/postgresql/
+            - name: PGDATAOLD
+              value: /bitnami/postgresql/data
+            - name: PGDATANEW
+              value: /bitnami/postgresql/datanew
+          volumeMounts:
+            - mountPath: "/bitnami/postgresql"
+              name: data-sharedx-pgha-0
+            - name: entrypoints
+              mountPath: "/opt/pgupgrade/"

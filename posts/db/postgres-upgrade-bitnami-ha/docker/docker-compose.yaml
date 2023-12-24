@@ -1,0 +1,39 @@
+version: '3'
+services:
+  db14:
+    image: dockerproxy.com/library/postgres:14-bookworm
+    container_name: db14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      PGDATA: /var/lib/postgresql/all/db14
+    volumes:
+      - ./data/:/var/lib/postgresql/all
+    ports:
+      - 5432:5432
+
+  db15:
+    image: dockerproxy.com/library/postgres:15-bookworm
+    container_name: db15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      PGDATA: /var/lib/postgresql/all/db15
+    volumes:
+      - ./data/:/var/lib/postgresql/all
+    ports:
+      - 5433:5432
+
+  upgrade:
+    image: tianon/postgres-upgrade:14-to-15
+    container_name: upgrade
+    environment:
+      PGDATAOLD: /var/lib/postgresql/all/db14
+      PGDATANEW: /var/lib/postgresql/all/db15
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: password
+    command: ["tail", "-f", "/dev/null"]
+    volumes:
+      - ./data/:/var/lib/postgresql/all

@@ -1,0 +1,157 @@
+global:
+  imageRegistry: docker.nju.edu.cn
+
+diagnosticMode:
+  enabled: false
+
+postgresql:
+  image:
+    debug: true
+    tag: "14.10.0-debian-11-r6"
+  replicaCount: 3
+  sharedPreloadLibraries: "pgaudit, repmgr, pg_stat_statements"
+  podLabels:
+    app: postgres-ha
+  password: TODO
+  database: postgres
+  debug: true
+  readinessProbe:
+    enabled: false
+    initialDelaySeconds: 2
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 2
+  startupProbe:
+    enabled: false
+  customStartupProbe:
+    exec:
+      command:
+      - bash
+      - -ec
+      - PGPASSWORD=$POSTGRES_PASSWORD psql -w -U "postgres" -d "postgres" -h 127.0.0.1 -p 5432 -c "SELECT 1" && ([ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ])
+    failureThreshold: 1080 # 3小时
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 10
+  extendedConfCM: shared-postgresql-ha-postgresql-extra-conf
+  initdbScriptsCM: shared-postgresql-ha-postgresql-init-scripts
+  repmgrPassword: TODO
+  usePgRewind: true
+  nodeAffinityPreset:
+    type: soft # hard
+    key: 'node-role.homelab/pg'
+    values: ["true"]
+
+pgpool:
+  image:
+    debug: true
+  replicaCount: 1
+  adminPassword: TODO
+  debug: true
+  customUsersSecret: shared-postgresql-ha-pgpool-passwords
+  clientMinMessages: debug
+  useLoadBalancing: false
+  reservedConnections: 1
+  maxPool: 1
+  numInitChildren: 200  # conn
+  childMaxConnections: "0"
+  # fix: 偶现如下sql 导致 pgpool segment fault
+  # SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = 'public' AND table_name = 'test';
+  # 手动重启 pgpool 解决, 使用如下参数保证不可用 child 会被清理
+  clientIdleLimit: 600 # seconds
+  # childLifeTime: 60
+  # connectionLifeTime: "600"
+  configurationCM: shared-postgresql-ha-pgpool-user-conf
+
+witness:
+  create: true # for test
+  livenessProbe:
+    enabled: true
+  readinessProbe:
+    enabled: false
+
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: true
+
+persistence:
+  size: 5Gi
+
+# https://github.com/bitnami/charts/tree/main/bitnami/postgresql-ha#adjust-permissions-of-persistent-volume-mountpoint
+volumePermissions:
+  enabled: true
+
+extraDeploy:
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-postgresql-ha-postgresql-extra-conf
+      namespace: {{ include "common.names.namespace" . | quote }}
+    data:
+      extra_conf.conf: |
+        wal_log_hints = on
+        deadlock_timeout = 2s
+        max_connections = 300
+
+        # for pgbadger
+        # log_connections = on
+        # log_disconnections = on
+        lc_messages='C'
+        lc_messages='en_US.UTF-8'
+        log_min_duration_statement = 500 # unit:ms
+        log_checkpoints = on
+        log_lock_waits = on
+        log_temp_files = 1024 # unit:kb
+        log_autovacuum_min_duration = 3000 # unit:ms
+        log_error_verbosity = verbose
+
+        # https://stackoverflow.com/questions/14592436/postgresql-error-canceling-statement-due-to-conflict-with-recovery
+        max_standby_archive_delay = 600s
+        max_standby_streaming_delay = 600s
+
+        # 数据库中出现 'idle in transaction', 说明有过多的逻辑写在了事务处理逻辑中
+        idle_in_transaction_session_timeout = 60s
+
+        # 执行时间比较久的 sql 不符合预期，期望数据直接 kill, 10min 临时拍的一个值, 看下效果
+        statement_timeout='10min'
+
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: shared-postgresql-ha-pgpool-user-conf
+    data:
+      pgpool.conf: |
+        log_connections = 'off'
+        allow_sql_comments= 'off'
+        process_management_mode='dynamic'
+  - |
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: {{ .Release.Name }}-postgresql-ha-pgpool-passwords
+      namespace: {{ include "common.names.namespace" . | quote }}
+    type: Opaque
+    stringData:
+      usernames: test,test1
+      passwords: TODO,01da5678b39482FadoZda
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-postgresql-ha-postgresql-init-scripts
+      namespace: {{ include "common.names.namespace" . | quote }}
+    data:
+      init_script.sh: |
+        #!/bin/bash
+        env
+        export PGPASSWORD=$POSTGRES_PASSWORD
+        # Remove PUBLIC creation permission on the public schema
+        # https://www.postgresql.org/docs/release/15.0/
+        # https://fluca1978.github.io/2022/07/15/PostgreSQL15PublicSchema.html
+        # https://github.com/bitnami/charts/issues/15977
+        psql -U $POSTGRES_USER -d template1 -tc "GRANT CREATE ON SCHEMA public TO PUBLIC;"
+        psql -U $POSTGRES_USER -tc "CREATE USER test with password 'TODO';" || true

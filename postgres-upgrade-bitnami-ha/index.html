@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程" />
+<meta property="og:description" content="文章简介：bitnami/postgres-ha 使用 pg_upgrade 全自动大版本升级 从 14 到 15" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/postgres-upgrade-bitnami-ha/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-12-04T19:24:19+08:00" />
+<meta property="article:modified_time" content="2023-12-24T13:57:38+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+
+<meta name="twitter:title" content="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程"/>
+<meta name="twitter:description" content="文章简介：bitnami/postgres-ha 使用 pg_upgrade 全自动大版本升级 从 14 到 15"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/postgres-upgrade-bitnami-ha/" /><link rel="prev" href="https://exfly.github.io/draw.io-cli-render/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/postgres-upgrade-bitnami-ha\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "db, postgres, bitnami, bitnami\/postgres-ha, pg_upgrade","wordcount":  3954 ,
+        "url": "https:\/\/exfly.github.io\/postgres-upgrade-bitnami-ha\/","datePublished": "2023-12-04T19:24:19+08:00","dateModified": "2023-12-24T13:57:38+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/postgres-upgrade-bitnami-ha/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/postgres-upgrade-bitnami-ha/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-12-04">2023-12-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3954 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#reasons-to-upgrade">Reasons to upgrade</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#升级过程">升级过程</a></li>
+    <li><a href="#升级注意事项">升级注意事项</a>
+      <ul>
+        <li><a href="#如果使用了-postgresql-extension-需要手动安装">如果使用了 PostgreSQL extension， 需要手动安装</a></li>
+        <li><a href="#旧-postgres14-alpine-使用-postgres15-bookworm-pg_upgrade-新运行环境-postgres15-alpine">旧 postgres:14-alpine 使用 postgres:15-bookworm-pg_upgrade 新运行环境 postgres:15-alpine</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#尝试">尝试</a></li>
+    <li><a href="#自动化">自动化</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：bitnami/postgres-ha 使用 pg_upgrade 全自动大版本升级 从 14 到 15</p>
+<h1 id="infrastructural-notes">Infrastructural notes</h1>
+<h2 id="reasons-to-upgrade">Reasons to upgrade</h2>
+<p>开始我所在产品计划做基于 k8s 的集群版，postgres 需要一个可靠的可以自动主从切换的 HA 方案。本着不重新造轮子的原则，选择了 bitnami/postgres-ha 的方案。调研时发现开了 witness/pg_rewind 后，pg 反复重启。为此把 witness/pg_rewind 关了后上了生产。后续由于我们百 G 存储的 pg 测试集群偶发了一次丢所有的数据，调查后决定开启 pg_rewind 防止丢数据。调研中发现最新的 bitnami/postgres-ha 基于 postgres 15, pg 14 开启后不工作，postgres 15 已经经过一段时间的生产环境验证，决定尝试 pg14 升级 15。</p>
+<p>当前<a href="https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-REPLICATION" target="_blank" rel="noopener noreffer ">官方提供的升级方案</a>包括:</p>
+<ul>
+<li>Dump &amp; restore: 最简单也是最耗时的方法。将面临更长的停机时间，我们一个测试环境采用不落盘方案，30G 数据大约花费了 30 分钟，在更大的数据库或不同的硬件配置可能会有不同的执行时间;</li>
+<li>Logical replication: 停机时间最短的方式(所有数据库实例数据同步完成后切换旧集群到新集群这段时间会有短暂秒级服务不可用)。从 pg10 开始就内置了逻辑复制。</li>
+<li>PostgreSQL official upgrade tool: <a href="https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-REPLICATION" target="_blank" rel="noopener noreffer ">pg_upgrade</a> 官方维护了一个命令行工具, 用于此场景.</li>
+</ul>
+<p>我所面临的场景要求原地升级，不接受使用一个新的 <code>bitnami/postgres-ha</code> 集群替换新的集群，允许比较短的维护时间窗口（可停服），故采用方案 3： PostgreSQL official upgrade tool <a href="https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-REPLICATION" target="_blank" rel="noopener noreffer ">pg_upgrade</a>。如果对停机时间有严格要求的，还是建议采用方案 2 Logical replication。</p>
+<p>因为我们的场景属于容器化场景，在一个 k8s 集群中部署了我们所有的数据库服务及业务服务，我们先在 docker 环境下熟悉一下 pg_upgrade 的操作。</p>
+<h1 id="基于-docker-的-postgres-升级过程探索">基于 docker 的 postgres 升级过程探索</h1>
+<p>调研过程中看到容器场景比较理想的迁移方案 blog <a href="https://treatwell.engineering/terabyte-scale-postgresql-upgrade-from-9-6-to-14-3ea452b7f69d" target="_blank" rel="noopener noreffer ">Terabyte-scale PostgreSQL upgrade from 9.6 to 14</a> ，其中为他们的场景<a href="https://github.com/tianon/docker-postgres-upgrade" target="_blank" rel="noopener noreffer ">自制了一个用于升级的 docker image</a>，此项目中对自己的介绍 <code>This is a PoC for using pg_upgrade inside Docker -- learn from it, adapt it for your needs; don't expect it to work as-is!</code>。接下来我们使用此方法复现一下大版本升级过程。</p>
+<h2 id="升级过程">升级过程</h2>
+<p>在此过程中我们会先启动一个 postgres14, 然后使用 <code>tianon/postgres-upgrade:14-to-15</code> 从 14 升级到 15. 然后启动 pg15 验证是否升级成功。</p>
+<p>先看一下 docker-compose.yaml 文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">db14</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">postgres:14-bookworm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATA</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="m">5432</span><span class="p">:</span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">db15</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">postgres:15-bookworm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATA</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="m">5433</span><span class="p">:</span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">upgrade</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tianon/postgres-upgrade:14-to-15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">upgrade</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATAOLD</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATANEW</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">password</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;tail&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-f&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;/dev/null&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>首先我们把 pg 14 启动起来，并创建一些数据。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">docker-compose up -d db14
+</span></span><span class="line"><span class="cl">[+] Building 0.0s (0/0)                                                          docker-container:multiarch
+</span></span><span class="line"><span class="cl">[+] Running 2/2
+</span></span><span class="line"><span class="cl"> ✔ Network docker_default  Created                                                                     0.1s
+</span></span><span class="line"><span class="cl"> ✔ Container db14          Started
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">export database=&#39;postgres://postgres:test@localhost:5432/test?sslmode=disable&#39;
+</span></span><span class="line"><span class="cl">docker-compose exec db14 psql &#34;$database&#34; -c &#39;select version();&#39;
+</span></span><span class="line"><span class="cl">------------------------------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">-----------------
+</span></span><span class="line"><span class="cl"> PostgreSQL 14.10 (Debian 14.10-1.pgdg120+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 12.2.0-14
+</span></span><span class="line"><span class="cl">) 12.2.0, 64-bit
+</span></span><span class="line"><span class="cl">(1 row)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose exec db14 psql &#34;$database&#34; -c &#39;CREATE TABLE IF NOT EXISTS t_test( ID INT NOT NULL, NAME      TEXT  NOT NULL, AGE      INT   NOT NULL, ADDRESS    CHAR(50), SALARY     REAL );&#39;
+</span></span><span class="line"><span class="cl">CREATE TABLE
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose exec db14 psql &#34;$database&#34; -c &#39;select count(*) from t_test;&#39;
+</span></span><span class="line"><span class="cl"> count
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">     0
+</span></span><span class="line"><span class="cl">(1 row)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose exec db14 psql &#34;$database&#34; -c &#39;insert into t_test SELECT generate_series(1,1) as key,repeat( chr(int4(random()*26)+65),4), (random()*(6^2))::integer,null,(random()*(10^4))::integer;&#39;
+</span></span><span class="line"><span class="cl">INSERT 0 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose exec db14 psql &#34;$database&#34; -c &#39;select count(*) from t_test;&#39;
+</span></span><span class="line"><span class="cl"> count
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">     1
+</span></span><span class="line"><span class="cl">(1 row)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>开始升级过程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose stop db14
+</span></span><span class="line"><span class="cl"><span class="o">[</span>+<span class="o">]</span> Stopping 1/1
+</span></span><span class="line"><span class="cl"> ✔ Container db14  Stopped
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose up -d upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>+<span class="o">]</span> Running 1/1
+</span></span><span class="line"><span class="cl"> ✔ Container upgrade  Started
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> upgrade docker-upgrade pg_upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">The files belonging to this database system will be owned by user <span class="s2">&#34;postgres&#34;</span>.
+</span></span><span class="line"><span class="cl">This user must also own the server process.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">The database cluster will be initialized with locale <span class="s2">&#34;en_US.utf8&#34;</span>.
+</span></span><span class="line"><span class="cl">The default database encoding has accordingly been <span class="nb">set</span> to <span class="s2">&#34;UTF8&#34;</span>.
+</span></span><span class="line"><span class="cl">The default text search configuration will be <span class="nb">set</span> to <span class="s2">&#34;english&#34;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Data page checksums are disabled.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">fixing permissions on existing directory /var/lib/postgresql/all/db15 ... ok
+</span></span><span class="line"><span class="cl">creating subdirectories ... ok
+</span></span><span class="line"><span class="cl">selecting dynamic shared memory implementation ... posix
+</span></span><span class="line"><span class="cl">selecting default max_connections ... <span class="m">100</span>
+</span></span><span class="line"><span class="cl">selecting default shared_buffers ... 128MB
+</span></span><span class="line"><span class="cl">selecting default <span class="nb">time</span> zone ... Etc/UTC
+</span></span><span class="line"><span class="cl">creating configuration files ... ok
+</span></span><span class="line"><span class="cl">running bootstrap script ... ok
+</span></span><span class="line"><span class="cl">performing post-bootstrap initialization ... ok
+</span></span><span class="line"><span class="cl">syncing data to disk ... ok
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">initdb: warning: enabling <span class="s2">&#34;trust&#34;</span> authentication <span class="k">for</span> <span class="nb">local</span> connections
+</span></span><span class="line"><span class="cl">initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next <span class="nb">time</span> you run initdb.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Success. You can now start the database server using:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    pg_ctl -D /var/lib/postgresql/all/db15 -l logfile start
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Performing Consistency Checks
+</span></span><span class="line"><span class="cl">-----------------------------
+</span></span><span class="line"><span class="cl">Checking cluster versions                                   ok
+</span></span><span class="line"><span class="cl">Checking database user is the install user                  ok
+</span></span><span class="line"><span class="cl">Checking database connection settings                       ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> prepared transactions                          ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> system-defined composite types in user tables  ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> reg* data types in user tables                 ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> contrib/isn with bigint-passing mismatch       ok
+</span></span><span class="line"><span class="cl">Creating dump of global objects                             ok
+</span></span><span class="line"><span class="cl">Creating dump of database schemas
+</span></span><span class="line"><span class="cl">                                                            ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> presence of required libraries                 ok
+</span></span><span class="line"><span class="cl">Checking database user is the install user                  ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> prepared transactions                          ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> new cluster tablespace directories             ok
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">If pg_upgrade fails after this point, you must re-initdb the
+</span></span><span class="line"><span class="cl">new cluster before continuing.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Performing Upgrade
+</span></span><span class="line"><span class="cl">------------------
+</span></span><span class="line"><span class="cl">Analyzing all rows in the new cluster                       ok
+</span></span><span class="line"><span class="cl">Freezing all rows in the new cluster                        ok
+</span></span><span class="line"><span class="cl">Deleting files from new pg_xact                             ok
+</span></span><span class="line"><span class="cl">Copying old pg_xact to new server                           ok
+</span></span><span class="line"><span class="cl">Setting oldest XID <span class="k">for</span> new cluster                          ok
+</span></span><span class="line"><span class="cl">Setting next transaction ID and epoch <span class="k">for</span> new cluster       ok
+</span></span><span class="line"><span class="cl">Deleting files from new pg_multixact/offsets                ok
+</span></span><span class="line"><span class="cl">Copying old pg_multixact/offsets to new server              ok
+</span></span><span class="line"><span class="cl">Deleting files from new pg_multixact/members                ok
+</span></span><span class="line"><span class="cl">Copying old pg_multixact/members to new server              ok
+</span></span><span class="line"><span class="cl">Setting next multixact ID and offset <span class="k">for</span> new cluster        ok
+</span></span><span class="line"><span class="cl">Resetting WAL archives                                      ok
+</span></span><span class="line"><span class="cl">Setting frozenxid and minmxid counters in new cluster       ok
+</span></span><span class="line"><span class="cl">Restoring global objects in the new cluster                 ok
+</span></span><span class="line"><span class="cl">Restoring database schemas in the new cluster
+</span></span><span class="line"><span class="cl">                                                            ok
+</span></span><span class="line"><span class="cl">Copying user relation files
+</span></span><span class="line"><span class="cl">                                                            ok
+</span></span><span class="line"><span class="cl">Setting next OID <span class="k">for</span> new cluster                            ok
+</span></span><span class="line"><span class="cl">Sync data directory to disk                                 ok
+</span></span><span class="line"><span class="cl">Creating script to delete old cluster                       ok
+</span></span><span class="line"><span class="cl">Checking <span class="k">for</span> extension updates                              ok
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Upgrade Complete
+</span></span><span class="line"><span class="cl">----------------
+</span></span><span class="line"><span class="cl">Optimizer statistics are not transferred by pg_upgrade.
+</span></span><span class="line"><span class="cl">Once you start the new server, consider running:
+</span></span><span class="line"><span class="cl">    /usr/lib/postgresql/15/bin/vacuumdb --all --analyze-in-stages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Running this script will delete the old cluster<span class="err">&#39;</span>s data files:
+</span></span><span class="line"><span class="cl">    ./delete_old_cluster.sh
+</span></span><span class="line"><span class="cl">----------------
+</span></span><span class="line"><span class="cl">ExecutionTime: 0h:00m:12s
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose up -d db15
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>+<span class="o">]</span> Running 1/1
+</span></span><span class="line"><span class="cl"> ✔ Container db15  Started
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose logs db15
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span>
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> PostgreSQL Database directory appears to contain a database<span class="p">;</span> Skipping initialization
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span>
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.279 UTC <span class="o">[</span>1<span class="o">]</span> LOG:  starting PostgreSQL 15.5 <span class="o">(</span>Debian 15.5-1.pgdg120+1<span class="o">)</span> on aarch64-unknown-linux-gnu, compiled by gcc <span class="o">(</span>Debian 12.2.0-14<span class="o">)</span> 12.2.0, 64-bit
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.279 UTC <span class="o">[</span>1<span class="o">]</span> LOG:  listening on IPv4 address <span class="s2">&#34;0.0.0.0&#34;</span>, port <span class="m">5432</span>
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.279 UTC <span class="o">[</span>1<span class="o">]</span> LOG:  listening on IPv6 address <span class="s2">&#34;::&#34;</span>, port <span class="m">5432</span>
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.282 UTC <span class="o">[</span>1<span class="o">]</span> LOG:  listening on Unix socket <span class="s2">&#34;/var/run/postgresql/.s.PGSQL.5432&#34;</span>
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.290 UTC <span class="o">[</span>30<span class="o">]</span> LOG:  database system was shut down at 2023-12-24 02:48:38 UTC
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:09.304 UTC <span class="o">[</span>1<span class="o">]</span> LOG:  database system is ready to accept connections
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:24.376 UTC <span class="o">[</span>34<span class="o">]</span> WARNING:  database <span class="s2">&#34;test&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:24.376 UTC <span class="o">[</span>34<span class="o">]</span> DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:24.376 UTC <span class="o">[</span>34<span class="o">]</span> HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE <span class="nb">test</span> REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:39.360 UTC <span class="o">[</span>35<span class="o">]</span> WARNING:  database <span class="s2">&#34;postgres&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:39.360 UTC <span class="o">[</span>35<span class="o">]</span> DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">db15  <span class="p">|</span> 2023-12-24 02:50:39.360 UTC <span class="o">[</span>35<span class="o">]</span> HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;ALTER DATABASE test REFRESH COLLATION VERSION;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;test&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE <span class="nb">test</span> REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">NOTICE:  changing version from 2.31 to 2.36
+</span></span><span class="line"><span class="cl">ALTER DATABASE
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 vacuumdb --username<span class="o">=</span>postgres --all --analyze-in-stages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;postgres&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;postgres&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;postgres&#34;</span>: Generating minimal optimizer statistics <span class="o">(</span><span class="m">1</span> target<span class="o">)</span>
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;template1&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE template1 REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;template1&#34;</span>: Generating minimal optimizer statistics <span class="o">(</span><span class="m">1</span> target<span class="o">)</span>
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;test&#34;</span>: Generating minimal optimizer statistics <span class="o">(</span><span class="m">1</span> target<span class="o">)</span>
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;postgres&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;postgres&#34;</span>: Generating medium optimizer statistics <span class="o">(</span><span class="m">10</span> targets<span class="o">)</span>
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;template1&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE template1 REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;template1&#34;</span>: Generating medium optimizer statistics <span class="o">(</span><span class="m">10</span> targets<span class="o">)</span>
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;test&#34;</span>: Generating medium optimizer statistics <span class="o">(</span><span class="m">10</span> targets<span class="o">)</span>
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;postgres&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE postgres REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;postgres&#34;</span>: Generating default <span class="o">(</span>full<span class="o">)</span> optimizer statistics
+</span></span><span class="line"><span class="cl">WARNING:  database <span class="s2">&#34;template1&#34;</span> has a collation version mismatch
+</span></span><span class="line"><span class="cl">DETAIL:  The database was created using collation version 2.31, but the operating system provides version 2.36.
+</span></span><span class="line"><span class="cl">HINT:  Rebuild all objects in this database that use the default collation and run ALTER DATABASE template1 REFRESH COLLATION VERSION, or build PostgreSQL with the right library version.
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;template1&#34;</span>: Generating default <span class="o">(</span>full<span class="o">)</span> optimizer statistics
+</span></span><span class="line"><span class="cl">vacuumdb: processing database <span class="s2">&#34;test&#34;</span>: Generating default <span class="o">(</span>full<span class="o">)</span> optimizer statistics
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>验证一下已经升级成功</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;select count(*) from t_test;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> count
+</span></span><span class="line"><span class="cl">-------
+</span></span><span class="line"><span class="cl">     <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">1</span> row<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;select * from t_test;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> id <span class="p">|</span> name <span class="p">|</span> age <span class="p">|</span> address <span class="p">|</span> salary
+</span></span><span class="line"><span class="cl">----+------+-----+---------+--------
+</span></span><span class="line"><span class="cl">  <span class="m">1</span> <span class="p">|</span> EEEE <span class="p">|</span>  <span class="m">29</span> <span class="p">|</span>         <span class="p">|</span>   <span class="m">9179</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span><span class="m">1</span> row<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>验证通过。</p>
+<h2 id="升级注意事项">升级注意事项</h2>
+<h3 id="如果使用了-postgresql-extension-需要手动安装">如果使用了 PostgreSQL extension， 需要手动安装</h3>
+<p>在升级容器新版本 PG 手动安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">apt update &amp;&amp; apt install postgresql-14-pgaudit
+</span></span><span class="line"><span class="cl">apt update &amp;&amp; apt install postgresql-15-pgaudit
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="旧-postgres14-alpine-使用-postgres15-bookworm-pg_upgrade-新运行环境-postgres15-alpine">旧 postgres:14-alpine 使用 postgres:15-bookworm-pg_upgrade 新运行环境 postgres:15-alpine</h3>
+<p>使用 postgres:15-bookworm 做 pg_upgrade 遇到 warning:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">database &#34;postgres&#34; has no actual collation version, but a version was recorded
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">REINDEX
+</span></span><span class="line"><span class="cl">REINDEX DATABASE splat;ALTER DATABASE splat REFRESH COLLATION VERSION; ```
+</span></span><span class="line"><span class="cl">```bash
+</span></span><span class="line"><span class="cl">ERROR:  invalid collation version change
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>glibc 版本/系统版本变化导致 pg_upgrade 升级后报错 <a href="https://github.com/postgis/docker-postgis/issues/351" target="_blank" rel="noopener noreffer ">官方建议</a> 新旧及升级容器的 linux 运行时都使用相同的. 比如此例子中应都使用 alpine:3.14.</p>
+<p>最终，写了完整验证自动化脚本:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># docker-compose.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;3&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">db14</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">postgres:14-bookworm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATA</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="m">5432</span><span class="p">:</span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">db15</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">postgres:15-bookworm</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_DB</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATA</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="m">5433</span><span class="p">:</span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">upgrade</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">tianon/postgres-upgrade:14-to-15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l">upgrade</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATAOLD</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db14</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">PGDATANEW</span><span class="p">:</span><span class="w"> </span><span class="l">/var/lib/postgresql/all/db15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_USER</span><span class="p">:</span><span class="w"> </span><span class="l">test</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">POSTGRES_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="l">password</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;tail&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-f&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;/dev/null&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./data/:/var/lib/postgresql/all</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># test.sh</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#!/usr/bin/env bash</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errtrace
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errexit
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o nounset
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o pipefail
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o xtrace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>dirname <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">database</span><span class="o">=</span><span class="s1">&#39;postgres://postgres:test@localhost:5432/test?sslmode=disable&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose down
+</span></span><span class="line"><span class="cl">rm -rf data
+</span></span><span class="line"><span class="cl">sleep <span class="m">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose up -d db14
+</span></span><span class="line"><span class="cl">sleep <span class="m">5</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 pg_isready -d <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -t <span class="m">20</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;select version();&#39;</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;CREATE TABLE IF NOT EXISTS t_test( ID INT NOT NULL, NAME      TEXT  NOT NULL, AGE      INT   NOT NULL, ADDRESS    CHAR(50), SALARY     REAL );&#39;</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;select count(*) from t_test;&#39;</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;insert into t_test SELECT generate_series(1,1) as key,repeat( chr(int4(random()*26)+65),4), (random()*(6^2))::integer,null,(random()*(10^4))::integer;&#39;</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db14 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;select count(*) from t_test;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose stop db14
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose up -d upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> upgrade docker-upgrade pg_upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose up -d db15
+</span></span><span class="line"><span class="cl">sleep <span class="m">3</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 psql <span class="s2">&#34;</span><span class="nv">$database</span><span class="s2">&#34;</span> -c <span class="s1">&#39;ALTER DATABASE test REFRESH COLLATION VERSION;&#39;</span>
+</span></span><span class="line"><span class="cl">docker-compose <span class="nb">exec</span> db15 vacuumdb --username<span class="o">=</span>postgres --all --analyze-in-stages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker-compose logs -f db15
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="基于-k8s-的-bitnamipostgres-ha-升级的尝试">基于 k8s 的 bitnami/postgres-ha 升级的尝试</h1>
+<p><a href="https://treatwell.engineering/terabyte-scale-postgresql-upgrade-from-9-6-to-14-3ea452b7f69d" target="_blank" rel="noopener noreffer ">Terabyte-scale PostgreSQL upgrade from 9.6 to 14</a> 中有描述原地升级方法，在此复现，并将过程自动化。</p>
+<p>重复升级方法。</p>
+<p>首先创建一个 postgres 14 的 pg 集群</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">helm pull oci://registry-1.docker.io/bitnamicharts/postgresql-ha --version 12.3.1
+</span></span><span class="line"><span class="cl">helm upgrade --install shared postgresql-ha-12.3.1.tgz --set postgresql.image.tag<span class="o">=</span><span class="s1">&#39;14.10.0-debian-11-r6&#39;</span> --set postgresql.replicaCount<span class="o">=</span><span class="m">1</span> --set postgresql.sharedPreloadLibraries<span class="o">=</span><span class="s1">&#39;&#34;pgaudit, repmgr, pg_stat_statements&#34;&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>先准备升级 pod</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 停止pg</span>
+</span></span><span class="line"><span class="cl">kubectl scale --replicas<span class="o">=</span><span class="m">0</span> sts shared-postgresql-ha-postgresql
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;&#39;EOF&#39; | kubectl apply -f -
+</span></span></span><span class="line"><span class="cl"><span class="s">apiVersion: batch/v1
+</span></span></span><span class="line"><span class="cl"><span class="s">kind: Job
+</span></span></span><span class="line"><span class="cl"><span class="s">metadata:
+</span></span></span><span class="line"><span class="cl"><span class="s">  name: pgupgrade
+</span></span></span><span class="line"><span class="cl"><span class="s">spec:
+</span></span></span><span class="line"><span class="cl"><span class="s">  completions: 1
+</span></span></span><span class="line"><span class="cl"><span class="s">  backoffLimit: 1
+</span></span></span><span class="line"><span class="cl"><span class="s">  template:
+</span></span></span><span class="line"><span class="cl"><span class="s">    spec:
+</span></span></span><span class="line"><span class="cl"><span class="s">      restartPolicy: Never
+</span></span></span><span class="line"><span class="cl"><span class="s">      volumes:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - name: data-sharedx-pgha-0
+</span></span></span><span class="line"><span class="cl"><span class="s">          persistentVolumeClaim:
+</span></span></span><span class="line"><span class="cl"><span class="s">            claimName: data-shared-postgresql-ha-postgresql-0
+</span></span></span><span class="line"><span class="cl"><span class="s">      containers:
+</span></span></span><span class="line"><span class="cl"><span class="s">        - name: pg-upgrade
+</span></span></span><span class="line"><span class="cl"><span class="s">          image: tianon/postgres-upgrade:14-to-15
+</span></span></span><span class="line"><span class="cl"><span class="s">          imagePullPolicy: IfNotPresent
+</span></span></span><span class="line"><span class="cl"><span class="s">          command:
+</span></span></span><span class="line"><span class="cl"><span class="s">            - &#34;sh&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">            - -c
+</span></span></span><span class="line"><span class="cl"><span class="s">            - &#34;tail -f /dev/null&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">          env:
+</span></span></span><span class="line"><span class="cl"><span class="s">            - name: PGDATABASE
+</span></span></span><span class="line"><span class="cl"><span class="s">              value: /bitnami/postgresql/
+</span></span></span><span class="line"><span class="cl"><span class="s">            - name: PGDATAOLD
+</span></span></span><span class="line"><span class="cl"><span class="s">              value: /bitnami/postgresql/data
+</span></span></span><span class="line"><span class="cl"><span class="s">            - name: PGDATANEW
+</span></span></span><span class="line"><span class="cl"><span class="s">              value: /bitnami/postgresql/datanew
+</span></span></span><span class="line"><span class="cl"><span class="s">          volumeMounts:
+</span></span></span><span class="line"><span class="cl"><span class="s">            - mountPath: &#34;/bitnami/postgresql&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">              name: data-sharedx-pgha-0
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 获得升级 shell</span>
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -it <span class="k">$(</span>kubectl get pod -l batch.kubernetes.io/job-name<span class="o">=</span>pgupgrade -o name<span class="k">)</span> -- bash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="尝试">尝试</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-upgrade pg_upgrade
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Performing Consistency Checks
+</span></span><span class="line"><span class="cl">-----------------------------
+</span></span><span class="line"><span class="cl">Checking cluster versions                                   ok
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">*failure*
+</span></span><span class="line"><span class="cl">Consult the last few lines of <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T060414.361/log/pg_upgrade_server.log&#34;</span> <span class="k">for</span>
+</span></span><span class="line"><span class="cl">the probable cause of the failure.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">connection to server on socket <span class="s2">&#34;/var/lib/postgresql/.s.PGSQL.50432&#34;</span> failed: No such file or directory
+</span></span><span class="line"><span class="cl">        Is the server running locally and accepting connections on that socket?
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">could not connect to <span class="nb">source</span> postmaster started with the command:
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;/usr/lib/postgresql/14/bin/pg_ctl&#34;</span> -w -l <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T060414.361/log/pg_upgrade_server.log&#34;</span> -D <span class="s2">&#34;/bitnami/postgresql/data&#34;</span> -o <span class="s2">&#34;-p 50432 -b  -c listen_addresses=&#39;&#39; -c unix_socket_permissions=0700 -c unix_socket_directories=&#39;/var/lib/postgresql&#39;&#34;</span> start
+</span></span><span class="line"><span class="cl">Failure, exiting
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat /bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T060414.361/log/pg_upgrade_server.log
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">  pg_upgrade run on Tue Nov <span class="m">28</span> 06:04:14 <span class="m">2023</span>
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">command: <span class="s2">&#34;/usr/lib/postgresql/14/bin/pg_ctl&#34;</span> -w -l <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T060414.361/log/pg_upgrade_server.log&#34;</span> -D <span class="s2">&#34;/bitnami/postgresql/data&#34;</span> -o <span class="s2">&#34;-p 50432 -b  -c listen_addresses=&#39;&#39; -c unix_socket_permissions=0700 -c unix_socket_directories=&#39;/var/lib/postgresql&#39;&#34;</span> start &gt;&gt; <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T060414.361/log/pg_upgrade_server.log&#34;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">waiting <span class="k">for</span> server to start....postgres: could not access the server configuration file <span class="s2">&#34;/bitnami/postgresql/data/postgresql.conf&#34;</span>: No such file or directory
+</span></span><span class="line"><span class="cl"> stopped waiting
+</span></span><span class="line"><span class="cl">pg_ctl: could not start server
+</span></span><span class="line"><span class="cl">Examine the log output.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看起来旧数据需要 postgresql.conf 才可以启动。现将所有旧配置都复制到数据目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -it shared-postgresql-ha-postgresql-0 -- cp /opt/bitnami/postgresql/conf/postgresql.conf /bitnami/postgresql/data
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@task-pg-upgrade-545cbc8cdf-6z8mf:/var/lib/postgresql# cat /bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064300.020/log/pg_upgrade_server.log
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">  pg_upgrade run on Tue Nov <span class="m">28</span> 06:43:00 <span class="m">2023</span>
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">command: <span class="s2">&#34;/usr/lib/postgresql/14/bin/pg_ctl&#34;</span> -w -l <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064300.020/log/pg_upgrade_server.log&#34;</span> -D <span class="s2">&#34;/bitnami/postgresql/data&#34;</span> -o <span class="s2">&#34;-p 50432 -b  -c listen_addresses=&#39;&#39; -c unix_socket_permissions=0700 -c unix_socket_directories=&#39;/var/lib/postgresql&#39;&#34;</span> start &gt;&gt; <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064300.020/log/pg_upgrade_server.log&#34;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">waiting <span class="k">for</span> server to start....2023-11-28 06:43:00.206 GMT <span class="o">[</span>177<span class="o">]</span> LOG:  could not open configuration directory <span class="s2">&#34;/bitnami/postgresql/data/conf.d&#34;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">2023-11-28 06:43:00.207 GMT <span class="o">[</span>177<span class="o">]</span> FATAL:  configuration file <span class="s2">&#34;/bitnami/postgresql/data/postgresql.conf&#34;</span> contains errors
+</span></span><span class="line"><span class="cl"> stopped waiting
+</span></span><span class="line"><span class="cl">pg_ctl: could not start server
+</span></span><span class="line"><span class="cl">Examine the log output.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>执行 mkdir -p /bitnami/postgresql/data/conf.d 修复</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064744.773/log/pg_upgrade_server.log
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">  pg_upgrade run on Tue Nov <span class="m">28</span> 06:47:44 <span class="m">2023</span>
+</span></span><span class="line"><span class="cl">-----------------------------------------------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">command: <span class="s2">&#34;/usr/lib/postgresql/14/bin/pg_ctl&#34;</span> -w -l <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064744.773/log/pg_upgrade_server.log&#34;</span> -D <span class="s2">&#34;/bitnami/postgresql/data&#34;</span> -o <span class="s2">&#34;-p 50432 -b  -c listen_addresses=&#39;&#39; -c unix_socket_permissions=0700 -c unix_socket_directories=&#39;/var/lib/postgresql&#39;&#34;</span> start &gt;&gt; <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T064744.773/log/pg_upgrade_server.log&#34;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">waiting <span class="k">for</span> server to start....2023-11-28 06:47:44.970 GMT <span class="o">[</span>255<span class="o">]</span> FATAL:  58P01: could not access file <span class="s2">&#34;repmgr&#34;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">2023-11-28 06:47:44.970 GMT <span class="o">[</span>255<span class="o">]</span> LOCATION:  internal_load_library, dfmgr.c:208
+</span></span><span class="line"><span class="cl">2023-11-28 06:47:44.970 GMT <span class="o">[</span>255<span class="o">]</span> LOG:  00000: database system is shut down
+</span></span><span class="line"><span class="cl">2023-11-28 06:47:44.970 GMT <span class="o">[</span>255<span class="o">]</span> LOCATION:  UnlinkLockFiles, miscinit.c:970
+</span></span><span class="line"><span class="cl"> stopped waiting
+</span></span><span class="line"><span class="cl">pg_ctl: could not start server
+</span></span><span class="line"><span class="cl">Examine the log output.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配置中有 repmgr、pgaudit ，升级过程中不需要此配置，可以从配置中删除</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/repmgr, pgaudit, repmgr, //&#39;</span> /bitnami/postgresql/data/postgresql.conf
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修复后再试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">command: <span class="s2">&#34;/usr/lib/postgresql/14/bin/pg_ctl&#34;</span> -w -l <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T070009.292/log/pg_upgrade_server.log&#34;</span> -D <span class="s2">&#34;/bitnami/postgresql/data&#34;</span> -o <span class="s2">&#34;-p 50432 -b  -c listen_addresses=&#39;&#39; -c unix_socket_permissions=0700 -c unix_socket_directories=&#39;/var/lib/postgresql&#39;&#34;</span> start &gt;&gt; <span class="s2">&#34;/bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T070009.292/log/pg_upgrade_server.log&#34;</span> 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">waiting <span class="k">for</span> server to start....2023-11-28 07:00:09.671 GMT <span class="o">[</span>522<span class="o">]</span> FATAL:  58P01: could not open log file <span class="s2">&#34;/opt/bitnami/postgresql/logs/postgresql.log&#34;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">2023-11-28 07:00:09.671 GMT <span class="o">[</span>522<span class="o">]</span> LOCATION:  logfile_open, syslogger.c:1223
+</span></span><span class="line"><span class="cl">2023-11-28 07:00:09.688 GMT <span class="o">[</span>522<span class="o">]</span> LOG:  00000: database system is shut down
+</span></span><span class="line"><span class="cl">2023-11-28 07:00:09.688 GMT <span class="o">[</span>522<span class="o">]</span> LOCATION:  UnlinkLockFiles, miscinit.c:970
+</span></span><span class="line"><span class="cl"> stopped waiting
+</span></span><span class="line"><span class="cl">pg_ctl: could not start server
+</span></span><span class="line"><span class="cl">Examine the log output.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p /opt/bitnami/postgresql/logs/
+</span></span><span class="line"><span class="cl">chown -R 999:999 /opt/bitnami/postgresql/logs/
+</span></span><span class="line"><span class="cl">chown -R 999:999 /opt/bitnami/postgresql/
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修复后再试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">connection to server on socket <span class="s2">&#34;/tmp/.s.PGSQL.50432&#34;</span> failed: fe_sendauth: no password supplied
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">echo &#39;local all all trust&#39; &gt;&gt; /bitnami/postgresql/data/pg_hba.conf # 此方法不行
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sed -i &#39;s/local    all              all                    md5/local    all              all                    trust/&#39; /bitnami/postgresql/data/pg_hba.conf # 此方法可以
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>修复后再试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Failure, exiting
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat /bitnami/postgresql/datanew/pg_upgrade_output.d/20231128T081622.981/loadable_libraries.txt
+</span></span><span class="line"><span class="cl">could not load library <span class="s2">&#34;</span><span class="nv">$libdir</span><span class="s2">/repmgr&#34;</span>: ERROR:  could not access file <span class="s2">&#34;</span><span class="nv">$libdir</span><span class="s2">/repmgr&#34;</span>: No such file or directory
+</span></span><span class="line"><span class="cl">In database: repmgr
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><a href="https://opensource-db.com/the-quick-and-easy-way-to-upgrade-postgres-using-pg_upgrade/" target="_blank" rel="noopener noreffer ">https://opensource-db.com/the-quick-and-easy-way-to-upgrade-postgres-using-pg_upgrade/</a></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt install postgresql-15-repmgr
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>终于可以了。</p>
+<h2 id="自动化">自动化</h2>
+<p>k8s bitnami/postgres-ha 升级步骤比较多，在此汇总出自动化, 代码放到 <a href="https://github.com/exfly/bitnami-pg-upgrade" target="_blank" rel="noopener noreffer ">exfly/bitnami-pg-upgrade</a>. 可以根据情况适量修改。</p>
+<h1 id="参考">参考</h1>
+<ul>
+<li><a href="https://www.postgresql.org/docs/current/upgrading.html#UPGRADING-VIA-REPLICATION" target="_blank" rel="noopener noreffer ">官方文档</a></li>
+<li><a href="https://treatwell.engineering/terabyte-scale-postgresql-upgrade-from-9-6-to-14-3ea452b7f69d" target="_blank" rel="noopener noreffer ">Terabyte-scale PostgreSQL upgrade from 9.6 to 14</a></li>
+<li><a href="https://docs.bitnami.com/kubernetes/infrastructure/postgresql/administration/upgrade/" target="_blank" rel="noopener noreffer ">bitnami 提供的升级 postgres 的方法</a></li>
+<li><a href="https://github.com/bitnami/charts/issues/14926" target="_blank" rel="noopener noreffer ">Better documentation needed on major version upgrades</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2023-12-24&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/8e6816228b0389a1b6456d35e0e3b387e75b583e" target="_blank" title="commit by exfly(exflyg@gmail.com) 8e6816228b0389a1b6456d35e0e3b387e75b583e: feat: postgres-upgrade-bitnami-ha">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>8e68162</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/postgres-upgrade-bitnami-ha/" data-title="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程" data-hashtags="db,postgres,bitnami,bitnami/postgres-ha,pg_upgrade"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/postgres-upgrade-bitnami-ha/" data-hashtag="db"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/postgres-upgrade-bitnami-ha/" data-title="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/postgres-upgrade-bitnami-ha/" data-title="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/postgres-upgrade-bitnami-ha/" data-title="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/db/">db</a>,&nbsp;<a href="/tags/postgres/">postgres</a>,&nbsp;<a href="/tags/bitnami/">bitnami</a>,&nbsp;<a href="/tags/bitnami/postgres-ha/">bitnami/postgres-ha</a>,&nbsp;<a href="/tags/pg_upgrade/">pg_upgrade</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/draw.io-cli-render/" class="prev" rel="prev" title="跨平台命令行渲染 draw.io 方法"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>跨平台命令行渲染 draw.io 方法</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

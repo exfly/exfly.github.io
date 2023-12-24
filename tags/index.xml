@@ -4,7 +4,39 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>bitnami</title>
+    <link>https://exfly.github.io/tags/bitnami/</link>
+    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/bitnami/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>db</title>
+    <link>https://exfly.github.io/tags/db/</link>
+    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/db/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>pg_upgrade</title>
+    <link>https://exfly.github.io/tags/pg_upgrade/</link>
+    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/pg_upgrade/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>postgres</title>
+    <link>https://exfly.github.io/tags/postgres/</link>
+    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/postgres/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>cli</title>
     <link>https://exfly.github.io/tags/cli/</link>
     <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
@@ -50,38 +82,6 @@
     <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/nginx/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>OpenResty</title>
-    <link>https://exfly.github.io/tags/openresty/</link>
-    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/openresty/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>linux</title>
-    <link>https://exfly.github.io/tags/linux/</link>
-    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/linux/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>ops</title>
-    <link>https://exfly.github.io/tags/ops/</link>
-    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/ops/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>portable</title>
-    <link>https://exfly.github.io/tags/portable/</link>
-    <pubDate>Sun, 24 Sep 2023 15:59:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/portable/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

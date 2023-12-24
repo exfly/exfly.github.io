@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程</title>
+    <link>https://exfly.github.io/postgres-upgrade-bitnami-ha/</link>
+    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/postgres-upgrade-bitnami-ha/</guid>
+    <description><![CDATA[<p>文章简介：bitnami/postgres-ha 使用 pg_upgrade 全自动大版本升级 从 14 到 15</p>]]></description>
+</item>
+<item>
     <title>跨平台命令行渲染 draw.io 方法</title>
     <link>https://exfly.github.io/draw.io-cli-render/</link>
     <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</guid>
     <description><![CDATA[<p>gorm no valid transactions</p>]]></description>
-</item>
-<item>
-    <title>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存问题处理</title>
-    <link>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</link>
-    <pubDate>Thu, 15 Sep 2022 01:01:01 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</guid>
-    <description><![CDATA[<p>Sarama go-metrics.newExpDecaySampleHeap 占用大量内存</p>]]></description>
 </item>
 </channel>
 </rss>

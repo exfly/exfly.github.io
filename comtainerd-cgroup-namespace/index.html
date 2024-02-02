@@ -7,13 +7,12 @@
         <title>Comtainerd Cgroup Namespace - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Comtainerd Cgroup Namespace" />
 <meta property="og:description" content="文章简介：Docker Cgroup , Namespace , union fs 运行机制" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/comtainerd-cgroup-namespace/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://exfly.github.io/comtainerd-cgroup-namespace/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-09-17T09:07:19+08:00" />
 <meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
-<meta name="twitter:title" content="Comtainerd Cgroup Namespace"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="Comtainerd Cgroup Namespace"/>
 <meta name="twitter:description" content="文章简介：Docker Cgroup , Namespace , union fs 运行机制"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -542,22 +541,22 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ unshare -m bash
-</span></span><span class="line"><span class="cl">$ mount --bind rootfs rootfs
-</span></span><span class="line"><span class="cl">$ cd rootfs
-</span></span><span class="line"><span class="cl">$ mkdir put_old
-</span></span><span class="line"><span class="cl">$ pivot_root . put_old
-</span></span><span class="line"><span class="cl">$ cd /
-</span></span><span class="line"><span class="cl"># We should now have our new root. e.g if we:
-</span></span><span class="line"><span class="cl">$ ls proc
-</span></span><span class="line"><span class="cl"># proc is empty
-</span></span><span class="line"><span class="cl"># And the old root is now in put_old
-</span></span><span class="line"><span class="cl">$ ls put_old
-</span></span><span class="line"><span class="cl">bin   dev  home        lib    lost+found  mnt  proc  run   srv  tmp  var
-</span></span><span class="line"><span class="cl">boot  etc  initrd.img  lib64  media       opt  root  sbin  sys  usr  vmlinuz
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">$</span> <span class="n">unshare</span> <span class="o">-</span><span class="n">m</span> <span class="n">bash</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">mount</span> <span class="o">--</span><span class="n">bind</span> <span class="n">rootfs</span> <span class="n">rootfs</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">cd</span> <span class="n">rootfs</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">mkdir</span> <span class="n">put_old</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">pivot_root</span> <span class="o">.</span> <span class="n">put_old</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">cd</span> <span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># We should now have our new root. e.g if we:</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">ls</span> <span class="n">proc</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># proc is empty</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># And the old root is now in put_old</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">ls</span> <span class="n">put_old</span>
+</span></span><span class="line"><span class="cl"><span class="n">bin</span>   <span class="n">dev</span>  <span class="n">home</span>        <span class="n">lib</span>    <span class="n">lost</span><span class="o">+</span><span class="n">found</span>  <span class="n">mnt</span>  <span class="n">proc</span>  <span class="n">run</span>   <span class="n">srv</span>  <span class="n">tmp</span>  <span class="k">var</span>
+</span></span><span class="line"><span class="cl"><span class="n">boot</span>  <span class="n">etc</span>  <span class="n">initrd</span><span class="o">.</span><span class="n">img</span>  <span class="n">lib64</span>  <span class="n">media</span>       <span class="n">opt</span>  <span class="n">root</span>  <span class="n">sbin</span>  <span class="n">sys</span>  <span class="n">usr</span>  <span class="n">vmlinuz</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$ /bin/busybox umount -l put_old # 卸载旧的文件系统
-</span></span><span class="line"><span class="cl">$ mount -t proc proc proc/
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">busybox</span> <span class="n">umount</span> <span class="o">-</span><span class="n">l</span> <span class="n">put_old</span> <span class="c1"># 卸载旧的文件系统</span>
+</span></span><span class="line"><span class="cl"><span class="o">$</span> <span class="n">mount</span> <span class="o">-</span><span class="n">t</span> <span class="n">proc</span> <span class="n">proc</span> <span class="n">proc</span><span class="o">/</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>到这里，已经创建了一个隔离的 rootfs</p>
@@ -1063,7 +1062,7 @@ AUFS overlay2</p>
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

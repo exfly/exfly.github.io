@@ -7,13 +7,12 @@
         <title>使用 nginx 制作一个 yum mirror - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="使用 nginx 制作一个 yum mirror" />
 <meta property="og:description" content="文章简介: 使用 nginx 制作一个 yum mirror" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/build-yum-mirror-with-nginx/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://exfly.github.io/build-yum-mirror-with-nginx/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-10-25T17:07:58+08:00" />
 <meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
-<meta name="twitter:title" content="使用 nginx 制作一个 yum mirror"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="使用 nginx 制作一个 yum mirror"/>
 <meta name="twitter:description" content="文章简介: 使用 nginx 制作一个 yum mirror"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -253,17 +252,17 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"># Dockerfile
-</span></span><span class="line"><span class="cl">FROM ubuntu:20.04
-</span></span><span class="line"><span class="cl">RUN sed -E -i -e &#39;s/(archive|ports).ubuntu.com/192.168.0.102:7000/g&#39; -e &#39;/security.ubuntu.com/d&#39; /etc/apt/sources.list
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="c1"># Dockerfile</span>
+</span></span><span class="line"><span class="cl"><span class="n">FROM</span> <span class="n">ubuntu</span><span class="p">:</span><span class="mf">20.04</span>
+</span></span><span class="line"><span class="cl"><span class="n">RUN</span> <span class="n">sed</span> <span class="o">-</span><span class="n">E</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;s/(archive|ports).ubuntu.com/192.168.0.102:7000/g&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;/security.ubuntu.com/d&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="o">.</span><span class="n">list</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">RUN apt-get update &amp;&amp; \
-</span></span><span class="line"><span class="cl">    apt-get install -y --no-install-recommends ca-certificates &amp;&amp; \
-</span></span><span class="line"><span class="cl">    rm -rf /var/lib/apt/lists/* &amp;&amp; \
-</span></span><span class="line"><span class="cl">    update-ca-certificates
+</span></span><span class="line"><span class="cl"><span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> \
+</span></span><span class="line"><span class="cl">    <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">recommends</span> <span class="n">ca</span><span class="o">-</span><span class="n">certificates</span> <span class="o">&amp;&amp;</span> \
+</span></span><span class="line"><span class="cl">    <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">lists</span><span class="o">/*</span> <span class="o">&amp;&amp;</span> \
+</span></span><span class="line"><span class="cl">    <span class="n">update</span><span class="o">-</span><span class="n">ca</span><span class="o">-</span><span class="n">certificates</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">docker build -t tmp:dev .
-</span></span><span class="line"><span class="cl"># 日志中 apt 使用了 192.168.0.102:7000 安装软件成功，且 mirror_cache 目录中有相关的文件
+</span></span><span class="line"><span class="cl"><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">tmp</span><span class="p">:</span><span class="n">dev</span> <span class="o">.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 日志中 apt 使用了 192.168.0.102:7000 安装软件成功，且 mirror_cache 目录中有相关的文件</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></div><div class="post-footer" id="post-footer">
@@ -295,7 +294,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

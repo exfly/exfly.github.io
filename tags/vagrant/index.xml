@@ -4,10 +4,10 @@
         <link>https://exfly.github.io/tags/vagrant/</link>
         <description>vagrant - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 11 Dec 2022 20:44:16 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/vagrant/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 11 Dec 2022 20:44:17 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/vagrant/" rel="self" type="application/rss+xml" /><item>
     <title>vagrant up Authentication failure. Retrying</title>
     <link>https://exfly.github.io/vagrant-authentication-failure-retrying/</link>
-    <pubDate>Sun, 11 Dec 2022 20:44:16 &#43;0800</pubDate>
+    <pubDate>Sun, 11 Dec 2022 20:44:17 &#43;0800</pubDate>
     <author>Exfly</author>
     <guid>https://exfly.github.io/vagrant-authentication-failure-retrying/</guid>
     <description><![CDATA[<p>文章简介：<code>ubuntu 22.04</code> <code>vagrant up</code> <code>Authentication failure. Retrying</code>, <code>vagrant ssh</code> 可以登录进 vm 问题处理</p>]]></description>

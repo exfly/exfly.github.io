@@ -4,10 +4,10 @@
         <link>https://exfly.github.io/tags/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91/</link>
         <description>静态编译 - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 26 Nov 2022 12:56:31 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 26 Nov 2022 12:56:32 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91/" rel="self" type="application/rss+xml" /><item>
     <title>chrony 静态编译及跨 Linux 发行版安装 systemd service</title>
     <link>https://exfly.github.io/static-build-chrony/</link>
-    <pubDate>Sat, 26 Nov 2022 12:56:31 &#43;0800</pubDate>
+    <pubDate>Sat, 26 Nov 2022 12:56:32 &#43;0800</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/static-build-chrony/</guid>
     <description><![CDATA[<p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>]]></description>

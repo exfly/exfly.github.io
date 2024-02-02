@@ -7,13 +7,12 @@
         <title>Postgres 内部工作原理 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Postgres 内部工作原理" />
 <meta property="og:description" content="Postgres 内部工作机制" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/postgres-internal/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://exfly.github.io/postgres-internal/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-14T09:46:01+08:00" />
 <meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
-<meta name="twitter:title" content="Postgres 内部工作原理"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="Postgres 内部工作原理"/>
 <meta name="twitter:description" content="Postgres 内部工作机制"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -29,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/postgres-internal\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "db, postgres","wordcount":  6696 ,
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "db, postgres","wordcount":  6644 ,
         "url": "https:\/\/exfly.github.io\/postgres-internal\/","datePublished": "2022-09-14T09:46:01+08:00","dateModified": "2023-01-27T21:51:00+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
@@ -109,7 +108,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Postgres 内部工作原理</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-14">2022-09-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6696 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-09-14">2022-09-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6644 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -1110,7 +1109,7 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
 </ul>
 <p>后续会讲述 clog 是如何使用的。</p>
 <h2 id="transaction-snapshot">Transaction Snapshot</h2>
-<p><code>transaction snapshot</code> 保存了所有事务的的执行状态信息。Postgres 内部定义了文本格式的 <code>transaction Snapshot</code> 如 &lsquo;100💯&rsquo;. &lsquo;100💯&rsquo; 意思是txids&lt;=99 没有在活跃， txids&gt;=100 在活跃。</p>
+<p><code>transaction snapshot</code> 保存了所有事务的的执行状态信息。Postgres 内部定义了文本格式的 <code>transaction Snapshot</code> 如 &lsquo;100&#x1f4af;&rsquo;. &lsquo;100&#x1f4af;&rsquo; 意思是txids&lt;=99 没有在活跃， txids&gt;=100 在活跃。</p>
 <p>内置的函数 <code>txid_current_snapshot</code> 展示当前事务的快照</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1140,7 +1139,7 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
         data-sizes="auto"
         alt="/media/img/db/log/postgres-internal/postgres-internal-tx-snapshot.svg"
         title="postgres-internal-tx-snapshot" /></p>
-<p>如上图，第一个例子 &lsquo;100💯&rsquo;</p>
+<p>如上图，第一个例子 &lsquo;100&#x1f4af;&rsquo;</p>
 <ul>
 <li>xmin=100，表示 txids&lt;100 的没活跃</li>
 <li>xmax=100，表示 txids&gt;=100 的活跃</li>
@@ -1350,7 +1349,7 @@ tuple identifier（TID）唯一标识一个 tuple. TID 包含两个指，<code>b
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>鲲鹏 920 arm64 机器适配经验 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="鲲鹏 920 arm64 机器适配经验" />
+<meta property="og:description" content="文章简介：介绍迁移鲲鹏 arm64 架构的方案及遇到的坑 背景介绍 项目背景 客户要求 arm64 机器的需求。 ARM64 指令集特性 AMD64 到 ARM64 的迁移策略 由于容器化，需要支持 k8s 在 arm64 下运" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/kunpeng-arm64/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-29T02:20:30+00:00" />
+<meta property="article:modified_time" content="2024-02-02T18:51:55+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="鲲鹏 920 arm64 机器适配经验"/>
+<meta name="twitter:description" content="文章简介：介绍迁移鲲鹏 arm64 架构的方案及遇到的坑 背景介绍 项目背景 客户要求 arm64 机器的需求。 ARM64 指令集特性 AMD64 到 ARM64 的迁移策略 由于容器化，需要支持 k8s 在 arm64 下运"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/kunpeng-arm64/" /><link rel="prev" href="https://exfly.github.io/postgres-upgrade-bitnami-ha/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "鲲鹏 920 arm64 机器适配经验",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/kunpeng-arm64\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "ops, linux, arm64, docker, ","wordcount":  3106 ,
+        "url": "https:\/\/exfly.github.io\/kunpeng-arm64\/","datePublished": "2024-01-29T02:20:30+00:00","dateModified": "2024-02-02T18:51:55+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/kunpeng-arm64/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/kunpeng-arm64/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">鲲鹏 920 arm64 机器适配经验</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-01-29">2024-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3106 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景介绍">背景介绍</a>
+      <ul>
+        <li><a href="#项目背景">项目背景</a></li>
+      </ul>
+    </li>
+    <li><a href="#arm64-指令集特性">ARM64 指令集特性</a></li>
+    <li><a href="#amd64-到-arm64-的迁移策略">AMD64 到 ARM64 的迁移策略</a></li>
+    <li><a href="#准备工作">准备工作</a>
+      <ul>
+        <li><a href="#安装和配置-arm64-版本的-kubernetes">安装和配置 ARM64 版本的 Kubernetes</a></li>
+      </ul>
+    </li>
+    <li><a href="#迁移过程中的语言挑战">迁移过程中的语言挑战</a>
+      <ul>
+        <li><a href="#go-语言应用的特殊注意事项">Go 语言应用的特殊注意事项</a></li>
+        <li><a href="#python-项目的适配和修改">Python 项目的适配和修改</a></li>
+        <li><a href="#java-应用的迁移考虑">Java 应用的迁移考虑</a>
+          <ul>
+            <li><a href="#更换-arm64-架构的-jre">更换 arm64 架构的 JRE</a></li>
+            <li><a href="#jni">jni</a></li>
+            <li><a href="#设置-jvm-参数解决程序运行是改动点">设置 JVM 参数解决程序运行是改动点</a></li>
+          </ul>
+        </li>
+        <li><a href="#cc-等编译型语言如何迁移">C/C++ 等编译型语言如何迁移</a></li>
+      </ul>
+    </li>
+    <li><a href="#非开源项目的迁移挑战">非开源项目的迁移挑战</a></li>
+    <li><a href="#使用-docker-构建支持多架构的镜像">使用 Docker 构建支持多架构的镜像</a>
+      <ul>
+        <li><a href="#使用内核支持的-qemu-emulation">使用内核支持的 QEMU emulation</a></li>
+        <li><a href="#创建一个-builder后端为多个不同架构的物理机">创建一个 builder，后端为多个不同架构的物理机</a></li>
+        <li><a href="#使用-cross-compile-在本地架构构建不同架构的可执行程序">使用 cross-compile 在本地架构构建不同架构的可执行程序</a></li>
+      </ul>
+    </li>
+    <li><a href="#性能优化和调整">性能优化和调整</a></li>
+    <li><a href="#故障排除">故障排除</a>
+      <ul>
+        <li><a href="#k3s-root-binaries-cause-segmentation-fault-on-aarch64-nodes-with-64k-page-size">k3s-root binaries cause segmentation fault on aarch64 nodes with 64k page size</a></li>
+        <li><a href="#clickhouse-illegal-instruction-core-dumped">clickhouse Illegal instruction (core dumped)</a></li>
+      </ul>
+    </li>
+    <li><a href="#学到的经验和教训">学到的经验和教训</a></li>
+    <li><a href="#未来展望">未来展望</a></li>
+    <li><a href="#qa-和讨论">Q&amp;A 和讨论</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：介绍迁移鲲鹏 arm64 架构的方案及遇到的坑</p>
+<h2 id="背景介绍">背景介绍</h2>
+<h3 id="项目背景">项目背景</h3>
+<p>客户要求 arm64 机器的需求。</p>
+<h2 id="arm64-指令集特性">ARM64 指令集特性</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/kunpeng-arm64/images/kunpeng-arm64/image.png"
+        data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image.png, /kunpeng-arm64/images/kunpeng-arm64/image.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image.png 2x"
+        data-sizes="auto"
+        alt="/kunpeng-arm64/images/kunpeng-arm64/image.png"
+        title="x86与arm64指令区别" width="830" height="376" /></p>
+<!-- https://www.infoq.cn/article/qvqshmllvyssdskw1glm -->
+<h2 id="amd64-到-arm64-的迁移策略">AMD64 到 ARM64 的迁移策略</h2>
+<p>由于容器化，需要支持 k8s 在 arm64 下运行，所有使用的容器支持 amd64+arm64；有源码的项目采用重新构建的方式，无源码且只支持 amd64 的项目采用 binfmt_misc 方式运行；最终完成全部迁移过程。</p>
+<h2 id="准备工作">准备工作</h2>
+<p>看看我们的硬件信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@cosmos:~# cat /etc/os-release 
+</span></span><span class="line"><span class="cl"><span class="nv">NAME</span><span class="o">=</span><span class="s2">&#34;openEuler&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION</span><span class="o">=</span><span class="s2">&#34;22.03 (LTS-SP2)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ID</span><span class="o">=</span><span class="s2">&#34;openEuler&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION_ID</span><span class="o">=</span><span class="s2">&#34;22.03&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">PRETTY_NAME</span><span class="o">=</span><span class="s2">&#34;openEuler 22.03 (LTS-SP2)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ANSI_COLOR</span><span class="o">=</span><span class="s2">&#34;0;31&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">root@cosmos:~# hostnamectl 
+</span></span><span class="line"><span class="cl"> Static hostname: cosmos
+</span></span><span class="line"><span class="cl">       Icon name: computer-server
+</span></span><span class="line"><span class="cl">         Chassis: server 🖳
+</span></span><span class="line"><span class="cl">      Machine ID: 682d69e664ef4e5695cb3eaf805d7158
+</span></span><span class="line"><span class="cl">         Boot ID: 034c84cb591145dab0cad91871dd5dd6
+</span></span><span class="line"><span class="cl">Operating System: Debian GNU/Linux <span class="m">12</span> <span class="o">(</span>bookworm<span class="o">)</span>  
+</span></span><span class="line"><span class="cl">          Kernel: Linux 6.1.62-generic
+</span></span><span class="line"><span class="cl">    Architecture: arm64
+</span></span><span class="line"><span class="cl"> Hardware Vendor: PowerLeader
+</span></span><span class="line"><span class="cl">  Hardware Model: CT0101202306013E7A
+</span></span><span class="line"><span class="cl">Firmware Version: 1.93
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">root@cosmos:~# uname -a
+</span></span><span class="line"><span class="cl">Linux cosmos 6.1.62-generic <span class="c1">#1 SMP Sun Nov 19 05:53:26 UTC 2023 aarch64 GNU/Linux</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">root@cosmos:~# lscpu
+</span></span><span class="line"><span class="cl">Architecture:           aarch64
+</span></span><span class="line"><span class="cl">  CPU op-mode<span class="o">(</span>s<span class="o">)</span>:       64-bit
+</span></span><span class="line"><span class="cl">  Byte Order:           Little Endian
+</span></span><span class="line"><span class="cl">CPU<span class="o">(</span>s<span class="o">)</span>:                 <span class="m">48</span>
+</span></span><span class="line"><span class="cl">  On-line CPU<span class="o">(</span>s<span class="o">)</span> list:  0-47
+</span></span><span class="line"><span class="cl">Vendor ID:              HiSilicon
+</span></span><span class="line"><span class="cl">  BIOS Vendor ID:       HiSilicon
+</span></span><span class="line"><span class="cl">  Model name:           Kunpeng-920
+</span></span><span class="line"><span class="cl">    BIOS Model name:    HUAWEI Kunpeng <span class="m">920</span> <span class="m">3210</span> To be filled by O.E.M. CPU @ 2.6GHz
+</span></span><span class="line"><span class="cl">    BIOS CPU family:    <span class="m">280</span>
+</span></span><span class="line"><span class="cl">    Model:              <span class="m">0</span>
+</span></span><span class="line"><span class="cl">    Thread<span class="o">(</span>s<span class="o">)</span> per core: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">    Core<span class="o">(</span>s<span class="o">)</span> per socket: <span class="m">24</span>
+</span></span><span class="line"><span class="cl">    Socket<span class="o">(</span>s<span class="o">)</span>:          <span class="m">2</span>
+</span></span><span class="line"><span class="cl">    Stepping:           0x1
+</span></span><span class="line"><span class="cl">    Frequency boost:    disabled
+</span></span><span class="line"><span class="cl">    CPU<span class="o">(</span>s<span class="o">)</span> scaling MHz: 100%
+</span></span><span class="line"><span class="cl">    CPU max MHz:        2600.0000
+</span></span><span class="line"><span class="cl">    CPU min MHz:        200.0000
+</span></span><span class="line"><span class="cl">    BogoMIPS:           200.00
+</span></span><span class="line"><span class="cl">    Flags:              fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp 
+</span></span><span class="line"><span class="cl">                        cpuid asimdrdm jscvt fcma dcpop asimddp asimdfhm
+</span></span><span class="line"><span class="cl">Caches <span class="o">(</span>sum of all<span class="o">)</span>:    
+</span></span><span class="line"><span class="cl">  L1d:                  <span class="m">3</span> MiB <span class="o">(</span><span class="m">48</span> instances<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  L1i:                  <span class="m">3</span> MiB <span class="o">(</span><span class="m">48</span> instances<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  L2:                   <span class="m">24</span> MiB <span class="o">(</span><span class="m">48</span> instances<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  L3:                   <span class="m">48</span> MiB <span class="o">(</span><span class="m">2</span> instances<span class="o">)</span>
+</span></span><span class="line"><span class="cl">NUMA:                   
+</span></span><span class="line"><span class="cl">  NUMA node<span class="o">(</span>s<span class="o">)</span>:         <span class="m">2</span>
+</span></span><span class="line"><span class="cl">  NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:    0-23
+</span></span><span class="line"><span class="cl">  NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:    24-47
+</span></span><span class="line"><span class="cl">Vulnerabilities:        
+</span></span><span class="line"><span class="cl">  Gather data sampling: Not affected
+</span></span><span class="line"><span class="cl">  Itlb multihit:        Not affected
+</span></span><span class="line"><span class="cl">  L1tf:                 Not affected
+</span></span><span class="line"><span class="cl">  Mds:                  Not affected
+</span></span><span class="line"><span class="cl">  Meltdown:             Not affected
+</span></span><span class="line"><span class="cl">  Mmio stale data:      Not affected
+</span></span><span class="line"><span class="cl">  Retbleed:             Not affected
+</span></span><span class="line"><span class="cl">  Spec rstack overflow: Not affected
+</span></span><span class="line"><span class="cl">  Spec store bypass:    Not affected
+</span></span><span class="line"><span class="cl">  Spectre v1:           Mitigation<span class="p">;</span> __user pointer sanitization
+</span></span><span class="line"><span class="cl">  Spectre v2:           Not affected
+</span></span><span class="line"><span class="cl">  Srbds:                Not affected
+</span></span><span class="line"><span class="cl">  Tsx async abort:      Not affected
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="安装和配置-arm64-版本的-kubernetes">安装和配置 ARM64 版本的 Kubernetes</h3>
+<p>当前社区的 k8s 发行版已经支持 arm64，根据社区的文档安装即可</p>
+<h2 id="迁移过程中的语言挑战">迁移过程中的语言挑战</h2>
+<p>华为有一本<a href="https://r.huaweistatic.com/s/kunpengstatic/lst/files/pdf/developer/devkit/kunpeng_software_migration_book.pdf" target="_blank" rel="noopener noreffer ">鲲鹏软件迁移一本通</a>，可以后续看一下</p>
+<h3 id="go-语言应用的特殊注意事项">Go 语言应用的特殊注意事项</h3>
+<p>golang 从 1.5 开始支持 <a href="https://go.dev/doc/go1.5#compiler_and_tools" target="_blank" rel="noopener noreffer ">cross compile</a>, <a href="https://learnku.com/docs/go-blog/gos-support-for-arm-architecture/11319" target="_blank" rel="noopener noreffer ">arm的支持进展见这里</a>。</p>
+<p>对于纯 golang 编写的项目，可通过简单的修改 CICD 适配构建 arm64 架构的可执行文件即可。<code>GOOS=linux GOARCH=arm64 go build ...</code></p>
+<p>对于使用了 cgo 的项目，则需要付出更多努力。使用 gcc 在 go build 过程中编译的项目，需要修改编译方式，做 <a href="https://github.com/FiloSottile/homebrew-musl-cross" target="_blank" rel="noopener noreffer ">crosscompile</a>， 一个例子比如使用了 <a href="https://github.com/mattn/go-sqlite3/tree/master?tab=readme-ov-file#cross-compile" target="_blank" rel="noopener noreffer ">sqlite</a> 的项目交叉编译。一些项目在项目中已经将多种架构的动态链接库/静态链接库文件 commit 到仓库中，运行时直接使用即可，比如 <a href="https://github.com/confluentinc/confluent-kafka-go/tree/master/kafka/librdkafka_vendor" target="_blank" rel="noopener noreffer ">confluent-kafka-go</a>。部分使用了 cgo 项目可能不支持 arm64，比如 <code>github.com/bytedance/sonic</code> 是不支持 arm64 的，需要寻找替代方案，比如替换成标准库或者其他支持 arm64 的库（如 <code>github.com/json-iterator/go</code>）</p>
+<h3 id="python-项目的适配和修改">Python 项目的适配和修改</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/kunpeng-arm64/images/kunpeng-arm64/image-2.png"
+        data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-2.png, /kunpeng-arm64/images/kunpeng-arm64/image-2.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-2.png 2x"
+        data-sizes="auto"
+        alt="/kunpeng-arm64/images/kunpeng-arm64/image-2.png"
+        title="Python语言迁移改动点" width="828" height="382" /></p>
+<p>修改 python 版本为支持 arm64 的 python版本，python2.7 以及 python 3 都有比较好的 arm64 支持</p>
+<p>含 C 模块或全 C 模块的迁移，下载模块源码，并使用 <code>-fsigned-char</code> 选项重新编译。另外 python 官方提供了一种能够方便构建不同架构的 wheel 的基础设施（基于 docker）<a href="https://github.com/pypa/manylinux" target="_blank" rel="noopener noreffer ">pypa/manylinux</a></p>
+<h3 id="java-应用的迁移考虑">Java 应用的迁移考虑</h3>
+<p><a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="noopener noreffer ">Java</a> 不同于一般的编译语言或解释型语言。它首先将源代码编译成字节码，再依赖各种不同平台上的虚拟机来解释执行字节码，从而具有“一次编写，到处运行”的跨平台特性. 但是 java 支持的 <a href="https://zh.wikipedia.org/wiki/Java%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener noreffer ">JNI</a> 可以在java 中调用 c/c++ 等其他语言编写的动态链接库, 这种本地程序是不跨平台的，导致不能直接采用更换 arm64 jre 不修改程序的方式做迁移。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/kunpeng-arm64/images/kunpeng-arm64/image-1.png"
+        data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-1.png, /kunpeng-arm64/images/kunpeng-arm64/image-1.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-1.png 2x"
+        data-sizes="auto"
+        alt="/kunpeng-arm64/images/kunpeng-arm64/image-1.png"
+        title="java语言技术架构及迁移点" width="830" height="388" /></p>
+<!-- https://www.infoq.cn/article/qvqshmllvyssdskw1glm -->
+<h4 id="更换-arm64-架构的-jre">更换 arm64 架构的 JRE</h4>
+<p>如下图所示，对于纯Java的程序，可以考虑直接更换ARM64的JRE来运行服务。如果第三方库是用到了 jni 调用本地方法，就需要对这个库适配 arm64</p>
+<h4 id="jni">jni</h4>
+<p>如果是开源软件，直接基于代码做 arm64 适配，如果为非开源项目，则需要寻找替代方案、或寻求商业支持</p>
+<h4 id="设置-jvm-参数解决程序运行是改动点">设置 JVM 参数解决程序运行是改动点</h4>
+<p>三大经验：首先，完成一次 Full GC 后，应该释放出 70%的堆空间（30%的空间仍然占用）。其次，假设老年代存活对象(即 Full GC 后老年代内存占用) 大小为 X，建议堆的总大小是 X 的三到四倍，年轻代的大小是 X 的 1 到 1.5 倍，老年代的大小是 X 的两到三倍，永久代的大小是 X 的 1.2 到 1.5 倍。第三，JDK 官方的建议是年轻代大小占整个堆空间大小的 3/8 左右。</p>
+<p>在具体的项目过程中，会有如下差异：</p>
+<ol>
+<li>线程大小的 Xss 参数在 ARM 上默认值是 2m，在 x86 为 1m。因此如果线程开的太多，就需要调整 Xss 参数大小，防止出现耗时。</li>
+<li>由于 ARM 和 x86 指令集的差异性，导致 JDK 的 JIT 编译存在差异。可以通过设置参数 ReservedCodeCacheSize，调整 CodeCache 大小。</li>
+</ol>
+<h3 id="cc-等编译型语言如何迁移">C/C++ 等编译型语言如何迁移</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/kunpeng-arm64/images/kunpeng-arm64/image-3.png"
+        data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-3.png, /kunpeng-arm64/images/kunpeng-arm64/image-3.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-3.png 2x"
+        data-sizes="auto"
+        alt="/kunpeng-arm64/images/kunpeng-arm64/image-3.png"
+        title="c/c&#43;&#43;项目迁移方式" width="426" height="536" /></p>
+<p>不过，C/C++代码在迁移中也会有诸多问题存在，最具代表性的五类迁移问题如下：</p>
+<p>1、编译脚本和编译选项的移植。不同的架构平台会有独特的编译选项支持硬件特性，与当前编译平台属性强相关这种带有架构属性的编译选项需要进行移植，这些编译选项一般以–m 开头；</p>
+<p>2、编译宏的移植。编译宏的作用是确定平台下需要执行哪个分支代码，一般分为 x86 自定义宏和用户自定义的宏。两类宏的编译移植方式各不相同；</p>
+<p>3、builtin 函数问题。builtin 函数是编译器自定义的函数，有较好的性能，可以实现一些简单快捷的功能，根据相应需求进行使用优化，助力程序编写；</p>
+<p>4、内联汇编移植，常用迁移方法有汇编指令方式替换以及 builtin 函数替换两种；</p>
+<p>5、SSE intrinsic 函数移植。一般在多媒体技术开发以及数学矩阵库中应用较多的 SSE intrinsic 函数移植较为复杂，为重难点。比如 clickhouse 中使用到了 SIMD 指令，需要替换成 arm64 下对应的使用方式，并且因为鲲鹏已经是比较旧的指令集了，对于一些新的指令不支持导致 clickhouse 报错非法指令集，需要删除新的指令集特性重新编译，或者降级 clickhouse 版本到未使用新指令级特性的版本。</p>
+<h2 id="非开源项目的迁移挑战">非开源项目的迁移挑战</h2>
+<p>对于非开源商业项目，可以直接找商业公司寻求支持。但是对于部分非开源商业项目，已经过了维护期，就需要我们自己想办法迁移了。</p>
+<p>比较显而易见的方式是使用 qemu 在 arm64 上直接执行 amd64 的二进制可执行程序。支持的原理可以简单理解为，linux提供了一种机制，使内核能够将不支持的bin格式转交给虚拟机/转换程序执行，详细见 <a href="https://zh.wikipedia.org/wiki/Binfmt_misc" target="_blank" rel="noopener noreffer ">binfmt_misc</a>, 注意此中方法在部分应用下是可用的，比如 golang的二进制程序、部分 c 程序，对于像 redis、java 等程序，会有 segment fault 或者卡住不可用的情况，需要亲自测试确认一下应用是否可用。</p>
+<h2 id="使用-docker-构建支持多架构的镜像">使用 Docker 构建支持多架构的镜像</h2>
+<p>期望要给镜像支持多个架构，这样由客户端决定拉取哪一种架构的镜像。
+根据 <a href="https://docs.docker.com/build/building/multi-platform/" target="_blank" rel="noopener noreffer ">docker 官方的文档描述</a>， 使用 docker 构建多架构 docker image一般有如下几种方式：</p>
+<ol>
+<li>使用内核支持的 QEMU emulation</li>
+<li>创建一个 builder，后端为多个不同架构的物理机</li>
+<li>使用 cross-compile 在本地架构构建不同架构的可执行程序</li>
+</ol>
+<p>不同的方式的使用条件不同，我们逐个分析。</p>
+<h3 id="使用内核支持的-qemu-emulation">使用内核支持的 QEMU emulation</h3>
+<p>使用内核支持的 qemu emulation，可以 在本地使用 qemu 启动不同的架构的类似 vm 的进程，在对应架构上执行代码。由于是基于 qemu emulation，性能会比较低，对于一些 cpu 密集型的任务比如编译、压缩、解压速度会有很大的影响。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 注册多架构支持</span>
+</span></span><span class="line"><span class="cl">docker run --privileged --rm tonistiigi/binfmt --install all
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看是否注册成功, enabled 为注册的架构</span>
+</span></span><span class="line"><span class="cl">cat /proc/sys/fs/binfmt_misc/qemu-*
+</span></span><span class="line"><span class="cl">enabled
+</span></span><span class="line"><span class="cl">interpreter /usr/bin/qemu-x86_64
+</span></span><span class="line"><span class="cl">flags: POCF
+</span></span><span class="line"><span class="cl">offset <span class="m">0</span>
+</span></span><span class="line"><span class="cl">magic 7f454c4602010100000000000000000002003e00
+</span></span><span class="line"><span class="cl">mask fffffffffffefe00fffffffffffffffffeffffff
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>默认的 docker driver 是不支持多架构构建的，需要使用如下方式创建一个新的 builder。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx create --name mybuilder --bootstrap --use
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx build --platform<span class="o">=</span>linux/amd64,linux/arm64 -f Dockerfile -t dev:tmp .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在编译 arm java 程序时候，可能会遇到 hang的情况，这种方法需要实际试验一下看是否可行</p>
+<h3 id="创建一个-builder后端为多个不同架构的物理机">创建一个 builder，后端为多个不同架构的物理机</h3>
+<p>此种方式首先需要多台不同种架构的硬件机器。构建过程会在对应架构机器中执行，比如 arm64 会在 arm64 的机器中执行，amd64 会在 amd64 的机器中执行，所以有更好的性能、更原生的体验，支持的场景更多一些。</p>
+<p>使用如下方式在本地构建一个支持 amd64 和 arm64 的 buildkit:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx create --use --name buildkit --driver<span class="o">=</span>docker-container --driver-opt<span class="o">=</span><span class="nv">image</span><span class="o">=</span>buildkit:buildx-stable-1
+</span></span><span class="line"><span class="cl">docker buildx create --use --name buildkit --append <span class="si">${</span><span class="nv">EXTRA_BUILDKIT_ADDRESS</span><span class="si">}</span> --platform linux/arm64 --driver<span class="o">=</span>docker-container --driver-opt<span class="o">=</span><span class="nv">image</span><span class="o">=</span>buildkit:buildx-stable-1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="使用-cross-compile-在本地架构构建不同架构的可执行程序">使用 cross-compile 在本地架构构建不同架构的可执行程序</h3>
+<p>如果编程语言支持 cross-compilation，在不同的架构构建过程中，可以指定某个 stage 在当前机器架构中构建跨架构的二进制程序，后复制到运行时 stage 中。</p>
+<p>官方文档见<a href="https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/" target="_blank" rel="noopener noreffer ">这里</a></p>
+<p>如下为一个例子:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># syntax=docker/dockerfile:1</span>
+</span></span><span class="line"><span class="cl">FROM --platform<span class="o">=</span><span class="nv">$BUILDPLATFORM</span> golang:1.17-alpine AS build
+</span></span><span class="line"><span class="cl">WORKDIR /src
+</span></span><span class="line"><span class="cl">COPY . .
+</span></span><span class="line"><span class="cl">ARG TARGETOS TARGETARCH
+</span></span><span class="line"><span class="cl">RUN <span class="nv">GOOS</span><span class="o">=</span><span class="nv">$TARGETOS</span> <span class="nv">GOARCH</span><span class="o">=</span><span class="nv">$TARGETARCH</span> go build -o /out/myapp .
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">FROM alpine
+</span></span><span class="line"><span class="cl">COPY --from<span class="o">=</span>build /out/myapp /bin
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx build --platform<span class="o">=</span>linux/amd64,linux/arm64 .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="性能优化和调整">性能优化和调整</h2>
+<h2 id="故障排除">故障排除</h2>
+<p>TODO:</p>
+<h3 id="k3s-root-binaries-cause-segmentation-fault-on-aarch64-nodes-with-64k-page-size">k3s-root binaries cause segmentation fault on aarch64 nodes with 64k page size</h3>
+<p><a href="https://github.com/k3s-io/k3s/issues/6708" target="_blank" rel="noopener noreffer ">issue</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">getconf PAGESIZE
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/data/current/bin/mv
+</span></span><span class="line"><span class="cl">Segmentation fault
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cento8 pagesize 64k, centos9 revert, donot use centos8 like os?
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="clickhouse-illegal-instruction-core-dumped">clickhouse Illegal instruction (core dumped)</h3>
+<p>可以切换到版本 <code>clickhouse/clickhouse-server:23.3.9.55</code> 或者 <code>bitnami/clickhouse:23.3.9-debian-11-r0</code></p>
+<h2 id="学到的经验和教训">学到的经验和教训</h2>
+<h2 id="未来展望">未来展望</h2>
+<h2 id="qa-和讨论">Q&amp;A 和讨论</h2>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E8%BD%AF%E4%BB%B6%E8%BF%81%E7%A7%BB.pdf" target="_blank" rel="noopener noreffer ">鲲鹏软件迁移ppt</a></li>
+<li><a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf" target="_blank" rel="noopener noreffer ">鲲鹏性能优化十板斧 5.0</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-02-02&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/b6ceaf8e6885767a74d4c21deb60b42660c3129b" target="_blank" title="commit by exfly(exflyg@gmail.com) b6ceaf8e6885767a74d4c21deb60b42660c3129b: feat: kunpeng">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>b6ceaf8</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/kunpeng-arm64/" data-title="鲲鹏 920 arm64 机器适配经验" data-hashtags="ops,linux,arm64,docker,"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/kunpeng-arm64/" data-hashtag="ops"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/kunpeng-arm64/" data-title="鲲鹏 920 arm64 机器适配经验"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/kunpeng-arm64/" data-title="鲲鹏 920 arm64 机器适配经验"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/kunpeng-arm64/" data-title="鲲鹏 920 arm64 机器适配经验"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/ops/">ops</a>,&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/arm64/">arm64</a>,&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/">Tags</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/postgres-upgrade-bitnami-ha/" class="prev" rel="prev" title="在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

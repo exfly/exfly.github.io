@@ -7,13 +7,12 @@
         <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程" />
 <meta property="og:description" content="文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-08-24T19:50:28+08:00" />
-<meta property="article:modified_time" content="2023-08-27T15:38:25+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
+<meta property="og:url" content="https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-24T19:50:29+08:00" />
+<meta property="article:modified_time" content="2024-02-02T18:51:55+08:00" /><meta property="og:site_name" content="ExflyBlog" />
 
-<meta name="twitter:title" content="记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程"/>
 <meta name="twitter:description" content="文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -30,7 +29,7 @@
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/go-grpc-short-link-is-not-closed-causing-leak\/"
         },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "go, grpc, bug, 内存泄漏","wordcount":  821 ,
-        "url": "https:\/\/exfly.github.io\/go-grpc-short-link-is-not-closed-causing-leak\/","datePublished": "2023-08-24T19:50:28+08:00","dateModified": "2023-08-27T15:38:25+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        "url": "https:\/\/exfly.github.io\/go-grpc-short-link-is-not-closed-causing-leak\/","datePublished": "2023-08-24T19:50:29+08:00","dateModified": "2024-02-02T18:51:55+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
                 "@type": "Person",
@@ -235,8 +234,8 @@
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2023-08-27&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/6ebcd10d3f67252f348833c50db8bf10fd87c5a4" target="_blank" title="commit by 张海飞(haifei.zhang@chaitin.com) 6ebcd10d3f67252f348833c50db8bf10fd87c5a4: feat: add post 记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>6ebcd10</a></span>
+                <span>更新于 2024-02-02&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/b6ceaf8e6885767a74d4c21deb60b42660c3129b" target="_blank" title="commit by exfly(exflyg@gmail.com) b6ceaf8e6885767a74d4c21deb60b42660c3129b: feat: kunpeng">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>b6ceaf8</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
@@ -260,7 +259,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

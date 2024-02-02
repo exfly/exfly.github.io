@@ -7,13 +7,12 @@
         <title>golang runtime: fatal error: SIGSEGV during C.getaddrinfo - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="golang runtime: fatal error: SIGSEGV during C.getaddrinfo" />
 <meta property="og:description" content="runtime: fatal error: SIGSEGV during C.getaddrinfo 解决方法" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/go-runtime-fatal-sigsegv-during-c.getaddrinfo/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://exfly.github.io/go-runtime-fatal-sigsegv-during-c.getaddrinfo/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-06-27T07:33:02+08:00" />
 <meta property="article:modified_time" content="2023-01-27T21:51:00+08:00" /><meta property="og:site_name" content="ExflyBlog" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg"/>
 
-<meta name="twitter:title" content="golang runtime: fatal error: SIGSEGV during C.getaddrinfo"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="golang runtime: fatal error: SIGSEGV during C.getaddrinfo"/>
 <meta name="twitter:description" content="runtime: fatal error: SIGSEGV during C.getaddrinfo 解决方法"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -137,14 +136,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">golang runtime: fatal error: SIGSEGV during C.getaddrinfo
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">golang</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">fatal</span> <span class="n">error</span><span class="p">:</span> <span class="n">SIGSEGV</span> <span class="n">during</span> <span class="n">C</span><span class="o">.</span><span class="n">getaddrinfo</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">fatal error: unexpected signal during runtime execution
-</span></span><span class="line"><span class="cl">[signal SIGSEGV: segmentation violation code=0x1 addr=0x63 pc=0x7fd8b41641b9]
-</span></span><span class="line"><span class="cl">runtime stack:
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">created by net.cgoLookupIP
-</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl"><span class="n">fatal</span> <span class="n">error</span><span class="p">:</span> <span class="n">unexpected</span> <span class="k">signal</span> <span class="n">during</span> <span class="n">runtime</span> <span class="n">execution</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="k">signal</span> <span class="n">SIGSEGV</span><span class="p">:</span> <span class="n">segmentation</span> <span class="n">violation</span> <span class="n">code</span><span class="o">=</span><span class="mh">0x1</span> <span class="n">addr</span><span class="o">=</span><span class="mh">0x63</span> <span class="n">pc</span><span class="o">=</span><span class="mh">0x7fd8b41641b9</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">runtime</span> <span class="n">stack</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">created</span> <span class="n">by</span> <span class="n">net</span><span class="o">.</span><span class="n">cgoLookupIP</span>
+</span></span><span class="line"><span class="cl"><span class="o">...</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p><code>/etc/resolv.conf</code> 包含参数 <code>options edns0</code></p>
@@ -184,7 +183,7 @@
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
             </noscript></div></article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.117.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -4,7 +4,39 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>arm64</title>
+    <link>https://exfly.github.io/tags/arm64/</link>
+    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/arm64/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>docker</title>
+    <link>https://exfly.github.io/tags/docker/</link>
+    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/docker/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>linux</title>
+    <link>https://exfly.github.io/tags/linux/</link>
+    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/linux/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>ops</title>
+    <link>https://exfly.github.io/tags/ops/</link>
+    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/ops/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>bitnami</title>
     <link>https://exfly.github.io/tags/bitnami/</link>
     <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
@@ -50,38 +82,6 @@
     <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/draw.io/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>tools</title>
-    <link>https://exfly.github.io/tags/tools/</link>
-    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/tools/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>bigdata</title>
-    <link>https://exfly.github.io/tags/bigdata/</link>
-    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/bigdata/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Lua</title>
-    <link>https://exfly.github.io/tags/lua/</link>
-    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/lua/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>nginx</title>
-    <link>https://exfly.github.io/tags/nginx/</link>
-    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/nginx/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

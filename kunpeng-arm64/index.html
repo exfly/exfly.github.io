@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/kunpeng-arm64\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "ops, linux, arm64, docker, ","wordcount":  3106 ,
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "ops, linux, arm64, docker, ","wordcount":  3952 ,
         "url": "https:\/\/exfly.github.io\/kunpeng-arm64\/","datePublished": "2024-01-29T02:20:30+00:00","dateModified": "2024-02-02T18:51:55+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
@@ -108,8 +108,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">鲲鹏 920 arm64 机器适配经验</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-01-29">2024-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3106 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-01-29">2024-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3952 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -154,12 +154,16 @@
     <li><a href="#性能优化和调整">性能优化和调整</a></li>
     <li><a href="#故障排除">故障排除</a>
       <ul>
-        <li><a href="#k3s-root-binaries-cause-segmentation-fault-on-aarch64-nodes-with-64k-page-size">k3s-root binaries cause segmentation fault on aarch64 nodes with 64k page size</a></li>
         <li><a href="#clickhouse-illegal-instruction-core-dumped">clickhouse Illegal instruction (core dumped)</a></li>
+        <li><a href="#k3s-root-binaries-cause-segmentation-fault-on-aarch64-nodes-with-64k-page-size">k3s-root binaries cause segmentation fault on aarch64 nodes with 64k page size</a></li>
+        <li><a href="#redis-unsupported-system-page-size">redis Unsupported system page size</a></li>
+        <li><a href="#warning-your-kernel-has-a-bug-that-could-lead-to-data-corruption-during-background-save-please-upgrade-to-the-latest-stable-kernel">WARNING Your kernel has a bug that could lead to data corruption during background save. Please upgrade to the latest stable kernel</a></li>
+        <li><a href="#chromechromium-tracebreakpoint-trap-core-dumped">chrome/chromium Trace/breakpoint trap (core dumped)</a></li>
+        <li><a href="#postgres-在-pagesize-64k-下的-sql-查询会比-4k-下慢几个数量级">postgres 在 pagesize 64k 下的 sql 查询会比 4k 下慢几个数量级</a></li>
+        <li><a href="#hadoop-版本-311-不支持-arm64需要重新源码编译">hadoop 版本 3.1.1 不支持 arm64，需要重新源码编译</a></li>
       </ul>
     </li>
     <li><a href="#学到的经验和教训">学到的经验和教训</a></li>
-    <li><a href="#未来展望">未来展望</a></li>
     <li><a href="#qa-和讨论">Q&amp;A 和讨论</a></li>
     <li><a href="#参考">参考</a></li>
   </ul>
@@ -359,7 +363,7 @@
         title="java语言技术架构及迁移点" width="830" height="388" /></p>
 <!-- https://www.infoq.cn/article/qvqshmllvyssdskw1glm -->
 <h4 id="更换-arm64-架构的-jre">更换 arm64 架构的 JRE</h4>
-<p>如下图所示，对于纯Java的程序，可以考虑直接更换ARM64的JRE来运行服务。如果第三方库是用到了 jni 调用本地方法，就需要对这个库适配 arm64</p>
+<p>如下图所示，对于纯 Java 的程序，可以考虑直接更换 ARM64 的 JRE 来运行服务。如果第三方库是用到了 jni 调用本地方法，就需要对这个库适配 arm64</p>
 <h4 id="jni">jni</h4>
 <p>如果是开源软件，直接基于代码做 arm64 适配，如果为非开源项目，则需要寻找替代方案、或寻求商业支持</p>
 <h4 id="设置-jvm-参数解决程序运行是改动点">设置 JVM 参数解决程序运行是改动点</h4>
@@ -443,7 +447,7 @@
 <pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx build --platform<span class="o">=</span>linux/amd64,linux/arm64 -f Dockerfile -t dev:tmp .
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>在编译 arm java 程序时候，可能会遇到 hang的情况，这种方法需要实际试验一下看是否可行</p>
+</div><p>在编译 arm java 程序时候，可能会遇到 hang 的情况，这种方法需要实际试验一下看是否可行。</p>
 <h3 id="创建一个-builder后端为多个不同架构的物理机">创建一个 builder，后端为多个不同架构的物理机</h3>
 <p>此种方式首先需要多台不同种架构的硬件机器。构建过程会在对应架构机器中执行，比如 arm64 会在 arm64 的机器中执行，amd64 会在 amd64 的机器中执行，所以有更好的性能、更原生的体验，支持的场景更多一些。</p>
 <p>使用如下方式在本地构建一个支持 amd64 和 arm64 的 buildkit:</p>
@@ -451,9 +455,11 @@
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
+</span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker buildx create --use --name buildkit --driver<span class="o">=</span>docker-container --driver-opt<span class="o">=</span><span class="nv">image</span><span class="o">=</span>buildkit:buildx-stable-1
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">EXTRA_BUILDKIT_ADDRESS</span><span class="o">=</span>1.1.1.1
+</span></span><span class="line"><span class="cl">docker buildx create --use --name buildkit --driver<span class="o">=</span>docker-container --driver-opt<span class="o">=</span><span class="nv">image</span><span class="o">=</span>buildkit:buildx-stable-1
 </span></span><span class="line"><span class="cl">docker buildx create --use --name buildkit --append <span class="si">${</span><span class="nv">EXTRA_BUILDKIT_ADDRESS</span><span class="si">}</span> --platform linux/arm64 --driver<span class="o">=</span>docker-container --driver-opt<span class="o">=</span><span class="nv">image</span><span class="o">=</span>buildkit:buildx-stable-1
 </span></span></code></pre></td></tr></table>
 </div>
@@ -495,7 +501,9 @@
 </div>
 </div><h2 id="性能优化和调整">性能优化和调整</h2>
 <h2 id="故障排除">故障排除</h2>
-<p>TODO:</p>
+<h3 id="clickhouse-illegal-instruction-core-dumped">clickhouse Illegal instruction (core dumped)</h3>
+<p>原因可以追溯上游 <a href="https://github.com/ClickHouse/ClickHouse/issues/49814" target="_blank" rel="noopener noreffer ">issue</a> 上游的镜像构建可能在较新的机器中编译，新机器可能支持更多的特性，而 kunpeng ARMv8.2 的指令集无此特性导致不能运行。
+可以切换到版本 <code>clickhouse/clickhouse-server:23.3.9.55</code> 或者 <code>bitnami/clickhouse:23.3.9-debian-11-r0</code>，2024.03.05 测试可用。</p>
 <h3 id="k3s-root-binaries-cause-segmentation-fault-on-aarch64-nodes-with-64k-page-size">k3s-root binaries cause segmentation fault on aarch64 nodes with 64k page size</h3>
 <p><a href="https://github.com/k3s-io/k3s/issues/6708" target="_blank" rel="noopener noreffer ">issue</a></p>
 <div class="highlight"><div class="chroma">
@@ -511,13 +519,186 @@
 </span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/data/current/bin/mv
 </span></span><span class="line"><span class="cl">Segmentation fault
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">cento8 pagesize 64k, centos9 revert, donot use centos8 like os?
+</span></span><span class="line"><span class="cl">cento8 pagesize 64k, centos9 revert, donot use centos8 like os
 </span></span></code></pre></td></tr></table>
 </div>
-</div><h3 id="clickhouse-illegal-instruction-core-dumped">clickhouse Illegal instruction (core dumped)</h3>
-<p>可以切换到版本 <code>clickhouse/clickhouse-server:23.3.9.55</code> 或者 <code>bitnami/clickhouse:23.3.9-debian-11-r0</code></p>
+</div><table>
+<thead>
+<tr>
+<th>OS</th>
+<th>页表选择</th>
+<th>VA/PA BITS</th>
+<th>NR_CPUS</th>
+<th>NODES_SHIFT（NODES)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RHEL/CentOS 7 Series</td>
+<td>64K</td>
+<td>48</td>
+<td>4096</td>
+<td>2 (4)</td>
+</tr>
+<tr>
+<td>RHEL/CentOS 8 Series</td>
+<td>64K</td>
+<td>48/52</td>
+<td>4096</td>
+<td>3 (8)</td>
+</tr>
+<tr>
+<td>RHEL/CentOS 9 Series</td>
+<td>4K</td>
+<td>48</td>
+<td>4096</td>
+<td>6 (64)</td>
+</tr>
+<tr>
+<td>SLE12-SP1-ARM</td>
+<td>64K</td>
+<td>42</td>
+<td>128</td>
+<td>2 (4)</td>
+</tr>
+<tr>
+<td>SLE12-SP2</td>
+<td>4K</td>
+<td>48</td>
+<td>128</td>
+<td>2 (4)</td>
+</tr>
+<tr>
+<td>SLE12-SP3/SP4</td>
+<td>4K</td>
+<td>48</td>
+<td>256</td>
+<td>2 (4)</td>
+</tr>
+<tr>
+<td>SLE15-SP1</td>
+<td>4K</td>
+<td>48</td>
+<td>480</td>
+<td>2 (4)</td>
+</tr>
+<tr>
+<td>SLE15-SP2/SP3/SP4</td>
+<td>4K</td>
+<td>48</td>
+<td>768</td>
+<td>6 (64)</td>
+</tr>
+<tr>
+<td><em>SLE15-SP4 (64K)</em></td>
+<td><em>64K</em></td>
+<td><em>52</em></td>
+<td><em>768</em></td>
+<td><em>6 (64)</em></td>
+</tr>
+<tr>
+<td>ubuntu 20.04</td>
+<td>4K</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>uos 1040d</td>
+<td>64K</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>kylinv10sp3</td>
+<td>64K</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>openEuler 20.03</td>
+<td>64K</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>openEuler 22.03</td>
+<td>4K</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>dockerhub 中镜像几乎都为在 4k pagesize 中编译的；当前 CI arm64 CI pagesize 为 4k；长期看新的操作系统几乎都为 4k，决定全栈 4k，不支持的操作系统通过重新编译 4k 的 linux 内核支持。</p>
+<h3 id="redis-unsupported-system-page-size">redis Unsupported system page size</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@cosmos ~<span class="o">]</span><span class="c1"># kubectl logs -f shared-redis-node-0 -c redis</span>
+</span></span><span class="line"><span class="cl">&lt;jemalloc&gt;: Unsupported system page size
+</span></span><span class="line"><span class="cl">Could not connect to Redis at shared-redis.default.svc.cluster.local:26379: Connection refused
+</span></span><span class="line"><span class="cl"> 08:13:17.49 <span class="nv">INFO</span>  <span class="o">==</span>&gt; Configuring the node as master
+</span></span><span class="line"><span class="cl">&lt;jemalloc&gt;: Unsupported system page size
+</span></span><span class="line"><span class="cl">&lt;jemalloc&gt;: Unsupported system page size
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>出这个错误的原因是因为 <a href="https://github.com/jemalloc/jemalloc/issues/467" target="_blank" rel="noopener noreffer ">jemalloc</a> 是在编译时确定 pagesize 的大小；在 pagesize 4k 的环境中编译放到 64k 环境中运行，即会报错。详细信息可以看 <a href="https://github.com/jemalloc/jemalloc/issues/467" target="_blank" rel="noopener noreffer ">这里</a>。基于当前遇到的问题，决定重新编译内核，改成 4k 的环境。</p>
+<h3 id="warning-your-kernel-has-a-bug-that-could-lead-to-data-corruption-during-background-save-please-upgrade-to-the-latest-stable-kernel">WARNING Your kernel has a bug that could lead to data corruption during background save. Please upgrade to the latest stable kernel</h3>
+<p>编译内核 到<code>4.19.90</code> 出现新的问题， 需要在 redis common <code>配置文件中添加</code> <code>ignore-warnings ARM64-COW-BUG</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">1:M <span class="m">28</span> Feb <span class="m">2024</span> 08:47:04.347 * Running <span class="nv">mode</span><span class="o">=</span>standalone, <span class="nv">port</span><span class="o">=</span>6379.
+</span></span><span class="line"><span class="cl">1:M <span class="m">28</span> Feb <span class="m">2024</span> 08:47:04.347 <span class="c1"># WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span>
+</span></span><span class="line"><span class="cl">1:M <span class="m">28</span> Feb <span class="m">2024</span> 08:47:04.347 <span class="c1"># Server initialized</span>
+</span></span><span class="line"><span class="cl">1:M <span class="m">28</span> Feb <span class="m">2024</span> 08:47:04.348 <span class="c1"># WARNING Your kernel has a bug that could lead to data corruption during background save. Please upgrade to the latest stable kernel.</span>
+</span></span><span class="line"><span class="cl">1:M <span class="m">28</span> Feb <span class="m">2024</span> 08:47:04.348 <span class="c1"># Redis will now exit to prevent data corruption. Note that it is possible to suppress this warning by setting the following config: ignore-warnings ARM64-COW-BUG</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这是一个内核 bug：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ref: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug<span class="o">=</span><span class="m">977615</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Fixed in versions linux/5.9.15-1, linux/5.10~rc6-1~exp1, linux/5.10~rc7-1~exp1, linux/4.19.171-1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>换了新的内核 4.19.x 修复。</p>
+<h3 id="chromechromium-tracebreakpoint-trap-core-dumped">chrome/chromium Trace/breakpoint trap (core dumped)</h3>
+<p>错误原因同样是因为 pagesize，chromium 社区对 pagesize 64k 的支持不感兴趣，并且 chromium 当前由于<a href="https://github.com/electron/electron/issues/25387#issuecomment-1193169058" target="_blank" rel="noopener noreffer ">SlotSpanMetadata</a> 还不支持 64k，导致 chrome/chromium 是不支持 64k pagesize的，如果想在 arm64 下运行，pagesize 要求 4k。同样的，还有一些类似的 issue：</p>
+<ul>
+<li>[https://github.com/electron/electron/issues/25387](Electron segmentation fault on CentOS7 aarch64(arm64))</li>
+<li><a href="https://github.com/browserless/browserless/issues/2693" target="_blank" rel="noopener noreffer ">browserless When the kernel PAGESIZE is 64k</a></li>
+</ul>
+<h3 id="postgres-在-pagesize-64k-下的-sql-查询会比-4k-下慢几个数量级">postgres 在 pagesize 64k 下的 sql 查询会比 4k 下慢几个数量级</h3>
+<p>具体可以看<a href="https://dev.to/aws-heroes/postgresql-on-arm-default-page-size-matters-2n7a" target="_blank" rel="noopener noreffer ">这里</a>，此文中说同一个 sql/同数据量下, pg 在 64k 的执行时间是 4k 下的 80+倍。</p>
+<h3 id="hadoop-版本-311-不支持-arm64需要重新源码编译">hadoop 版本 3.1.1 不支持 arm64，需要重新源码编译</h3>
+<p>TODO:</p>
 <h2 id="学到的经验和教训">学到的经验和教训</h2>
-<h2 id="未来展望">未来展望</h2>
+<ol>
+<li>linux kernel pagesize 尽量选择 4k，问题会少很多</li>
+<li>善用 docker multiarch build</li>
+</ol>
 <h2 id="qa-和讨论">Q&amp;A 和讨论</h2>
 <h2 id="参考">参考</h2>
 <ul>

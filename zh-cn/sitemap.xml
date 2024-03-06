@@ -3,9 +3,9 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
             <loc>https://exfly.github.io/about/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/arm64/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/docker/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/arm64/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/docker/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/"
@@ -14,9 +14,9 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/linux/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/linux/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/tags/"
@@ -25,7 +25,7 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/tags/"
                     /></url><url>
-            <loc>https://exfly.github.io/kunpeng-arm64/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/kunpeng-arm64/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://exfly.github.io/tags/bitnami/</loc><lastmod>2023-12-24T13:57:38&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/db/</loc><lastmod>2023-12-24T13:57:38&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/pg_upgrade/</loc><lastmod>2023-12-24T13:57:38&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -43,22 +43,22 @@
             <loc>https://exfly.github.io/tags/portable/</loc><lastmod>2023-10-29T10:16:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/python/</loc><lastmod>2023-10-29T10:16:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/portable-python/</loc><lastmod>2023-10-29T10:16:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/bug/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/go/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/grpc/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/bug/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/go/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/grpc/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/chatgpt/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/code_review/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/gitlab/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/gitlab-chatgpt-mr-code-review/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/bugs/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/vagrant/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/vagrant-authentication-failure-retrying/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/static-build-chrony/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/bugs/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/vagrant/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/vagrant-authentication-failure-retrying/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/static-build-chrony/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/%E9%9D%99%E6%80%81%E7%BC%96%E8%AF%91/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://exfly.github.io/go-jinzhu-gorm-no-valid-transactions/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/gorm/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/go-sarama-metrics-spend-too-much-mem/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>

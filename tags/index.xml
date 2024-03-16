@@ -4,7 +4,23 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>k3s</title>
+    <link>https://exfly.github.io/tags/k3s/</link>
+    <pubDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/k3s/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>k8s</title>
+    <link>https://exfly.github.io/tags/k8s/</link>
+    <pubDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/k8s/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>arm64</title>
     <link>https://exfly.github.io/tags/arm64/</link>
     <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
@@ -66,22 +82,6 @@
     <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/postgres/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>cli</title>
-    <link>https://exfly.github.io/tags/cli/</link>
-    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/cli/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>draw.io</title>
-    <link>https://exfly.github.io/tags/draw.io/</link>
-    <pubDate>Sun, 29 Oct 2023 09:52:49 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/draw.io/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

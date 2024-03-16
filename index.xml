@@ -4,9 +4,17 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>K8s 实践经验 (k8s in action)</title>
+    <link>https://exfly.github.io/k8s-in-action/</link>
+    <pubDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/k8s-in-action/</guid>
+    <description><![CDATA[<p>文章简介：总结最近几年使用 k8s 的经验</p>]]></description>
+</item>
+<item>
     <title>鲲鹏 920 arm64 机器适配经验</title>
     <link>https://exfly.github.io/kunpeng-arm64/</link>
     <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
@@ -77,14 +85,6 @@
     <author>Exfly</author>
     <guid>https://exfly.github.io/vagrant-authentication-failure-retrying/</guid>
     <description><![CDATA[<p>文章简介：<code>ubuntu 22.04</code> <code>vagrant up</code> <code>Authentication failure. Retrying</code>, <code>vagrant ssh</code> 可以登录进 vm 问题处理</p>]]></description>
-</item>
-<item>
-    <title>chrony 静态编译及跨 Linux 发行版安装 systemd service</title>
-    <link>https://exfly.github.io/static-build-chrony/</link>
-    <pubDate>Sat, 26 Nov 2022 12:56:32 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/static-build-chrony/</guid>
-    <description><![CDATA[<p>文章简介：chrony 静态编译及跨操作系统安装 systemd service</p>]]></description>
 </item>
 </channel>
 </rss>

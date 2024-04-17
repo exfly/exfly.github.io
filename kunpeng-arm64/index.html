@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://exfly.github.io/kunpeng-arm64/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-01-29T02:20:30+00:00" />
-<meta property="article:modified_time" content="2024-03-06T19:30:24+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+<meta property="article:modified_time" content="2024-04-17T19:35:48+08:00" /><meta property="og:site_name" content="ExflyBlog" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="鲲鹏 920 arm64 机器适配经验"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/kunpeng-arm64\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "ops, linux, arm64, docker, ","wordcount":  3952 ,
-        "url": "https:\/\/exfly.github.io\/kunpeng-arm64\/","datePublished": "2024-01-29T02:20:30+00:00","dateModified": "2024-03-06T19:30:24+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "ops, linux, arm64, docker, ","wordcount":  3918 ,
+        "url": "https:\/\/exfly.github.io\/kunpeng-arm64\/","datePublished": "2024-01-29T02:20:30+00:00","dateModified": "2024-04-17T19:35:48+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
                 "@type": "Person",
@@ -108,7 +108,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">鲲鹏 920 arm64 机器适配经验</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-01-29">2024-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3952 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-01-29">2024-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3918 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -180,7 +180,7 @@
         data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image.png, /kunpeng-arm64/images/kunpeng-arm64/image.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image.png 2x"
         data-sizes="auto"
         alt="/kunpeng-arm64/images/kunpeng-arm64/image.png"
-        title="x86与arm64指令区别" width="830" height="376" /></p>
+        title="x86 与 arm64 指令区别" width="830" height="376" /></p>
 <!-- https://www.infoq.cn/article/qvqshmllvyssdskw1glm -->
 <h2 id="amd64-到-arm64-的迁移策略">AMD64 到 ARM64 的迁移策略</h2>
 <p>由于容器化，需要支持 k8s 在 arm64 下运行，所有使用的容器支持 amd64+arm64；有源码的项目采用重新构建的方式，无源码且只支持 amd64 的项目采用 binfmt_misc 方式运行；最终完成全部迁移过程。</p>
@@ -337,9 +337,9 @@
 <h2 id="迁移过程中的语言挑战">迁移过程中的语言挑战</h2>
 <p>华为有一本<a href="https://r.huaweistatic.com/s/kunpengstatic/lst/files/pdf/developer/devkit/kunpeng_software_migration_book.pdf" target="_blank" rel="noopener noreffer ">鲲鹏软件迁移一本通</a>，可以后续看一下</p>
 <h3 id="go-语言应用的特殊注意事项">Go 语言应用的特殊注意事项</h3>
-<p>golang 从 1.5 开始支持 <a href="https://go.dev/doc/go1.5#compiler_and_tools" target="_blank" rel="noopener noreffer ">cross compile</a>, <a href="https://learnku.com/docs/go-blog/gos-support-for-arm-architecture/11319" target="_blank" rel="noopener noreffer ">arm的支持进展见这里</a>。</p>
+<p>golang 从 1.5 开始支持 <a href="https://go.dev/doc/go1.5#compiler_and_tools" target="_blank" rel="noopener noreffer ">cross compile</a>, <a href="https://learnku.com/docs/go-blog/gos-support-for-arm-architecture/11319" target="_blank" rel="noopener noreffer ">arm 的支持进展见这里</a>。</p>
 <p>对于纯 golang 编写的项目，可通过简单的修改 CICD 适配构建 arm64 架构的可执行文件即可。<code>GOOS=linux GOARCH=arm64 go build ...</code></p>
-<p>对于使用了 cgo 的项目，则需要付出更多努力。使用 gcc 在 go build 过程中编译的项目，需要修改编译方式，做 <a href="https://github.com/FiloSottile/homebrew-musl-cross" target="_blank" rel="noopener noreffer ">crosscompile</a>， 一个例子比如使用了 <a href="https://github.com/mattn/go-sqlite3/tree/master?tab=readme-ov-file#cross-compile" target="_blank" rel="noopener noreffer ">sqlite</a> 的项目交叉编译。一些项目在项目中已经将多种架构的动态链接库/静态链接库文件 commit 到仓库中，运行时直接使用即可，比如 <a href="https://github.com/confluentinc/confluent-kafka-go/tree/master/kafka/librdkafka_vendor" target="_blank" rel="noopener noreffer ">confluent-kafka-go</a>。部分使用了 cgo 项目可能不支持 arm64，比如 <code>github.com/bytedance/sonic</code> 是不支持 arm64 的，需要寻找替代方案，比如替换成标准库或者其他支持 arm64 的库（如 <code>github.com/json-iterator/go</code>）</p>
+<p>对于使用了 cgo 的项目，则需要付出更多努力。使用 gcc 在 go build 过程中编译的项目，需要修改编译方式，做 <a href="https://github.com/FiloSottile/homebrew-musl-cross" target="_blank" rel="noopener noreffer ">crosscompile</a>，一个例子比如使用了 <a href="https://github.com/mattn/go-sqlite3/tree/master?tab=readme-ov-file#cross-compile" target="_blank" rel="noopener noreffer ">sqlite</a> 的项目交叉编译。一些项目在项目中已经将多种架构的动态链接库/静态链接库文件 commit 到仓库中，运行时直接使用即可，比如 <a href="https://github.com/confluentinc/confluent-kafka-go/tree/master/kafka/librdkafka_vendor" target="_blank" rel="noopener noreffer ">confluent-kafka-go</a>。部分使用了 cgo 项目可能不支持 arm64，比如 <code>github.com/bytedance/sonic</code> 是不支持 arm64 的，需要寻找替代方案，比如替换成标准库或者其他支持 arm64 的库（如 <code>github.com/json-iterator/go</code>）</p>
 <h3 id="python-项目的适配和修改">Python 项目的适配和修改</h3>
 <p><img
         class="lazyload"
@@ -348,11 +348,11 @@
         data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-2.png, /kunpeng-arm64/images/kunpeng-arm64/image-2.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-2.png 2x"
         data-sizes="auto"
         alt="/kunpeng-arm64/images/kunpeng-arm64/image-2.png"
-        title="Python语言迁移改动点" width="828" height="382" /></p>
-<p>修改 python 版本为支持 arm64 的 python版本，python2.7 以及 python 3 都有比较好的 arm64 支持</p>
+        title="Python 语言迁移改动点" width="828" height="382" /></p>
+<p>修改 python 版本为支持 arm64 的 python 版本，python2.7 以及 python 3 都有比较好的 arm64 支持</p>
 <p>含 C 模块或全 C 模块的迁移，下载模块源码，并使用 <code>-fsigned-char</code> 选项重新编译。另外 python 官方提供了一种能够方便构建不同架构的 wheel 的基础设施（基于 docker）<a href="https://github.com/pypa/manylinux" target="_blank" rel="noopener noreffer ">pypa/manylinux</a></p>
 <h3 id="java-应用的迁移考虑">Java 应用的迁移考虑</h3>
-<p><a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="noopener noreffer ">Java</a> 不同于一般的编译语言或解释型语言。它首先将源代码编译成字节码，再依赖各种不同平台上的虚拟机来解释执行字节码，从而具有“一次编写，到处运行”的跨平台特性. 但是 java 支持的 <a href="https://zh.wikipedia.org/wiki/Java%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener noreffer ">JNI</a> 可以在java 中调用 c/c++ 等其他语言编写的动态链接库, 这种本地程序是不跨平台的，导致不能直接采用更换 arm64 jre 不修改程序的方式做迁移。</p>
+<p><a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="noopener noreffer ">Java</a> 不同于一般的编译语言或解释型语言。它首先将源代码编译成字节码，再依赖各种不同平台上的虚拟机来解释执行字节码，从而具有“一次编写，到处运行”的跨平台特性。但是 java 支持的 <a href="https://zh.wikipedia.org/wiki/Java%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener noreffer ">JNI</a> 可以在 java 中调用 c/c++ 等其他语言编写的动态链接库，这种本地程序是不跨平台的，导致不能直接采用更换 arm64 jre 不修改程序的方式做迁移。</p>
 <p><img
         class="lazyload"
         src="/svg/loading.min.svg"
@@ -360,14 +360,14 @@
         data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-1.png, /kunpeng-arm64/images/kunpeng-arm64/image-1.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-1.png 2x"
         data-sizes="auto"
         alt="/kunpeng-arm64/images/kunpeng-arm64/image-1.png"
-        title="java语言技术架构及迁移点" width="830" height="388" /></p>
+        title="java 语言技术架构及迁移点" width="830" height="388" /></p>
 <!-- https://www.infoq.cn/article/qvqshmllvyssdskw1glm -->
 <h4 id="更换-arm64-架构的-jre">更换 arm64 架构的 JRE</h4>
 <p>如下图所示，对于纯 Java 的程序，可以考虑直接更换 ARM64 的 JRE 来运行服务。如果第三方库是用到了 jni 调用本地方法，就需要对这个库适配 arm64</p>
 <h4 id="jni">jni</h4>
 <p>如果是开源软件，直接基于代码做 arm64 适配，如果为非开源项目，则需要寻找替代方案、或寻求商业支持</p>
 <h4 id="设置-jvm-参数解决程序运行是改动点">设置 JVM 参数解决程序运行是改动点</h4>
-<p>三大经验：首先，完成一次 Full GC 后，应该释放出 70%的堆空间（30%的空间仍然占用）。其次，假设老年代存活对象(即 Full GC 后老年代内存占用) 大小为 X，建议堆的总大小是 X 的三到四倍，年轻代的大小是 X 的 1 到 1.5 倍，老年代的大小是 X 的两到三倍，永久代的大小是 X 的 1.2 到 1.5 倍。第三，JDK 官方的建议是年轻代大小占整个堆空间大小的 3/8 左右。</p>
+<p>三大经验：首先，完成一次 Full GC 后，应该释放出 70% 的堆空间（30% 的空间仍然占用）。其次，假设老年代存活对象 (即 Full GC 后老年代内存占用) 大小为 X，建议堆的总大小是 X 的三到四倍，年轻代的大小是 X 的 1 到 1.5 倍，老年代的大小是 X 的两到三倍，永久代的大小是 X 的 1.2 到 1.5 倍。第三，JDK 官方的建议是年轻代大小占整个堆空间大小的 3/8 左右。</p>
 <p>在具体的项目过程中，会有如下差异：</p>
 <ol>
 <li>线程大小的 Xss 参数在 ARM 上默认值是 2m，在 x86 为 1m。因此如果线程开的太多，就需要调整 Xss 参数大小，防止出现耗时。</li>
@@ -381,8 +381,8 @@
         data-srcset="/kunpeng-arm64/images/kunpeng-arm64/image-3.png, /kunpeng-arm64/images/kunpeng-arm64/image-3.png 1.5x, /kunpeng-arm64/images/kunpeng-arm64/image-3.png 2x"
         data-sizes="auto"
         alt="/kunpeng-arm64/images/kunpeng-arm64/image-3.png"
-        title="c/c&#43;&#43;项目迁移方式" width="426" height="536" /></p>
-<p>不过，C/C++代码在迁移中也会有诸多问题存在，最具代表性的五类迁移问题如下：</p>
+        title="c/c&#43;&#43; 项目迁移方式" width="426" height="536" /></p>
+<p>不过，C/C++ 代码在迁移中也会有诸多问题存在，最具代表性的五类迁移问题如下：</p>
 <p>1、编译脚本和编译选项的移植。不同的架构平台会有独特的编译选项支持硬件特性，与当前编译平台属性强相关这种带有架构属性的编译选项需要进行移植，这些编译选项一般以–m 开头；</p>
 <p>2、编译宏的移植。编译宏的作用是确定平台下需要执行哪个分支代码，一般分为 x86 自定义宏和用户自定义的宏。两类宏的编译移植方式各不相同；</p>
 <p>3、builtin 函数问题。builtin 函数是编译器自定义的函数，有较好的性能，可以实现一些简单快捷的功能，根据相应需求进行使用优化，助力程序编写；</p>
@@ -390,10 +390,10 @@
 <p>5、SSE intrinsic 函数移植。一般在多媒体技术开发以及数学矩阵库中应用较多的 SSE intrinsic 函数移植较为复杂，为重难点。比如 clickhouse 中使用到了 SIMD 指令，需要替换成 arm64 下对应的使用方式，并且因为鲲鹏已经是比较旧的指令集了，对于一些新的指令不支持导致 clickhouse 报错非法指令集，需要删除新的指令集特性重新编译，或者降级 clickhouse 版本到未使用新指令级特性的版本。</p>
 <h2 id="非开源项目的迁移挑战">非开源项目的迁移挑战</h2>
 <p>对于非开源商业项目，可以直接找商业公司寻求支持。但是对于部分非开源商业项目，已经过了维护期，就需要我们自己想办法迁移了。</p>
-<p>比较显而易见的方式是使用 qemu 在 arm64 上直接执行 amd64 的二进制可执行程序。支持的原理可以简单理解为，linux提供了一种机制，使内核能够将不支持的bin格式转交给虚拟机/转换程序执行，详细见 <a href="https://zh.wikipedia.org/wiki/Binfmt_misc" target="_blank" rel="noopener noreffer ">binfmt_misc</a>, 注意此中方法在部分应用下是可用的，比如 golang的二进制程序、部分 c 程序，对于像 redis、java 等程序，会有 segment fault 或者卡住不可用的情况，需要亲自测试确认一下应用是否可用。</p>
+<p>比较显而易见的方式是使用 qemu 在 arm64 上直接执行 amd64 的二进制可执行程序。支持的原理可以简单理解为，linux 提供了一种机制，使内核能够将不支持的 bin 格式转交给虚拟机/转换程序执行，详细见 <a href="https://zh.wikipedia.org/wiki/Binfmt_misc" target="_blank" rel="noopener noreffer ">binfmt_misc</a>, 注意此中方法在部分应用下是可用的，比如 golang 的二进制程序、部分 c 程序，对于像 redis、java 等程序，会有 segment fault 或者卡住不可用的情况，需要亲自测试确认一下应用是否可用。</p>
 <h2 id="使用-docker-构建支持多架构的镜像">使用 Docker 构建支持多架构的镜像</h2>
 <p>期望要给镜像支持多个架构，这样由客户端决定拉取哪一种架构的镜像。
-根据 <a href="https://docs.docker.com/build/building/multi-platform/" target="_blank" rel="noopener noreffer ">docker 官方的文档描述</a>， 使用 docker 构建多架构 docker image一般有如下几种方式：</p>
+根据 <a href="https://docs.docker.com/build/building/multi-platform/" target="_blank" rel="noopener noreffer ">docker 官方的文档描述</a>，使用 docker 构建多架构 docker image 一般有如下几种方式：</p>
 <ol>
 <li>使用内核支持的 QEMU emulation</li>
 <li>创建一个 builder，后端为多个不同架构的物理机</li>
@@ -466,7 +466,7 @@
 </div><h3 id="使用-cross-compile-在本地架构构建不同架构的可执行程序">使用 cross-compile 在本地架构构建不同架构的可执行程序</h3>
 <p>如果编程语言支持 cross-compilation，在不同的架构构建过程中，可以指定某个 stage 在当前机器架构中构建跨架构的二进制程序，后复制到运行时 stage 中。</p>
 <p>官方文档见<a href="https://www.docker.com/blog/faster-multi-platform-builds-dockerfile-cross-compilation-guide/" target="_blank" rel="noopener noreffer ">这里</a></p>
-<p>如下为一个例子:</p>
+<p>如下为一个例子：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -655,7 +655,7 @@
 </div>
 </div><p>出这个错误的原因是因为 <a href="https://github.com/jemalloc/jemalloc/issues/467" target="_blank" rel="noopener noreffer ">jemalloc</a> 是在编译时确定 pagesize 的大小；在 pagesize 4k 的环境中编译放到 64k 环境中运行，即会报错。详细信息可以看 <a href="https://github.com/jemalloc/jemalloc/issues/467" target="_blank" rel="noopener noreffer ">这里</a>。基于当前遇到的问题，决定重新编译内核，改成 4k 的环境。</p>
 <h3 id="warning-your-kernel-has-a-bug-that-could-lead-to-data-corruption-during-background-save-please-upgrade-to-the-latest-stable-kernel">WARNING Your kernel has a bug that could lead to data corruption during background save. Please upgrade to the latest stable kernel</h3>
-<p>编译内核 到<code>4.19.90</code> 出现新的问题， 需要在 redis common <code>配置文件中添加</code> <code>ignore-warnings ARM64-COW-BUG</code></p>
+<p>编译内核 到<code>4.19.90</code> 出现新的问题，需要在 redis common <code>配置文件中添加</code> <code>ignore-warnings ARM64-COW-BUG</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -685,13 +685,13 @@
 </div>
 </div><p>换了新的内核 4.19.x 修复。</p>
 <h3 id="chromechromium-tracebreakpoint-trap-core-dumped">chrome/chromium Trace/breakpoint trap (core dumped)</h3>
-<p>错误原因同样是因为 pagesize，chromium 社区对 pagesize 64k 的支持不感兴趣，并且 chromium 当前由于<a href="https://github.com/electron/electron/issues/25387#issuecomment-1193169058" target="_blank" rel="noopener noreffer ">SlotSpanMetadata</a> 还不支持 64k，导致 chrome/chromium 是不支持 64k pagesize的，如果想在 arm64 下运行，pagesize 要求 4k。同样的，还有一些类似的 issue：</p>
+<p>错误原因同样是因为 pagesize，chromium 社区对 pagesize 64k 的支持不感兴趣，并且 chromium 当前由于<a href="https://github.com/electron/electron/issues/25387#issuecomment-1193169058" target="_blank" rel="noopener noreffer ">SlotSpanMetadata</a> 还不支持 64k，导致 chrome/chromium 是不支持 64k pagesize 的，如果想在 arm64 下运行，pagesize 要求 4k。同样的，还有一些类似的 issue：</p>
 <ul>
 <li>[https://github.com/electron/electron/issues/25387](Electron segmentation fault on CentOS7 aarch64(arm64))</li>
 <li><a href="https://github.com/browserless/browserless/issues/2693" target="_blank" rel="noopener noreffer ">browserless When the kernel PAGESIZE is 64k</a></li>
 </ul>
 <h3 id="postgres-在-pagesize-64k-下的-sql-查询会比-4k-下慢几个数量级">postgres 在 pagesize 64k 下的 sql 查询会比 4k 下慢几个数量级</h3>
-<p>具体可以看<a href="https://dev.to/aws-heroes/postgresql-on-arm-default-page-size-matters-2n7a" target="_blank" rel="noopener noreffer ">这里</a>，此文中说同一个 sql/同数据量下, pg 在 64k 的执行时间是 4k 下的 80+倍。</p>
+<p>具体可以看<a href="https://dev.to/aws-heroes/postgresql-on-arm-default-page-size-matters-2n7a" target="_blank" rel="noopener noreffer ">这里</a>，此文中说同一个 sql/同数据量下, pg 在 64k 的执行时间是 4k 下的 80+ 倍。</p>
 <h3 id="hadoop-版本-311-不支持-arm64需要重新源码编译">hadoop 版本 3.1.1 不支持 arm64，需要重新源码编译</h3>
 <p>TODO:</p>
 <h2 id="学到的经验和教训">学到的经验和教训</h2>
@@ -702,15 +702,15 @@
 <h2 id="qa-和讨论">Q&amp;A 和讨论</h2>
 <h2 id="参考">参考</h2>
 <ul>
-<li><a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E8%BD%AF%E4%BB%B6%E8%BF%81%E7%A7%BB.pdf" target="_blank" rel="noopener noreffer ">鲲鹏软件迁移ppt</a></li>
+<li><a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E8%BD%AF%E4%BB%B6%E8%BF%81%E7%A7%BB.pdf" target="_blank" rel="noopener noreffer ">鲲鹏软件迁移 ppt</a></li>
 <li><a href="https://ic-openlabs.huawei.com/chat/download/%E9%B2%B2%E9%B9%8F%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8D%81%E6%9D%BF%E6%96%A75.0.pdf" target="_blank" rel="noopener noreffer ">鲲鹏性能优化十板斧 5.0</a></li>
 </ul>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2024-03-06&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/9c063aee3c9c905d4194d0963941c0f0d17574c4" target="_blank" title="commit by exfly(exflyg@gmail.com) 9c063aee3c9c905d4194d0963941c0f0d17574c4: feat: backup">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>9c063ae</a></span>
+                <span>更新于 2024-04-17&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/85b5e919f1d3a1d1870f69fa4076024c3f942cf7" target="_blank" title="commit by exfly(exflyg@gmail.com) 85b5e919f1d3a1d1870f69fa4076024c3f942cf7: feat: add Kafka Sarama Go Fetch Metadta Write Broken Pipe">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>85b5e91</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>

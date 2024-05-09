@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>nerdctl - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/nerdctl/</link>
+        <description>nerdctl - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 May 2024 01:32:02 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/nerdctl/" rel="self" type="application/rss+xml" /><item>
+    <title>离线安装开箱即用的容器运行环境运行环境</title>
+    <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
+    <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/install-docker-engine-from-bin/</guid>
+    <description><![CDATA[<p>文章简介：离线安装各种容器引擎，docker/containerd+nerdctl</p>]]></description>
+</item>
+</channel>
+</rss>

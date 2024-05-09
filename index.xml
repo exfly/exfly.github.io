@@ -4,9 +4,17 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 08 Apr 2024 02:16:54 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 May 2024 01:32:02 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>离线安装开箱即用的容器运行环境运行环境</title>
+    <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
+    <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/install-docker-engine-from-bin/</guid>
+    <description><![CDATA[<p>文章简介：离线安装各种容器引擎，docker/containerd+nerdctl</p>]]></description>
+</item>
+<item>
     <title>Kafka Sarama Go Fetch Metadta Write Broken Pipe</title>
     <link>https://exfly.github.io/kafka-sarama-go-fetch-metadta-write-broken-pipe/</link>
     <pubDate>Mon, 08 Apr 2024 02:16:54 &#43;0000</pubDate>
@@ -77,14 +85,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</guid>
     <description><![CDATA[<p>文章简介：tcpdump 可以收到包，udp server 无法收包，简单的排查过程</p>]]></description>
-</item>
-<item>
-    <title>在 gitlab 中使用 chatgpt 做 code review</title>
-    <link>https://exfly.github.io/gitlab-chatgpt-mr-code-review/</link>
-    <pubDate>Tue, 28 Feb 2023 08:50:33 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/gitlab-chatgpt-mr-code-review/</guid>
-    <description><![CDATA[<p>文章简介：介绍在 gitlab 中使用 chatgpt 做 code review 的方法和代码</p>]]></description>
 </item>
 </channel>
 </rss>

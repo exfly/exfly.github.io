@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>离线安装开箱即用的容器运行环境运行环境 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="离线安装开箱即用的容器运行环境运行环境" />
+<meta property="og:description" content="文章简介：离线安装各种容器引擎，docker/containerd&#43;nerdctl" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/install-docker-engine-from-bin/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-07T01:32:02+00:00" />
+<meta property="article:modified_time" content="2024-05-07T01:32:02+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="离线安装开箱即用的容器运行环境运行环境"/>
+<meta name="twitter:description" content="文章简介：离线安装各种容器引擎，docker/containerd&#43;nerdctl"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/install-docker-engine-from-bin/" /><link rel="prev" href="https://exfly.github.io/kafka-sarama-go-fetch-metadta-write-broken-pipe/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "离线安装开箱即用的容器运行环境运行环境",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/install-docker-engine-from-bin\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "docker, linux, nerdctl, containerd, ops","wordcount":  1740 ,
+        "url": "https:\/\/exfly.github.io\/install-docker-engine-from-bin\/","datePublished": "2024-05-07T01:32:02+00:00","dateModified": "2024-05-07T01:32:02+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/install-docker-engine-from-bin/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/install-docker-engine-from-bin/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">离线安装开箱即用的容器运行环境运行环境</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-05-07">2024-05-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1740 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#方法-1-安装官方的-docker-离线包">方法 1: 安装官方的 docker 离线包</a></li>
+    <li><a href="#方法-2-nerdctl">方法 2: nerdctl</a></li>
+    <li><a href="#方法-3-truenas-scale-中使用类-docker-的体验">方法 3: truenas scale 中使用类 docker 的体验</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：离线安装各种容器引擎，docker/containerd+nerdctl</p>
+<h2 id="背景">背景</h2>
+<p>通常每个 linux 发行版都会自带的包管理安装 docker，但这种安装方式在 to b 完全离线环境下适配不同种 linux 发行版安装成本比较高。docker 由 golang 开发，依赖都是捆绑到一起的，直接复制二进制文件即可完成部署，简单便捷。Docker 官方介绍了一种 <a href="https://docs.docker.com/engine/install/binaries/" target="_blank" rel="noopener noreffer ">Install Docker Engine from binaries</a> 方法，但是这种方式不完整：<code>This page contains information on how to install Docker using binaries. These instructions are mostly suitable for testing purposes. We do not recommend installing Docker using binaries in production environments as they don't have automatic security updates.</code>。本文将介绍一种生产可用的离线安装 docker、且跨 linux 发行版的方法。</p>
+<h2 id="方法-1-安装官方的-docker-离线包">方法 1: 安装官方的 docker 离线包</h2>
+<p><a href="https://docs.docker.com/engine/install/binaries/" target="_blank" rel="noopener noreffer ">Docker 官方文档中提供的方法</a> 使用的方法是 <code>sudo dockerd &amp;</code> ，没有服务保活，不适用与生产使用。在这个基础上，完善一下保活基本就可以了。</p>
+<p>如下为 package.sh，打包一个离线安装包</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errtrace
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errexit
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o nounset
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o pipefail
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o xtrace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>dirname <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> debug<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:DEBU: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> info<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:INFO: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> err<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:ERRR: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">DOCKER_VERSION</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">DOCKER_VERSION</span><span class="k">:-</span><span class="s2">&#34;26.1.1&#34;</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">DOCKRE_MIRROR</span><span class="o">=</span><span class="si">${</span><span class="nv">DOCKRE_MIRROR</span><span class="k">:-</span><span class="s2">&#34;https://mirrors.tuna.tsinghua.edu.cn&#34;</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> machine_arch<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">arch</span><span class="o">=</span><span class="k">$(</span>uname -m<span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nv">$arch</span> in
+</span></span><span class="line"><span class="cl">        x86_64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">echo</span> amd64
+</span></span><span class="line"><span class="cl">            <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">        aarch64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">echo</span> arm64
+</span></span><span class="line"><span class="cl">            <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">        *<span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">echo</span> <span class="nv">$arch</span>
+</span></span><span class="line"><span class="cl">            <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">esac</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> docker_arch<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nv">arch</span><span class="o">=</span><span class="k">$(</span>uname -m<span class="k">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nv">$arch</span> in
+</span></span><span class="line"><span class="cl">        arm64<span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">echo</span> aarch64
+</span></span><span class="line"><span class="cl">            <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">        *<span class="o">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">echo</span> <span class="nv">$arch</span>
+</span></span><span class="line"><span class="cl">            <span class="p">;;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">esac</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/static/stable/aarch64/docker-26.1.1.tgz</span>
+</span></span><span class="line"><span class="cl"><span class="nv">DOCKER_DOWNLOAD_URL</span><span class="o">=</span><span class="s2">&#34;</span><span class="si">${</span><span class="nv">DOCKRE_MIRROR</span><span class="si">}</span><span class="s2">/docker-ce/linux/static/stable/</span><span class="k">$(</span>docker_arch<span class="k">)</span><span class="s2">/docker-</span><span class="si">${</span><span class="nv">DOCKER_VERSION</span><span class="si">}</span><span class="s2">.tgz&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">BASEPATH</span><span class="o">=</span>./installer
+</span></span><span class="line"><span class="cl">mkdir -p <span class="nv">$BASEPATH</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">pushd</span> <span class="nv">$BASEPATH</span>
+</span></span><span class="line"><span class="cl">wget <span class="nv">$DOCKER_DOWNLOAD_URL</span>
+</span></span><span class="line"><span class="cl"><span class="nb">popd</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mkdir -p <span class="nv">$BASEPATH</span>/docker
+</span></span><span class="line"><span class="cl">cat &gt; <span class="nv">$BASEPATH</span>/docker/daemon.json <span class="s">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">{
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;live-restore&#34;: true,
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;log-driver&#34;: &#34;json-file&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s">  &#34;log-opts&#34;: {
+</span></span></span><span class="line"><span class="cl"><span class="s">    &#34;max-size&#34;: &#34;200m&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s">  }
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mkdir -p <span class="nv">$BASEPATH</span>/systemd
+</span></span><span class="line"><span class="cl">cat &gt; <span class="nv">$BASEPATH</span>/systemd/containerd.service <span class="s">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=containerd container runtime
+</span></span></span><span class="line"><span class="cl"><span class="s">Documentation=https://containerd.io
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network.target
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStartPre=-/sbin/modprobe overlay
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/local/bin/containerd
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">Restart=always
+</span></span></span><span class="line"><span class="cl"><span class="s">RestartSec=2
+</span></span></span><span class="line"><span class="cl"><span class="s">TimeoutSec=30
+</span></span></span><span class="line"><span class="cl"><span class="s">StartLimitInterval=0
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">KillMode=process
+</span></span></span><span class="line"><span class="cl"><span class="s">Delegate=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitNOFILE=1048576
+</span></span></span><span class="line"><span class="cl"><span class="s"># Having non-zero Limit*s causes performance problems due to accounting overhead
+</span></span></span><span class="line"><span class="cl"><span class="s"># in the kernel. We recommend using cgroups to do container-local accounting.
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitNPROC=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitCORE=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s"># TasksMax=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=multi-user.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat &gt; <span class="nv">$BASEPATH</span>/systemd/docker.service <span class="s">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=Docker Application Container Engine
+</span></span></span><span class="line"><span class="cl"><span class="s">Documentation=https://docs.docker.com
+</span></span></span><span class="line"><span class="cl"><span class="s">BindsTo=containerd.service
+</span></span></span><span class="line"><span class="cl"><span class="s">After=network-online.target firewalld.service
+</span></span></span><span class="line"><span class="cl"><span class="s">Wants=network-online.target
+</span></span></span><span class="line"><span class="cl"><span class="s">Requires=docker.socket
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Service]
+</span></span></span><span class="line"><span class="cl"><span class="s">Type=notify
+</span></span></span><span class="line"><span class="cl"><span class="s"># the default is not to use systemd for cgroups because the delegate issues still
+</span></span></span><span class="line"><span class="cl"><span class="s"># exists and systemd currently does not support the cgroup feature set required
+</span></span></span><span class="line"><span class="cl"><span class="s"># for containers run by docker
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecStart=/usr/local/bin/dockerd -H fd://
+</span></span></span><span class="line"><span class="cl"><span class="s">ExecReload=/bin/kill -s HUP $MAINPID
+</span></span></span><span class="line"><span class="cl"><span class="s">TimeoutSec=30
+</span></span></span><span class="line"><span class="cl"><span class="s">RestartSec=2
+</span></span></span><span class="line"><span class="cl"><span class="s">Restart=always
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># Note that StartLimit* options were moved from &#34;Service&#34; to &#34;Unit&#34; in systemd 229.
+</span></span></span><span class="line"><span class="cl"><span class="s"># Both the old, and new location are accepted by systemd 229 and up, so using the old location
+</span></span></span><span class="line"><span class="cl"><span class="s"># to make them work for either version of systemd.
+</span></span></span><span class="line"><span class="cl"><span class="s">StartLimitBurst=3
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
+</span></span></span><span class="line"><span class="cl"><span class="s"># Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
+</span></span></span><span class="line"><span class="cl"><span class="s"># this option work for either version of systemd.
+</span></span></span><span class="line"><span class="cl"><span class="s"># retry start always
+</span></span></span><span class="line"><span class="cl"><span class="s">StartLimitInterval=0
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># Having non-zero Limit*s causes performance problems due to accounting overhead
+</span></span></span><span class="line"><span class="cl"><span class="s"># in the kernel. We recommend using cgroups to do container-local accounting.
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitNOFILE=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitNPROC=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">LimitCORE=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># Comment TasksMax if your systemd version does not supports it.
+</span></span></span><span class="line"><span class="cl"><span class="s"># Only systemd 226 and above support this option.
+</span></span></span><span class="line"><span class="cl"><span class="s"># TasksMax=infinity
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># set delegate yes so that systemd does not reset the cgroups of docker containers
+</span></span></span><span class="line"><span class="cl"><span class="s">Delegate=yes
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s"># kill only the docker process, not all processes in the cgroup
+</span></span></span><span class="line"><span class="cl"><span class="s">KillMode=process
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=multi-user.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cat &gt; <span class="nv">$BASEPATH</span>/systemd/docker.socket <span class="s">&lt;&lt;&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">[Unit]
+</span></span></span><span class="line"><span class="cl"><span class="s">Description=Docker Socket for the API
+</span></span></span><span class="line"><span class="cl"><span class="s">PartOf=docker.service
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Socket]
+</span></span></span><span class="line"><span class="cl"><span class="s">ListenStream=/var/run/docker.sock
+</span></span></span><span class="line"><span class="cl"><span class="s">SocketMode=0660
+</span></span></span><span class="line"><span class="cl"><span class="s">SocketUser=root
+</span></span></span><span class="line"><span class="cl"><span class="s">SocketGroup=docker
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">[Install]
+</span></span></span><span class="line"><span class="cl"><span class="s">WantedBy=sockets.target
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">tar -zvcf dockerbin-installer.tar.gz installer install.sh
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中 install.sh 内容为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/usr/bin/env bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errtrace
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o errexit
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o nounset
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o pipefail
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -o xtrace
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> <span class="s2">&#34;</span><span class="k">$(</span>dirname <span class="s2">&#34;</span><span class="nv">$0</span><span class="s2">&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">BASEPATH</span><span class="o">=</span>./installer
+</span></span><span class="line"><span class="cl"><span class="nv">DOCKER_BIN_DIR</span><span class="o">=</span>/usr/local/bin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> is_cmd_exists<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">command</span> -v <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> &gt;/dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> debug<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:DEBU: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> info<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:INFO: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> err<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">echo</span> <span class="s2">&#34;[</span><span class="k">$(</span>date +<span class="s1">&#39;%Y-%m-%dT%H:%M:%S%z&#39;</span><span class="k">)</span><span class="s2">]:ERRR: </span><span class="nv">$*</span><span class="s2">&#34;</span> &gt;<span class="p">&amp;</span><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">user</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>id -un 2&gt;/dev/null <span class="o">||</span> <span class="nb">true</span><span class="k">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">sh_c</span><span class="o">=</span><span class="s1">&#39;sh -c&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="nv">$user</span><span class="s2">&#34;</span> !<span class="o">=</span> <span class="s1">&#39;root&#39;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">	cat &gt;<span class="p">&amp;</span><span class="m">2</span> <span class="s">&lt;&lt;-&#39;EOF&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s">		Error: this installer needs the ability to run commands as root.
+</span></span></span><span class="line"><span class="cl"><span class="s">		You can exec `sudo su`, and reinstall.
+</span></span></span><span class="line"><span class="cl"><span class="s">	EOF</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">exit</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">stat /run/systemd <span class="o">||</span> <span class="o">(</span><span class="nb">echo</span> <span class="s2">&#34;not systemd&#34;</span><span class="p">;</span> <span class="nb">exit</span> 1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">docker version <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mkdir -p <span class="nv">$DOCKER_BIN_DIR</span>
+</span></span><span class="line"><span class="cl">tar xvf <span class="nv">$BASEPATH</span>/docker-*.tgz --strip-components <span class="m">1</span> -C <span class="nv">$DOCKER_BIN_DIR</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mkdir -p /etc/docker
+</span></span><span class="line"><span class="cl">cp <span class="nv">$BASEPATH</span>/docker/* /etc/docker/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">cp <span class="nv">$BASEPATH</span>/systemd/* /etc/systemd/system
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sync
+</span></span><span class="line"><span class="cl">groupadd -f docker <span class="o">||</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">systemctl daemon-reload
+</span></span><span class="line"><span class="cl">systemctl <span class="nb">enable</span> docker
+</span></span><span class="line"><span class="cl">systemctl restart docker
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>另外，如果需要使用 docker-compose，可以从 <a href="https://github.com/docker/compose/releases/" target="_blank" rel="noopener noreffer ">docker/compose</a> 主页下载静态编译的 docker-compose 即可。</p>
+<h2 id="方法-2-nerdctl">方法 2: nerdctl</h2>
+<p>docker 的内存占用相对来说还是过于复杂，进程会包含 containerd + dockerd，并且 dockerd 本身就包含了自己的网络实现和 overlay 存储实现。而 containerd + ctr 即可完成对日常容器镜像的管理等工作，再配合 nerdctl 兼容部分 docker 的命令行参数，如果只是在类似云主机中跑服务的场景，完全可以使用此方法替换。</p>
+<p>nerdctl 的安装非常简单，再 <a href="https://github.com/containerd/nerdctl/releases" target="_blank" rel="noopener noreffer ">nerdctl release</a> 中下载<code>nerdctl-full-*-linux-*.tar.gz</code>, ``</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget -O nerdctl-full-1.7.6-linux-amd64.tar.gz https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-full-1.7.6-linux-amd64.tar.gz
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">tar -zvxf nerdctl-full-*-linux-amd64.tar.gz -C /usr/local
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> --now containerd
+</span></span><span class="line"><span class="cl">sudo systemctl <span class="nb">enable</span> --now buildkit <span class="c1"># 如果需要 docker build，则需要启动他</span>
+</span></span><span class="line"><span class="cl">nerdctl run --debug-full -d --name nginx -p 80:80 nginx:alpine
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>nerdctl 包含 compose 命令，可以直接使用。</p>
+<h2 id="方法-3-truenas-scale-中使用类-docker-的体验">方法 3: truenas scale 中使用类 docker 的体验</h2>
+<p>玩 <a href="https://www.truenas.com/truenas-scale/" target="_blank" rel="noopener noreffer ">truenas scale</a> 的小伙伴会了解到，truenas scale 中实际启动了一个单节点的 k3s 作为容器引擎。很多小伙伴反馈 k3s 的学习门槛过高了。truenas scale 虽然是基于 debian 的 linux 发行版，实际使用的包管理不是 apt，且不能使用 apt 安装其他的包，具体信息如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt
+</span></span><span class="line"><span class="cl">Package management tools are disabled on TrueNAS appliances.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Attempting to update SCALE with apt or methods other than the SCALE web
+</span></span><span class="line"><span class="cl">interface can result in a nonfunctional system.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>经过调研，可以使用 <a href="https://github.com/Jip-Hop/ubernerd/" target="_blank" rel="noopener noreffer ">这个项目</a> ，使用 nerdctl 作为 客户端访问隔离环境中的 containerd，做到与 方法 2 中描述的相同使用体验。</p>
+<p>再我的 truenas 中，我的工作流是本地使用 docker-compose 将需要配置的服务写好，然后 rsync 到 trunenas 上，<code>nerdctl compose up -d</code> 完事。如果添加的 <code>alias docker=nerdctl</code>, 几乎可以忽略掉 nerdctl 的存在，当成 docker 使用即可。</p>
+<h2 id="总结">总结</h2>
+<p>如上，请欢快的使用 docker / containerd 吧。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-05-07</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/install-docker-engine-from-bin/" data-title="离线安装开箱即用的容器运行环境运行环境" data-hashtags="docker,linux,nerdctl,containerd,ops"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/install-docker-engine-from-bin/" data-hashtag="docker"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/install-docker-engine-from-bin/" data-title="离线安装开箱即用的容器运行环境运行环境"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/install-docker-engine-from-bin/" data-title="离线安装开箱即用的容器运行环境运行环境"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/install-docker-engine-from-bin/" data-title="离线安装开箱即用的容器运行环境运行环境"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/nerdctl/">nerdctl</a>,&nbsp;<a href="/tags/containerd/">containerd</a>,&nbsp;<a href="/tags/ops/">ops</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/kafka-sarama-go-fetch-metadta-write-broken-pipe/" class="prev" rel="prev" title="Kafka Sarama Go Fetch Metadta Write Broken Pipe"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Kafka Sarama Go Fetch Metadta Write Broken Pipe</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

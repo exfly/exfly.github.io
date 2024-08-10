@@ -173,7 +173,8 @@
 <h3 id="项目背景">项目背景</h3>
 <p>客户要求 arm64 机器的需求。</p>
 <h2 id="arm64-指令集特性">ARM64 指令集特性</h2>
-<p><img
+<p>
+    <img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/kunpeng-arm64/images/kunpeng-arm64/image.png"
@@ -341,7 +342,8 @@
 <p>对于纯 golang 编写的项目，可通过简单的修改 CICD 适配构建 arm64 架构的可执行文件即可。<code>GOOS=linux GOARCH=arm64 go build ...</code></p>
 <p>对于使用了 cgo 的项目，则需要付出更多努力。使用 gcc 在 go build 过程中编译的项目，需要修改编译方式，做 <a href="https://github.com/FiloSottile/homebrew-musl-cross" target="_blank" rel="noopener noreffer ">crosscompile</a>，一个例子比如使用了 <a href="https://github.com/mattn/go-sqlite3/tree/master?tab=readme-ov-file#cross-compile" target="_blank" rel="noopener noreffer ">sqlite</a> 的项目交叉编译。一些项目在项目中已经将多种架构的动态链接库/静态链接库文件 commit 到仓库中，运行时直接使用即可，比如 <a href="https://github.com/confluentinc/confluent-kafka-go/tree/master/kafka/librdkafka_vendor" target="_blank" rel="noopener noreffer ">confluent-kafka-go</a>。部分使用了 cgo 项目可能不支持 arm64，比如 <code>github.com/bytedance/sonic</code> 是不支持 arm64 的，需要寻找替代方案，比如替换成标准库或者其他支持 arm64 的库（如 <code>github.com/json-iterator/go</code>）</p>
 <h3 id="python-项目的适配和修改">Python 项目的适配和修改</h3>
-<p><img
+<p>
+    <img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/kunpeng-arm64/images/kunpeng-arm64/image-2.png"
@@ -353,7 +355,8 @@
 <p>含 C 模块或全 C 模块的迁移，下载模块源码，并使用 <code>-fsigned-char</code> 选项重新编译。另外 python 官方提供了一种能够方便构建不同架构的 wheel 的基础设施（基于 docker）<a href="https://github.com/pypa/manylinux" target="_blank" rel="noopener noreffer ">pypa/manylinux</a></p>
 <h3 id="java-应用的迁移考虑">Java 应用的迁移考虑</h3>
 <p><a href="https://zh.wikipedia.org/wiki/Java" target="_blank" rel="noopener noreffer ">Java</a> 不同于一般的编译语言或解释型语言。它首先将源代码编译成字节码，再依赖各种不同平台上的虚拟机来解释执行字节码，从而具有“一次编写，到处运行”的跨平台特性。但是 java 支持的 <a href="https://zh.wikipedia.org/wiki/Java%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener noreffer ">JNI</a> 可以在 java 中调用 c/c++ 等其他语言编写的动态链接库，这种本地程序是不跨平台的，导致不能直接采用更换 arm64 jre 不修改程序的方式做迁移。</p>
-<p><img
+<p>
+    <img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/kunpeng-arm64/images/kunpeng-arm64/image-1.png"
@@ -374,7 +377,8 @@
 <li>由于 ARM 和 x86 指令集的差异性，导致 JDK 的 JIT 编译存在差异。可以通过设置参数 ReservedCodeCacheSize，调整 CodeCache 大小。</li>
 </ol>
 <h3 id="cc-等编译型语言如何迁移">C/C++ 等编译型语言如何迁移</h3>
-<p><img
+<p>
+    <img
         class="lazyload"
         src="/svg/loading.min.svg"
         data-src="/kunpeng-arm64/images/kunpeng-arm64/image-3.png"

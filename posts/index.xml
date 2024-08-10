@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>我是如何将 kafka 消费吞吐提高 100 倍</title>
+    <link>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</link>
+    <pubDate>Mon, 13 May 2024 01:28:28 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</guid>
+    <description><![CDATA[<p>文章简介：我是如何将 kafka 消费吞吐提高 100 倍的</p>]]></description>
+</item>
+<item>
     <title>离线安装开箱即用的容器运行环境运行环境</title>
     <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
     <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</guid>
     <description><![CDATA[<p>文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</p>]]></description>
-</item>
-<item>
-    <title>tcpdump 可以收到包，udp server 无法收包，最终发现是 uRPF 的锅 DRAFT</title>
-    <link>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</link>
-    <pubDate>Thu, 09 Mar 2023 10:00:05 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</guid>
-    <description><![CDATA[<p>文章简介：tcpdump 可以收到包，udp server 无法收包，简单的排查过程</p>]]></description>
 </item>
 </channel>
 </rss>

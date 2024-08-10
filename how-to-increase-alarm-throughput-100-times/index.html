@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>我是如何将 kafka 消费吞吐提高 100 倍 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="我是如何将 kafka 消费吞吐提高 100 倍" />
+<meta property="og:description" content="文章简介：我是如何将 kafka 消费吞吐提高 100 倍的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-13T01:28:28+00:00" />
+<meta property="article:modified_time" content="2024-05-13T01:28:28+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="我是如何将 kafka 消费吞吐提高 100 倍"/>
+<meta name="twitter:description" content="文章简介：我是如何将 kafka 消费吞吐提高 100 倍的"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" /><link rel="prev" href="https://exfly.github.io/install-docker-engine-from-bin/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "我是如何将 kafka 消费吞吐提高 100 倍",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/how-to-increase-alarm-throughput-100-times\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  2660 ,
+        "url": "https:\/\/exfly.github.io\/how-to-increase-alarm-throughput-100-times\/","datePublished": "2024-05-13T01:28:28+00:00","dateModified": "2024-05-13T01:28:28+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/how-to-increase-alarm-throughput-100-times/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/how-to-increase-alarm-throughput-100-times/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">我是如何将 kafka 消费吞吐提高 100 倍</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-05-13">2024-05-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2660 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#分析原因">分析原因</a></li>
+    <li><a href="#都做了哪些事">都做了哪些事</a></li>
+    <li><a href="#达到的效果">达到的效果</a>
+      <ul>
+        <li><a href="#告警列表优化">告警列表优化</a></li>
+        <li><a href="#大屏大量使用的-count-优化">大屏大量使用的 count 优化</a></li>
+      </ul>
+    </li>
+    <li><a href="#告警消费吞吐如何优化">告警消费吞吐如何优化</a>
+      <ul>
+        <li><a href="#该如何优化">该如何优化</a>
+          <ul>
+            <li><a href="#优化数据库配置提高数据库本身的处理能力">优化数据库配置，提高数据库本身的处理能力</a></li>
+            <li><a href="#批量入库提高吞吐">批量入库提高吞吐</a></li>
+          </ul>
+        </li>
+        <li><a href="#如何做的告警消费批量入库">如何做的告警消费批量入库</a>
+          <ul>
+            <li><a href="#批量入库手动实现">批量入库手动实现</a></li>
+            <li><a href="#社区-dataloader-实现">社区 dataloader 实现</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#ref">REF</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：我是如何将 kafka 消费吞吐提高 100 倍的</p>
+<h2 id="背景">背景</h2>
+<ol>
+<li>告警入库/归档效率差，200 左右</li>
+<li>告警消费占用资源多，500w 下大量告警会直接压垮平台，平台主要业务 504 timeout</li>
+<li>告警频繁入库/归档情况下，postgres 数据库告警相关表空洞率达到 90% 以上，大量数据空洞拖慢数据库查询几个数据量</li>
+</ol>
+<h2 id="分析原因">分析原因</h2>
+<ol>
+<li>单表存储过多数据，单表超过 500w 行</li>
+<li>数据库插入更新删除频繁，postgres mvvc 与 autovacuum 机制没有及时触发，导致空洞率提高</li>
+<li>告警业务流程长，很多实时性要求不高的逻辑（告警自动化处置/统计）串在告警消费过程中，影响告警吞吐</li>
+<li>告警消费有大量小而频繁的查询，没有添加缓存，数据库占用大量 qps</li>
+<li>数据库使用默认配置，内存/cpu 没有充分使用</li>
+</ol>
+<h2 id="都做了哪些事">都做了哪些事</h2>
+<ol>
+<li>数据库配置调优</li>
+<li>告警基于时间分区，每天一个分区，归档每次处理一个分区，分区索引与并行查询，提高查询吞吐及稳定性</li>
+<li>告警消费流程重新梳理，拆成三个阶段，告警入库/告警统计/自动化处置; 告警消费过程不会因为告警自动化处置慢而影响到整体的吞吐</li>
+<li>告警涉及到多张表批量入库，提高吞吐，降低资源消耗</li>
+<li>告警归档同步到 hbase 中后，truncate 子表</li>
+<li>加 cache</li>
+<li>慢查询优化，优化 sql 及添加索引; 删除从未被使用过的索引</li>
+<li>消费程序单独一个进程，资源/故障隔离</li>
+<li>消费添加限流，提高稳定性</li>
+</ol>
+<h2 id="达到的效果">达到的效果</h2>
+<p>32 核 64GB 500w 告警下</p>
+<ol>
+<li>告警入库吞吐可以到 40000，比优化前高 2 个数量级</li>
+<li>告警列表取前 20 条数据 sql 提高 2500 倍；count 速度提高 27 倍；告警列表整体加载时间由 15s 缩短为 3s 以内，告警统计页面加载时间 504 timeout 优化到 15s 内</li>
+<li>数据库调整参数后吞吐提高三倍</li>
+<li>告警量 3000w 情况下服务可用，预期会存半年甚至更多的数据后服务依然可用</li>
+</ol>
+<h3 id="告警列表优化">告警列表优化</h3>
+<p>优化前</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">explain</span><span class="w"> </span><span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span><span class="w"> </span><span class="k">VERBOSE</span><span class="p">,</span><span class="w"> </span><span class="n">TIMING</span><span class="p">,</span><span class="n">COSTS</span><span class="p">,</span><span class="w"> </span><span class="n">BUFFERS</span><span class="p">,</span><span class="w"> </span><span class="n">SUMMARY</span><span class="p">)</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="s2">&#34;alarm&#34;</span><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="n">judged_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">judged_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">alarm</span><span class="p">.</span><span class="n">updated_at</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="n">nulls</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170415514.png"
+        data-srcset="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170415514.png, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170415514.png 1.5x, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170415514.png 2x"
+        data-sizes="auto"
+        alt="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170415514.png"
+        title="image-20230813170415514" width="1878" height="614" /></p>
+<p>优化后</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">exists</span><span class="w"> </span><span class="n">alarm_multiline_index</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">alarm</span><span class="w"> </span><span class="p">(</span><span class="n">created_at</span><span class="w"> </span><span class="k">desc</span><span class="p">,</span><span class="w"> </span><span class="n">updated_at</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="n">nulls</span><span class="w"> </span><span class="k">last</span><span class="p">,</span><span class="w"> </span><span class="n">judged_state</span><span class="p">,</span><span class="w"> </span><span class="n">alarm_level</span><span class="p">,</span><span class="w"> </span><span class="n">disposed_state</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170359600.png"
+        data-srcset="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170359600.png, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170359600.png 1.5x, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170359600.png 2x"
+        data-sizes="auto"
+        alt="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813170359600.png"
+        title="image-20230813170359600" width="1900" height="1408" /></p>
+<h3 id="大屏大量使用的-count-优化">大屏大量使用的 count 优化</h3>
+<p>17134.851/623.675 = 27 倍</p>
+<p>优化前：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">explain (ANALYZE, VERBOSE, TIMING,COSTS, BUFFERS, SUMMARY)  SELECT COUNT(&#34;id&#34;) FROM &#34;alarm&#34; WHERE created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39; AND created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;;
+</span></span><span class="line"><span class="cl">                                                                                                   QUERY PLAN
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">---------------
+</span></span><span class="line"><span class="cl"> Finalize Aggregate  (cost=840896.65..840896.66 rows=1 width=8) (actual time=17098.462..17134.785 rows=1 loops=1)
+</span></span><span class="line"><span class="cl">   Output: count(alarm.id)
+</span></span><span class="line"><span class="cl">   Buffers: shared hit=5615853 read=105541 written=1
+</span></span><span class="line"><span class="cl">   -&gt;  Gather  (cost=840896.23..840896.64 rows=4 width=8) (actual time=17098.338..17134.774 rows=5 loops=1)
+</span></span><span class="line"><span class="cl">         Output: (PARTIAL count(alarm.id))
+</span></span><span class="line"><span class="cl">         Workers Planned: 4
+</span></span><span class="line"><span class="cl">         Workers Launched: 4
+</span></span><span class="line"><span class="cl">         Buffers: shared hit=5615853 read=105541 written=1
+</span></span><span class="line"><span class="cl">         -&gt;  Partial Aggregate  (cost=839896.23..839896.24 rows=1 width=8) (actual time=17094.127..17094.129 rows=1 loops=5)
+</span></span><span class="line"><span class="cl">               Output: PARTIAL count(alarm.id)
+</span></span><span class="line"><span class="cl">               Buffers: shared hit=5615853 read=105541 written=1
+</span></span><span class="line"><span class="cl">               Worker 0:  actual time=17093.145..17093.148 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=1478094 read=28657
+</span></span><span class="line"><span class="cl">               Worker 1:  actual time=17093.203..17093.205 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=1470692 read=28510
+</span></span><span class="line"><span class="cl">               Worker 2:  actual time=17093.147..17093.150 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=886771 read=16085
+</span></span><span class="line"><span class="cl">               Worker 3:  actual time=17093.167..17093.170 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=882627 read=16017 written=1
+</span></span><span class="line"><span class="cl">               -&gt;  Parallel Append  (cost=0.55..836170.65 rows=1490232 width=37) (actual time=0.946..17023.812 rows=1188508 loops=5)
+</span></span><span class="line"><span class="cl">                     Buffers: shared hit=5615853 read=105541 written=1
+</span></span><span class="line"><span class="cl">                     Worker 0:  actual time=1.212..17006.371 rows=1491562 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=1478094 read=28657
+</span></span><span class="line"><span class="cl">                     Worker 1:  actual time=0.939..17005.878 rows=1484942 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=1470692 read=28510
+</span></span><span class="line"><span class="cl">                     Worker 2:  actual time=0.814..17034.576 rows=986228 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=886771 read=16085
+</span></span><span class="line"><span class="cl">                     Worker 3:  actual time=0.471..17035.496 rows=982083 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=882627 read=16017 written=1
+</span></span><span class="line"><span class="cl">                     -&gt;  Parallel Index Only Scan using alarm_20230530_pkey on public.alarm_20230530 alarm_1  (cost=0.56..713942.31 rows=1157253 width=37) (actual time=0.796..14931.447 rows=919
+</span></span><span class="line"><span class="cl">379 loops=5)
+</span></span><span class="line"><span class="cl">                           Output: alarm_1.id
+</span></span><span class="line"><span class="cl">                           Index Cond: ((alarm_1.created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39;::timestamp with time zone) AND (alarm_1.created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;::timestamp wi
+</span></span><span class="line"><span class="cl">th time zone))
+</span></span><span class="line"><span class="cl">                           Heap Fetches: 296346
+</span></span><span class="line"><span class="cl">                           Buffers: shared hit=4552140 read=88971 written=1
+</span></span><span class="line"><span class="cl">                           Worker 0:  actual time=1.211..16900.689 rows=1491562 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=1478094 read=28657
+</span></span><span class="line"><span class="cl">                           Worker 1:  actual time=0.938..16900.152 rows=1484942 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=1470692 read=28510
+</span></span><span class="line"><span class="cl">                           Worker 2:  actual time=0.501..13618.651 rows=537258 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=532080 read=10556
+</span></span><span class="line"><span class="cl">                           Worker 3:  actual time=1.098..13619.421 rows=536621 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=530559 read=10531 written=1
+</span></span><span class="line"><span class="cl">                     -&gt;  Parallel Index Only Scan using alarm_20230531_pkey on public.alarm_20230531 alarm_2  (cost=0.55..114777.18 rows=332979 width=37) (actual time=0.860..3347.784 rows=44854
+</span></span><span class="line"><span class="cl">8 loops=3)
+</span></span><span class="line"><span class="cl">                           Output: alarm_2.id
+</span></span><span class="line"><span class="cl">                           Index Cond: ((alarm_2.created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39;::timestamp with time zone) AND (alarm_2.created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;::timestamp wi
+</span></span><span class="line"><span class="cl">th time zone))
+</span></span><span class="line"><span class="cl">                           Heap Fetches: 68366
+</span></span><span class="line"><span class="cl">                           Buffers: shared hit=1063713 read=16570
+</span></span><span class="line"><span class="cl">                           Worker 2:  actual time=0.813..3346.199 rows=448970 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=354691 read=5529
+</span></span><span class="line"><span class="cl">                           Worker 3:  actual time=0.470..3347.495 rows=445462 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=352068 read=5486
+</span></span><span class="line"><span class="cl"> Query Identifier: 4802739785007802293
+</span></span><span class="line"><span class="cl"> Planning:
+</span></span><span class="line"><span class="cl">   Buffers: shared hit=14
+</span></span><span class="line"><span class="cl"> Planning Time: 0.299 ms
+</span></span><span class="line"><span class="cl"> Execution Time: 17134.851 ms
+</span></span><span class="line"><span class="cl">(56 rows)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>优化后：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">pedestal=# explain (ANALYZE, VERBOSE, TIMING,COSTS, BUFFERS, SUMMARY)  SELECT COUNT(*) FROM &#34;alarm&#34; WHERE created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39; AND created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;;
+</span></span><span class="line"><span class="cl">                                                                                                     QUERY PLAN
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">--------------------
+</span></span><span class="line"><span class="cl"> Finalize Aggregate  (cost=314048.18..314048.19 rows=1 width=8) (actual time=606.301..623.625 rows=1 loops=1)
+</span></span><span class="line"><span class="cl">   Output: count(*)
+</span></span><span class="line"><span class="cl">   Buffers: shared hit=2199668 read=19636
+</span></span><span class="line"><span class="cl">   -&gt;  Gather  (cost=314047.76..314048.17 rows=4 width=8) (actual time=605.925..623.616 rows=5 loops=1)
+</span></span><span class="line"><span class="cl">         Output: (PARTIAL count(*))
+</span></span><span class="line"><span class="cl">         Workers Planned: 4
+</span></span><span class="line"><span class="cl">         Workers Launched: 4
+</span></span><span class="line"><span class="cl">         Buffers: shared hit=2199668 read=19636
+</span></span><span class="line"><span class="cl">         -&gt;  Partial Aggregate  (cost=313047.76..313047.77 rows=1 width=8) (actual time=601.804..601.805 rows=1 loops=5)
+</span></span><span class="line"><span class="cl">               Output: PARTIAL count(*)
+</span></span><span class="line"><span class="cl">               Buffers: shared hit=2199668 read=19636
+</span></span><span class="line"><span class="cl">               Worker 0:  actual time=600.796..600.798 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=587645 read=3242
+</span></span><span class="line"><span class="cl">               Worker 1:  actual time=600.942..600.943 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=599411 read=3326
+</span></span><span class="line"><span class="cl">               Worker 2:  actual time=600.829..600.830 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=324544 read=4305
+</span></span><span class="line"><span class="cl">               Worker 3:  actual time=600.910..600.912 rows=1 loops=1
+</span></span><span class="line"><span class="cl">                 Buffers: shared hit=326520 read=4134
+</span></span><span class="line"><span class="cl">               -&gt;  Parallel Append  (cost=0.43..309322.18 rows=1490232 width=0) (actual time=0.614..545.485 rows=1188508 loops=5)
+</span></span><span class="line"><span class="cl">                     Buffers: shared hit=2199668 read=19636
+</span></span><span class="line"><span class="cl">                     Worker 0:  actual time=1.625..540.640 rows=1226383 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=587645 read=3242
+</span></span><span class="line"><span class="cl">                     Worker 1:  actual time=1.312..541.209 rows=1250688 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=599411 read=3326
+</span></span><span class="line"><span class="cl">                     Worker 2:  actual time=0.065..548.210 rows=1123038 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=324544 read=4305
+</span></span><span class="line"><span class="cl">                     Worker 3:  actual time=0.051..548.363 rows=1117758 loops=1
+</span></span><span class="line"><span class="cl">                       Buffers: shared hit=326520 read=4134
+</span></span><span class="line"><span class="cl">                     -&gt;  Parallel Index Only Scan using alarm_20230530_created_at_idx on public.alarm_20230530 alarm_1  (cost=0.43..253250.08 rows=1157253 width=0) (actual time=0.614..324.555 r
+</span></span><span class="line"><span class="cl">ows=919379 loops=5)
+</span></span><span class="line"><span class="cl">                           Index Cond: ((alarm_1.created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39;::timestamp with time zone) AND (alarm_1.created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;::timestamp wi
+</span></span><span class="line"><span class="cl">th time zone))
+</span></span><span class="line"><span class="cl">                           Heap Fetches: 529504
+</span></span><span class="line"><span class="cl">                           Buffers: shared hit=2118759 read=12477
+</span></span><span class="line"><span class="cl">                           Worker 0:  actual time=1.623..461.733 rows=1226383 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=587645 read=3242
+</span></span><span class="line"><span class="cl">                           Worker 1:  actual time=1.311..463.024 rows=1250688 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=599411 read=3326
+</span></span><span class="line"><span class="cl">                           Worker 2:  actual time=0.074..233.037 rows=692071 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=298845 read=1935
+</span></span><span class="line"><span class="cl">                           Worker 3:  actual time=0.049..233.393 rows=692036 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=301847 read=1916
+</span></span><span class="line"><span class="cl">                     -&gt;  Parallel Index Only Scan using alarm_20230531_created_at_idx on public.alarm_20230531 alarm_2  (cost=0.43..48620.94 rows=332979 width=0) (actual time=0.044..242.691 row
+</span></span><span class="line"><span class="cl">s=448548 loops=3)
+</span></span><span class="line"><span class="cl">                           Index Cond: ((alarm_2.created_at &gt;= &#39;2023-05-30 07:34:46.002537+00&#39;::timestamp with time zone) AND (alarm_2.created_at &lt; &#39;2023-05-31 07:34:46.002537+00&#39;::timestamp wi
+</span></span><span class="line"><span class="cl">th time zone))
+</span></span><span class="line"><span class="cl">                           Heap Fetches: 102772
+</span></span><span class="line"><span class="cl">                           Buffers: shared hit=80909 read=7159
+</span></span><span class="line"><span class="cl">                           Worker 2:  actual time=0.064..243.537 rows=430967 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=25699 read=2370
+</span></span><span class="line"><span class="cl">                           Worker 3:  actual time=0.050..243.304 rows=425722 loops=1
+</span></span><span class="line"><span class="cl">                             Buffers: shared hit=24673 read=2218
+</span></span><span class="line"><span class="cl"> Query Identifier: 8664734888486988169
+</span></span><span class="line"><span class="cl"> Planning:
+</span></span><span class="line"><span class="cl">   Buffers: shared hit=14
+</span></span><span class="line"><span class="cl"> Planning Time: 0.321 ms
+</span></span><span class="line"><span class="cl"> Execution Time: 623.675 ms
+</span></span><span class="line"><span class="cl">(54 rows)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="告警消费吞吐如何优化">告警消费吞吐如何优化</h2>
+<h3 id="该如何优化">该如何优化</h3>
+<h4 id="优化数据库配置提高数据库本身的处理能力">优化数据库配置，提高数据库本身的处理能力</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">deadlock_timeout = 2s
+</span></span><span class="line"><span class="cl">max_connections = 500
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># 16 核 8 GB 内存
+</span></span><span class="line"><span class="cl">shared_buffers = 2GB
+</span></span><span class="line"><span class="cl">effective_cache_size = 6GB
+</span></span><span class="line"><span class="cl">maintenance_work_mem = 1GB
+</span></span><span class="line"><span class="cl">effective_io_concurrency = 2
+</span></span><span class="line"><span class="cl">bgwriter_lru_maxpages = 500
+</span></span><span class="line"><span class="cl">wal_buffers = 32MB
+</span></span><span class="line"><span class="cl">max_wal_size = 8GB
+</span></span><span class="line"><span class="cl">min_wal_size = 4GB
+</span></span><span class="line"><span class="cl">work_mem = 8MB
+</span></span><span class="line"><span class="cl">max_worker_processes = 16
+</span></span><span class="line"><span class="cl">max_parallel_workers_per_gather = 4
+</span></span><span class="line"><span class="cl">max_parallel_workers = 16
+</span></span><span class="line"><span class="cl">max_parallel_maintenance_workers = 4
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>提高 pg 内存使用量</li>
+<li>提高 pg cpu 使用量，sql 并行查询</li>
+</ol>
+<h4 id="批量入库提高吞吐">批量入库提高吞吐</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">AlarmSize</span>  <span class="p">=</span> <span class="mi">50000</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">AlarmBatch</span> <span class="p">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// go test -timeout 30s -run ^TestSingleInsert$ github.com/exfly/alarmopt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">TestSingleInsert</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">AutoMigrate</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Alarm</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="p">=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">Exec</span><span class="p">(</span><span class="s">&#34;truncate alarm;&#34;</span><span class="p">).</span><span class="nx">Error</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">alarms</span> <span class="o">:=</span> <span class="nf">testGenAlarm</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">AlarmSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="p">=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">Debug</span><span class="p">().</span><span class="nf">CreateInBatches</span><span class="p">(</span><span class="nx">alarms</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span><span class="nx">Error</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// go test -timeout 30s -run ^TestBatchInsert$ github.com/exfly/alarmopt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">TestBatchInsert</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">AutoMigrate</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Alarm</span><span class="p">{})</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="p">=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">Exec</span><span class="p">(</span><span class="s">&#34;truncate alarm;&#34;</span><span class="p">).</span><span class="nx">Error</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">alarms</span> <span class="o">:=</span> <span class="nf">testGenAlarm</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">AlarmSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">err</span> <span class="p">=</span> <span class="nx">DB</span><span class="p">.</span><span class="nf">Debug</span><span class="p">().</span><span class="nf">CreateInBatches</span><span class="p">(</span><span class="nx">alarms</span><span class="p">,</span> <span class="nx">AlarmBatch</span><span class="p">).</span><span class="nx">Error</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">require</span><span class="p">.</span><span class="nf">NoError</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">go <span class="nb">test</span> -timeout 30s -run ^TestSingleInsert$ github.com/exfly/alarmopt
+</span></span><span class="line"><span class="cl">ok      github.com/exfly/alarmopt       20.156s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">go <span class="nb">test</span> -timeout 30s -run ^TestBatchInsert$ github.com/exfly/alarmopt
+</span></span><span class="line"><span class="cl">ok      github.com/exfly/alarmopt       0.551s
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>20.156/0.551 = 36.58 倍</p>
+<h3 id="如何做的告警消费批量入库">如何做的告警消费批量入库</h3>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/how-to-increase-alarm-throughput-100-times/business_graph.svg"
+        data-srcset="/how-to-increase-alarm-throughput-100-times/business_graph.svg, /how-to-increase-alarm-throughput-100-times/business_graph.svg 1.5x, /how-to-increase-alarm-throughput-100-times/business_graph.svg 2x"
+        data-sizes="auto"
+        alt="/how-to-increase-alarm-throughput-100-times/business_graph.svg"
+        title="脱密后的业务流程" /></p>
+<p>告警消费是从 kafka 中消费数据，见如下代码。Kafka 消息传递采用的方式是定时从 Server 中 pull Message，一次 pull 会拉多条数据，但是 sarama 的 ConsumerGroup 暴漏出的 interface <code>sarama.ConsumerGroupClaim</code> 中没有办法一次性获得整批数据，需要实现这部分聚合逻辑。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">handler</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">actPool</span> <span class="o">*</span><span class="nx">ants</span><span class="p">.</span><span class="nx">PoolWithFunc</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">consumer</span> <span class="o">*</span><span class="nx">handler</span><span class="p">)</span> <span class="nf">Setup</span><span class="p">(</span><span class="nx">session</span> <span class="nx">sarama</span><span class="p">.</span><span class="nx">ConsumerGroupSession</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">consumer</span> <span class="o">*</span><span class="nx">handler</span><span class="p">)</span> <span class="nf">Cleanup</span><span class="p">(</span><span class="nx">session</span> <span class="nx">sarama</span><span class="p">.</span><span class="nx">ConsumerGroupSession</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">consumer</span> <span class="o">*</span><span class="nx">handler</span><span class="p">)</span> <span class="nf">ConsumeClaim</span><span class="p">(</span><span class="nx">session</span> <span class="nx">sarama</span><span class="p">.</span><span class="nx">ConsumerGroupSession</span><span class="p">,</span> <span class="nx">claim</span> <span class="nx">sarama</span><span class="p">.</span><span class="nx">ConsumerGroupClaim</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="k">for</span> <span class="nx">message</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">claim</span><span class="p">.</span><span class="nf">Messages</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">consumer</span><span class="p">.</span><span class="nx">actPool</span><span class="p">.</span><span class="nf">Invoke</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="nx">ants</span><span class="p">.</span><span class="nx">ErrPoolClosed</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">   <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">session</span><span class="p">.</span><span class="nf">MarkMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"> <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>需要的聚合逻辑如下所述：</p>
+<ol>
+<li>从 chan 中一次拿出一个 Messsage</li>
+<li>多条消息按照如下规则聚合到一起
+<ol>
+<li>当数量达到 N 个时</li>
+<li>上一次发送数据到当前时间超过 T 时</li>
+</ol>
+</li>
+</ol>
+<h4 id="批量入库手动实现">批量入库手动实现</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;log/slog&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;sync&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;testing&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">logger</span> <span class="p">=</span> <span class="nx">slog</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="nx">slog</span><span class="p">.</span><span class="nf">NewTextHandler</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">slog</span><span class="p">.</span><span class="nx">HandlerOptions</span><span class="p">{</span><span class="nx">AddSource</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">Level</span><span class="p">:</span> <span class="nx">slog</span><span class="p">.</span><span class="nx">LevelDebug</span><span class="p">}))</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Alarm</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">ID</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">batchInsert</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">do</span>           <span class="kd">func</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="p">[]</span><span class="nx">Alarm</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">interval</span>     <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">maxBatchSize</span> <span class="kt">int64</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">buf</span>  <span class="p">[]</span><span class="nx">Alarm</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">batchInsert</span><span class="p">)</span> <span class="nf">Do</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">in</span> <span class="nx">Alarm</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">b</span><span class="p">.</span><span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">ticker</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">NewTicker</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">interval</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">for</span> <span class="k">range</span> <span class="nx">ticker</span><span class="p">.</span><span class="nx">C</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">b</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nf">TryLock</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">buf</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;timer do&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">b</span><span class="p">.</span><span class="nf">do</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">       <span class="nx">logger</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="s">&#34;in ticker do failed&#34;</span><span class="p">,</span> <span class="s">&#34;err&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">       <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">     <span class="p">}</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">b</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">   <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}()</span>
+</span></span><span class="line"><span class="cl"> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">b</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"> <span class="k">defer</span> <span class="nx">b</span><span class="p">.</span><span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="k">if</span> <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">Alarm</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">b</span><span class="p">.</span><span class="nx">maxBatchSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">buf</span><span class="p">,</span> <span class="nx">in</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">buf</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">maxBatchSize</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">logger</span><span class="p">.</span><span class="nf">Info</span><span class="p">(</span><span class="s">&#34;realtime do&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">b</span><span class="p">.</span><span class="nf">do</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">logger</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="s">&#34;do failed&#34;</span><span class="p">,</span> <span class="s">&#34;err&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">b</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"> <span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813202917059.png"
+        data-srcset="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813202917059.png, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813202917059.png 1.5x, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813202917059.png 2x"
+        data-sizes="auto"
+        alt="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813202917059.png"
+        title="image-20230813202917059" width="1928" height="1284" /></p>
+<h4 id="社区-dataloader-实现">社区 dataloader 实现</h4>
+<blockquote>
+<p>dataloader 来资源 Facebook 的 graphql，为了解决其 N+1 问题出现的</p>
+<p>go 重的 Dataloader 实现：<a href="https://github.com/graph-gophers/dataloader/tree/master" target="_blank" rel="noopener noreffer ">https://github.com/graph-gophers/dataloader/tree/master</a></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">alarmopt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;testing&#34;</span>
+</span></span><span class="line"><span class="cl"> <span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">dataloader</span> <span class="s">&#34;github.com/graph-gophers/dataloader/v7&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestDataloaderNoCache</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">batchFunc</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">_</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">keys</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="o">*</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">results</span> <span class="p">[]</span><span class="o">*</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// do some pretend work to resolve keys
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">k</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">keys</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">results</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]{</span><span class="nx">Data</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">Alarm</span><span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="nx">k</span><span class="p">}})</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">logger</span><span class="p">.</span><span class="nf">Debug</span><span class="p">(</span><span class="s">&#34;real do&#34;</span><span class="p">,</span> <span class="s">&#34;ids&#34;</span><span class="p">,</span> <span class="nx">keys</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">results</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">cache</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">NoCache</span><span class="p">[</span><span class="kt">int</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">]{}</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">loader</span> <span class="o">:=</span> <span class="nx">dataloader</span><span class="p">.</span><span class="nf">NewBatchedLoader</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">batchFunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithCache</span><span class="p">[</span><span class="kt">int</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="nx">cache</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithWait</span><span class="p">[</span><span class="kt">int</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span><span class="mi">3</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithBatchCapacity</span><span class="p">[</span><span class="kt">int</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="mi">5</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithInputCapacity</span><span class="p">[</span><span class="kt">int</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">logger</span><span class="p">.</span><span class="nf">Debug</span><span class="p">(</span><span class="s">&#34;submit&#34;</span><span class="p">,</span> <span class="s">&#34;id&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">loader</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813205823344.png"
+        data-srcset="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813205823344.png, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813205823344.png 1.5x, /how-to-increase-alarm-throughput-100-times/README.assets/image-20230813205823344.png 2x"
+        data-sizes="auto"
+        alt="/how-to-increase-alarm-throughput-100-times/README.assets/image-20230813205823344.png"
+        title="image-20230813205823344" width="822" height="1070" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestAlarmDataloaderNoCacheRetResult</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">batchFunc</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">(</span><span class="nx">_</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">keys</span> <span class="p">[]</span><span class="nx">Alarm</span><span class="p">)</span> <span class="p">[]</span><span class="o">*</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">results</span> <span class="p">[]</span><span class="o">*</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// do some pretend work to resolve keys
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">k</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">keys</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">results</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">Result</span><span class="p">[</span><span class="o">*</span><span class="nx">Alarm</span><span class="p">]{</span><span class="nx">Data</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">Alarm</span><span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="nx">k</span><span class="p">.</span><span class="nx">ID</span><span class="p">}})</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">logger</span><span class="p">.</span><span class="nf">Debug</span><span class="p">(</span><span class="s">&#34;real do&#34;</span><span class="p">,</span> <span class="s">&#34;ids&#34;</span><span class="p">,</span> <span class="nx">keys</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">results</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nx">cache</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">dataloader</span><span class="p">.</span><span class="nx">NoCache</span><span class="p">[</span><span class="nx">Alarm</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">]{}</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">loader</span> <span class="o">:=</span> <span class="nx">dataloader</span><span class="p">.</span><span class="nf">NewBatchedLoader</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">batchFunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithCache</span><span class="p">[</span><span class="nx">Alarm</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="nx">cache</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithWait</span><span class="p">[</span><span class="nx">Alarm</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="o">*</span><span class="mi">3</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithBatchCapacity</span><span class="p">[</span><span class="nx">Alarm</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="mi">5</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dataloader</span><span class="p">.</span><span class="nx">WithInputCapacity</span><span class="p">[</span><span class="nx">Alarm</span><span class="p">,</span> <span class="o">*</span><span class="nx">Alarm</span><span class="p">](</span><span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">50</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">logger</span><span class="p">.</span><span class="nf">Debug</span><span class="p">(</span><span class="s">&#34;submit&#34;</span><span class="p">,</span> <span class="s">&#34;id&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">loader</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="nx">Alarm</span><span class="p">{</span><span class="nx">ID</span><span class="p">:</span> <span class="nx">i</span><span class="p">})()</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">t</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">_</span> <span class="p">=</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="ref">REF</h2>
+<ul>
+<li><a href="https://www.herodotus.cn/knowledge/postgresql.html#_8-%E6%9B%B4%E5%8A%A0%E8%AF%95%E7%94%A8%E4%BA%8E%E7%AE%80%E5%8D%95%E7%9A%84%E5%9C%BA%E6%99%AF" target="_blank" rel="noopener noreffer ">为什么默认使用 PostgreSQL 数据库？</a></li>
+</ul>
+<!-- 主要业务.drawio.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile modified="2023-08-13T08:45:41.279Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" etag="AK-ZYRg-YOsoDt7UgU-L" version="21.6.2" type="atlas">
+  <diagram id="S7e_IQsFRIMayySLW0Dx" name="第 1 页">
+    <mxGraphModel dx="1826" dy="709" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4qFNGakCyiQWUS1txvbO-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="4qFNGakCyiQWUS1txvbO-4" target="4qFNGakCyiQWUS1txvbO-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-7" value="1 原始日志" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-6" vertex="1" connectable="0">
+          <mxGeometry x="-0.1833" y="3" relative="1" as="geometry">
+            <mxPoint x="11" y="-7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-4" value="matrix" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-760" y="240" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4qFNGakCyiQWUS1txvbO-5" target="4qFNGakCyiQWUS1txvbO-8" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-540" y="200" />
+              <mxPoint x="-540" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-11" value="2 原始日志" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-9" vertex="1" connectable="0">
+          <mxGeometry x="-0.05" relative="1" as="geometry">
+            <mxPoint y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-14" value="4 日志" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" source="4qFNGakCyiQWUS1txvbO-5" target="4qFNGakCyiQWUS1txvbO-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-540" y="300" />
+              <mxPoint x="-540" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4qFNGakCyiQWUS1txvbO-5" target="4qFNGakCyiQWUS1txvbO-20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-420" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-22" value="6 告警" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-18" vertex="1" connectable="0">
+          <mxGeometry x="-0.1667" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-5" value="kafka" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-560" y="240" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4qFNGakCyiQWUS1txvbO-8" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-500" y="240" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-500" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-12" value="3 日志" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-10" vertex="1" connectable="0">
+          <mxGeometry x="-0.075" y="-1" relative="1" as="geometry">
+            <mxPoint y="-7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-8" value="etlgo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-560" y="120" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4qFNGakCyiQWUS1txvbO-13" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-500" y="280" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="-500" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-16" value="5 告警" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-15" vertex="1" connectable="0">
+          <mxGeometry x="-0.0286" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-13" value="关联分析" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-560" y="350" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="4qFNGakCyiQWUS1txvbO-20" target="4qFNGakCyiQWUS1txvbO-21" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-24" value="7 展示数据" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4qFNGakCyiQWUS1txvbO-23" vertex="1" connectable="0">
+          <mxGeometry x="-0.05" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-20" value="db" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="-420" y="235" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="YAKyYZuPmZJA5Eko2fNT-2" value="8 黑 ip 自动处置" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="4qFNGakCyiQWUS1txvbO-21" target="YAKyYZuPmZJA5Eko2fNT-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="4qFNGakCyiQWUS1txvbO-21" value="pedestal" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-280" y="240" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YAKyYZuPmZJA5Eko2fNT-1" value="soar" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-90" y="240" width="80" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+--></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-05-13</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" data-title="我是如何将 kafka 消费吞吐提高 100 倍"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" data-title="我是如何将 kafka 消费吞吐提高 100 倍"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" data-title="我是如何将 kafka 消费吞吐提高 100 倍"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" data-title="我是如何将 kafka 消费吞吐提高 100 倍"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/install-docker-engine-from-bin/" class="prev" rel="prev" title="离线安装开箱即用的容器运行环境运行环境"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>离线安装开箱即用的容器运行环境运行环境</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

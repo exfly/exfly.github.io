@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>golang 的 timer 在调整系统时间下的行为</title>
+    <link>https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/</link>
+    <pubDate>Sat, 10 Aug 2024 23:01:03 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/</guid>
+    <description><![CDATA[<p>文章简介：golang 的 timer 在调整系统时间下的行为</p>]]></description>
+</item>
+<item>
     <title>我是如何将 kafka 消费吞吐提高 100 倍</title>
     <link>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</link>
     <pubDate>Mon, 13 May 2024 01:28:28 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/portable-python/</guid>
     <description><![CDATA[<p>文章简介：如何配置一个跨 linux 发行版解压即用的 python 运行环境</p>]]></description>
-</item>
-<item>
-    <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</title>
-    <link>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</link>
-    <pubDate>Thu, 24 Aug 2023 19:50:29 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</guid>
-    <description><![CDATA[<p>文章简介：记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</p>]]></description>
 </item>
 </channel>
 </rss>

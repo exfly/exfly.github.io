@@ -4,32 +4,32 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>golang 的 timer 在调整系统时间下的行为 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="golang 的 timer 在调整系统时间下的行为" />
-<meta property="og:description" content="文章简介：golang 的 timer 在调整系统时间下的行为" />
+        <title>k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败" />
+<meta property="og:description" content="文章简介：k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败 问题排查及解决" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2024-08-10T23:01:03+00:00" />
-<meta property="article:modified_time" content="2024-08-11T09:10:10+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+<meta property="og:url" content="https://exfly.github.io/k8s-pod-random-killed/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+
+<meta property="og:site_name" content="ExflyBlog" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="golang 的 timer 在调整系统时间下的行为"/>
-<meta name="twitter:description" content="文章简介：golang 的 timer 在调整系统时间下的行为"/>
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败"/>
+<meta name="twitter:description" content="文章简介：k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败 问题排查及解决"/>
 <meta name="application-name" content="Exfly">
 <meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" /><link rel="prev" href="https://exfly.github.io/how-to-increase-alarm-throughput-100-times/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/k8s-pod-random-killed/" /><link rel="next" href="https://exfly.github.io/readme/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "golang 的 timer 在调整系统时间下的行为",
+        "headline": "k3s 环境在高 CPU\u0026\u0026Memory\u0026\u0026IO 负载下，pod 中的 container 随机健康检查失败",
         "inLanguage": "zh-CN",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https:\/\/exfly.github.io\/go-timer-behavior-in-adjucting-sysmte-time\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  544 ,
-        "url": "https:\/\/exfly.github.io\/go-timer-behavior-in-adjucting-sysmte-time\/","datePublished": "2024-08-10T23:01:03+00:00","dateModified": "2024-08-11T09:10:10+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@id": "https:\/\/exfly.github.io\/k8s-pod-random-killed\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, k3s, containerd, bugs","wordcount":  393 ,
+        "url": "https:\/\/exfly.github.io\/k8s-pod-random-killed\/","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
                 "@type": "Person",
@@ -60,7 +60,7 @@
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
                     <i class="fa fa-globe" aria-hidden="true"></i>                      
-                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/go-timer-behavior-in-adjucting-sysmte-time/" selected>简体中文</option></select>
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/k8s-pod-random-killed/" selected>简体中文</option></select>
                 </a></div>
         </div>
     </div>
@@ -94,7 +94,7 @@
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
                     <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
-                    <select class="language-select" onchange="location = this.value;"><option value="/go-timer-behavior-in-adjucting-sysmte-time/" selected>简体中文</option></select>
+                    <select class="language-select" onchange="location = this.value;"><option value="/k8s-pod-random-killed/" selected>简体中文</option></select>
                 </a></div>
     </div>
 </header><div class="search-dropdown desktop">
@@ -106,115 +106,72 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">golang 的 timer 在调整系统时间下的行为</h1><div class="post-meta">
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">k3s 环境在高 CPU&&Memory&&IO 负载下，pod 中的 container 随机健康检查失败</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-10">2024-08-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 544 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="0001-01-01">0001-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 393 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
                     <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
-            </div><div class="content" id="content"><p>文章简介：golang 的 timer 在调整系统时间下的行为</p>
-<p>在测试 k3s 重启自动续签证书时，发现手动调整机器时间后，calico Unauthorized，pod 因无法创建 network sandbox 无法启动，且可以看到 <code>calico-node -monitor-token</code> 没有执行。
-<code>calico-node -monitor-token</code> 是 calico 后台刷新证书的程序，，每次刷新都会 <a href="https://github.com/projectcalico/calico/blob/release-v3.28/node/pkg/cni/token_watch.go#L150" target="_blank" rel="noopener noreffer ">time.After</a> max(nextExpiration/4, 5s*4)。但是实测下来，直接手工调整时间后，calico 并没有主动重新申请 token，这里涉及到 time.After 的工作机制。</p>
-<p>linux 时间有 <code>CLOCK_REALTIME_COARSE</code>（墙上时钟） 和 <code>CLOCK_MONOTONIC_COARSE</code> （单调时钟），这两种时钟详细解释见 <a href="https://juejin.cn/post/6876243870468800525" target="_blank" rel="noopener noreffer ">这里</a>。</p>
-<p>从 golang 中找到的代码看到 time.After 调用栈见：</p>
+            </div><div class="content" id="content"><p>文章简介：k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败 问题排查及解决</p>
+<p>再大数据量下压测业务时候，发现随机业务 pod 中的 container failed（重启次数不断累积）</p>
+<p>kubectl describe pod postgres-xxxx</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>checkTimers<span class="o">](</span>https://github.com/golang/go/blob/release-branch.go1.22/src/runtime/proc.go#L3945<span class="o">)</span>
-</span></span><span class="line"><span class="cl">  <span class="o">[</span>runtime·nanotime1<span class="o">](</span>https://github.com/golang/go/blob/release-branch.go1.22/src/runtime/sys_linux_amd64.s#L258<span class="o">)</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">TODO
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>可以看到 golang 中的 timer.Timer 使用的是 CLOCK_MONOTONIC_COARSE 也即单调时钟，date 命令调整时间并不会体现在这里获得到的时间，所以调整时间并不会让 calico 按照墙上时钟快速触发。</p>
-<p>问题确认即可快速确认方案，如果为了规避时间问题，可以只重启 k3s 即可，如果期望可以快速使用 date 调整时间 calico 快速恢复，可以考虑重启 calico-node 进程重新生成 kubeconf。</p>
-<p><a href="https://github.com/golang/go/issues/12914" target="_blank" rel="noopener noreffer ">golang issue 12914</a> 中讨论了 nanotime 第三方无法调用，以及当前的进展。当前如果希望获得 单调时钟，可以参考 <a href="https://github.com/aristanetworks/goarista/commit/46272bfb1c042fc2825d312fe33d494e9d13dd6b" target="_blank" rel="noopener noreffer ">这个</a></p>
-<!--
-
-后边如果有时间，继续补充更详细的教程
-
-引言
-
-介绍Go语言定时器的基本概念。
-阐述系统时间调整对定时器行为可能产生的影响。
-Go定时器基础
-
-定时器的工作原理。
-time.After 和 time.Ticker 的使用方式。
-定时器的取消和重置。
-系统时间调整的概念
-
-系统时间调整的定义和常见场景。
-系统时间调整对应用程序的影响。
-Go定时器对系统时间调整的响应
-
-定时器在系统时间向前调整时的行为。
-定时器在系统时间向后调整时的行为。
-定时器在系统时间快速变化时的稳定性问题。
-实际案例分析
-
-通过代码示例展示定时器在系统时间调整下的表现。
-分析定时器行为与预期的差异。
-解决方案与最佳实践
-
-如何设计定时器以减少系统时间调整的影响。
-推荐的最佳实践和策略。
-测试和验证
-
-如何测试定时器在系统时间调整下的行为。
-使用Go的测试框架进行单元测试和集成测试。
-社区讨论和经验分享
-
-社区中关于此问题的看法和解决方案。
-其他开发者的经验和教训。
-结论
-
-总结Go定时器在系统时间调整下的行为特点。
-强调定时器设计的重要性和对系统时间调整的适应性。
-参考文献和资源
-
-列出用于编写博客文章的参考资料和资源链接。
-附录
-
-附加代码示例、图表或其他有助于理解的辅助材料。
-
-## BACKUP
-
-手动调整机器时间后，calico Unauthorized，且可以看到 `calico-node -monitor-token` 没有执行。因为 calico 有自己的逻辑定时刷新token的机制，每次刷新都会 [sleep](https://github.com/projectcalico/calico/blob/release-v3.28/node/pkg/cni/token_watch.go#L150) max(nextExpiration/4, 5s*4)。但是实测下来，直接手工调整时间后，calico 并没有主动重新申请 token，这里涉及到时间的问题。linux 时间有 <https://www.purewhite.io/2021/04/29/golang-time-now-optimize/#%E5%9C%A8runtime%E5%A4%96%E8%B0%83%E7%94%A8vdso%EF%BC%9F> `CLOCK_REALTIME_COARSE` 和 `CLOCK_MONOTONIC_COARSE`，<https://blog.csdn.net/billgates_wanbin/article/details/124964968> 即 `墙上时钟` 和 `单调时钟`，详细见 <https://juejin.cn/post/6876243870468800525> ，从 golang 中找到的代码
-[checkTimers](https://github.com/golang/go/blob/release-branch.go1.22/src/runtime/proc.go#L3945)
-  [runtime·nanotime1](https://github.com/golang/go/blob/release-branch.go1.22/src/runtime/sys_linux_amd64.s#L258)
-可以看到golang 中的 timer.Timer 使用的是 CLOCK_MONOTONIC_COARSE 也即单调时钟，date 命令调整时间并不会体现在这里获得到的时间，所以调整时间并不会让 calico 按照墙上时钟快速触发。问题确认即可快速确认方案，如果为了规避时间问题，可以只重启 k3s 即可，如果期望可以快速使用 date 调整时间可以也可以快速恢复，可以考虑重启 calico。
-
-详细的 golang 时间相关 的 讨论见 <https://github.com/golang/go/issues/12914>
-
---></div><div class="post-footer" id="post-footer">
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tail -f /var/lib/rancher/k3s/agent/containerd/containerd.log 时候，会大量看到非常多如下日志
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2024-08-21T08:42:37.199951601+08:00&#34;</span> <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;ExecSync for \&#34;69994ab2f7a951735b5d613d80b9ac33e1c1366a3e0fae5fd9ec24fb545cb1d6\&#34; failed&#34;</span> <span class="nv">error</span><span class="o">=</span><span class="s2">&#34;rpc error: code = DeadlineExceeded desc = failed to exec in container: timeout 5s exceeded: context deadline exceeded&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2024-07-30T10:39:39.772561484+08:00&#34;</span> <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;get state for 39756d9fdea7fcf15eb76d0c792614681b1d801fb8a70bc72c3042503e619473&#34;</span> <span class="nv">error</span><span class="o">=</span><span class="s2">&#34;context deadline exceeded: unknown&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们的 k3s 已经为了解决 etcd 对磁盘要求比较高，将 etcd 的存储挂载到了 ssd 下。而 /var/lib/rancher/k3s/agent/containerd 下目录放到机械硬盘上了。这次的问题就在于 k3s 的健康检查设置的时间为 5s，健康检查是采用 containerd 执行命令，5s 内 containerd 未实际执行完对应的命令，超时失败多次后，健康检查失败，pod 失败断联，对外的表现就是访问对应的 service 的请求 timeout 导致业务不可用。社区 issue 可以参考 <a href="https://github.com/containerd/containerd/issues/6080" target="_blank" rel="noopener noreffer ">Containerd fails to stop containers</a> 及 <a href="https://github.com/containerd/containerd/issues/8847" target="_blank" rel="noopener noreffer ">Pod stuck terminating / KillContainerError</a></p>
+<p>解决办法：将 /var/lib/rancher/k3s/agent/containerd/ 挂载到 ssd 下即可。</p>
+<p>k3s 的文档中已经再 <a href="https://docs.k3s.io/reference/resource-profiling#analysis" target="_blank" rel="noopener noreffer ">Resource Profiling</a> 中描述，为了保证 k3s 的稳定性，需要将 /var/lib/rancher/k3s/{agent,server,storage} 三个目录分开互不影响。我们采用 k3s agent 及 server 放到 ssd 下，与 storage 放到不同的目录下，解决高负载下稳定性问题。</p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2024-08-11&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/4f7a1ad2e765fb373cbf6054a4d3ea0369b093d8" target="_blank" title="commit by exfly(exflyg@gmail.com) 4f7a1ad2e765fb373cbf6054a4d3ea0369b093d8: feat: add golang 的 timer 在调整系统时间下的行为">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>4f7a1ad</a></span>
+                <span>更新于 0001-01-01</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" data-title="golang 的 timer 在调整系统时间下的行为"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" data-title="golang 的 timer 在调整系统时间下的行为"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" data-title="golang 的 timer 在调整系统时间下的行为"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/" data-title="golang 的 timer 在调整系统时间下的行为"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/k8s-pod-random-killed/" data-title="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败" data-hashtags="k8s,k3s,containerd,bugs"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/k8s-pod-random-killed/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/k8s-pod-random-killed/" data-title="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/k8s-pod-random-killed/" data-title="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/k8s-pod-random-killed/" data-title="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a>,&nbsp;<a href="/tags/k3s/">k3s</a>,&nbsp;<a href="/tags/containerd/">containerd</a>,&nbsp;<a href="/tags/bugs/">bugs</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/how-to-increase-alarm-throughput-100-times/" class="prev" rel="prev" title="我是如何将 kafka 消费吞吐提高 100 倍"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>我是如何将 kafka 消费吞吐提高 100 倍</a></div>
+    <div class="post-nav">
+            <a href="/readme/" class="next" rel="next" title=""><i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments"><div id="giscus" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.

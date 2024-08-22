@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/k8s-pod-random-killed\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, k3s, containerd, bugs","wordcount":  393 ,
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, k3s, containerd, bugs","wordcount":  400 ,
         "url": "https:\/\/exfly.github.io\/k8s-pod-random-killed\/","datePublished": "2024-08-20T23:01:03+00:00","dateModified": "2024-08-21T09:52:25+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
@@ -108,7 +108,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">k3s 环境在高 CPU&&Memory&&IO 负载下，pod 中的 container 随机健康检查失败</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-20">2024-08-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 393 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-20">2024-08-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 400 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -117,7 +117,7 @@
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
             </div><div class="content" id="content"><p>文章简介：k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败 问题排查及解决</p>
-<p>再大数据量下压测业务时候，发现随机业务 pod 中的 container failed（重启次数不断累积）</p>
+<p>在大数据量下压测业务时，发现比较随机的 pod 中的 container failed（重启次数不断累积）, 健康检查失败。</p>
 <p>kubectl describe pod postgres-xxxx</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -132,29 +132,34 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tail -f /var/lib/rancher/k3s/agent/containerd/containerd.log 时候，会大量看到非常多如下日志
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tail -f /var/lib/rancher/k3s/agent/containerd/containerd.log
 </span></span></code></pre></td></tr></table>
 </div>
-</div><div class="highlight"><div class="chroma">
+</div><p>看到非常多如下日志：</p>
+<div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2024-08-21T08:42:37.199951601+08:00&#34;</span> <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;ExecSync for \&#34;69994ab2f7a951735b5d613d80b9ac33e1c1366a3e0fae5fd9ec24fb545cb1d6\&#34; failed&#34;</span> <span class="nv">error</span><span class="o">=</span><span class="s2">&#34;rpc error: code = DeadlineExceeded desc = failed to exec in container: timeout 5s exceeded: context deadline exceeded&#34;</span>
 </span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
 </span></span><span class="line"><span class="cl"><span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2024-07-30T10:39:39.772561484+08:00&#34;</span> <span class="nv">level</span><span class="o">=</span>error <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;get state for 39756d9fdea7fcf15eb76d0c792614681b1d801fb8a70bc72c3042503e619473&#34;</span> <span class="nv">error</span><span class="o">=</span><span class="s2">&#34;context deadline exceeded: unknown&#34;</span>
+</span></span><span class="line"><span class="cl">...
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>我们的 k3s 已经为了解决 etcd 对磁盘要求比较高，将 etcd 的存储挂载到了 ssd 下。而 /var/lib/rancher/k3s/agent/containerd 下目录放到机械硬盘上了。这次的问题就在于 k3s 的健康检查设置的时间为 5s，健康检查是采用 containerd 执行命令，5s 内 containerd 未实际执行完对应的命令，超时失败多次后，健康检查失败，pod 失败断联，对外的表现就是访问对应的 service 的请求 timeout 导致业务不可用。社区 issue 可以参考 <a href="https://github.com/containerd/containerd/issues/6080" target="_blank" rel="noopener noreffer ">Containerd fails to stop containers</a> 及 <a href="https://github.com/containerd/containerd/issues/8847" target="_blank" rel="noopener noreffer ">Pod stuck terminating / KillContainerError</a></p>
+</div><p>当前部署的 k3s 已经为了解决 etcd 稳定性问题，将 etcd 的存储挂载到了 ssd 下。而 /var/lib/rancher/k3s/agent/containerd 下目录放到机械硬盘上了。这次的问题就在于 k3s 的健康检查设置的时间为 5s，健康检查是 containerd 执行命令，5s 内 containerd 未实际执行完对应的命令，超时失败多次后，pod 健康检查失败，pod 进入 unhealthy 状态。对外的表现就是访问对应的 service 的请求 timeout 导致业务不可用。社区 issue 可以参考 <a href="https://github.com/containerd/containerd/issues/6080" target="_blank" rel="noopener noreffer ">Containerd fails to stop containers</a> 及 <a href="https://github.com/containerd/containerd/issues/8847" target="_blank" rel="noopener noreffer ">Pod stuck terminating / KillContainerError</a></p>
 <p>解决办法：将 /var/lib/rancher/k3s/agent/containerd/ 挂载到 ssd 下即可。</p>
-<p>k3s 的文档中已经再 <a href="https://docs.k3s.io/reference/resource-profiling#analysis" target="_blank" rel="noopener noreffer ">Resource Profiling</a> 中描述，为了保证 k3s 的稳定性，需要将 /var/lib/rancher/k3s/{agent,server,storage} 三个目录分开互不影响。我们采用 k3s agent 及 server 放到 ssd 下，与 storage 放到不同的目录下，解决高负载下稳定性问题。</p></div><div class="post-footer" id="post-footer">
+<p>k3s 的文档中已经在 <a href="https://docs.k3s.io/reference/resource-profiling#analysis" target="_blank" rel="noopener noreffer ">Resource Profiling</a> 中描述，为了保证 k3s 的稳定性，需要将 /var/lib/rancher/k3s/{agent,server,storage} 三个目录分开互不影响。我们将 k3s agent 及 server 放到 ssd 下，与 storage 放到不同的目录下，解决高负载下稳定性问题。</p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2024-08-21&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/d821fd20db0cfbae2971f3af9c29949e358839b6" target="_blank" title="commit by exfly(exflyg@gmail.com) d821fd20db0cfbae2971f3af9c29949e358839b6: feat: k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败">
-                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>d821fd2</a></span>
+                <span>更新于 2024-08-21&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/efac6f6900425a0a33d1e01e6fa5fbfbda794fdd" target="_blank" title="commit by exfly(exflyg@gmail.com) efac6f6900425a0a33d1e01e6fa5fbfbda794fdd: feat: k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>efac6f6</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>

@@ -4,7 +4,31 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>debug</title>
+    <link>https://exfly.github.io/tags/debug/</link>
+    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/debug/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>mysql</title>
+    <link>https://exfly.github.io/tags/mysql/</link>
+    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/mysql/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>sysbench</title>
+    <link>https://exfly.github.io/tags/sysbench/</link>
+    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/sysbench/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>bugs</title>
     <link>https://exfly.github.io/tags/bugs/</link>
     <pubDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</pubDate>
@@ -58,30 +82,6 @@
     <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/nerdctl/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>ops</title>
-    <link>https://exfly.github.io/tags/ops/</link>
-    <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/ops/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>arm64</title>
-    <link>https://exfly.github.io/tags/arm64/</link>
-    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/arm64/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>bitnami</title>
-    <link>https://exfly.github.io/tags/bitnami/</link>
-    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/bitnami/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

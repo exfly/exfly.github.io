@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>sysbench - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/sysbench/</link>
+        <description>sysbench - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/sysbench/" rel="self" type="application/rss+xml" /><item>
+    <title>sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连</title>
+    <link>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</link>
+    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</guid>
+    <description><![CDATA[<p>文章简介：探索为什么 <code>sysbench</code> 没有重连 Reconnect</p>]]></description>
+</item>
+</channel>
+</rss>

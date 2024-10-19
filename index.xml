@@ -4,9 +4,17 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连</title>
+    <link>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</link>
+    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</guid>
+    <description><![CDATA[<p>文章简介：探索为什么 <code>sysbench</code> 没有重连 Reconnect</p>]]></description>
+</item>
+<item>
     <title>k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败</title>
     <link>https://exfly.github.io/k8s-pod-random-killed/</link>
     <pubDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</pubDate>
@@ -77,14 +85,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/draw.io-cli-render/</guid>
     <description><![CDATA[<p>文章简介：本文介绍了一种跨平台（支持 Mac，Linux，Windows）的命令行渲染 draw.io 图表文件为图片的方法.</p>]]></description>
-</item>
-<item>
-    <title>Hadoop ResourceManager Behind Nginx,  使用 Nginx 反代 Hadoop ResourceManager 管理界面</title>
-    <link>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</link>
-    <pubDate>Sun, 22 Oct 2023 16:46:52 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/hadoop-resource-manager-behind-nginx/</guid>
-    <description><![CDATA[<p>文章简介：本文简单介绍了 Hadoop Resource Manager 页面 HA 方式，并基于此实现了一种 Openrestry + Lua 编写动态脚本，将 Hadoop Resource Manager 使用 Nginx 反向代理出来的方法。其中提供的代码，可直接运行起来。</p>]]></description>
 </item>
 </channel>
 </rss>

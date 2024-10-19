@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连" />
+<meta property="og:description" content="文章简介：探索为什么 sysbench 没有重连 Reconnect" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-10-16T01:38:26+00:00" />
+<meta property="article:modified_time" content="2024-10-16T01:38:26+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连"/>
+<meta name="twitter:description" content="文章简介：探索为什么 sysbench 没有重连 Reconnect"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" /><link rel="prev" href="https://exfly.github.io/k8s-pod-random-killed/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/why-sysbench-dont-reconnect-after-kill\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "debug, mysql, sysbench","wordcount":  4480 ,
+        "url": "https:\/\/exfly.github.io\/why-sysbench-dont-reconnect-after-kill\/","datePublished": "2024-10-16T01:38:26+00:00","dateModified": "2024-10-16T01:38:26+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/why-sysbench-dont-reconnect-after-kill/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/why-sysbench-dont-reconnect-after-kill/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-16">2024-10-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 4480 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#问题复现">问题复现</a></li>
+    <li><a href="#分析一下原因">分析一下原因</a></li>
+    <li><a href="#问题">问题</a>
+      <ul>
+        <li><a href="#为什么-mysql-842-有的-recv-q-是-28有的是-132">为什么 MySQL 8.4.2 有的 Recv-Q 是 28，有的是 132</a></li>
+        <li><a href="#为什么-cpu-这么高cpu-都在忙什么">为什么 CPU 这么高，CPU 都在忙什么</a></li>
+        <li><a href="#什么原因会导致-close_wait-状态">什么原因会导致 CLOSE_WAIT 状态</a></li>
+        <li><a href="#mysql-这里在做什么事情mysql-多久会触发-close-行为呢">mysql 这里在做什么事情？mysql 多久会触发 close 行为呢？</a></li>
+        <li><a href="#为什么-sysbench-要疯狂创建-4-万多个连接">为什么 Sysbench 要疯狂创建 4 万多个连接</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：探索为什么 <code>sysbench</code> 没有重连 Reconnect</p>
+<h2 id="背景">背景</h2>
+<p>plantegg 提供了一个案例，大体上是阿里云上 sysbench 压测 MySQL 的时候，使用 MySQL 客户端 kill sysbench 发起的压测连接，发现 sysbench 没有重连，QPS 始终为 0。plantegg 给出了复现方法。</p>
+<h2 id="问题复现">问题复现</h2>
+<p>在我的 M1 mac 上使用 vagrant + vmware_fusion 启动了一个虚拟机，Vagrantfile 如下，虚拟机启动的环境内核版本更可控；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="c1"># -*- mode: ruby -*-</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># vi: set ft=ruby :</span>
+</span></span><span class="line"><span class="cl"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&#34;2&#34;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&#34;bento/ubuntu-22.04&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_architecture</span> <span class="o">=</span> <span class="s2">&#34;arm64&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:vmware_fusion</span> <span class="k">do</span> <span class="o">|</span><span class="n">vm</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># https://gist.github.com/jtopper/8588263</span>
+</span></span><span class="line"><span class="cl">  <span class="k">end</span>
+</span></span><span class="line"><span class="cl">  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&#34;shell&#34;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s">&lt;&lt;-SHELL
+</span></span></span><span class="line"><span class="cl"><span class="s"></span>    <span class="c1"># https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sed</span> <span class="o">-</span><span class="n">E</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;s/(archive|ports).ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;/security.ubuntu.com/d&#39;</span> <span class="sr">/etc/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="o">.</span><span class="n">list</span>
+</span></span><span class="line"><span class="cl">    <span class="n">apt</span> <span class="n">update</span>
+</span></span><span class="line"><span class="cl">    <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">tshark</span> <span class="n">tcpdump</span> <span class="n">net</span><span class="o">-</span><span class="n">tools</span> <span class="n">gdb</span> <span class="n">dstat</span>
+</span></span><span class="line"><span class="cl">    <span class="n">apt</span> <span class="n">autoremove</span>
+</span></span><span class="line"><span class="cl">    <span class="n">apt</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">linux</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">common</span> <span class="n">linux</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="err">$</span><span class="p">(</span><span class="n">uname</span> <span class="o">-</span><span class="n">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="no">SHELL</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 先在 vm 中启动一个 mysql，后文以 plantegg# 开头</span>
+</span></span><span class="line"><span class="cl">docker run -it -d --net<span class="o">=</span>host -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span><span class="m">123</span> --name<span class="o">=</span>plantegg docker.m.daocloud.io/library/mysql:8
+</span></span><span class="line"><span class="cl">plantegg# mysql --ssl-mode<span class="o">=</span>DISABLED -uroot -p123
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 在本地启动一个容器，用于执行 sysbench，后文以 sysbench# 开头</span>
+</span></span><span class="line"><span class="cl">docker run --privileged -it --name sysbench registry.dockermirror.com/747301585/alinux3:20220901 bash
+</span></span><span class="line"><span class="cl"><span class="c1">#sysbench# uname -a</span>
+</span></span><span class="line"><span class="cl">Linux e590c969f57f 6.6.16-linuxkit <span class="c1">#1 SMP Fri Feb 16 11:54:02 UTC 2024 aarch64 aarch64 aarch64 GNU/Linux</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# yum install -y sysstat sysbench iproute net-tools strace ltrace perf gdb
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# <span class="nb">export</span> <span class="nv">MYSQL_HOST</span><span class="o">=</span><span class="s1">&#39;192.168.245.145&#39;</span>
+</span></span><span class="line"><span class="cl">sysbench# sysbench --mysql-user<span class="o">=</span><span class="s1">&#39;root&#39;</span> --mysql-password<span class="o">=</span><span class="s1">&#39;123&#39;</span> --mysql-db<span class="o">=</span><span class="s1">&#39;test&#39;</span> --mysql-host<span class="o">=</span><span class="nv">$MYSQL_HOST</span> --mysql-port<span class="o">=</span><span class="s1">&#39;3306&#39;</span> --tables<span class="o">=</span><span class="s1">&#39;16&#39;</span>  --table-size<span class="o">=</span><span class="s1">&#39;10000&#39;</span> --range-size<span class="o">=</span><span class="s1">&#39;5&#39;</span> --db-ps-mode<span class="o">=</span><span class="s1">&#39;disable&#39;</span> --skip-trx<span class="o">=</span><span class="s1">&#39;on&#39;</span> --mysql-ignore-errors<span class="o">=</span><span class="s1">&#39;all&#39;</span> --time<span class="o">=</span><span class="s1">&#39;1180&#39;</span> --report-interval<span class="o">=</span><span class="s1">&#39;1&#39;</span> --histogram<span class="o">=</span><span class="s1">&#39;on&#39;</span> --threads<span class="o">=</span><span class="m">1</span> oltp_read_only prepare <span class="c1"># 命令有些报错，不影响问题复现</span>
+</span></span><span class="line"><span class="cl">sysbench# sysbench --mysql-user<span class="o">=</span><span class="s1">&#39;root&#39;</span> --mysql-password<span class="o">=</span><span class="s1">&#39;123&#39;</span> --mysql-db<span class="o">=</span><span class="s1">&#39;test&#39;</span> --mysql-host<span class="o">=</span><span class="nv">$MYSQL_HOST</span> --mysql-port<span class="o">=</span><span class="s1">&#39;3306&#39;</span> --tables<span class="o">=</span><span class="s1">&#39;16&#39;</span>  --table-size<span class="o">=</span><span class="s1">&#39;10000&#39;</span> --range-size<span class="o">=</span><span class="s1">&#39;5&#39;</span> --db-ps-mode<span class="o">=</span><span class="s1">&#39;disable&#39;</span> --skip-trx<span class="o">=</span><span class="s1">&#39;on&#39;</span> --mysql-ignore-errors<span class="o">=</span><span class="s1">&#39;all&#39;</span> --time<span class="o">=</span><span class="s1">&#39;1180&#39;</span> --report-interval<span class="o">=</span><span class="s1">&#39;1&#39;</span> --histogram<span class="o">=</span><span class="s1">&#39;on&#39;</span> --threads<span class="o">=</span><span class="m">1</span> oltp_read_only run
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">plantegg# mysql --ssl-mode<span class="o">=</span>DISABLED -uroot -p123
+</span></span><span class="line"><span class="cl">plantegg#mysql# <span class="k">select</span> version<span class="o">()</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">+-----------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> version<span class="o">()</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+-----------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> 8.4.2     <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+-----------+
+</span></span><span class="line"><span class="cl">plantegg#mysql# show processlist<span class="p">;</span>
+</span></span><span class="line"><span class="cl">plantegg#mysql# <span class="nb">kill</span> some-pid<span class="p">;</span> -- 复现关键点在这里
+</span></span><span class="line"><span class="cl">plantegg#mysql# show processlist<span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>复现后的现象：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./images/mysql_process_bad_conn.png"
+        data-srcset="./images/mysql_process_bad_conn.png, ./images/mysql_process_bad_conn.png 1.5x, ./images/mysql_process_bad_conn.png 2x"
+        data-sizes="auto"
+        alt="./images/mysql_process_bad_conn.png"
+        title="mysql_process_bad_conn" /></p>
+<p>sysbench 吞吐跌零：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sysbench#
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 15s <span class="o">]</span> thds: <span class="m">1</span> tps: 68.07 qps: 2033.94 <span class="o">(</span>r/w/o: 2033.94/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 36.89 err/s: 146.14 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 16s <span class="o">]</span> thds: <span class="m">1</span> tps: 55.94 qps: 1998.85 <span class="o">(</span>r/w/o: 1998.85/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 42.61 err/s: 168.82 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 17s <span class="o">]</span> thds: <span class="m">1</span> tps: 24.81 qps: 1079.68 <span class="o">(</span>r/w/o: 1079.68/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 74.46 err/s: 97.25 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 18s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 19s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 20s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 21s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 22s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 23s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 24s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 25s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 26s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 27s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 28s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00            
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>网络连接大量 CLOSE_WAIT：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sysbench# ss -tnp <span class="p">|</span> head -n <span class="m">30</span>
+</span></span><span class="line"><span class="cl">State      Recv-Q Send-Q Local Address:Port     Peer Address:PortProcess                               
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">28</span>     <span class="m">0</span>         172.17.0.2:55265 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>22757<span class="o">))</span>
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">28</span>     <span class="m">0</span>         172.17.0.2:48464 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>10234<span class="o">))</span>
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">28</span>     <span class="m">0</span>         172.17.0.2:47621 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>20395<span class="o">))</span>
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">28</span>     <span class="m">0</span>         172.17.0.2:38447 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>18580<span class="o">))</span>
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">28</span>     <span class="m">0</span>         172.17.0.2:39019 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>25344<span class="o">))</span>
+</span></span><span class="line"><span class="cl">CLOSE-WAIT <span class="m">132</span>    <span class="m">0</span>         172.17.0.2:43514 192.168.245.145:3306 users:<span class="o">((</span><span class="s2">&#34;sysbench&#34;</span>,pid<span class="o">=</span>207,fd<span class="o">=</span>7519<span class="o">))</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# ss -tnp <span class="p">|</span> grep CLOSE-WAIT <span class="p">|</span> wc -l
+</span></span><span class="line"><span class="cl"><span class="m">28232</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# ss -s
+</span></span><span class="line"><span class="cl">Total: <span class="m">28234</span>
+</span></span><span class="line"><span class="cl">TCP:   <span class="m">28257</span> <span class="o">(</span>estab 125, closed 25, orphaned 0, timewait 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Transport Total     IP        IPv6
+</span></span><span class="line"><span class="cl">RAW       <span class="m">0</span>         <span class="m">0</span>         <span class="m">0</span>        
+</span></span><span class="line"><span class="cl">UDP       <span class="m">0</span>         <span class="m">0</span>         <span class="m">0</span>        
+</span></span><span class="line"><span class="cl">TCP       <span class="m">28232</span>     <span class="m">28232</span>     <span class="m">0</span>        
+</span></span><span class="line"><span class="cl">INET      <span class="m">28232</span>     <span class="m">28232</span>     <span class="m">0</span>        
+</span></span><span class="line"><span class="cl">FRAG      <span class="m">0</span>         <span class="m">0</span>         <span class="m">0</span>  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# netstat -nap <span class="p">|</span> head -n <span class="m">1</span>                   
+</span></span><span class="line"><span class="cl">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+</span></span><span class="line"><span class="cl">sysbench# netstat -nap <span class="p">|</span> grep CLOSE_WAIT <span class="p">|</span> head -n <span class="m">20</span>
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:48464        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp      <span class="m">132</span>      <span class="m">0</span> 172.17.0.2:39019        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:39986        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:43514        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:32877        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:36728        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:50506        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:38603        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:35640        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:59714        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:36783        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:33157        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp      <span class="m">132</span>      <span class="m">0</span> 172.17.0.2:54836        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp      <span class="m">132</span>      <span class="m">0</span> 172.17.0.2:41472        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:45345        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:43855        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:43543        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:33528        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:44096        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">tcp       <span class="m">28</span>      <span class="m">0</span> 172.17.0.2:49250        192.168.245.145:3306    CLOSE_WAIT  486/sysbench        
+</span></span><span class="line"><span class="cl">sysbench# netstat -nap <span class="p">|</span> grep CLOSE_WAIT <span class="p">|</span> wc -l     
+</span></span><span class="line"><span class="cl"><span class="m">28232</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sysbench# cat /proc/sys/net/ipv4/ip_local_port_range
+</span></span><span class="line"><span class="cl"><span class="m">32768</span>   <span class="m">60999</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="k">$((</span><span class="m">60999</span><span class="o">-</span><span class="m">32768</span><span class="o">+</span><span class="m">1</span><span class="k">))</span>
+</span></span><span class="line"><span class="cl"><span class="m">28232</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>sysbench 的 cpu 占用 67%，因为是一个线程在跑，已经比较高了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./images/sysbench-top.png"
+        data-srcset="./images/sysbench-top.png, ./images/sysbench-top.png 1.5x, ./images/sysbench-top.png 2x"
+        data-sizes="auto"
+        alt="./images/sysbench-top.png"
+        title="top contain sysbench" /></p>
+<h2 id="分析一下原因">分析一下原因</h2>
+<p>先看看 cpu 到被消耗在了内核还是进程</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pidstat <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Linux 6.6.16-linuxkit <span class="o">(</span>e590c969f57f<span class="o">)</span>    10/17/24        _aarch64_       <span class="o">(</span><span class="m">4</span> CPU<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">09:22:11      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+</span></span><span class="line"><span class="cl">09:22:12        <span class="m">0</span>       <span class="m">115</span>    0.00   64.08    0.00    0.00   64.08     <span class="m">0</span>  sysbench
+</span></span><span class="line"><span class="cl">09:22:12        <span class="m">0</span>       <span class="m">259</span>    0.00    3.88    0.00    0.00    3.88     <span class="m">1</span>  pidstat
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">09:22:12      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+</span></span><span class="line"><span class="cl">09:22:13        <span class="m">0</span>       <span class="m">115</span>    0.00   67.00    0.00    0.00   67.00     <span class="m">0</span>  sysbench
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">09:22:13      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+</span></span><span class="line"><span class="cl">09:22:14        <span class="m">0</span>       <span class="m">115</span>    0.00   70.00    0.00    0.00   70.00     <span class="m">0</span>  sysbench
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">09:22:14      UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+</span></span><span class="line"><span class="cl">09:22:15        <span class="m">0</span>       <span class="m">115</span>    0.00   69.00    0.00    0.00   69.00     <span class="m">0</span>  sysbench
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到所有的 cpu 都在内核态。实际跑下来，刚复现跌零时候 cpu 比较少，随着 TCP 连接的变多，内核 cpu 越来越高。</p>
+<p>看看内核在干什么：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">perf top -g -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">+   98.36%     0.01%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __sys_connect
+</span></span><span class="line"><span class="cl">+   97.73%     0.05%  libpthread-2.32.so      <span class="o">[</span>.<span class="o">]</span> __libc_connect
+</span></span><span class="line"><span class="cl">+   97.35%     5.06%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __inet_hash_connect
+</span></span><span class="line"><span class="cl">+   92.17%     0.01%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __inet_stream_connect
+</span></span><span class="line"><span class="cl">+   86.99%    59.51%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __inet_check_established
+</span></span><span class="line"><span class="cl">+   86.84%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> tcp_v4_connect
+</span></span><span class="line"><span class="cl">+   67.97%     0.01%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> do_el0_svc
+</span></span><span class="line"><span class="cl">+   28.19%    28.19%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> inet_ehashfn
+</span></span><span class="line"><span class="cl">+   19.36%     0.00%  libc-2.32.so            <span class="o">[</span>.<span class="o">]</span> thread_start
+</span></span><span class="line"><span class="cl">+   19.36%     0.00%  libpthread-2.32.so      <span class="o">[</span>.<span class="o">]</span> start_thread
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  sysbench                <span class="o">[</span>.<span class="o">]</span> 0x0000aaaade71bce0
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  libluajit-5.1.so.2.1.0  <span class="o">[</span>.<span class="o">]</span> lua_pcall
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  <span class="o">[</span>JIT<span class="o">]</span> tid <span class="m">207</span>           <span class="o">[</span>.<span class="o">]</span> 0x0000ffffac384eb8
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  sysbench                <span class="o">[</span>.<span class="o">]</span> db_execute
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  sysbench                <span class="o">[</span>.<span class="o">]</span> 0x0000aaaade72b744
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> el0t_64_sync
+</span></span><span class="line"><span class="cl">+   19.35%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> el0t_64_sync_handler
+</span></span><span class="line"><span class="cl">+   19.35%     0.01%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> el0_svc
+</span></span><span class="line"><span class="cl">+   19.33%     0.00%  sysbench                <span class="o">[</span>.<span class="o">]</span> 0x0000aaaade72affc
+</span></span><span class="line"><span class="cl">+   19.33%     0.00%  sysbench                <span class="o">[</span>.<span class="o">]</span> 0x0000aaaade72a078
+</span></span><span class="line"><span class="cl">+   19.33%     0.00%  libmariadb.so.3         <span class="o">[</span>.<span class="o">]</span> 0x0000ffffae08ce54
+</span></span><span class="line"><span class="cl">+   19.33%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> invoke_syscall.constprop.0
+</span></span><span class="line"><span class="cl">+   19.27%     0.00%  libmariadb.so.3         <span class="o">[</span>.<span class="o">]</span> 0x0000ffffae084f10
+</span></span><span class="line"><span class="cl">+   19.27%     0.00%  libmariadb.so.3         <span class="o">[</span>.<span class="o">]</span> 0x0000ffffae084600
+</span></span><span class="line"><span class="cl">+   19.26%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __arm64_sys_connect
+</span></span><span class="line"><span class="cl">+   19.24%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> inet_stream_connect
+</span></span><span class="line"><span class="cl">+   19.24%     0.00%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> inet_hash_connect
+</span></span><span class="line"><span class="cl">+    2.81%     0.98%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __cond_resched
+</span></span><span class="line"><span class="cl">+    2.81%     2.26%  <span class="o">[</span>kernel<span class="o">]</span>                <span class="o">[</span>k<span class="o">]</span> __local_bh_enable_ip
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>__inet_check_established, inet_ehashfn 内核函数执行占用过多 cpu</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-sysbench-dont-reconnect-after-kill/images/sysben-perf-top.png"
+        data-srcset="/why-sysbench-dont-reconnect-after-kill/images/sysben-perf-top.png, /why-sysbench-dont-reconnect-after-kill/images/sysben-perf-top.png 1.5x, /why-sysbench-dont-reconnect-after-kill/images/sysben-perf-top.png 2x"
+        data-sizes="auto"
+        alt="/why-sysbench-dont-reconnect-after-kill/images/sysben-perf-top.png"
+        title="sysben-perf-top" width="605" height="456" /></p>
+<p>可以看到 __inet_check_established 和 inet_ehashfn 两个函数占用比较高；</p>
+<p>TODO: 需要研究一下 kernel 函数 __inet_check_established 和 inet_ehashfn 性能消耗在了哪里。</p>
+<p>现在看看进程在做什么事情：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">strace -f -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   sendto<span class="o">(</span>3, <span class="s2">&#34;5\0\0\0\3SELECT c FROM sbtest7 WHERE&#34;</span>..., 57, MSG_DONTWAIT<span class="p">|</span>MSG_NOSIGNAL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">57</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, 0xffff80027600, 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> -1 EAGAIN <span class="o">(</span>Resource temporarily unavailable<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">events</span><span class="o">=</span>POLLIN<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">revents</span><span class="o">=</span>POLLIN<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, <span class="s2">&#34;\1\0\0\1\1*\0\0\2\3def\4test\7sbtest7\7sbtes&#34;</span>..., 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">689</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   sendto<span class="o">(</span>3, <span class="s2">&#34;;\0\0\0\3SELECT SUM(k) FROM sbtest15&#34;</span>..., 63, MSG_DONTWAIT<span class="p">|</span>MSG_NOSIGNAL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">63</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, 0xffff80027600, 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> -1 EAGAIN <span class="o">(</span>Resource temporarily unavailable<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">events</span><span class="o">=</span>POLLIN<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">revents</span><span class="o">=</span>POLLIN<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, <span class="s2">&#34;,\0\0\1\377z\4#42S02Table &#39;test.sbtest1&#34;</span>..., 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">48</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   sendto<span class="o">(</span>3, <span class="s2">&#34;%\0\0\0\3SELECT c FROM sbtest10 WHER&#34;</span>..., 41, MSG_DONTWAIT<span class="p">|</span>MSG_NOSIGNAL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">41</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, 0xffff80027600, 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> -1 EAGAIN <span class="o">(</span>Resource temporarily unavailable<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">events</span><span class="o">=</span>POLLIN<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">revents</span><span class="o">=</span>POLLIN<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   recvfrom<span class="o">(</span>3, <span class="s2">&#34;&#34;</span>, 16384, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   close<span class="o">(</span>3<span class="o">)</span>                          <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">3</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>3, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>3, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>3, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>3, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>3, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">4</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>4, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>4, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>4, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>4, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>4, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>4, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80035000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">5</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>5, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>5, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>5, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>5, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>5, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>5, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80037000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80039000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">6</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>6, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>6, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>6, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>6, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>6, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>6, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003b000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003d000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">7</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>7, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>7, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>7, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>7, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>7, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>7, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003f000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80041000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">8</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>8, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>8, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>8, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>8, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>8, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>8, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80043000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到在反复的循环的 syscall <code>getpid-&gt;socket-&gt;connect-&gt;clock_nanosleep</code>；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">strace -f -c -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">207</span> attached with <span class="m">3</span> threads
+</span></span><span class="line"><span class="cl">^Cstrace: Process <span class="m">207</span> detached
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">208</span> detached
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">209</span> detached
+</span></span><span class="line"><span class="cl">% <span class="nb">time</span>     seconds  usecs/call     calls    errors syscall
+</span></span><span class="line"><span class="cl">------ ----------- ----------- --------- --------- ----------------
+</span></span><span class="line"><span class="cl"> 49.55   16.874015        <span class="m">3734</span>      <span class="m">4518</span>           clock_nanosleep
+</span></span><span class="line"><span class="cl"> 49.22   16.759397        <span class="m">3731</span>      <span class="m">4491</span>      <span class="m">4491</span> connect
+</span></span><span class="line"><span class="cl">  0.56    0.192136      <span class="m">192136</span>         <span class="m">1</span>           restart_syscall
+</span></span><span class="line"><span class="cl">  0.25    0.085898          <span class="m">19</span>      <span class="m">4492</span>           close
+</span></span><span class="line"><span class="cl">  0.18    0.061314          <span class="m">13</span>      <span class="m">4491</span>           socket
+</span></span><span class="line"><span class="cl">  0.11    0.037854           <span class="m">8</span>      <span class="m">4491</span>           fcntl
+</span></span><span class="line"><span class="cl">  0.11    0.037465           <span class="m">8</span>      <span class="m">4491</span>           getpid
+</span></span><span class="line"><span class="cl">  0.01    0.004097         <span class="m">146</span>        <span class="m">28</span>           write
+</span></span><span class="line"><span class="cl">------ ----------- ----------- --------- --------- ----------------
+</span></span><span class="line"><span class="cl">100.00   34.052176        <span class="m">1261</span>     <span class="m">27003</span>      <span class="m">4491</span> total
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>syscall 的调用时间消耗在了 clock_nanosleep 和 connect 上。到这里，基本可以猜测程序在循环执行 connect 和 clock_nanosleep。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ltrace -f -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span> -C -o /dev/stdout <span class="p">|</span> tee sysbench_ltrace.txt
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> mysql_real_connect<span class="o">(</span>0xffff8c020a40, 0xaaaacb78d8b0, 0xaaaacb78be30, 0xaaaacb78d830<span class="o">)</span>                                                           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">20</span> usleep<span class="o">(</span>1000, 0, -24, 0xffff8c020e80<span class="o">)</span>                                                                                                         <span class="o">=</span> <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到当前调用的第三方库的函数是，mysql connect 跟 syscall 中的 connect 和 clock_nanosleep 也是匹配的；</p>
+<p>尝试看看能不能抓到程序执行流程大概是怎样的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pstack <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Thread <span class="m">3</span> <span class="o">(</span>Thread 0xffff992ccf30 <span class="o">(</span>LWP 20<span class="o">))</span>:
+</span></span><span class="line"><span class="cl"><span class="c1">#0  0x0000ffff9a505b58 in connect () from /lib64/libpthread.so.0</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#1  0x0000ffff9a777600 in pvio_socket_connect_sync_or_async () from /lib64/libmariadb.so.3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#2  0x0000ffff9a777f10 in pvio_socket_connect () from /lib64/libmariadb.so.3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#3  0x0000ffff9a77fe54 in mthd_my_real_connect () from /lib64/libmariadb.so.3</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#4  0x0000aaaac06da078 in mysql_drv_real_connect ()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#5  0x0000aaaac06daffc in mysql_drv_reconnect ()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#6  0x0000aaaac06db744 in mysql_drv_execute ()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#7  0x0000aaaac06ce688 in db_execute ()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#8  0x0000ffff98a7c85c in ?? ()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#9  0x00007d178ca2c3d8 in ?? ()</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>打开 sysbench 的 debug 日志，看看有没有方便定位到代码行的信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sysbench# sysbench --mysql-user<span class="o">=</span><span class="s1">&#39;root&#39;</span> --mysql-password<span class="o">=</span><span class="s1">&#39;123&#39;</span> --mysql-db<span class="o">=</span><span class="s1">&#39;test&#39;</span> --mysql-host<span class="o">=</span><span class="nv">$MYSQL_HOST</span> --mysql-port<span class="o">=</span><span class="s1">&#39;3306&#39;</span> --tables<span class="o">=</span><span class="s1">&#39;16&#39;</span>  --table-size<span class="o">=</span><span class="s1">&#39;10000&#39;</span> --range-size<span class="o">=</span><span class="s1">&#39;5&#39;</span> --db-ps-mode<span class="o">=</span><span class="s1">&#39;disable&#39;</span> --skip-trx<span class="o">=</span><span class="s1">&#39;on&#39;</span> --mysql-ignore-errors<span class="o">=</span><span class="s1">&#39;all&#39;</span> --time<span class="o">=</span><span class="s1">&#39;1180&#39;</span> --report-interval<span class="o">=</span><span class="s1">&#39;1&#39;</span> --histogram<span class="o">=</span><span class="s1">&#39;on&#39;</span> --threads<span class="o">=</span><span class="m">1</span> --debug<span class="o">=</span>on oltp_read_only run
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">DEBUG: Reconnecting
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 11s <span class="o">]</span> thds: <span class="m">1</span> tps: 7.99 qps: 408.55 <span class="o">(</span>r/w/o: 408.55/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 48.34 err/s: 40.96 reconn/s: 0.00
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 12s <span class="o">]</span> thds: <span class="m">1</span> tps: 0.00 qps: 0.00 <span class="o">(</span>r/w/o: 0.00/0.00/0.00<span class="o">)</span> lat <span class="o">(</span>ms,95%<span class="o">)</span>: 0.00 err/s: 0.00 reconn/s: 0.00
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>结合下载的代码，可以看到 <code>DEBUG: Reconnecting</code> 而未输出 <code>DEBUG: Reconnected</code>，可以确认 sysbench 在执行 mysql_drv_reconnect 后边这个循环。再结合上述的调用栈，可以确认调用路径。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/akopytov/sysbench.git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">mysql_drv_reconnect</span><span class="p">(</span><span class="kt">db_conn_t</span> <span class="o">*</span><span class="n">sb_con</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">db_mysql_conn_t</span> <span class="o">*</span><span class="n">db_mysql_con</span> <span class="o">=</span> <span class="p">(</span><span class="kt">db_mysql_conn_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">sb_con</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">MYSQL</span> <span class="o">*</span><span class="n">con</span> <span class="o">=</span> <span class="n">db_mysql_con</span><span class="o">-&gt;</span><span class="n">mysql</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">log_text</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s">&#34;Reconnecting&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">DEBUG</span><span class="p">(</span><span class="s">&#34;mysql_close(%p)&#34;</span><span class="p">,</span> <span class="n">con</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">mysql_close</span><span class="p">(</span><span class="n">con</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="nf">mysql_drv_real_connect</span><span class="p">(</span><span class="n">db_mysql_con</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">sb_globals</span><span class="p">.</span><span class="n">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">DB_ERROR_FATAL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">usleep</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">log_text</span><span class="p">(</span><span class="n">LOG_DEBUG</span><span class="p">,</span> <span class="s">&#34;Reconnected&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">DB_ERROR_IGNORABLE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>去翻了下 mariadb 跟 Mysql mysql_real_connect 的文档发现 <a href="https://mariadb.com/kb/en/mysql_real_connect/" target="_blank" rel="noopener noreffer ">mariadb 的文档</a> 中有一句话：</p>
+<blockquote>
+<p>The connection handle can&rsquo;t be reused for establishing a new connection. It must be closed and reinitialized before.</p>
+</blockquote>
+<p>而 Mysql 的文档中对应的章节并未提到。</p>
+<p>直接去掉 mysql_close(con) 去掉后使用 mariadb 的依赖重新编译发现，kill 链接后 QPS 能够自动恢复。</p>
+<p>根据其他人的实验报告，大搞如此执行的原因是 mariadb-connect-c 的库函数参数兼容，但是行为跟 mysql 的客户端行为有差异导致的。</p>
+<p><a href="https://www.ctyun.cn/developer/article/405333884604485" target="_blank" rel="noopener noreffer ">这里</a> 及 <a href="https://github.com/akopytov/sysbench/pull/528" target="_blank" rel="noopener noreffer ">这里</a> 是修复方式</p>
+<p>比起如何修复更想关注为什么再循环执行这个函数</p>
+<p>具体是如何工作的可以看 [这里](./docs/999我的sysbench 压测MySQL时 kill 链接后为什么不会重连？.htm)</p>
+<p>TODO: gdb debug 试试看具体的执行流程及各参数返回值，确认如此执行的原因。</p>
+<h2 id="问题">问题</h2>
+<h3 id="为什么-mysql-842-有的-recv-q-是-28有的是-132">为什么 MySQL 8.4.2 有的 Recv-Q 是 28，有的是 132</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">State      Recv-Q Send-Q Local Address:Port     Peer Address:PortProcess
+</span></span><span class="line"><span class="cl">CLOSE-WAIT        28            0                       172.17.0.2:37863               192.168.245.145:3306        users:((&#34;sysbench&#34;,pid=207,fd=20236))       
+</span></span><span class="line"><span class="cl">CLOSE-WAIT        28            0                       172.17.0.2:55403               192.168.245.145:3306        users:((&#34;sysbench&#34;,pid=207,fd=16731))       
+</span></span><span class="line"><span class="cl">CLOSE-WAIT        132           0                       172.17.0.2:53963               192.168.245.145:3306        users:((&#34;sysbench&#34;,pid=207,fd=25906))       
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>TODO: 详细学习一下 Recv-Q Send-Q 分别意味着发生了什么事情</p>
+<p>尝试抓 mysqld 的 syscall 发现，正常的登录过程，sendto 发送了 77(正常登录回显)+54(超时回显)+1(close 后的 fin 占用一个 byte)=132</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">strace -ff -p <span class="sb">`</span>pidof mysqld<span class="sb">`</span> -o mysqld_syscal.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">14595</span> &lt;... accept resumed&gt;<span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET6, <span class="nv">sin6_port</span><span class="o">=</span>htons<span class="o">(</span>65517<span class="o">)</span>, <span class="nv">sin6_flowinfo</span><span class="o">=</span>htonl<span class="o">(</span>0<span class="o">)</span>, inet_pton<span class="o">(</span>AF_INET6, <span class="s2">&#34;::ffff:192.168.245.1&#34;</span>, <span class="p">&amp;</span>sin6_addr<span class="o">)</span>, <span class="nv">sin6_scope_id</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">[</span><span class="nv">128</span> <span class="o">=</span>&gt; 28<span class="o">])</span> <span class="o">=</span> <span class="m">49</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> sendto<span class="o">(</span>49, <span class="s2">&#34;2\0\0\1\377\207\4#08S01Got timeout reading&#34;</span>..., 54, MSG_DONTWAIT, NULL, <span class="m">0</span> &lt;unfinished ...&gt;
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> setsockopt<span class="o">(</span>49, SOL_TCP, TCP_NODELAY, <span class="o">[</span>1<span class="o">]</span>, 4<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> getpeername<span class="o">(</span>49, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET6, <span class="nv">sin6_port</span><span class="o">=</span>htons<span class="o">(</span>64695<span class="o">)</span>, <span class="nv">sin6_flowinfo</span><span class="o">=</span>htonl<span class="o">(</span>0<span class="o">)</span>, inet_pton<span class="o">(</span>AF_INET6, <span class="s2">&#34;::ffff:192.168.245.1&#34;</span>, <span class="p">&amp;</span>sin6_addr<span class="o">)</span>, <span class="nv">sin6_scope_id</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">[</span><span class="nv">128</span> <span class="o">=</span>&gt; 28<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> setsockopt<span class="o">(</span>49, SOL_SOCKET, SO_KEEPALIVE, <span class="o">[</span>1<span class="o">]</span>, 4<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> sendto<span class="o">(</span>49, <span class="s2">&#34;I\0\0\0\n8.4.2\0\2448\0\0W%59p.\21Y\0\377\377\377\2\0\377\337\25&#34;</span>..., 77, MSG_DONTWAIT, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">77</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> recvfrom<span class="o">(</span>49, 0xffff5c1d0db0, 4, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> -1 EAGAIN <span class="o">(</span>Resource temporarily unavailable<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> sendto<span class="o">(</span>49, <span class="s2">&#34;2\0\0\1\377\207\4#08S01Got timeout reading&#34;</span>..., 54, MSG_DONTWAIT, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">54</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> shutdown<span class="o">(</span>49, SHUT_RDWR<span class="o">)</span>           <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19382</span> close<span class="o">(</span>49<span class="o">)</span>                         <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19373</span> setsockopt<span class="o">(</span>49, SOL_TCP, TCP_NODELAY, <span class="o">[</span>1<span class="o">]</span>, <span class="m">4</span> &lt;unfinished ...&gt;
+</span></span><span class="line"><span class="cl"><span class="m">19373</span> getpeername<span class="o">(</span>49, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET6, <span class="nv">sin6_port</span><span class="o">=</span>htons<span class="o">(</span>65517<span class="o">)</span>, <span class="nv">sin6_flowinfo</span><span class="o">=</span>htonl<span class="o">(</span>0<span class="o">)</span>, inet_pton<span class="o">(</span>AF_INET6, <span class="s2">&#34;::ffff:192.168.245.1&#34;</span>, <span class="p">&amp;</span>sin6_addr<span class="o">)</span>, <span class="nv">sin6_scope_id</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">[</span><span class="nv">128</span> <span class="o">=</span>&gt; 28<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19373</span> setsockopt<span class="o">(</span>49, SOL_SOCKET, SO_KEEPALIVE, <span class="o">[</span>1<span class="o">]</span>, 4<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">19373</span> sendto<span class="o">(</span>49, <span class="s2">&#34;I\0\0\0\n8.4.2\0;9\0\0\n(V\0201D_\26\0\377\377\377\2\0\377\337\25&#34;</span>..., 77, MSG_DONTWAIT, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">77</span>
+</span></span><span class="line"><span class="cl"><span class="m">19373</span> recvfrom<span class="o">(</span>49, 0xffff78034a00, 4, MSG_DONTWAIT, NULL, NULL<span class="o">)</span> <span class="o">=</span> -1 EAGAIN <span class="o">(</span>Resource temporarily unavailable<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="k">$((</span><span class="m">54</span><span class="o">+</span><span class="m">77</span><span class="o">+</span><span class="m">1</span><span class="k">))</span>
+</span></span><span class="line"><span class="cl"><span class="m">132</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>尝试抓 mysqld 的 syscall 发现，连接过多时，sendto 发送了 27(too many conn)+1(close 后的 fin 占用一个 byte)=28</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">14595</span> accept<span class="o">(</span>20, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET6, <span class="nv">sin6_port</span><span class="o">=</span>htons<span class="o">(</span>64852<span class="o">)</span>, <span class="nv">sin6_flowinfo</span><span class="o">=</span>htonl<span class="o">(</span>0<span class="o">)</span>, inet_pton<span class="o">(</span>AF_INET6, <span class="s2">&#34;::ffff:192.168.245.1&#34;</span>, <span class="p">&amp;</span>sin6_addr<span class="o">)</span>, <span class="nv">sin6_scope_id</span><span class="o">=</span>0<span class="o">}</span>, <span class="o">[</span><span class="nv">128</span> <span class="o">=</span>&gt; 28<span class="o">])</span> <span class="o">=</span> <span class="m">197</span>
+</span></span><span class="line"><span class="cl"><span class="m">14595</span> setsockopt<span class="o">(</span>197, SOL_TCP, TCP_NODELAY, <span class="o">[</span>1<span class="o">]</span>, 4<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">14595</span> sendto<span class="o">(</span>197, <span class="s2">&#34;\27\0\0\0\377\20\4Too many connections&#34;</span>, 27, MSG_DONTWAIT, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">27</span>
+</span></span><span class="line"><span class="cl"><span class="m">14595</span> shutdown<span class="o">(</span>197, SHUT_RDWR<span class="o">)</span>          <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">14595</span> close<span class="o">(</span>197<span class="o">)</span>                        <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="k">$((</span><span class="m">27</span><span class="o">+</span><span class="m">1</span><span class="k">))</span>
+</span></span><span class="line"><span class="cl"><span class="m">28</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="为什么-cpu-这么高cpu-都在忙什么">为什么 CPU 这么高，CPU 都在忙什么</h3>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-sysbench-dont-reconnect-after-kill/images/sysbench-top.png"
+        data-srcset="/why-sysbench-dont-reconnect-after-kill/images/sysbench-top.png, /why-sysbench-dont-reconnect-after-kill/images/sysbench-top.png 1.5x, /why-sysbench-dont-reconnect-after-kill/images/sysbench-top.png 2x"
+        data-sizes="auto"
+        alt="/why-sysbench-dont-reconnect-after-kill/images/sysbench-top.png"
+        title="sysbench-top" width="1420" height="90" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./images/perf-top-tree.png"
+        data-srcset="./images/perf-top-tree.png, ./images/perf-top-tree.png 1.5x, ./images/perf-top-tree.png 2x"
+        data-sizes="auto"
+        alt="./images/perf-top-tree.png"
+        title="perf-top" /></p>
+<p>perf top 可以看到，kernel 在执行 __inet_check_established；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">strace -f -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80037000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80039000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">6</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>6, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>6, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>6, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>6, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>6, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>6, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003b000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003d000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">7</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>7, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>7, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>7, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>7, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>7, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>7, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff8003f000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getpid<span class="o">()</span>                          <span class="o">=</span> <span class="m">435</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80041000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   socket<span class="o">(</span>AF_INET, SOCK_STREAM, IPPROTO_TCP<span class="o">)</span> <span class="o">=</span> <span class="m">8</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>8, F_SETFL, O_RDONLY<span class="p">|</span>O_NONBLOCK<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   connect<span class="o">(</span>8, <span class="o">{</span><span class="nv">sa_family</span><span class="o">=</span>AF_INET, <span class="nv">sin_port</span><span class="o">=</span>htons<span class="o">(</span>3306<span class="o">)</span>, <span class="nv">sin_addr</span><span class="o">=</span>inet_addr<span class="o">(</span><span class="s2">&#34;192.168.245.145&#34;</span><span class="o">)}</span>, 16<span class="o">)</span> <span class="o">=</span> -1 EINPROGRESS <span class="o">(</span>Operation now in progress<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   ppoll<span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>8, <span class="nv">events</span><span class="o">=</span>POLLOUT<span class="o">}]</span>, 1, NULL, NULL, 0<span class="o">)</span> <span class="o">=</span> <span class="m">1</span> <span class="o">([{</span><span class="nv">fd</span><span class="o">=</span>8, <span class="nv">revents</span><span class="o">=</span>POLLOUT<span class="o">}])</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   getsockopt<span class="o">(</span>8, SOL_SOCKET, SO_ERROR, <span class="o">[</span>0<span class="o">]</span>, <span class="o">[</span>4<span class="o">])</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   fcntl<span class="o">(</span>8, F_SETFL, O_RDONLY<span class="o">)</span>       <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   mprotect<span class="o">(</span>0xffff80043000, 8192, PROT_READ<span class="p">|</span>PROT_WRITE<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="m">437</span>   clock_nanosleep<span class="o">(</span>CLOCK_REALTIME, 0, <span class="o">{</span><span class="nv">tv_sec</span><span class="o">=</span>0, <span class="nv">tv_nsec</span><span class="o">=</span>1000000<span class="o">}</span>, NULL<span class="o">)</span> <span class="o">=</span> <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">strace -f -c -p <span class="sb">`</span>pidof sysbench<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">207</span> attached with <span class="m">3</span> threads
+</span></span><span class="line"><span class="cl">^Cstrace: Process <span class="m">207</span> detached
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">208</span> detached
+</span></span><span class="line"><span class="cl">strace: Process <span class="m">209</span> detached
+</span></span><span class="line"><span class="cl">% <span class="nb">time</span>     seconds  usecs/call     calls    errors syscall
+</span></span><span class="line"><span class="cl">------ ----------- ----------- --------- --------- ----------------
+</span></span><span class="line"><span class="cl"> 49.55   16.874015        <span class="m">3734</span>      <span class="m">4518</span>           clock_nanosleep
+</span></span><span class="line"><span class="cl"> 49.22   16.759397        <span class="m">3731</span>      <span class="m">4491</span>      <span class="m">4491</span> connect
+</span></span><span class="line"><span class="cl">  0.56    0.192136      <span class="m">192136</span>         <span class="m">1</span>           restart_syscall
+</span></span><span class="line"><span class="cl">  0.25    0.085898          <span class="m">19</span>      <span class="m">4492</span>           close
+</span></span><span class="line"><span class="cl">  0.18    0.061314          <span class="m">13</span>      <span class="m">4491</span>           socket
+</span></span><span class="line"><span class="cl">  0.11    0.037854           <span class="m">8</span>      <span class="m">4491</span>           fcntl
+</span></span><span class="line"><span class="cl">  0.11    0.037465           <span class="m">8</span>      <span class="m">4491</span>           getpid
+</span></span><span class="line"><span class="cl">  0.01    0.004097         <span class="m">146</span>        <span class="m">28</span>           write
+</span></span><span class="line"><span class="cl">------ ----------- ----------- --------- --------- ----------------
+</span></span><span class="line"><span class="cl">100.00   34.052176        <span class="m">1261</span>     <span class="m">27003</span>      <span class="m">4491</span> total
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>strace 可以看出 sysbench 在执行 connect，但是一直 errors，且可以看到几个 syscall calls 相差不大，echo $((4518-4491)) = 27</p>
+<h3 id="什么原因会导致-close_wait-状态">什么原因会导致 CLOSE_WAIT 状态</h3>
+<p>从 <a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Connection_termination" target="_blank" rel="noopener noreffer ">wiki</a> 中搬一张图：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./images/TCP_CLOSE.svg"
+        data-srcset="./images/TCP_CLOSE.svg, ./images/TCP_CLOSE.svg 1.5x, ./images/TCP_CLOSE.svg 2x"
+        data-sizes="auto"
+        alt="./images/TCP_CLOSE.svg"
+        title="tcp_close" /></p>
+<p>被动关闭方接收到 fin 后，没有发送 fin，被动关闭方状态停留在 CLOSE_WAIT。此例子中 CLOSE_WAIT 出现在 sysbench 中，说明是由于 mysql server 关闭发起 close，而客户端被动关闭未 close，客户端（sysbench）连接状态为 CLOSE_WAIT；</p>
+<p>在 sysbench 机器中执行 <code>nc -vz ip 3306</code>，报错 <code>Cannot assign requested address.</code> 也说明是 sysbench 的问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bash-4.4# nc -v 192.168.245.145 <span class="m">3306</span>
+</span></span><span class="line"><span class="cl">Ncat: Version 7.92 <span class="o">(</span> https://nmap.org/ncat <span class="o">)</span>
+</span></span><span class="line"><span class="cl">Ncat: Cannot assign requested address.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="mysql-这里在做什么事情mysql-多久会触发-close-行为呢">mysql 这里在做什么事情？mysql 多久会触发 close 行为呢？</h3>
+<p><a href="./mysql-connect-then-timeout.pcap" rel="">mysql 接收到请求，后超时的包在这里</a></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-sysbench-dont-reconnect-after-kill/images/mysql-conn-then-timeout-conn.png"
+        data-srcset="/why-sysbench-dont-reconnect-after-kill/images/mysql-conn-then-timeout-conn.png, /why-sysbench-dont-reconnect-after-kill/images/mysql-conn-then-timeout-conn.png 1.5x, /why-sysbench-dont-reconnect-after-kill/images/mysql-conn-then-timeout-conn.png 2x"
+        data-sizes="auto"
+        alt="/why-sysbench-dont-reconnect-after-kill/images/mysql-conn-then-timeout-conn.png"
+        title="conn" width="2746" height="1338" /></p>
+<p>可以看到，mysql 在 0.00618s mysql 返回了登录验证的 prompt，此时 mysql 中的连接状态是：
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./images/mysql_process_bad_conn.png"
+        data-srcset="./images/mysql_process_bad_conn.png, ./images/mysql_process_bad_conn.png 1.5x, ./images/mysql_process_bad_conn.png 2x"
+        data-sizes="auto"
+        alt="./images/mysql_process_bad_conn.png"
+        title="./images/mysql_process_bad_conn.png" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-sysbench-dont-reconnect-after-kill/images/mysql_process_bad_timeout.png"
+        data-srcset="/why-sysbench-dont-reconnect-after-kill/images/mysql_process_bad_timeout.png, /why-sysbench-dont-reconnect-after-kill/images/mysql_process_bad_timeout.png 1.5x, /why-sysbench-dont-reconnect-after-kill/images/mysql_process_bad_timeout.png 2x"
+        data-sizes="auto"
+        alt="/why-sysbench-dont-reconnect-after-kill/images/mysql_process_bad_timeout.png"
+        title="timeout" width="2718" height="1364" /></p>
+<p>10.008458 mysql 返回超时。说明 mysql 这里的登录超时时间是 10 s。</p>
+<p>后续超时的连接被内核 reset 掉。</p>
+<h3 id="为什么-sysbench-要疯狂创建-4-万多个连接">为什么 Sysbench 要疯狂创建 4 万多个连接</h3>
+<p>TODO: 需要翻翻 sysbench 的代码，确认一下原因了，看到 syscall 中大量的 connect，大概是到了一个死循环处</p>
+<p>TODO: perf top 中展开可以看到很多函数地址，并无执行的函数名字，猜测是 sysbench 的函数，需要编译 sysbench 后确认一下</p>
+<p>TODO: EADDRNOTAVAIL;   //Cannot assign requested address 这个错误的含意是什么，何时出现</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-10-16</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" data-title="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连" data-hashtags="debug,mysql,sysbench"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" data-hashtag="debug"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" data-title="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" data-title="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/" data-title="sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/debug/">debug</a>,&nbsp;<a href="/tags/mysql/">mysql</a>,&nbsp;<a href="/tags/sysbench/">sysbench</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/k8s-pod-random-killed/" class="prev" rel="prev" title="k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>k3s 环境在高 CPU&&Memory&&IO 负载下，pod 中的 container 随机健康检查失败</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

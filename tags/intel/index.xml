@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>intel - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/intel/</link>
+        <description>intel - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/intel/" rel="self" type="application/rss+xml" /><item>
+    <title>超线程是如何工作的 - 实验</title>
+    <link>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</link>
+    <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</guid>
+    <description><![CDATA[<p>文章简介：通过一个实验理解超线程是如何工作的</p>]]></description>
+</item>
+</channel>
+</rss>

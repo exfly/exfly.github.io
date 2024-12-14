@@ -3,9 +3,8 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
             <loc>https://exfly.github.io/about/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/cpu/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2024-12-14T20:13:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/</loc><lastmod>2024-12-14T20:13:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/"
@@ -14,8 +13,9 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/intel/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/rust/</loc><lastmod>2024-12-14T20:13:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</loc><lastmod>2024-12-14T20:13:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/</loc><lastmod>2024-12-14T20:13:49&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/tags/"
@@ -24,6 +24,8 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/tags/"
                     /></url><url>
+            <loc>https://exfly.github.io/tags/cpu/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/tags/intel/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/mysql/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/sysbench/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>

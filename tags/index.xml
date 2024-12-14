@@ -4,20 +4,28 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>debug</title>
+    <link>https://exfly.github.io/tags/debug/</link>
+    <pubDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/debug/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>rust</title>
+    <link>https://exfly.github.io/tags/rust/</link>
+    <pubDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/rust/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>cpu</title>
     <link>https://exfly.github.io/tags/cpu/</link>
     <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/cpu/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>debug</title>
-    <link>https://exfly.github.io/tags/debug/</link>
-    <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/debug/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -74,14 +82,6 @@
     <pubDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/k8s/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>docker</title>
-    <link>https://exfly.github.io/tags/docker/</link>
-    <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/docker/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

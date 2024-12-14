@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>rustc 编译的程序直接执行报错 `zsh: killed     ./main` - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="rustc 编译的程序直接执行报错 `zsh: killed     ./main`" />
+<meta property="og:description" content="文章简介：Mac m1 机器上安装的 rust 编译运行程序遇到问题 zsh: killed     ./main，问题解决" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-14T00:59:45+00:00" />
+<meta property="article:modified_time" content="2024-12-14T20:13:49+08:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="rustc 编译的程序直接执行报错 `zsh: killed     ./main`"/>
+<meta name="twitter:description" content="文章简介：Mac m1 机器上安装的 rust 编译运行程序遇到问题 zsh: killed     ./main，问题解决"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" /><link rel="prev" href="https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "rustc 编译的程序直接执行报错 `zsh: killed     ./main`",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/rustc-compiled-bin-killed-on-mac-m1\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "rust, debug","wordcount":  688 ,
+        "url": "https:\/\/exfly.github.io\/rustc-compiled-bin-killed-on-mac-m1\/","datePublished": "2024-12-14T00:59:45+00:00","dateModified": "2024-12-14T20:13:49+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/rustc-compiled-bin-killed-on-mac-m1/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/rustc-compiled-bin-killed-on-mac-m1/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">rustc 编译的程序直接执行报错 `zsh: killed     ./main`</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-12-14">2024-12-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 688 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>文章简介：Mac m1 机器上安装的 rust 编译运行程序遇到问题 <code>zsh: killed     ./main</code>，问题解决</p>
+<p>在 Mac M1 机器上安装完 rust 后运行程序，报错 <code>zsh: killed     ./main</code>。</p>
+<p>先看下我的环境 fastfetch</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">                     ..&#39;          xxx@hostname
+</span></span><span class="line"><span class="cl">                 ,xNMM.           --------------------
+</span></span><span class="line"><span class="cl">               .OMMMMo            OS: macOS Ventura 13.4 arm64
+</span></span><span class="line"><span class="cl">               lMM&#34;               Host: MacBook Pro (14-inch, 2021)
+</span></span><span class="line"><span class="cl">     .;loddo:.  .olloddol;.       Kernel: Darwin 22.5.0
+</span></span><span class="line"><span class="cl">   cKMMMMMMMMMMNWMMMMMMMMMM0:     Uptime: 22 days, 22 hours, 40 mins
+</span></span><span class="line"><span class="cl"> .KMMMMMMMMMMMMMMMMMMMMMMMWd.     Packages: 220 (nix-system), 45 (nix-default), 158 (brew), 48 (brew-cask)
+</span></span><span class="line"><span class="cl"> XMMMMMMMMMMMMMMMMMMMMMMMX.       Shell: zsh 5.9
+</span></span><span class="line"><span class="cl">;MMMMMMMMMMMMMMMMMMMMMMMM:        Display (Color LCD): 3024x1964 @ 120 Hz (as 1512x982) in 14&#34; [Built-in]
+</span></span><span class="line"><span class="cl">:MMMMMMMMMMMMMMMMMMMMMMMM:        DE: Aqua
+</span></span><span class="line"><span class="cl">.MMMMMMMMMMMMMMMMMMMMMMMMX.       WM: Quartz Compositor
+</span></span><span class="line"><span class="cl"> kMMMMMMMMMMMMMMMMMMMMMMMMWd.     WM Theme: Multicolor (Dark)
+</span></span><span class="line"><span class="cl"> &#39;XMMMMMMMMMMMMMMMMMMMMMMMMMMk    Font: .AppleSystemUIFont [System], Helvetica [User]
+</span></span><span class="line"><span class="cl">  &#39;XMMMMMMMMMMMMMMMMMMMMMMMMK.    Cursor: Fill - Black, Outline - White (32px)
+</span></span><span class="line"><span class="cl">    kMMMMMMMMMMMMMMMMMMMMMMd      Terminal: tmux 3.4
+</span></span><span class="line"><span class="cl">     ;KMMMMMMMWXXWMMMMMMMk.       CPU: Apple M1 Pro (8) @ 3.23 GHz
+</span></span><span class="line"><span class="cl">       &#34;cooc*&#34;    &#34;*coo&#39;&#34;         GPU: Apple M1 Pro (14) @ 1.30 GHz [Integrated]
+</span></span><span class="line"><span class="cl">                                  Memory: 13.42 GiB / 16.00 GiB (84%)
+</span></span><span class="line"><span class="cl">                                  Swap: 17.39 GiB / 18.00 GiB (97%)
+</span></span><span class="line"><span class="cl">                                  Disk (/): 425.64 GiB / 460.43 GiB (92%) - apfs [Read-only]
+</span></span><span class="line"><span class="cl">                                  Disk (/Volumes/code): 425.64 GiB / 460.43 GiB (92%) - apfs
+</span></span><span class="line"><span class="cl">                                  Local IP (en0): 192.167.1.4/24
+</span></span><span class="line"><span class="cl">                                  Battery (bq40z651): 84% (3 hours, 52 mins remaining) [Discharging]
+</span></span><span class="line"><span class="cl">                                  Locale: en_US.UTF-8
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">rustc --version -v
+</span></span><span class="line"><span class="cl">rustc 1.83.0 (90b35a623 2024-11-26)
+</span></span><span class="line"><span class="cl">binary: rustc
+</span></span><span class="line"><span class="cl">commit-hash: 90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf
+</span></span><span class="line"><span class="cl">commit-date: 2024-11-26
+</span></span><span class="line"><span class="cl">host: aarch64-apple-darwin
+</span></span><span class="line"><span class="cl">release: 1.83.0
+</span></span><span class="line"><span class="cl">LLVM version: 19.1.1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>执行如下代码会报错</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt; main.rs
+</span></span></span><span class="line"><span class="cl"><span class="s">fn main() {
+</span></span></span><span class="line"><span class="cl"><span class="s">    println!(&#34;Hello, world!&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">rm -rf main <span class="o">&amp;&amp;</span> rustc main.rs <span class="o">&amp;&amp;</span> ./main <span class="o">&amp;&amp;</span> rm -rf main.rs main
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">zsh: killed     ./main
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>开了新的 shell 中运行则正常输出。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Hello, world!
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>坏的程序在好的 shell 中也报相同的错误。</p>
+<p>多次尝试后发现新开的 zsh 下正常，tmux 下的 zsh 中有问题，开始怀疑是否是环境变量的问题。diff 了两个环境的环境变量如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl"><span class="gd">--- 1good.env 2024-12-13 21:56:57.329383153 +0800
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ 1bad.env 2024-12-13 21:56:45.666162367 +0800
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -1,19 +1,29 @@
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="gi">+AR=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+AS=
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> AUTO_NOTIFY_EXPIRE_TIME=8000
+</span></span><span class="line"><span class="cl"> AUTO_NOTIFY_THRESHOLD=10
+</span></span><span class="line"><span class="cl"> AUTO_NOTIFY_VERSION=0.10.0
+</span></span><span class="line"><span class="cl"><span class="gi">+CC=
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> CLICOLOR=true
+</span></span><span class="line"><span class="cl"> COLORTERM=truecolor
+</span></span><span class="line"><span class="cl"> COMMAND_MODE=unix2003
+</span></span><span class="line"><span class="cl"> CONDA_PROMPT_MODIFIER=false
+</span></span><span class="line"><span class="cl"><span class="gi">+CONFIG_SHELL=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+CXX=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+DIRENV_DIFF=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+DIRENV_DIR=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+DIRENV_FILE=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+DIRENV_WATCHES=
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> EDITOR=vim
+</span></span><span class="line"><span class="cl"><span class="gi">+HOST_PATH=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+IN_NIX_SHELL=
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> JENV_LOADED=1
+</span></span><span class="line"><span class="cl"> JENV_SHELL=zsh
+</span></span><span class="line"><span class="cl"><span class="gi">+LANG=en_US.UTF-8
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> LC_CTYPE=UTF-8
+</span></span><span class="line"><span class="cl"><span class="gi">+LD=
+</span></span></span><span class="line"><span class="cl"><span class="gi">+LD_DYLD_PATH=
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>zsh 非 tmux 下尝试不断设置不同的环境变量后测试发现好的环境下设置了 LD_DYLD_PATH 变量就会有问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LD_DYLD_PATH</span><span class="o">=</span>
+</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF &gt; main.rs
+</span></span></span><span class="line"><span class="cl"><span class="s">fn main() {
+</span></span></span><span class="line"><span class="cl"><span class="s">    println!(&#34;Hello, world!&#34;);
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">rm -rf main <span class="o">&amp;&amp;</span> rustc main.rs <span class="o">&amp;&amp;</span> ./main <span class="o">&amp;&amp;</span> rm -rf main.rs main
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>检查了当前我在使用的 dotfiles 中没有设置过 LD_DYLD_PATH，尝试一下 workaround：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">unset</span> LD_DYLD_PATH
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>尝试在 linux 下看看是否会有同样的问题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --rm -it docker.m.daocloud.io/library/rust:1-bookworm bash
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Hello, world!
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看起来是 macos 下特有的问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dtrace ./main
+</span></span><span class="line"><span class="cl">dtrace: system integrity protection is on, some features will not be available
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dtrace: failed to execute /tmp/main: Malformed Mach-o file
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>提了 <a href="https://github.com/rust-lang/rust/issues/134303" target="_blank" rel="noopener noreffer ">issue</a> ，看看社区怎么说。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-12-14&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/b58f61aee775b9c230f8aa9235fe47bd722dab33" target="_blank" title="commit by exfly(exflyg@gmail.com) b58f61aee775b9c230f8aa9235fe47bd722dab33: feat: add debug">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>b58f61a</a></span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" data-title="rustc 编译的程序直接执行报错 `zsh: killed     ./main`" data-hashtags="rust,debug"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" data-hashtag="rust"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" data-title="rustc 编译的程序直接执行报错 `zsh: killed     ./main`"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" data-title="rustc 编译的程序直接执行报错 `zsh: killed     ./main`"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" data-title="rustc 编译的程序直接执行报错 `zsh: killed     ./main`"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/rust/">rust</a>,&nbsp;<a href="/tags/debug/">debug</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/experiment-to-understand-how-hyperthreading-works/" class="prev" rel="prev" title="超线程是如何工作的 - 实验"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>超线程是如何工作的 - 实验</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

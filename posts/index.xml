@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>rustc 编译的程序直接执行报错 `zsh: killed     ./main`</title>
+    <link>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</link>
+    <pubDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</guid>
+    <description><![CDATA[<p>文章简介：Mac m1 机器上安装的 rust 编译运行程序遇到问题 <code>zsh: killed     ./main</code>，问题解决</p>]]></description>
+</item>
+<item>
     <title>超线程是如何工作的 - 实验</title>
     <link>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</link>
     <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/kunpeng-arm64/</guid>
     <description><![CDATA[文章简介：介绍迁移鲲鹏 arm64 架构的方案及遇到的坑 背景介绍 项目背景 客户要求 arm64 机器的需求。 ARM64 指令集特性 AMD64 到 ARM64 的迁移策略 由于容器化，需要支持 k8s 在 arm64 下运]]></description>
-</item>
-<item>
-    <title>在 k8s 实际生产中 bitnami/postgres-ha 的一次 14 升级 15 经验及过程</title>
-    <link>https://exfly.github.io/postgres-upgrade-bitnami-ha/</link>
-    <pubDate>Mon, 04 Dec 2023 19:24:19 &#43;0800</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/postgres-upgrade-bitnami-ha/</guid>
-    <description><![CDATA[<p>文章简介：bitnami/postgres-ha 使用 pg_upgrade 全自动大版本升级 从 14 到 15</p>]]></description>
 </item>
 </channel>
 </rss>

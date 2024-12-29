@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/linux/</link>
         <description>linux - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 May 2024 01:32:02 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/linux/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>程序因为 tcp window full hang 住的一次排查过程</title>
+    <link>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</link>
+    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</guid>
+    <description><![CDATA[<p>文章简介：程序因为 tcp window full hang 住的一次排查过程</p>]]></description>
+</item>
+<item>
     <title>离线安装开箱即用的容器运行环境运行环境</title>
     <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
     <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/build-yum-mirror-with-nginx/</guid>
     <description><![CDATA[<p>文章简介: 使用 nginx 制作一个 yum mirror</p>]]></description>
-</item>
-<item>
-    <title>Linux epoll</title>
-    <link>https://exfly.github.io/linux_epoll/</link>
-    <pubDate>Mon, 06 Apr 2020 12:54:50 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/linux_epoll/</guid>
-    <description><![CDATA[<p>epoll 高性能 network io 模型</p>]]></description>
 </item>
 </channel>
 </rss>

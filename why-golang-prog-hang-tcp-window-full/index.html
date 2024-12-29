@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>程序因为 tcp window full hang 住的一次排查过程 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="程序因为 tcp window full hang 住的一次排查过程" />
+<meta property="og:description" content="文章简介：程序因为 tcp window full hang 住的一次排查过程" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-29T01:12:25+00:00" />
+<meta property="article:modified_time" content="2024-12-29T01:12:25+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="程序因为 tcp window full hang 住的一次排查过程"/>
+<meta name="twitter:description" content="文章简介：程序因为 tcp window full hang 住的一次排查过程"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" /><link rel="prev" href="https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "程序因为 tcp window full hang 住的一次排查过程",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/why-golang-prog-hang-tcp-window-full\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "debug, golang, linux, tcp","wordcount":  502 ,
+        "url": "https:\/\/exfly.github.io\/why-golang-prog-hang-tcp-window-full\/","datePublished": "2024-12-29T01:12:25+00:00","dateModified": "2024-12-29T01:12:25+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/why-golang-prog-hang-tcp-window-full/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/why-golang-prog-hang-tcp-window-full/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">程序因为 tcp window full hang 住的一次排查过程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-12-29">2024-12-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 502 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#debug-过程">debug 过程</a></li>
+    <li><a href="#解决">解决</a></li>
+    <li><a href="#综上">综上</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：程序因为 tcp window full hang 住的一次排查过程</p>
+<h2 id="背景">背景</h2>
+<p>生产出了问题，被拉来救场。</p>
+<p>业务流程是 server1 会从 kafka1 中消费数据，重新整理数据后通过 tcp 发送给 logstash，logstash 再将数据发送给下游的 kafka2；为了确保不丢数据，logstach 开了某种幂等插件。</p>
+<p>问题现象是，kafka1 中有 1000 条数据，tcp 确认发送成功 500 条，剩下的 500 条数据未发送或者发送失败了；kafka2 中未收到数据；</p>
+<h2 id="debug-过程">debug 过程</h2>
+<p>首先从源头看 server 1 中 tcp 是未发送还是发送失败了。从日志中未发现发送失败的日志。</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-golang-prog-hang-tcp-window-full/images/server1-goroutine-stacktrace.png"
+        data-srcset="/why-golang-prog-hang-tcp-window-full/images/server1-goroutine-stacktrace.png, /why-golang-prog-hang-tcp-window-full/images/server1-goroutine-stacktrace.png 1.5x, /why-golang-prog-hang-tcp-window-full/images/server1-goroutine-stacktrace.png 2x"
+        data-sizes="auto"
+        alt="/why-golang-prog-hang-tcp-window-full/images/server1-goroutine-stacktrace.png"
+        title="server1-goroutine-stacktrace" width="1418" height="570" /></p>
+<p>从程序中的 goroutine 调用栈可以确认，程序卡在 syscall write 27 minutes，怀疑 tcp 连接出了问题；</p>
+<p>在 logstash 这个机器上 ss 查看连接状态，可以看到，logstash 没有将 socket 中的数据 copy 到用户空间。</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-golang-prog-hang-tcp-window-full/images/logstash-ss.png"
+        data-srcset="/why-golang-prog-hang-tcp-window-full/images/logstash-ss.png, /why-golang-prog-hang-tcp-window-full/images/logstash-ss.png 1.5x, /why-golang-prog-hang-tcp-window-full/images/logstash-ss.png 2x"
+        data-sizes="auto"
+        alt="/why-golang-prog-hang-tcp-window-full/images/logstash-ss.png"
+        title="logstash ss" width="2980" height="564" /></p>
+<blockquote>
+<p>Recv-Q: <code>The count of bytes not copied by the user program connected to this socket.</code>
+<a href="https://man7.org/linux/man-pages/man8/netstat.8.html" target="_blank" rel="noopener noreffer ">man 8 netstat</a></p>
+</blockquote>
+<p>查看 logstash 发现发送到 kafka 失败了：</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-golang-prog-hang-tcp-window-full/images/logstash-err-log.png"
+        data-srcset="/why-golang-prog-hang-tcp-window-full/images/logstash-err-log.png, /why-golang-prog-hang-tcp-window-full/images/logstash-err-log.png 1.5x, /why-golang-prog-hang-tcp-window-full/images/logstash-err-log.png 2x"
+        data-sizes="auto"
+        alt="/why-golang-prog-hang-tcp-window-full/images/logstash-err-log.png"
+        title="logstash err log" width="1221" height="137" /></p>
+<p>看下抓包，可以看到再 keepalive + zerowindow，确认为 tcp read buf 已经满了，tcp 无法继续发送新的数据，golang 的 socket.write 只能死等。</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/why-golang-prog-hang-tcp-window-full/images/logstash-tcpdump.png"
+        data-srcset="/why-golang-prog-hang-tcp-window-full/images/logstash-tcpdump.png, /why-golang-prog-hang-tcp-window-full/images/logstash-tcpdump.png 1.5x, /why-golang-prog-hang-tcp-window-full/images/logstash-tcpdump.png 2x"
+        data-sizes="auto"
+        alt="/why-golang-prog-hang-tcp-window-full/images/logstash-tcpdump.png"
+        title="logstash tcpdump" width="552" height="298" /></p>
+<h2 id="解决">解决</h2>
+<p>修复 kafka TopicAuthorizationException: not authorized to aceess topics, 业务即恢复。</p>
+<h2 id="综上">综上</h2>
+<ol>
+<li>tcp write 的成功，不意味着数据真的被接收到，如果业务需要确保下游被接收到，需要有业务 ack 机制；</li>
+<li>改进方案可以考虑添加一个 kafka topic 或者中间添加一个 mq，整体数据流变更为 kafka1 -&gt; server1 -&gt; mq -&gt; kafka2</li>
+</ol></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-12-29</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" data-title="程序因为 tcp window full hang 住的一次排查过程" data-hashtags="debug,golang,linux,tcp"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" data-hashtag="debug"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" data-title="程序因为 tcp window full hang 住的一次排查过程"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" data-title="程序因为 tcp window full hang 住的一次排查过程"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/why-golang-prog-hang-tcp-window-full/" data-title="程序因为 tcp window full hang 住的一次排查过程"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/debug/">debug</a>,&nbsp;<a href="/tags/golang/">golang</a>,&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/tcp/">tcp</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/rustc-compiled-bin-killed-on-mac-m1/" class="prev" rel="prev" title="rustc 编译的程序直接执行报错 `zsh: killed     ./main`"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>rustc 编译的程序直接执行报错 `zsh: killed     ./main`</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

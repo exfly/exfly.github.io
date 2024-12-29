@@ -4,9 +4,17 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>程序因为 tcp window full hang 住的一次排查过程</title>
+    <link>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</link>
+    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</guid>
+    <description><![CDATA[<p>文章简介：程序因为 tcp window full hang 住的一次排查过程</p>]]></description>
+</item>
+<item>
     <title>rustc 编译的程序直接执行报错 `zsh: killed     ./main`</title>
     <link>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</link>
     <pubDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</pubDate>
@@ -77,14 +85,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/k8s-in-action/</guid>
     <description><![CDATA[<p>文章简介：总结最近几年使用 k8s 的经验</p>]]></description>
-</item>
-<item>
-    <title>鲲鹏 920 arm64 机器适配经验</title>
-    <link>https://exfly.github.io/kunpeng-arm64/</link>
-    <pubDate>Mon, 29 Jan 2024 02:20:30 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/kunpeng-arm64/</guid>
-    <description><![CDATA[文章简介：介绍迁移鲲鹏 arm64 架构的方案及遇到的坑 背景介绍 项目背景 客户要求 arm64 机器的需求。 ARM64 指令集特性 AMD64 到 ARM64 的迁移策略 由于容器化，需要支持 k8s 在 arm64 下运]]></description>
 </item>
 </channel>
 </rss>

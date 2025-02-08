@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>connect kafka failed with cannot assign requested address</title>
+    <link>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</link>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</guid>
+    <description><![CDATA[<p>文章简介：一次业务逻辑问题导致的 kafka 连接泄露问题排查</p>]]></description>
+</item>
+<item>
     <title>程序因为 tcp window full hang 住的一次排查过程</title>
     <link>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</link>
     <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/kafka-sarama-go-fetch-metadta-write-broken-pipe/</guid>
     <description><![CDATA[<p>文章简介：一次 sarama 访问 kafka 报错 <code>client/metadata got error from broker 1002 while fetching metadata: write tcp x.x.x.x:49749-&gt;x.x.x.x:9092: write: broken pipe</code> 问题排查</p>]]></description>
-</item>
-<item>
-    <title>K8s 实践经验 (k8s in action)</title>
-    <link>https://exfly.github.io/k8s-in-action/</link>
-    <pubDate>Sat, 16 Mar 2024 04:07:08 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/k8s-in-action/</guid>
-    <description><![CDATA[<p>文章简介：总结最近几年使用 k8s 的经验</p>]]></description>
 </item>
 </channel>
 </rss>

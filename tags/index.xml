@@ -4,10 +4,10 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
     <title>debug</title>
     <link>https://exfly.github.io/tags/debug/</link>
-    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/debug/</guid>
     <description><![CDATA[]]></description>
@@ -15,15 +15,23 @@
 <item>
     <title>golang</title>
     <link>https://exfly.github.io/tags/golang/</link>
-    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/golang/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
+    <title>kafka</title>
+    <link>https://exfly.github.io/tags/kafka/</link>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/kafka/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>linux</title>
     <link>https://exfly.github.io/tags/linux/</link>
-    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/linux/</guid>
     <description><![CDATA[]]></description>
@@ -31,7 +39,7 @@
 <item>
     <title>tcp</title>
     <link>https://exfly.github.io/tags/tcp/</link>
-    <pubDate>Sun, 29 Dec 2024 01:12:25 &#43;0000</pubDate>
+    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/tcp/</guid>
     <description><![CDATA[]]></description>
@@ -74,14 +82,6 @@
     <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/sysbench/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>bugs</title>
-    <link>https://exfly.github.io/tags/bugs/</link>
-    <pubDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/bugs/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

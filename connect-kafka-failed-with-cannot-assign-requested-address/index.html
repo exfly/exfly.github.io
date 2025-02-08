@@ -28,7 +28,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/connect-kafka-failed-with-cannot-assign-requested-address\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "debug, golang, linux, tcp, kafka","wordcount":  676 ,
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "debug, golang, linux, tcp, kafka","wordcount":  711 ,
         "url": "https:\/\/exfly.github.io\/connect-kafka-failed-with-cannot-assign-requested-address\/","datePublished": "2025-02-07T12:28:45+00:00","dateModified": "2025-02-07T19:21:58+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
@@ -108,7 +108,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">connect kafka failed with cannot assign requested address</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-07">2025-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 676 字&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-07">2025-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 711 字&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -125,7 +125,7 @@
 <p>问题现象：golang 程序所有使用 kafka 连接的地方报错 <code>cannot assign requested address</code>，业务不可用。</p>
 <p>错误的含意是客户端无法申请新的端口。</p>
 <p>先看 pedestal 底层连接数：</p>
-<p><code>netstat -nt | grep 9092</code> 非常多，命令执行了很久，且疯狂刷各种连接。对于 kafka 来说是不太合理的，看起来是一次 kafka 连接泄露问题，即疯狂创建 kafka 连接，但未关闭连接。</p>
+<p><code>netstat -nt | grep 9092</code> 结果非常多，命令执行了很久，疯狂刷各种 kafka 连接信息。对于 kafka 来说是不太合理的，看起来是一次 kafka 连接泄露问题，即业务疯狂创建 kafka 连接，但未关闭连接。</p>
 <p>先看看调用栈：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -162,7 +162,7 @@
         data-sizes="auto"
         alt="/connect-kafka-failed-with-cannot-assign-requested-address/images/image-1.png"
         title="heap" width="422" height="1320" /></p>
-<p>可以看到堆调用中 InitClient，看起来是这个代码的问题。</p>
+<p>可以看到堆调用了 InitClient，这个函数中调用了很多的 sarama.NewClient，暂时猜测是这个代码的问题。</p>
 <p>详细看过代码后发现类似这种逻辑：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -216,7 +216,7 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>正常情况下 InitClient 不会报错，defer 逻辑会执行到，producer 会被正确的关闭。当 InitClient 的 doSomeInit 失败后，do 函数会没有执行 s.producer.Close() 直接退出了，导致连接泄露了。</p>
+</div><p>正常情况下 InitClient 不会报错，defer 逻辑会被执行，producer 会被正确的关闭。当 InitClient 的 doSomeInit 失败后，do 函数会没有执行 s.producer.Close() 直接退出了，导致连接泄露了。</p>
 <p>修复方法也比较朴素</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">

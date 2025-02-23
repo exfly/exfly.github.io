@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>curl - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/curl/</link>
+        <description>curl - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/curl/" rel="self" type="application/rss+xml" /><item>
+    <title>通过实验，探索 BDP、tcp buffer、RT 三者之间的关系</title>
+    <link>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</link>
+    <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</guid>
+    <description><![CDATA[<p>文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；</p>]]></description>
+</item>
+</channel>
+</rss>

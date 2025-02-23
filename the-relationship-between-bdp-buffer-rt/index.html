@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>通过实验，探索 BDP、tcp buffer、RT 三者之间的关系 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系" />
+<meta property="og:description" content="文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2025-02-23T01:50:43+00:00" />
+<meta property="article:modified_time" content="2025-02-23T01:50:43+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系"/>
+<meta name="twitter:description" content="文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" /><link rel="prev" href="https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "通过实验，探索 BDP、tcp buffer、RT 三者之间的关系",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/the-relationship-between-bdp-buffer-rt\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "linux, curl, network, 实验","wordcount":  3674 ,
+        "url": "https:\/\/exfly.github.io\/the-relationship-between-bdp-buffer-rt\/","datePublished": "2025-02-23T01:50:43+00:00","dateModified": "2025-02-23T01:50:43+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/the-relationship-between-bdp-buffer-rt/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/the-relationship-between-bdp-buffer-rt/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">通过实验，探索 BDP、tcp buffer、RT 三者之间的关系</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-23">2025-02-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3674 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#搭建环境">搭建环境</a></li>
+    <li><a href="#实验-1-固定-rmem-和-wmem增加延迟">实验 1 固定 rmem 和 wmem，增加延迟</a>
+      <ul>
+        <li><a href="#控制-rmem-和-wmem-在-4096无延迟">控制 rmem 和 wmem 在 4096，无延迟</a></li>
+        <li><a href="#现在增加延迟到-10ms">现在增加延迟到 10ms</a></li>
+        <li><a href="#小结">小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#实验-2-固定-rmem-和-wmem增加丢包率">实验 2 固定 rmem 和 wmem，增加丢包率</a>
+      <ul>
+        <li><a href="#小结-1">小结</a></li>
+      </ul>
+    </li>
+    <li><a href="#实验-3-分别设置-rmem-和-wmem">实验 3 分别设置 rmem 和 wmem</a></li>
+    <li><a href="#实验-4-curl-限速">实验 4 curl 限速</a>
+      <ul>
+        <li><a href="#数据结构">数据结构</a></li>
+        <li><a href="#关键代码">关键代码</a></li>
+        <li><a href="#算法逻辑">算法逻辑</a></li>
+        <li><a href="#实际抓包看看">实际抓包看看</a></li>
+        <li><a href="#调用流程">调用流程</a></li>
+        <li><a href="#自己实现一个类似的限速">自己实现一个类似的限速</a></li>
+      </ul>
+    </li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；</p>
+<p>按照：<a href="https://plantegg.github.io/2019/09/28/%E5%B0%B1%E6%98%AF%E8%A6%81%E4%BD%A0%E6%87%82TCP--%E6%80%A7%E8%83%BD%E5%92%8C%E5%8F%91%E9%80%81%E6%8E%A5%E6%94%B6Buffer%E7%9A%84%E5%85%B3%E7%B3%BB/" target="_blank" rel="noopener noreffer ">TCP 性能和发送接收窗口、Buffer 的关系 | plantegg</a> 实验调整 RT、控制死内核 tcp buffer，让速度随着 RT 增加慢下来。实验大致过程是先创建一个比较大的文件，使用 python 开一个 http server，调整 tcp 的配置信息，在另一台机器上使用 curl 下载这个大文件，使用 tcpdump 抓包后使用 wireshark 分析结果。</p>
+<h2 id="搭建环境">搭建环境</h2>
+<p>我的 Macbook M1 下使用 vagrant + vmware 创建虚拟机如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="c1"># -*- mode: ruby -*-</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># vi: set ft=ruby :</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&#34;2&#34;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl"> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">#定义节点变量</span>
+</span></span><span class="line"><span class="cl">   <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&#34;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#34;</span> <span class="k">do</span> <span class="o">|</span><span class="n">node</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># box 配置</span>
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&#34;bento/rockylinux-9&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># 设置虚拟机的主机名</span>
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s2">&#34;node</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># 设置虚拟机的 IP</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># node.vm.network &#34;private_network&#34;, ip: &#34;192.168.60.#{10+i}&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">synced_folder</span> <span class="s2">&#34;.&#34;</span><span class="p">,</span> <span class="s2">&#34;/vagrant&#34;</span><span class="p">,</span> <span class="ss">disabled</span><span class="p">:</span> <span class="kp">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># vagrant rsync-auto --debug</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># https://developer.hashicorp.com/vagrant/docs/synced-folders/rsync</span>
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">synced_folder</span> <span class="s2">&#34;.&#34;</span><span class="p">,</span> <span class="s2">&#34;/vagrant&#34;</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="s2">&#34;rsync&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">   <span class="ss">rsync__exclude</span><span class="p">:</span> <span class="o">[</span><span class="s2">&#34;.git/&#34;</span><span class="p">,</span> <span class="s2">&#34;docs/&#34;</span><span class="p">,</span> <span class="s2">&#34;.vagrant/&#34;</span><span class="o">]</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">   <span class="ss">rsync__args</span><span class="p">:</span> <span class="o">[</span><span class="s2">&#34;--verbose&#34;</span><span class="p">,</span> <span class="s2">&#34;--rsync-path=&#39;sudo rsync&#39;&#34;</span><span class="p">,</span> <span class="s2">&#34;--archive&#34;</span><span class="p">,</span> <span class="s2">&#34;-z&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="ss">:vmware_desktop</span> <span class="k">do</span> <span class="o">|</span><span class="n">vmware</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">   <span class="n">vmware</span><span class="o">.</span><span class="n">vmx</span><span class="o">[</span><span class="s2">&#34;ethernet0.pcislotnumber&#34;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&#34;160&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># 设置主机与虚拟机的共享目录</span>
+</span></span><span class="line"><span class="cl">  <span class="c1"># VirtaulBox 相关配置</span>
+</span></span><span class="line"><span class="cl">  <span class="n">node</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&#34;shell&#34;</span><span class="p">,</span> <span class="ss">inline</span><span class="p">:</span> <span class="s">&lt;&lt;-SHELL
+</span></span></span><span class="line"><span class="cl"><span class="s"></span>   <span class="n">echo</span> <span class="s2">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">   <span class="n">sed</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;s|^mirrorlist=|#mirrorlist=|g&#39;</span> <span class="p">\</span>
+</span></span><span class="line"><span class="cl">   <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;s|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.ustc.edu.cn/rocky|g&#39;</span> <span class="p">\</span>
+</span></span><span class="line"><span class="cl">   <span class="o">-</span><span class="n">i</span><span class="o">.</span><span class="n">bak</span> <span class="p">\</span>
+</span></span><span class="line"><span class="cl">   <span class="sr">/etc/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rocky</span><span class="o">-</span><span class="n">extras</span><span class="o">.</span><span class="n">repo</span> <span class="p">\</span>
+</span></span><span class="line"><span class="cl">   <span class="sr">/etc/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rocky</span><span class="o">.</span><span class="n">repo</span>
+</span></span><span class="line"><span class="cl">   <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">yum</span><span class="o">-</span><span class="n">utils</span>
+</span></span><span class="line"><span class="cl">   <span class="n">yum</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">manager</span> <span class="o">--</span><span class="n">add</span><span class="o">-</span><span class="n">repo</span> <span class="ss">https</span><span class="p">:</span><span class="sr">//mi</span><span class="n">rrors</span><span class="o">.</span><span class="n">ustc</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">centos</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">.</span><span class="n">repo</span>
+</span></span><span class="line"><span class="cl">   <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s1">&#39;s+https://download.docker.com+https://mirrors.ustc.edu.cn/docker-ce+&#39;</span> <span class="sr">/etc/</span><span class="n">yum</span><span class="o">.</span><span class="n">repos</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">.</span><span class="n">repo</span>
+</span></span><span class="line"><span class="cl">   <span class="n">dnf</span> <span class="n">makecache</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># dnf install -y epel-release &amp;&amp; dnf makecache</span>
+</span></span><span class="line"><span class="cl">   <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">docker</span><span class="o">-</span><span class="n">ce</span> <span class="n">docker</span><span class="o">-</span><span class="n">ce</span><span class="o">-</span><span class="n">cli</span> <span class="n">containerd</span><span class="o">.</span><span class="n">io</span> <span class="n">docker</span><span class="o">-</span><span class="n">buildx</span><span class="o">-</span><span class="n">plugin</span> <span class="n">docker</span><span class="o">-</span><span class="n">compose</span><span class="o">-</span><span class="n">plugin</span> <span class="n">tmux</span> <span class="n">nc</span> <span class="n">nmap</span>
+</span></span><span class="line"><span class="cl">   <span class="n">systemctl</span> <span class="n">enable</span> <span class="o">--</span><span class="n">now</span> <span class="n">docker</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1"># https://github.com/iovisor/bcc/blob/master/INSTALL.md#rhel---binary</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># export PATH=&#34;/usr/share/bcc/tools:$PATH&#34;</span>
+</span></span><span class="line"><span class="cl">   <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">bcc</span><span class="o">-</span><span class="n">tools</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1"># https://tshark.dev/setup/install/</span>
+</span></span><span class="line"><span class="cl">   <span class="n">yum</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">tcpdump</span> <span class="n">net</span><span class="o">-</span><span class="n">tools</span> <span class="n">gdb</span> <span class="n">dstat</span> <span class="n">zip</span> <span class="n">wireshark</span><span class="o">-</span><span class="n">cli</span>
+</span></span><span class="line"><span class="cl">  <span class="no">SHELL</span>
+</span></span><span class="line"><span class="cl">   <span class="k">end</span> <span class="c1"># end config.vm.define node</span>
+</span></span><span class="line"><span class="cl"> <span class="k">end</span> <span class="c1"># end each 3 node</span>
+</span></span><span class="line"><span class="cl">  <span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>共创建了两个 vm，一个是 VM1 和 VM2</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VM1</span><span class="o">=</span>192.168.245.151
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">VM2</span><span class="o">=</span>192.168.245.152
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 生成 2g 的文件 test.txt</span>
+</span></span><span class="line"><span class="cl">fallocate -l  2G test.txt <span class="c1"># 生成 2g 文件，ls &amp; du 都是 2g</span>
+</span></span><span class="line"><span class="cl">python3 -m http.server <span class="m">8089</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 在 VM2 中访问 vm 的这个文件</span>
+</span></span><span class="line"><span class="cl">curl -v --output /tmp/test.txt http://<span class="o">{</span>VM1<span class="o">}</span>:8089/test.txt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当前的 sysctl 参数如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sysctl -a <span class="p">|</span> egrep <span class="s2">&#34;rmem|wmem|tcp_mem|adv_win|moderate&#34;</span>
+</span></span><span class="line"><span class="cl">net.core.rmem_default <span class="o">=</span> <span class="m">212992</span>
+</span></span><span class="line"><span class="cl">net.core.rmem_max <span class="o">=</span> <span class="m">212992</span>
+</span></span><span class="line"><span class="cl">net.core.wmem_default <span class="o">=</span> <span class="m">212992</span>
+</span></span><span class="line"><span class="cl">net.core.wmem_max <span class="o">=</span> <span class="m">212992</span>
+</span></span><span class="line"><span class="cl">net.ipv4.tcp_adv_win_scale <span class="o">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">net.ipv4.tcp_mem <span class="o">=</span> <span class="m">18852</span>        <span class="m">25136</span>   <span class="m">37704</span>
+</span></span><span class="line"><span class="cl">net.ipv4.tcp_moderate_rcvbuf <span class="o">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">net.ipv4.tcp_rmem <span class="o">=</span> <span class="m">4096</span>        <span class="m">131072</span>  <span class="m">6291456</span>
+</span></span><span class="line"><span class="cl">net.ipv4.tcp_wmem <span class="o">=</span> <span class="m">4096</span>        <span class="m">4096</span>    <span class="m">4096</span>
+</span></span><span class="line"><span class="cl">net.ipv4.udp_rmem_min <span class="o">=</span> <span class="m">4096</span>
+</span></span><span class="line"><span class="cl">net.ipv4.udp_wmem_min <span class="o">=</span> <span class="m">4096</span>
+</span></span><span class="line"><span class="cl">vm.lowmem_reserve_ratio <span class="o">=</span> <span class="m">256</span>   <span class="m">256</span>     <span class="m">32</span>      <span class="m">0</span>       <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>下面的实现会调整 rmem 和 wmem 的大小做相关的实验</p>
+<p>先整体看下实验的结果：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">group</th>
+<th style="text-align:right">rmem(bytes)</th>
+<th style="text-align:right">window(bytes)</th>
+<th style="text-align:right">rtt(ms)</th>
+<th style="text-align:right">throughput(KB/s)</th>
+<th style="text-align:right">dup ack(%)</th>
+<th style="text-align:right">retransmission(%)</th>
+<th style="text-align:right">outoforder(%)</th>
+<th style="text-align:right">packetcount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">benchmark</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">3,079</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">66086</td>
+</tr>
+<tr>
+<td style="text-align:right">10ms</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">108</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">2239</td>
+</tr>
+<tr>
+<td style="text-align:right">20ms</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">58</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">1263</td>
+</tr>
+<tr>
+<td style="text-align:right">40ms</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">40</td>
+<td style="text-align:right">30</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">644</td>
+</tr>
+<tr>
+<td style="text-align:right">80ms</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">80</td>
+<td style="text-align:right">15</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">348</td>
+</tr>
+<tr>
+<td style="text-align:right">100ms</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">100</td>
+<td style="text-align:right">12</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">283</td>
+</tr>
+<tr>
+<td style="text-align:right">1%lose</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">1651</td>
+<td style="text-align:right">0.63%</td>
+<td style="text-align:right">0.50%</td>
+<td style="text-align:right">0.12%</td>
+<td style="text-align:right">36264</td>
+</tr>
+<tr>
+<td style="text-align:right">10%lose</td>
+<td style="text-align:right">4096</td>
+<td style="text-align:right">1040</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">202</td>
+<td style="text-align:right">250/5057=5.00%</td>
+<td style="text-align:right">97/5057=1.90%</td>
+<td style="text-align:right">152/5057=3.00%</td>
+<td style="text-align:right">5057</td>
+</tr>
+</tbody>
+</table>
+<h2 id="实验-1-固定-rmem-和-wmem增加延迟">实验 1 固定 rmem 和 wmem，增加延迟</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sysctl -w <span class="s2">&#34;net.ipv4.tcp_rmem=4096 4096   4096&#34;</span>  //最小值  默认值  最大值
+</span></span><span class="line"><span class="cl">sysctl -w <span class="s2">&#34;net.ipv4.tcp_wmem=4096 4096   4096&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="控制-rmem-和-wmem-在-4096无延迟">控制 rmem 和 wmem 在 4096，无延迟</h3>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-tcptrace.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-tcptrace.png, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-tcptrace.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-tcptrace.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-tcptrace.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rtt.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rtt.png, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rtt.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rtt.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rtt.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-throuput.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-throuput.png, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-throuput.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-throuput.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-throuput.png"
+        title="alt text" width="3004" height="1806" />
+吞吐为：2.1<em>10**7 bits/s = python3 -c &lsquo;print(2.1</em>10**7/8/1024)&rsquo; = 2563.48 KB/s</p>
+<p>TODO: 这个值跟 wireshark Capture File Properties 显示的 3,079KB/s 有出入，需要看看</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rt.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rt.png, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rt.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rt.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/0ms-4096rwmem-rt.png"
+        title="alt text" width="3004" height="1866" /></p>
+<p>RT 非常小</p>
+<h3 id="现在增加延迟到-10ms">现在增加延迟到 10ms</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tc qdisc add dev eth0 root netem delay 10ms
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@node2 vagrant<span class="o">]</span><span class="c1"># ping $VM1</span>
+</span></span><span class="line"><span class="cl">PING 192.168.245.151 <span class="o">(</span>192.168.245.151<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 192.168.245.151: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">1</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>24.5 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 192.168.245.151: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">2</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>11.9 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 192.168.245.151: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">3</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>10.7 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 192.168.245.151: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">4</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>11.7 ms
+</span></span><span class="line"><span class="cl"><span class="m">64</span> bytes from 192.168.245.151: <span class="nv">icmp_seq</span><span class="o">=</span><span class="m">5</span> <span class="nv">ttl</span><span class="o">=</span><span class="m">64</span> <span class="nv">time</span><span class="o">=</span>11.4 ms
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">curl -v --output test.txt http://<span class="nv">$VM1</span>:8089/test.txt
+</span></span><span class="line"><span class="cl">92104bytes/s
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-tcptrace.png.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-tcptrace.png.png, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-tcptrace.png.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-tcptrace.png.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-tcptrace.png.png"
+        title="alt text" width="3004" height="1806" /></p>
+<p>每个台阶的时间大概是 10ms，说明 10ms 生效了</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-rtt.png.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-rtt.png.png, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-rtt.png.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-rtt.png.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-rtt.png.png"
+        title="alt text" width="3004" height="1806" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-throuput.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-throuput.png, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-throuput.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-throuput.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-throuput.png"
+        title="alt text" width="3004" height="1806" /></p>
+<p>可以看到吞吐不到 700000bits/s = python3 -c &lsquo;print(700000/8/1024)&rsquo; = 85.45 KB/s</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-windowscaling.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-windowscaling.png, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-windowscaling.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-windowscaling.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-windowscaling.png"
+        title="alt text" width="3004" height="1806" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-cal-window.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-cal-window.png, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-cal-window.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-cal-window.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/10ms-4096rwmem-cal-window.png"
+        title="alt text" width="1418" height="656" /></p>
+<p>看报文中 Calculated window size: 1040</p>
+<h3 id="小结">小结</h3>
+<p>固定 rmem、wmem，随着延迟的增加，吞吐也随之降低。</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/rt-buffer-throuput.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/rt-buffer-throuput.png, /the-relationship-between-bdp-buffer-rt/images/rt-buffer-throuput.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/rt-buffer-throuput.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/rt-buffer-throuput.png"
+        title="alt text" width="4054" height="2498" /></p>
+<p>做了几个实验，分别是 10ms、20ms、30ms、40ms，可以看到发包规律，假设发包大小及延迟的固定的（即排除网络波动），可以得到数学公式，使用 python 实现为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="s1">&#39;&#39;&#39;window 单位 bytes, rtt 单位 ms&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">throughput</span><span class="p">(</span><span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rtt</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">window</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1000</span><span class="o">/</span><span class="n">rtt</span><span class="p">)</span><span class="o">/</span><span class="mi">1024</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如在 10ms、window size 1040bytes 下的吞吐为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">throughput</span><span class="p">(</span><span class="mi">1040</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="mf">101.5625</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>101 相较 85.45 有一些误差，网络传输是动态变化的，故会有差距；可以使用此公式估算网络吞吐。</p>
+<h2 id="实验-2-固定-rmem-和-wmem增加丢包率">实验 2 固定 rmem 和 wmem，增加丢包率</h2>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-taptrace.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-taptrace.png, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-taptrace.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-taptrace.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-taptrace.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>seq 曲线非常弯，发包不稳定</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-windowscaling.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-windowscaling.png, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-windowscaling.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-windowscaling.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-windowscaling.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-rtt.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-rtt.png, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-rtt.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-rtt.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-rtt.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-througput.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-througput.png, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-througput.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-througput.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/lose-01p-4096rwman-througput.png"
+        title="alt text" width="1070" height="1854" /></p>
+<p>丢包会让吞吐变的不稳定</p>
+<h3 id="小结-1">小结</h3>
+<p>丢包会出现重传，重传很慢，吞吐波动比较大。随着丢包率的提高，波动会进一步变大，吞吐在减小。</p>
+<h2 id="实验-3-分别设置-rmem-和-wmem">实验 3 分别设置 rmem 和 wmem</h2>
+<p>TODO: 抓包试一下</p>
+<p>可以看到对 client 的 rmem 限制的时候，会出现大量的 <code>TCP Window Full</code>，而对 server 的 wmem 限制则不会有非常大的影响。client rmem 读取后，需要一个 rtt 时间才能通知到 server 可以发送，故对吞吐的影响更大；而 server wmem 使用完后，只需等待发送完重新申请内存即可，延迟为内存延迟，对吞吐影响小。</p>
+<p>如下图，可以更直观的展示 rmem/wmem 对吞吐影响的原因。</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/rmem-wmem-compare.png.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/rmem-wmem-compare.png.png, /the-relationship-between-bdp-buffer-rt/images/rmem-wmem-compare.png.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/rmem-wmem-compare.png.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/rmem-wmem-compare.png.png"
+        title="alt text" width="2726" height="1044" /></p>
+<h2 id="实验-4-curl-限速">实验 4 curl 限速</h2>
+<p>基于版本 8.12.1</p>
+<p>核心数据结构、关键函数、算法逻辑、调用流程</p>
+<h3 id="数据结构">数据结构</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pgrs_measure</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">curltime</span> <span class="n">start</span><span class="p">;</span> <span class="cm">/* when measure started */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">curl_off_t</span> <span class="n">start_size</span><span class="p">;</span> <span class="cm">/* the &#39;cur_size&#39; the measure started at */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pgrs_dir</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">curl_off_t</span> <span class="n">total_size</span><span class="p">;</span> <span class="cm">/* total expected bytes */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">curl_off_t</span> <span class="n">cur_size</span><span class="p">;</span> <span class="cm">/* transferred bytes so far */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">curl_off_t</span> <span class="n">speed</span><span class="p">;</span> <span class="cm">/* bytes per second transferred */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">pgrs_measure</span> <span class="n">limit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="关键代码">关键代码</h3>
+<p>Curl_pgrsStartNow 函数初始化限速相关的初始状态</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">Curl_pgrsStartNow</span><span class="p">(</span><span class="k">struct</span> <span class="n">Curl_easy</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">speeder_c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* reset the progress meter display */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="nf">Curl_now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">is_t_startransfer_set</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">cur_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">cur_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* clear all bits except HIDE and HEADERS_OUT */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">flags</span> <span class="o">&amp;=</span> <span class="n">PGRS_HIDE</span><span class="o">|</span><span class="n">PGRS_HEADERS_OUT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">Curl_ratelimit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">start</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Curl_pgrsLimitWaitTime 计算在需要等待多少毫秒才能回到速度限制以下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * This is used to handle speed limits, calculating how many milliseconds to
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * wait until we are back under the speed limit, if needed.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * The way it works is by having a &#34;starting point&#34; (time &amp; amount of data
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * transferred by then) used in the speed computation, to be used instead of
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * the start of the transfer. This starting point is regularly moved as
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * transfer goes on, to keep getting accurate values (instead of average over
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * the entire transfer).
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * This function takes the current amount of data transferred, the amount at
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * the starting point, the limit (in bytes/s), the time of the starting point
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * and the current time.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Returns 0 if no waiting is needed or when no waiting is needed but the
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * starting point should be reset (to current); or the number of milliseconds
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * to wait to get back under the speed limit.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">timediff_t</span> <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="k">struct</span> <span class="n">pgrs_dir</span> <span class="o">*</span><span class="n">d</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">curl_off_t</span> <span class="n">speed_limit</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="k">struct</span> <span class="n">curltime</span> <span class="n">now</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">curl_off_t</span> <span class="n">size</span> <span class="o">=</span> <span class="n">d</span><span class="o">-&gt;</span><span class="n">cur_size</span> <span class="o">-</span> <span class="n">d</span><span class="o">-&gt;</span><span class="n">limit</span><span class="p">.</span><span class="n">start_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">timediff_t</span> <span class="n">minimum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">timediff_t</span> <span class="n">actual</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">speed_limit</span> <span class="o">||</span> <span class="o">!</span><span class="n">size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * &#39;minimum&#39; is the number of milliseconds &#39;size&#39; should take to download to
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * stay below &#39;limit&#39;.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">CURL_OFF_T_MAX</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">minimum</span> <span class="o">=</span> <span class="p">(</span><span class="kt">timediff_t</span><span class="p">)</span> <span class="p">(</span><span class="nf">CURL_OFF_T_C</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span> <span class="o">/</span> <span class="n">speed_limit</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">minimum</span> <span class="o">=</span> <span class="p">(</span><span class="kt">timediff_t</span><span class="p">)</span> <span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="n">speed_limit</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">minimum</span> <span class="o">&lt;</span> <span class="n">TIMEDIFF_T_MAX</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">minimum</span> <span class="o">*=</span> <span class="mi">1000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">minimum</span> <span class="o">=</span> <span class="n">TIMEDIFF_T_MAX</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * &#39;actual&#39; is the time in milliseconds it took to actually download the
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * last &#39;size&#39; bytes.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">actual</span> <span class="o">=</span> <span class="nf">Curl_timediff_ceil</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">d</span><span class="o">-&gt;</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">actual</span> <span class="o">&lt;</span> <span class="n">minimum</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* if it downloaded the data faster than the limit, make it wait the
+</span></span></span><span class="line"><span class="cl"><span class="cm">       difference */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">minimum</span> <span class="o">-</span> <span class="n">actual</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Update the timestamp and sizestamp to use for rate limit calculations.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">Curl_ratelimit</span><span class="p">(</span><span class="k">struct</span> <span class="n">Curl_easy</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="k">struct</span> <span class="n">curltime</span> <span class="n">now</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* do not set a new stamp unless the time since last update is long enough */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_recv_speed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">Curl_timediff</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;=</span>
+</span></span><span class="line"><span class="cl">       <span class="n">MIN_RATE_LIMIT_PERIOD</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">now</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">.</span><span class="n">cur_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_send_speed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">Curl_timediff</span><span class="p">(</span><span class="n">now</span><span class="p">,</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span><span class="p">)</span> <span class="o">&gt;=</span>
+</span></span><span class="line"><span class="cl">       <span class="n">MIN_RATE_LIMIT_PERIOD</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">now</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">limit</span><span class="p">.</span><span class="n">start_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">.</span><span class="n">cur_size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>state_performing 实际执行读写 socket</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="n">CURLMcode</span> <span class="nf">state_performing</span><span class="p">(</span><span class="k">struct</span> <span class="n">Curl_easy</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="k">struct</span> <span class="n">curltime</span> <span class="o">*</span><span class="n">nowp</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">bool</span> <span class="o">*</span><span class="n">stream_errorp</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">CURLcode</span> <span class="o">*</span><span class="n">resultp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">newurl</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">retry</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">timediff_t</span> <span class="n">recv_timeout_ms</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">timediff_t</span> <span class="n">send_timeout_ms</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CURLMcode</span> <span class="n">rc</span> <span class="o">=</span> <span class="n">CURLM_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CURLcode</span> <span class="n">result</span> <span class="o">=</span> <span class="o">*</span><span class="n">resultp</span> <span class="o">=</span> <span class="n">CURLE_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">stream_errorp</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* check if over send speed */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_send_speed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">send_timeout_ms</span> <span class="o">=</span> <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_send_speed</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* check if over recv speed */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_recv_speed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">recv_timeout_ms</span> <span class="o">=</span> <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_recv_speed</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                             <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">send_timeout_ms</span> <span class="o">||</span> <span class="n">recv_timeout_ms</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">Curl_ratelimit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">multistate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MSTATE_RATELIMITING</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">send_timeout_ms</span> <span class="o">&gt;=</span> <span class="n">recv_timeout_ms</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">Curl_expire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">send_timeout_ms</span><span class="p">,</span> <span class="n">EXPIRE_TOOFAST</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">Curl_expire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">recv_timeout_ms</span><span class="p">,</span> <span class="n">EXPIRE_TOOFAST</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">CURLM_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* read/write data if it is ready to do so */</span>
+</span></span><span class="line"><span class="cl">  <span class="n">result</span> <span class="o">=</span> <span class="nf">Curl_sendrecv</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">done</span> <span class="o">||</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">CURLE_RECV_ERROR</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* If CURLE_RECV_ERROR happens early enough, we assume it was a race
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * condition and the server closed the reused connection exactly when we
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * wanted to use it, so figure out if that is indeed the case.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CURLcode</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">Curl_retry_request</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">newurl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">retry</span> <span class="o">=</span> <span class="o">!!</span><span class="n">newurl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">result</span> <span class="o">=</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">retry</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* if we are to retry, set the result to OK and consider the
+</span></span></span><span class="line"><span class="cl"><span class="cm">         request as done */</span>
+</span></span><span class="line"><span class="cl">      <span class="n">result</span> <span class="o">=</span> <span class="n">CURLE_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">done</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="k">if</span><span class="p">((</span><span class="n">CURLE_HTTP2_STREAM</span> <span class="o">==</span> <span class="n">result</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">Curl_h2_http_1_1_error</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CURLcode</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">Curl_retry_request</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">newurl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">infof</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s">&#34;Downgrades to HTTP/1.1&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">streamclose</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="p">,</span> <span class="s">&#34;Disconnect HTTP/2 for HTTP/1&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">.</span><span class="n">httpwant</span> <span class="o">=</span> <span class="n">CURL_HTTP_VERSION_1_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* clear the error message bit too as we ignore the one we got */</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">.</span><span class="n">errorbuf</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">newurl</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/* typically for HTTP_1_1_REQUIRED error on first flight */</span>
+</span></span><span class="line"><span class="cl">        <span class="n">newurl</span> <span class="o">=</span> <span class="nf">strdup</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">.</span><span class="n">url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* if we are to retry, set the result to OK and consider the request
+</span></span></span><span class="line"><span class="cl"><span class="cm">         as done */</span>
+</span></span><span class="line"><span class="cl">      <span class="n">retry</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">result</span> <span class="o">=</span> <span class="n">CURLE_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">done</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">result</span> <span class="o">=</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * The transfer phase returned error, we mark the connection to get closed
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * to prevent being reused. This is because we cannot possibly know if the
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * connection is in a good shape or not now. Unless it is a protocol which
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * uses two &#34;channels&#34; like FTP, as then the error happened in the data
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * connection.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">handler</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">PROTOPT_DUAL</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">       <span class="n">result</span> <span class="o">!=</span> <span class="n">CURLE_HTTP2_STREAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">streamclose</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="p">,</span> <span class="s">&#34;Transfer returned error&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">multi_posttransfer</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">multi_done</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">done</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nf">Curl_cwriter_is_paused</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="k">struct</span> <span class="n">Curl_handler</span> <span class="o">*</span><span class="n">handler</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">handler</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* call this even if the readwrite function returned error */</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">multi_posttransfer</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* When we follow redirects or is set to retry the connection, we must to
+</span></span></span><span class="line"><span class="cl"><span class="cm">       go back to the CONNECT state */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">newurl</span> <span class="o">||</span> <span class="n">retry</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">followtype</span> <span class="n">follow</span> <span class="o">=</span> <span class="n">FOLLOW_NONE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">retry</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/* if the URL is a follow-location and not just a retried request then
+</span></span></span><span class="line"><span class="cl"><span class="cm">           figure out the URL here */</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">newurl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">newurl</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">newurl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">newurl</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">follow</span> <span class="o">=</span> <span class="n">FOLLOW_REDIR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="n">follow</span> <span class="o">=</span> <span class="n">FOLLOW_RETRY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">multi_done</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">CURLE_OK</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* multi_done() might return CURLE_GOT_NOTHING */</span>
+</span></span><span class="line"><span class="cl">      <span class="n">result</span> <span class="o">=</span> <span class="nf">multi_follow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">newurl</span><span class="p">,</span> <span class="n">follow</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">multistate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MSTATE_SETUP</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rc</span> <span class="o">=</span> <span class="n">CURLM_CALL_MULTI_PERFORM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* after the transfer is done, go DONE */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="cm">/* but first check to see if we got a location info even though we are
+</span></span></span><span class="line"><span class="cl"><span class="cm">         not following redirects */</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">location</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">newurl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">newurl</span> <span class="o">=</span> <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">location</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">data</span><span class="o">-&gt;</span><span class="n">req</span><span class="p">.</span><span class="n">location</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">result</span> <span class="o">=</span> <span class="nf">multi_follow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">handler</span><span class="p">,</span> <span class="n">newurl</span><span class="p">,</span> <span class="n">FOLLOW_FAKE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="o">*</span><span class="n">stream_errorp</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">result</span> <span class="o">=</span> <span class="nf">multi_done</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">multistate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MSTATE_DONE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">rc</span> <span class="o">=</span> <span class="n">CURLM_CALL_MULTI_PERFORM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">.</span><span class="n">select_bits</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nf">Curl_xfer_is_blocked</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* This avoids CURLM_CALL_MULTI_PERFORM so that a very fast transfer does
+</span></span></span><span class="line"><span class="cl"><span class="cm">       not get stuck on this transfer at the expense of other concurrent
+</span></span></span><span class="line"><span class="cl"><span class="cm">       transfers */</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">Curl_expire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">EXPIRE_RUN_NOW</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">free</span><span class="p">(</span><span class="n">newurl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">resultp</span> <span class="o">=</span> <span class="n">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>state_ratelimiting 处理需要限速的情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="n">CURLMcode</span> <span class="nf">state_ratelimiting</span><span class="p">(</span><span class="k">struct</span> <span class="n">Curl_easy</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                    <span class="k">struct</span> <span class="n">curltime</span> <span class="o">*</span><span class="n">nowp</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                    <span class="n">CURLcode</span> <span class="o">*</span><span class="n">resultp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CURLcode</span> <span class="n">result</span> <span class="o">=</span> <span class="n">CURLE_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CURLMcode</span> <span class="n">rc</span> <span class="o">=</span> <span class="n">CURLM_OK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">DEBUGASSERT</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* if both rates are within spec, resume transfer */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="nf">Curl_pgrsUpdate</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="n">CURLE_ABORTED_BY_CALLBACK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="nf">Curl_speedcheck</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="o">-&gt;</span><span class="n">handler</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">PROTOPT_DUAL</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">       <span class="n">result</span> <span class="o">!=</span> <span class="n">CURLE_HTTP2_STREAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">streamclose</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">conn</span><span class="p">,</span> <span class="s">&#34;Transfer returned error&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">multi_posttransfer</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">multi_done</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">timediff_t</span> <span class="n">recv_timeout_ms</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">timediff_t</span> <span class="n">send_timeout_ms</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_send_speed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">send_timeout_ms</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">ul</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_send_speed</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_recv_speed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">recv_timeout_ms</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">progress</span><span class="p">.</span><span class="n">dl</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="n">data</span><span class="o">-&gt;</span><span class="n">set</span><span class="p">.</span><span class="n">max_recv_speed</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                               <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">send_timeout_ms</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">recv_timeout_ms</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">multistate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MSTATE_PERFORMING</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">Curl_ratelimit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">nowp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="cm">/* start performing again right away */</span>
+</span></span><span class="line"><span class="cl">      <span class="n">rc</span> <span class="o">=</span> <span class="n">CURLM_CALL_MULTI_PERFORM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">send_timeout_ms</span> <span class="o">&gt;=</span> <span class="n">recv_timeout_ms</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">Curl_expire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">send_timeout_ms</span><span class="p">,</span> <span class="n">EXPIRE_TOOFAST</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">Curl_expire</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">recv_timeout_ms</span><span class="p">,</span> <span class="n">EXPIRE_TOOFAST</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">resultp</span> <span class="o">=</span> <span class="n">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="算法逻辑">算法逻辑</h3>
+<p>curl 的限速使用滑动窗口算法实现。Curl_pgrsStartNow 初始化滑动窗口相关算法。Curl_pgrsLimitWaitTime 计算了需要等待多久可以达到预期的限速。实际执行过程中 (state_performing) 计算是否需要限速，当需要限速时等待 Curl_pgrsLimitWaitTime 返回的预期等待时间。然后恢复读写 socket。</p>
+<p>大概的伪代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="nx">limit</span> <span class="p">=</span> <span class="s">&#34;10kb/s&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Curl_pgrsStartNow</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">limitWait</span> <span class="o">:=</span> <span class="nf">Curl_pgrsLimitWaitTime</span><span class="p">(</span><span class="o">...</span><span class="p">);</span> <span class="nx">limitWait</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nf">sleep</span><span class="p">(</span><span class="nx">limitWait</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">state_performing</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>全局搜索 SO_RCVBUF 未找到，可以说明 curl 未使用设置发送/接收窗口的方式做限速。</p>
+<h3 id="实际抓包看看">实际抓包看看</h3>
+<p>执行如下命令抓包看看实际的限速行为是什么样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl http://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/24.04.2/ubuntu-24.04.2-live-server-amd64.iso -k -v --output t.iso --limit-rate 200K 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/curl-limit-throughput.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/curl-limit-throughput.png, /the-relationship-between-bdp-buffer-rt/images/curl-limit-throughput.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/curl-limit-throughput.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/curl-limit-throughput.png"
+        title="alt text" width="2972" height="1792" /></p>
+<p>开始瞬间的吞吐非常高 4638 KB/s，后续几个峰值比较高，1220 KB/s 到 2441KB/s；整体平均下来 233 KB/s，瞬时吞吐非常高 4638 KB/s。进一步正式，没有通过设置 SO_RCVBUF/SO_SNDBUF 控制发送/接收窗口的方式控制网速。</p>
+<h3 id="调用流程">调用流程</h3>
+<h3 id="自己实现一个类似的限速">自己实现一个类似的限速</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-golang" data-lang="golang"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;context&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;io&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;time&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">BufferSize</span> <span class="p">=</span> <span class="mi">1024</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// GOARCH=arm64 GOOS=linux go build -o golimitclient labs/network/BDP-buffer-RT/golimitclient/main.go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">tcpdialer</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">net</span><span class="p">.</span><span class="nx">Dialer</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Timeout</span><span class="p">:</span>   <span class="mi">30</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">KeepAlive</span><span class="p">:</span> <span class="mi">30</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">transport</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Transport</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">Proxy</span><span class="p">:</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ProxyFromEnvironment</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">DialContext</span><span class="p">:</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">network</span><span class="p">,</span> <span class="nx">addr</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">tcpdialer</span><span class="p">.</span><span class="nf">DialContext</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">network</span><span class="p">,</span> <span class="nx">addr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="nx">tcpConn</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">ret</span><span class="p">.(</span><span class="o">*</span><span class="nx">net</span><span class="p">.</span><span class="nx">TCPConn</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="nx">err</span> <span class="o">:=</span> <span class="nx">tcpConn</span><span class="p">.</span><span class="nf">SetReadBuffer</span><span class="p">(</span><span class="nx">BufferSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nx">ret</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">		<span class="p">},</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ForceAttemptHTTP2</span><span class="p">:</span>     <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">MaxIdleConns</span><span class="p">:</span>          <span class="mi">100</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">IdleConnTimeout</span><span class="p">:</span>       <span class="mi">90</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">TLSHandshakeTimeout</span><span class="p">:</span>   <span class="mi">10</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ExpectContinueTimeout</span><span class="p">:</span> <span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// ReadBufferSize:        BufferSize,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">client</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Client</span><span class="p">{</span><span class="nx">Transport</span><span class="p">:</span> <span class="nx">transport</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">response</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;http://%s:8089/test.txt&#34;</span><span class="p">,</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;VM1&#34;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">check</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">readTimes</span> <span class="kt">int64</span> <span class="p">=</span> <span class="mi">2000</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">readTimesPerSecond</span> <span class="kt">int64</span> <span class="p">=</span> <span class="mi">20</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="nx">readTimesPerSecond</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="nx">readTimes</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">io</span><span class="p">.</span><span class="nf">CopyN</span><span class="p">(</span><span class="nx">io</span><span class="p">.</span><span class="nx">Discard</span><span class="p">,</span> <span class="nx">response</span><span class="p">.</span><span class="nx">Body</span><span class="p">,</span> <span class="nx">BufferSize</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">/</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Duration</span><span class="p">(</span><span class="nx">readTimesPerSecond</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">check</span><span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/the-relationship-between-bdp-buffer-rt/images/implemented-speed-limit-like-curl.png"
+        data-srcset="/the-relationship-between-bdp-buffer-rt/images/implemented-speed-limit-like-curl.png, /the-relationship-between-bdp-buffer-rt/images/implemented-speed-limit-like-curl.png 1.5x, /the-relationship-between-bdp-buffer-rt/images/implemented-speed-limit-like-curl.png 2x"
+        data-sizes="auto"
+        alt="/the-relationship-between-bdp-buffer-rt/images/implemented-speed-limit-like-curl.png"
+        title="alt text" width="1078" height="1854" /></p>
+<p>如图，基本可以限速限制在 20k 左右。</p>
+<p>在实践中发现，设置 tcp readbuf（<code>tcpConn.SetReadBuffer(BufferSize)</code>）是有作用的，不设置最终也会吞吐收敛到 20k 的限速。</p>
+<h2 id="结论">结论</h2>
+<ol>
+<li>RT 越大，速度越慢</li>
+<li>丢包越高，速度越慢</li>
+</ol></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-02-23</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" data-title="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系" data-hashtags="linux,curl,network,实验"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" data-hashtag="linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" data-title="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" data-title="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/the-relationship-between-bdp-buffer-rt/" data-title="通过实验，探索 BDP、tcp buffer、RT 三者之间的关系"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/curl/">curl</a>,&nbsp;<a href="/tags/network/">network</a>,&nbsp;<a href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/connect-kafka-failed-with-cannot-assign-requested-address/" class="prev" rel="prev" title="connect kafka failed with cannot assign requested address"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>connect kafka failed with cannot assign requested address</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

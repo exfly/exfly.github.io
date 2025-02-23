@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/linux/</link>
         <description>linux - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/linux/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>通过实验，探索 BDP、tcp buffer、RT 三者之间的关系</title>
+    <link>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</link>
+    <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</guid>
+    <description><![CDATA[<p>文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；</p>]]></description>
+</item>
+<item>
     <title>connect kafka failed with cannot assign requested address</title>
     <link>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</link>
     <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>Exfly</author>
     <guid>https://exfly.github.io/linux_boot_script/</guid>
     <description><![CDATA[<p>文章简介：linux 设置开机自启动脚本的几种方式</p>]]></description>
-</item>
-<item>
-    <title>Systemd 简单介绍，使用及如何 Debug</title>
-    <link>https://exfly.github.io/systemd-usages/</link>
-    <pubDate>Sat, 01 Jan 2022 16:47:40 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/systemd-usages/</guid>
-    <description><![CDATA[<p>文章简介：学习 systemd 笔记</p>]]></description>
 </item>
 </channel>
 </rss>

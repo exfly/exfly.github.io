@@ -4,9 +4,17 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Gitea Earthly 构建时间从 1m30s 优化到 11s</title>
+    <link>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</guid>
+    <description><![CDATA[<p>文章简介：Gitea Earthly 构建时间从 20m 优化到 11s</p>]]></description>
+</item>
+<item>
     <title>通过实验，探索 BDP、tcp buffer、RT 三者之间的关系</title>
     <link>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</link>
     <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
@@ -77,14 +85,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</guid>
     <description><![CDATA[<p>文章简介：我是如何将 kafka 消费吞吐提高 100 倍的</p>]]></description>
-</item>
-<item>
-    <title>离线安装开箱即用的容器运行环境运行环境</title>
-    <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
-    <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/install-docker-engine-from-bin/</guid>
-    <description><![CDATA[<p>文章简介：离线安装各种容器引擎，docker/containerd+nerdctl</p>]]></description>
 </item>
 </channel>
 </rss>

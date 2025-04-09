@@ -3,8 +3,9 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
             <loc>https://exfly.github.io/about/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/curl/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/actions/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/docker/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/"
@@ -13,9 +14,10 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/linux/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/network/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/gitea/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/homelab/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-04-06T13:50:27&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/tags/"
@@ -24,13 +26,16 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/tags/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/%E5%AE%9E%E9%AA%8C/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</loc><lastmod>2025-02-23T01:50:43&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/golang/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/kafka/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/tcp/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
+            <loc>https://exfly.github.io/tags/curl/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/linux/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/network/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/tags/%E5%AE%9E%E9%AA%8C/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/the-relationship-between-bdp-buffer-rt/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
+            <loc>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/tags/golang/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/tags/kafka/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/tags/tcp/</loc><lastmod>2025-02-07T19:21:58&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/why-golang-prog-hang-tcp-window-full/</loc><lastmod>2024-12-29T12:23:45&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/rust/</loc><lastmod>2024-12-14T20:15:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</loc><lastmod>2024-12-14T20:15:40&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -47,7 +52,6 @@
             <loc>https://exfly.github.io/tags/k8s/</loc><lastmod>2024-08-21T09:52:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/</loc><lastmod>2024-08-11T09:10:10&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</loc><lastmod>2024-08-11T07:49:51&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/docker/</loc><lastmod>2024-05-09T10:07:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/nerdctl/</loc><lastmod>2024-05-09T10:07:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2024-05-09T10:07:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/install-docker-engine-from-bin/</loc><lastmod>2024-05-09T10:07:53&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -77,7 +81,7 @@
             <loc>https://exfly.github.io/tags/grpc/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url><url>
             <loc>https://exfly.github.io/tags/chatgpt/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/code_review/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>

@@ -4,7 +4,39 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>actions</title>
+    <link>https://exfly.github.io/tags/actions/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/actions/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>docker</title>
+    <link>https://exfly.github.io/tags/docker/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/docker/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>gitea</title>
+    <link>https://exfly.github.io/tags/gitea/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/gitea/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>homelab</title>
+    <link>https://exfly.github.io/tags/homelab/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/homelab/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>curl</title>
     <link>https://exfly.github.io/tags/curl/</link>
     <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
@@ -50,38 +82,6 @@
     <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/golang/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>kafka</title>
-    <link>https://exfly.github.io/tags/kafka/</link>
-    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/kafka/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>tcp</title>
-    <link>https://exfly.github.io/tags/tcp/</link>
-    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/tcp/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>rust</title>
-    <link>https://exfly.github.io/tags/rust/</link>
-    <pubDate>Sat, 14 Dec 2024 00:59:45 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/rust/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>cpu</title>
-    <link>https://exfly.github.io/tags/cpu/</link>
-    <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/cpu/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

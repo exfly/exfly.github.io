@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>actions - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/actions/</link>
+        <description>actions - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/actions/" rel="self" type="application/rss+xml" /><item>
+    <title>Gitea Earthly 构建时间从 1m30s 优化到 11s</title>
+    <link>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</guid>
+    <description><![CDATA[<p>文章简介：Gitea Earthly 构建时间从 20m 优化到 11s</p>]]></description>
+</item>
+</channel>
+</rss>

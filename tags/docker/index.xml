@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/docker/</link>
         <description>docker - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 May 2024 01:32:02 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/docker/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/docker/" rel="self" type="application/rss+xml" /><item>
+    <title>Gitea Earthly 构建时间从 1m30s 优化到 11s</title>
+    <link>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</guid>
+    <description><![CDATA[<p>文章简介：Gitea Earthly 构建时间从 20m 优化到 11s</p>]]></description>
+</item>
+<item>
     <title>离线安装开箱即用的容器运行环境运行环境</title>
     <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
     <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>Exfly</author>
     <guid>https://exfly.github.io/docker-architecture/</guid>
     <description><![CDATA[<p>文章简介：<code>docker</code>基本架构，以及在 moby 开源项目相关的一些组件之间如何协同工作的</p>]]></description>
-</item>
-<item>
-    <title>Docker 源码阅读: 目录</title>
-    <link>https://exfly.github.io/docker-contents/</link>
-    <pubDate>Mon, 22 Apr 2019 21:35:45 &#43;0800</pubDate>
-    <author>Exfly</author>
-    <guid>https://exfly.github.io/docker-contents/</guid>
-    <description><![CDATA[<p>文章简介：资料汇总以及源码阅读目录</p>]]></description>
 </item>
 </channel>
 </rss>

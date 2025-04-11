@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/ops/</link>
         <description>ops - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 07 May 2024 01:32:02 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/ops/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/ops/" rel="self" type="application/rss+xml" /><item>
+    <title>Netstat Migrate to Ss Nstat</title>
+    <link>https://exfly.github.io/netstat-migrate-to-ss-nstat/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/netstat-migrate-to-ss-nstat/</guid>
+    <description><![CDATA[<p>文章简介：<code>netstat -s</code> 已经废弃，一些机器已经不内置，但 <code>ss</code> 和 <code>nstat</code> 是内置的。本文通过代码描述他俩之间迁移的方法。</p>]]></description>
+</item>
+<item>
     <title>离线安装开箱即用的容器运行环境运行环境</title>
     <link>https://exfly.github.io/install-docker-engine-from-bin/</link>
     <pubDate>Tue, 07 May 2024 01:32:02 &#43;0000</pubDate>

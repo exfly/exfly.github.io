@@ -4,7 +4,31 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>linux</title>
+    <link>https://exfly.github.io/tags/linux/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/linux/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>network</title>
+    <link>https://exfly.github.io/tags/network/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/network/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>ops</title>
+    <link>https://exfly.github.io/tags/ops/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/ops/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>actions</title>
     <link>https://exfly.github.io/tags/actions/</link>
     <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
@@ -45,22 +69,6 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>linux</title>
-    <link>https://exfly.github.io/tags/linux/</link>
-    <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/linux/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>network</title>
-    <link>https://exfly.github.io/tags/network/</link>
-    <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/network/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
     <title>实验</title>
     <link>https://exfly.github.io/tags/%E5%AE%9E%E9%AA%8C/</link>
     <pubDate>Sun, 23 Feb 2025 01:50:43 &#43;0000</pubDate>
@@ -74,14 +82,6 @@
     <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/debug/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>golang</title>
-    <link>https://exfly.github.io/tags/golang/</link>
-    <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/golang/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

@@ -5,6 +5,14 @@
         <description>所有Blog | ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
             <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><atom:link href="https://exfly.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Netstat Migrate to Ss Nstat</title>
+    <link>https://exfly.github.io/netstat-migrate-to-ss-nstat/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/netstat-migrate-to-ss-nstat/</guid>
+    <description><![CDATA[<p>文章简介：<code>netstat -s</code> 已经废弃，一些机器已经不内置，但 <code>ss</code> 和 <code>nstat</code> 是内置的。本文通过代码描述他俩之间迁移的方法。</p>]]></description>
+</item>
+<item>
     <title>Gitea Earthly 构建时间从 1m30s 优化到 11s</title>
     <link>https://exfly.github.io/gitea-earthly-speedup-from-1m30s-to-11s/</link>
     <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
@@ -75,14 +83,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/</guid>
     <description><![CDATA[<p>文章简介：golang 的 timer 在调整系统时间下的行为</p>]]></description>
-</item>
-<item>
-    <title>我是如何将 kafka 消费吞吐提高 100 倍</title>
-    <link>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</link>
-    <pubDate>Mon, 13 May 2024 01:28:28 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</guid>
-    <description><![CDATA[<p>文章简介：我是如何将 kafka 消费吞吐提高 100 倍的</p>]]></description>
 </item>
 </channel>
 </rss>

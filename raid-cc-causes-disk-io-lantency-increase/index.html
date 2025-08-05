@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Raid 卡 Consistency Check 导致 io 延迟变高 - ExflyBlog</title><meta name="Description" content="ExflyBlog, IT technology sharing, technology blog"><meta property="og:title" content="Raid 卡 Consistency Check 导致 io 延迟变高" />
+<meta property="og:description" content="文章简介：每周六 11:00 定时出现的 IO 延迟，最终定位到 Raid 卡的后台一致性检查（CC &amp; PR）。关闭后延迟消失，复盘记录在此。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2025-07-20T13:33:45+00:00" />
+<meta property="article:modified_time" content="2025-07-20T13:33:45+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="Raid 卡 Consistency Check 导致 io 延迟变高"/>
+<meta name="twitter:description" content="文章简介：每周六 11:00 定时出现的 IO 延迟，最终定位到 Raid 卡的后台一致性检查（CC &amp; PR）。关闭后延迟消失，复盘记录在此。"/>
+<meta name="application-name" content="Exfly">
+<meta name="apple-mobile-web-app-title" content="Exfly"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" /><link rel="prev" href="https://exfly.github.io/netstat-migrate-to-ss-nstat/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Raid 卡 Consistency Check 导致 io 延迟变高",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/exfly.github.io\/raid-cc-causes-disk-io-lantency-increase\/"
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k8s, debug, raid, io","wordcount":  1138 ,
+        "url": "https:\/\/exfly.github.io\/raid-cc-causes-disk-io-lantency-increase\/","datePublished": "2025-07-20T13:33:45+00:00","dateModified": "2025-07-20T13:33:45+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
+                "@type": "Person",
+                "name": "exfly"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><a class="menu-item" href="/about/" title="关于"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/raid-cc-causes-disk-io-lantency-increase/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="ExflyBlog"><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw' aria-hidden='true'></i></span>ExflyBlog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/exfly" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a class="menu-item" href="/about/" title="关于">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/raid-cc-causes-disk-io-lantency-increase/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Raid 卡 Consistency Check 导致 io 延迟变高</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-07-20">2025-07-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1138 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#后续">后续</a></li>
+    <li><a href="#结论">结论</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>文章简介：每周六 11:00 定时出现的 IO 延迟，最终定位到 Raid 卡的后台一致性检查（CC &amp; PR）。关闭后延迟消失，复盘记录在此。</p>
+<p>机器机器 raid 信息</p>
+<p>调整前磁盘 etcd 的 <code>grep -E '(apply request took too lon)|(slow fdatasyn)'</code> took 趋势：</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/raid-cc-causes-disk-io-lantency-increase/images/image.png"
+        data-srcset="/raid-cc-causes-disk-io-lantency-increase/images/image.png, /raid-cc-causes-disk-io-lantency-increase/images/image.png 1.5x, /raid-cc-causes-disk-io-lantency-increase/images/image.png 2x"
+        data-sizes="auto"
+        alt="/raid-cc-causes-disk-io-lantency-increase/images/image.png"
+        title="alt text" width="556" height="420" /></p>
+<p>客户现场的机器是浪潮的整机，信息如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">TODO: 确认下客户机器信息
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>根据 io 延迟的出现时间，判断每周六的 11:00 出现的定时任务；</p>
+<ul>
+<li>业务层排查：无对应定时任务</li>
+<li>宿主机排查：无异常进程</li>
+<li>怀疑硬件与厂商确认：Raid 卡默认每周六 11:00 运行 Consistency Check（CC）与 Patrol Read（PR）</li>
+</ul>
+<p>关闭后 etcd 的延迟几乎消失：
+
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/raid-cc-causes-disk-io-lantency-increase/images/image-1.png"
+        data-srcset="/raid-cc-causes-disk-io-lantency-increase/images/image-1.png, /raid-cc-causes-disk-io-lantency-increase/images/image-1.png 1.5x, /raid-cc-causes-disk-io-lantency-increase/images/image-1.png 2x"
+        data-sizes="auto"
+        alt="/raid-cc-causes-disk-io-lantency-increase/images/image-1.png"
+        title="alt text" width="555" height="419" /></p>
+<p>在内网找了 3 台同型号机器（Raid 卡：<code>AVAGOMegaRAIDSAS9361-8i</code>），400 GB SSD RAID 1 平均 Disk Average Wait Time：</p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/raid-cc-causes-disk-io-lantency-increase/images/image-2.png"
+        data-srcset="/raid-cc-causes-disk-io-lantency-increase/images/image-2.png, /raid-cc-causes-disk-io-lantency-increase/images/image-2.png 1.5x, /raid-cc-causes-disk-io-lantency-increase/images/image-2.png 2x"
+        data-sizes="auto"
+        alt="/raid-cc-causes-disk-io-lantency-increase/images/image-2.png"
+        title="alt text" width="2764" height="1108" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/raid-cc-causes-disk-io-lantency-increase/images/image-3.png"
+        data-srcset="/raid-cc-causes-disk-io-lantency-increase/images/image-3.png, /raid-cc-causes-disk-io-lantency-increase/images/image-3.png 1.5x, /raid-cc-causes-disk-io-lantency-increase/images/image-3.png 2x"
+        data-sizes="auto"
+        alt="/raid-cc-causes-disk-io-lantency-increase/images/image-3.png"
+        title="alt text" width="2698" height="1094" /></p>
+<p>
+    <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/raid-cc-causes-disk-io-lantency-increase/images/image-4.png"
+        data-srcset="/raid-cc-causes-disk-io-lantency-increase/images/image-4.png, /raid-cc-causes-disk-io-lantency-increase/images/image-4.png 1.5x, /raid-cc-causes-disk-io-lantency-increase/images/image-4.png 2x"
+        data-sizes="auto"
+        alt="/raid-cc-causes-disk-io-lantency-increase/images/image-4.png"
+        title="alt text" width="2736" height="1114" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@TODO storcli<span class="o">]</span><span class="c1"># ./storcli64 /c0 show</span>
+</span></span><span class="line"><span class="cl">----------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">EID:Slt DID State DG       Size Intf Med SED PI SeSz Model                      Sp Type 
+</span></span><span class="line"><span class="cl">----------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">252:0    <span class="m">14</span> Onln   <span class="m">0</span> 446.625 GB SATA SSD N   N  512B SAMSUNG MZ7LH480HAHQ-00005 U  -    
+</span></span><span class="line"><span class="cl">252:1    <span class="m">15</span> Onln   <span class="m">0</span> 446.625 GB SATA SSD N   N  512B SAMSUNG MZ7LH480HAHQ-00005 U  -    
+</span></span><span class="line"><span class="cl">252:2     <span class="m">8</span> Onln   <span class="m">1</span>   7.276 TB SATA HDD N   N  512B ST8000NM000A-2KE101        U  -    
+</span></span><span class="line"><span class="cl">252:3     <span class="m">9</span> Onln   <span class="m">1</span>   7.276 TB SATA HDD N   N  512B ST8000NM000A-2KE101        U  -    
+</span></span><span class="line"><span class="cl">252:5    <span class="m">11</span> Onln   <span class="m">1</span>   7.276 TB SATA HDD N   N  512B ST8000NM000A-2KE101        U  -    
+</span></span><span class="line"><span class="cl">252:6    <span class="m">12</span> Onln   <span class="m">1</span>   7.276 TB SATA HDD N   N  512B ST8000NM000A-2KE101        U  -    
+</span></span><span class="line"><span class="cl">252:7    <span class="m">13</span> Onln   <span class="m">1</span>   7.276 TB SATA HDD N   N  512B ST8000NM000A-2KE101        U  -    
+</span></span><span class="line"><span class="cl">----------------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@TODO storcli<span class="o">]</span><span class="c1"># ./storcli64 /c0 show cc</span>
+</span></span><span class="line"><span class="cl">CLI <span class="nv">Version</span> <span class="o">=</span> 007.3404.0000.0000 April 18, <span class="m">2025</span>
+</span></span><span class="line"><span class="cl">Operating <span class="nv">system</span> <span class="o">=</span> Linux 3.10.0-1160.el7.x86_64
+</span></span><span class="line"><span class="cl"><span class="nv">Controller</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Status</span> <span class="o">=</span> Success
+</span></span><span class="line"><span class="cl"><span class="nv">Description</span> <span class="o">=</span> None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Controller Properties :
+</span></span><span class="line"><span class="cl"><span class="o">=====================</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">-----------------------------------------------
+</span></span><span class="line"><span class="cl">Ctrl_Prop                 Value                
+</span></span><span class="line"><span class="cl">-----------------------------------------------
+</span></span><span class="line"><span class="cl">CC Operation Mode         Concurrent           
+</span></span><span class="line"><span class="cl">CC Execution Delay        <span class="m">168</span> hours            
+</span></span><span class="line"><span class="cl">CC Next Starttime         07/26/2025, 03:00:00 
+</span></span><span class="line"><span class="cl">CC Current State          Stopped              
+</span></span><span class="line"><span class="cl">CC Number of iterations   <span class="m">164</span>                  
+</span></span><span class="line"><span class="cl">CC Number of VD completed <span class="m">2</span>                    
+</span></span><span class="line"><span class="cl">CC Excluded VDs           None                 
+</span></span><span class="line"><span class="cl">-----------------------------------------------
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@TODO storcli<span class="o">]</span><span class="c1"># ./storcli64 /c0 show pr</span>
+</span></span><span class="line"><span class="cl">CLI <span class="nv">Version</span> <span class="o">=</span> 007.3404.0000.0000 April 18, <span class="m">2025</span>
+</span></span><span class="line"><span class="cl">Operating <span class="nv">system</span> <span class="o">=</span> Linux 3.10.0-1160.el7.x86_64
+</span></span><span class="line"><span class="cl"><span class="nv">Controller</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Status</span> <span class="o">=</span> Success
+</span></span><span class="line"><span class="cl"><span class="nv">Description</span> <span class="o">=</span> None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Controller Properties :
+</span></span><span class="line"><span class="cl"><span class="o">=====================</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">---------------------------------------------
+</span></span><span class="line"><span class="cl">Ctrl_Prop               Value                
+</span></span><span class="line"><span class="cl">---------------------------------------------
+</span></span><span class="line"><span class="cl">PR Mode                 Auto                 
+</span></span><span class="line"><span class="cl">PR Execution Delay      <span class="m">168</span> hours            
+</span></span><span class="line"><span class="cl">PR iterations completed <span class="m">120</span>                  
+</span></span><span class="line"><span class="cl">PR Next Start <span class="nb">time</span>      07/26/2025, 03:00:00 
+</span></span><span class="line"><span class="cl">PR on SSD               Disabled             
+</span></span><span class="line"><span class="cl">PR Current State        Stopped              
+</span></span><span class="line"><span class="cl">PR Excluded VDs         None                 
+</span></span><span class="line"><span class="cl">PR MaxConcurrentPd      <span class="m">248</span>                  
+</span></span><span class="line"><span class="cl">---------------------------------------------
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>ssd 上已经 disable 了 PR，只有 cc，看起来 cc 给磁盘带来了大约 5ms ± 15ms 左右的 iowait，而客户这边 io wait 跟比这要高非常多。</p>
+<p>参考：<a href="https://www.cnblogs.com/baihh/p/16888011.html" target="_blank" rel="noopener noreffer ">浅谈 Raid 卡的两种一致性校验方式（PR&amp;CC）</a></p>
+<p>找了硬件厂商的人，反馈回来：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">因 CC 和 PR 校验会影响硬盘 IO，不同业务环境对延迟敏感程度不同，系统下受影响的现象不同，目前推荐如下：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">1.</span> CC 周期推荐 28 天执行一次，默认 Cc rate 为 30%，这个 30% 是一个大约的 CPU 时间占用比例，由这个 rate 决定多久进行一次 Cc 的后台动作，但是即使降到 0 也会占用一点 CPU，因为 CC 必须要做。（目前已调整至 5%，已经最低）
+</span></span><span class="line"><span class="cl"><span class="k">2.</span> 如实际业务对延迟较敏感，请评估是否关闭 CC。关闭 CC 后，因 CC 带来的 IO 性能和延迟影响得到改善。建议参考 CC 对性能和数据安全的影响进行综合评估。关闭 CC 后，在遇到盘端有介质错误的时候，RAID 卡端会花费更多的时间来尝试读取数据并标记修复异常数据，可能造成延迟升高，严重情况下，如果同条带中多个数据错误可能会导致数据丢失。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>接下来继续等待硬件厂商的 debug 结果吧。</p>
+<h2 id="后续">后续</h2>
+<ul>
+<li>等待厂商进一步 debug</li>
+<li>对 etcd 场景而言，已有 snapshot + 12 h 备份，可直接关闭 CC 以换取确定性低延迟</li>
+<li>是否可将 etcd 数据目录直接放 tmpfs？需评估内存容量与断电风险</li>
+</ul>
+<h2 id="结论">结论</h2>
+<p>Raid 卡不是免费的午餐，后台维护任务同样消耗资源。在延迟敏感型业务中，需要显式权衡数据安全与性能。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-07-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" data-title="Raid 卡 Consistency Check 导致 io 延迟变高" data-hashtags="k8s,debug,raid,io"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" data-hashtag="k8s"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" data-title="Raid 卡 Consistency Check 导致 io 延迟变高"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" data-title="Raid 卡 Consistency Check 导致 io 延迟变高"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/" data-title="Raid 卡 Consistency Check 导致 io 延迟变高"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a>,&nbsp;<a href="/tags/debug/">debug</a>,&nbsp;<a href="/tags/raid/">raid</a>,&nbsp;<a href="/tags/io/">io</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/netstat-migrate-to-ss-nstat/" class="prev" rel="prev" title="Netstat Migrate to Ss Nstat"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Netstat Migrate to Ss Nstat</a></div>
+</div>
+<div id="comments"><div id="giscus" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.122.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2019 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://github.com/exfly/" target="_blank">exfly</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{"giscus":{"category":"Announcements","categoryId":"DIC_kwDOBCuJFs4CT0-J","darkTheme":"dark","emitMetadata":"0","inputPosition":"top","lang":"zh-CN","lazyLoading":false,"lightTheme":"light","mapping":"pathname","reactionsEnabled":"1","repo":"exfly/exfly.github.io","repoId":"MDEwOlJlcG9zaXRvcnk2OTk2MjAwNg=="}},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript">
+            window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+            gtag('config', 'G-6XWGXY4X6W', { 'anonymize_ip': true });
+        </script><script type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=G-6XWGXY4X6W" async></script></body>
+</html>

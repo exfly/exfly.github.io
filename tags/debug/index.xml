@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/debug/</link>
         <description>debug - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/debug/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/debug/" rel="self" type="application/rss+xml" /><item>
+    <title>Raid 卡 Consistency Check 导致 io 延迟变高</title>
+    <link>https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/</link>
+    <pubDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/</guid>
+    <description><![CDATA[<p>文章简介：每周六 11:00 定时出现的 IO 延迟，最终定位到 Raid 卡的后台一致性检查（CC &amp; PR）。关闭后延迟消失，复盘记录在此。</p>]]></description>
+</item>
+<item>
     <title>connect kafka failed with cannot assign requested address</title>
     <link>https://exfly.github.io/connect-kafka-failed-with-cannot-assign-requested-address/</link>
     <pubDate>Fri, 07 Feb 2025 12:28:45 &#43;0000</pubDate>

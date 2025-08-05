@@ -4,31 +4,7 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
-    <title>devops</title>
-    <link>https://exfly.github.io/tags/devops/</link>
-    <pubDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/devops/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>k3s</title>
-    <link>https://exfly.github.io/tags/k3s/</link>
-    <pubDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/k3s/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>ops</title>
-    <link>https://exfly.github.io/tags/ops/</link>
-    <pubDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/ops/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
     <title>debug</title>
     <link>https://exfly.github.io/tags/debug/</link>
     <pubDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</pubDate>
@@ -77,11 +53,35 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
+    <title>ops</title>
+    <link>https://exfly.github.io/tags/ops/</link>
+    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/ops/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>actions</title>
     <link>https://exfly.github.io/tags/actions/</link>
     <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/actions/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>docker</title>
+    <link>https://exfly.github.io/tags/docker/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/docker/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>gitea</title>
+    <link>https://exfly.github.io/tags/gitea/</link>
+    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/gitea/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

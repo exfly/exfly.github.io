@@ -3,8 +3,8 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
             <loc>https://exfly.github.io/about/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/"
@@ -13,11 +13,10 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/io/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/k8s/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/raid/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-07-20T13:33:45&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/k3s/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/k3s-100year-ca-certs/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-08-05T13:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/tags/"
@@ -26,10 +25,14 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/tags/"
                     /></url><url>
+            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/io/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/k8s/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/raid/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/raid-cc-causes-disk-io-lantency-increase/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://exfly.github.io/tags/linux/</loc><lastmod>2025-04-11T09:17:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/netstat-migrate-to-ss-nstat/</loc><lastmod>2025-04-11T09:17:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/network/</loc><lastmod>2025-04-11T09:17:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2025-04-11T09:17:29&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/actions/</loc><lastmod>2025-04-09T22:08:41&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/docker/</loc><lastmod>2025-04-09T22:08:41&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/gitea/</loc><lastmod>2025-04-09T22:08:41&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -53,7 +56,6 @@
             <loc>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</loc><lastmod>2024-11-03T21:39:02&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/bugs/</loc><lastmod>2024-08-21T09:52:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/containerd/</loc><lastmod>2024-08-21T09:52:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/k3s/</loc><lastmod>2024-08-21T09:52:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/k8s-pod-random-killed/</loc><lastmod>2024-08-21T09:52:25&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/go-timer-behavior-in-adjucting-sysmte-time/</loc><lastmod>2024-08-11T09:10:10&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/how-to-increase-alarm-throughput-100-times/</loc><lastmod>2024-08-11T07:49:51&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
@@ -88,7 +90,6 @@
             <loc>https://exfly.github.io/udp-tcpdump-receive-pkg-sock-not/</loc><lastmod>2025-03-11T08:36:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/chatgpt/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/code_review/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/gitlab/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/gitlab-chatgpt-mr-code-review/</loc><lastmod>2023-03-09T10:23:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/vagrant/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>

@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/k3s/</link>
         <description>k3s - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/k3s/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/k3s/" rel="self" type="application/rss+xml" /><item>
+    <title>K3s 百年证书</title>
+    <link>https://exfly.github.io/k3s-100year-ca-certs/</link>
+    <pubDate>Tue, 05 Aug 2025 13:52:51 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/k3s-100year-ca-certs/</guid>
+    <description><![CDATA[<p>文章简介：K3s 自带的 CA 有效期 10 年，其签发的 mTLS 证书只有 1 年，远不能满足“一次部署、长期免运维”的生产诉求。本文给出零侵入式方案，让 K3s 一次性使用 100 年有效期的 CA 与终端实体证书，真正做到“证书一生只装一次”。</p>]]></description>
+</item>
+<item>
     <title>k3s 环境在高 CPU&amp;&amp;Memory&amp;&amp;IO 负载下，pod 中的 container 随机健康检查失败</title>
     <link>https://exfly.github.io/k8s-pod-random-killed/</link>
     <pubDate>Tue, 20 Aug 2024 23:01:03 &#43;0000</pubDate>

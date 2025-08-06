@@ -104,6 +104,16 @@
         alt="/media/img/avatar.jpg"
         title="/media/img/avatar.jpg" /></a></div><div class="home-subtitle"><div id="id-1" class="typeit"></div></div><div class="links"><a href="https://github.com/exfly" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a><a href="mailto:exflyg@gmail.com" title="Email" rel="me"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></a><a href="/index.xml" title="RSS" target="_blank" rel="noopener noreffer me"><i class="fas fa-rss fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/k3s-embedded-etcd-on-tmpfs/">K3s Embedded Etcd on Tmpfs</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-08-05">2025-08-05</time></span></div><div class="content"><p>文章简介：为了提高 etcd 在延迟非常高的磁盘上的稳定性，提出了两种解决方法</p></div><div class="post-footer">
+        <a href="/k3s-embedded-etcd-on-tmpfs/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k3s/">k3s</a>,&nbsp;<a href="/tags/etcd/">etcd</a>,&nbsp;<a href="/tags/tmpfs/">tmpfs</a>,&nbsp;<a href="/tags/debug/">debug</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/go1-compatibility-issues/">Go1 兼容问题</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-07-27">2025-07-27</time></span></div><div class="content"><p>文章简介：使用 golang 过程中遇到的兼容问题</p></div><div class="post-footer">
+        <a href="/go1-compatibility-issues/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a>,&nbsp;<a href="/tags/debug/">debug</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/k3s-100year-ca-certs/">K3s 百年证书</a>
     </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-07-27">2025-07-27</time></span></div><div class="content"><p>文章简介：K3s 自带的 CA 有效期 10 年，其签发的 mTLS 证书只有 1 年，远不能满足“一次部署、长期免运维”的生产诉求。本文给出零侵入式方案，让 K3s 一次性使用 100 年有效期的 CA 与终端实体证书，真正做到“证书一生只装一次”。</p></div><div class="post-footer">
         <a href="/k3s-100year-ca-certs/">阅读全文</a><div class="post-tags">
@@ -123,16 +133,6 @@
     </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-04-06">2025-04-06</time></span></div><div class="content"><p>文章简介：Gitea Earthly 构建时间从 1m30s 优化到 11s</p></div><div class="post-footer">
         <a href="/gitea-earthly-speedup-from-1m30s-to-11s/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/homelab/">homelab</a>,&nbsp;<a href="/tags/docker/">docker</a>,&nbsp;<a href="/tags/gitea/">gitea</a>,&nbsp;<a href="/tags/actions/">actions</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/the-relationship-between-bdp-buffer-rt/">通过实验，探索 BDP、tcp buffer、RT 三者之间的关系</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-02-23">2025-02-23</time></span></div><div class="content"><p>文章简介：通过实验，探索 BDP、tcp buffer、RT 三者之间的关系；探讨如何控制吞吐；实验 curl 限速是如何工作的；</p></div><div class="post-footer">
-        <a href="/the-relationship-between-bdp-buffer-rt/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/curl/">curl</a>,&nbsp;<a href="/tags/network/">network</a>,&nbsp;<a href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/connect-kafka-failed-with-cannot-assign-requested-address/">connect kafka failed with cannot assign requested address</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2025-02-07">2025-02-07</time></span></div><div class="content"><p>文章简介：一次业务逻辑问题导致的 kafka 连接泄露问题排查</p></div><div class="post-footer">
-        <a href="/connect-kafka-failed-with-cannot-assign-requested-address/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/debug/">debug</a>,&nbsp;<a href="/tags/golang/">golang</a>,&nbsp;<a href="/tags/linux/">linux</a>,&nbsp;<a href="/tags/tcp/">tcp</a>,&nbsp;<a href="/tags/kafka/">kafka</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>

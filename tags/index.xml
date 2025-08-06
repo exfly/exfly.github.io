@@ -4,7 +4,47 @@
         <link>https://exfly.github.io/tags/</link>
         <description>Tags - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>debug</title>
+    <link>https://exfly.github.io/tags/debug/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/debug/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>etcd</title>
+    <link>https://exfly.github.io/tags/etcd/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/etcd/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>k3s</title>
+    <link>https://exfly.github.io/tags/k3s/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/k3s/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>tmpfs</title>
+    <link>https://exfly.github.io/tags/tmpfs/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/tmpfs/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>go</title>
+    <link>https://exfly.github.io/tags/go/</link>
+    <pubDate>Sun, 27 Jul 2025 14:52:51 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/tags/go/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>devops</title>
     <link>https://exfly.github.io/tags/devops/</link>
     <pubDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</pubDate>
@@ -13,27 +53,11 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>k3s</title>
-    <link>https://exfly.github.io/tags/k3s/</link>
-    <pubDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/k3s/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
     <title>ops</title>
     <link>https://exfly.github.io/tags/ops/</link>
     <pubDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/ops/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>debug</title>
-    <link>https://exfly.github.io/tags/debug/</link>
-    <pubDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/debug/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -58,30 +82,6 @@
     <pubDate>Sun, 20 Jul 2025 13:33:45 &#43;0000</pubDate>
     <author>exfly</author>
     <guid>https://exfly.github.io/tags/raid/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>linux</title>
-    <link>https://exfly.github.io/tags/linux/</link>
-    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/linux/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>network</title>
-    <link>https://exfly.github.io/tags/network/</link>
-    <pubDate>Thu, 10 Apr 2025 16:07:38 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/network/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>actions</title>
-    <link>https://exfly.github.io/tags/actions/</link>
-    <pubDate>Sun, 06 Apr 2025 13:50:27 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/tags/actions/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

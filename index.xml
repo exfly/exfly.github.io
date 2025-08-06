@@ -4,9 +4,25 @@
         <link>https://exfly.github.io/</link>
         <description>ExflyBlog, IT technology sharing, technology blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</lastBuildDate>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</lastBuildDate>
             <atom:link href="https://exfly.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>K3s Embedded Etcd on Tmpfs</title>
+    <link>https://exfly.github.io/k3s-embedded-etcd-on-tmpfs/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/k3s-embedded-etcd-on-tmpfs/</guid>
+    <description><![CDATA[<p>文章简介：为了提高 etcd 在延迟非常高的磁盘上的稳定性，提出了两种解决方法</p>]]></description>
+</item>
+<item>
+    <title>Go1 兼容问题</title>
+    <link>https://exfly.github.io/go1-compatibility-issues/</link>
+    <pubDate>Sun, 27 Jul 2025 14:52:51 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go1-compatibility-issues/</guid>
+    <description><![CDATA[<p>文章简介：使用 golang 过程中遇到的兼容问题</p>]]></description>
+</item>
+<item>
     <title>K3s 百年证书</title>
     <link>https://exfly.github.io/k3s-100year-ca-certs/</link>
     <pubDate>Sun, 27 Jul 2025 13:52:51 &#43;0000</pubDate>
@@ -69,22 +85,6 @@
     <author>exfly</author>
     <guid>https://exfly.github.io/rustc-compiled-bin-killed-on-mac-m1/</guid>
     <description><![CDATA[<p>文章简介：Mac m1 机器上安装的 rust 编译运行程序遇到问题 <code>zsh: killed     ./main</code>，问题解决</p>]]></description>
-</item>
-<item>
-    <title>超线程是如何工作的 - 实验</title>
-    <link>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</link>
-    <pubDate>Sun, 03 Nov 2024 11:59:48 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/experiment-to-understand-how-hyperthreading-works/</guid>
-    <description><![CDATA[<p>文章简介：通过一个实验理解超线程是如何工作的</p>]]></description>
-</item>
-<item>
-    <title>sysbench benchmark MySQL 时候，为什么 kill 连接后，sysbench 没有重连</title>
-    <link>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</link>
-    <pubDate>Wed, 16 Oct 2024 01:38:26 &#43;0000</pubDate>
-    <author>exfly</author>
-    <guid>https://exfly.github.io/why-sysbench-dont-reconnect-after-kill/</guid>
-    <description><![CDATA[<p>文章简介：探索为什么 <code>sysbench</code> 没有重连 Reconnect</p>]]></description>
 </item>
 </channel>
 </rss>

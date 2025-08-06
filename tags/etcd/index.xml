@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>etcd - 标签 - ExflyBlog</title>
+        <link>https://exfly.github.io/tags/etcd/</link>
+        <description>etcd - 标签 - ExflyBlog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/etcd/" rel="self" type="application/rss+xml" /><item>
+    <title>K3s Embedded Etcd on Tmpfs</title>
+    <link>https://exfly.github.io/k3s-embedded-etcd-on-tmpfs/</link>
+    <pubDate>Tue, 05 Aug 2025 14:39:22 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/k3s-embedded-etcd-on-tmpfs/</guid>
+    <description><![CDATA[<p>文章简介：为了提高 etcd 在延迟非常高的磁盘上的稳定性，提出了两种解决方法</p>]]></description>
+</item>
+</channel>
+</rss>

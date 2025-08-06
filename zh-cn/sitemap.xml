@@ -3,8 +3,9 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
             <loc>https://exfly.github.io/about/</loc><lastmod>2023-01-27T21:51:00&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-08-05T14:39:22&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/etcd/</loc><lastmod>2025-08-05T14:39:22&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/"
@@ -13,10 +14,9 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/k3s/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/k3s-100year-ca-certs/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-08-05T22:33:59&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
+            <loc>https://exfly.github.io/tags/k3s/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/k3s-embedded-etcd-on-tmpfs/</loc><lastmod>2025-08-05T14:39:22&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="https://exfly.github.io/en/tags/"
@@ -25,7 +25,12 @@
                     hreflang="zh-cn"
                     href="https://exfly.github.io/tags/"
                     /></url><url>
-            <loc>https://exfly.github.io/tags/debug/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/tmpfs/</loc><lastmod>2025-08-05T14:39:22&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/go/</loc><lastmod>2025-07-27T14:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://exfly.github.io/go1-compatibility-issues/</loc><lastmod>2025-07-27T14:52:51&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://exfly.github.io/tags/devops/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/k3s-100year-ca-certs/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://exfly.github.io/tags/ops/</loc><lastmod>2025-08-06T09:55:06&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://exfly.github.io/tags/io/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://exfly.github.io/tags/k8s/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://exfly.github.io/tags/raid/</loc><lastmod>2025-08-05T21:43:09&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
@@ -83,7 +88,6 @@
             <loc>https://exfly.github.io/tags/python/</loc><lastmod>2023-10-29T10:16:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/portable-python/</loc><lastmod>2023-10-29T10:16:47&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/bug/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https://exfly.github.io/tags/go/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/grpc/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>https://exfly.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</loc><lastmod>2024-02-02T18:51:55&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>

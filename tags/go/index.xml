@@ -4,7 +4,15 @@
         <link>https://exfly.github.io/tags/go/</link>
         <description>go - 标签 - ExflyBlog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>exflyg@gmail.com (exfly)</managingEditor>
-            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 24 Aug 2023 19:50:29 &#43;0800</lastBuildDate><atom:link href="https://exfly.github.io/tags/go/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>exflyg@gmail.com (exfly)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 27 Jul 2025 14:52:51 &#43;0000</lastBuildDate><atom:link href="https://exfly.github.io/tags/go/" rel="self" type="application/rss+xml" /><item>
+    <title>Go1 兼容问题</title>
+    <link>https://exfly.github.io/go1-compatibility-issues/</link>
+    <pubDate>Sun, 27 Jul 2025 14:52:51 &#43;0000</pubDate>
+    <author>exfly</author>
+    <guid>https://exfly.github.io/go1-compatibility-issues/</guid>
+    <description><![CDATA[<p>文章简介：使用 golang 过程中遇到的兼容问题</p>]]></description>
+</item>
+<item>
     <title>记一次 grpc 短连接未关闭导致的资源泄漏问题的排查过程</title>
     <link>https://exfly.github.io/go-grpc-short-link-is-not-closed-causing-leak/</link>
     <pubDate>Thu, 24 Aug 2023 19:50:29 &#43;0800</pubDate>

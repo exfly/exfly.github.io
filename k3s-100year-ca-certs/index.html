@@ -9,7 +9,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://exfly.github.io/k3s-100year-ca-certs/" /><meta property="og:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2025-07-27T13:52:51+00:00" />
-<meta property="article:modified_time" content="2025-07-27T13:52:51+00:00" /><meta property="og:site_name" content="ExflyBlog" />
+<meta property="article:modified_time" content="2025-08-05T22:33:59+08:00" /><meta property="og:site_name" content="ExflyBlog" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://exfly.github.io/media/img/avatar.jpg" /><meta name="twitter:title" content="K3s 百年证书"/>
@@ -28,8 +28,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/exfly.github.io\/k3s-100year-ca-certs\/"
-        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k3s, devops, ops","wordcount":  887 ,
-        "url": "https:\/\/exfly.github.io\/k3s-100year-ca-certs\/","datePublished": "2025-07-27T13:52:51+00:00","dateModified": "2025-07-27T13:52:51+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+        },"image": ["https:\/\/exfly.github.io\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "k3s, devops, ops","wordcount":  1262 ,
+        "url": "https:\/\/exfly.github.io\/k3s-100year-ca-certs\/","datePublished": "2025-07-27T13:52:51+00:00","dateModified": "2025-08-05T22:33:59+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "https:\/\/exfly.github.io\/media\/img\/avatar.jpg"},"author": {
                 "@type": "Person",
@@ -108,8 +108,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">K3s 百年证书</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="https://github.com/exfly/" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>exfly</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-07-27">2025-07-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 887 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-07-27">2025-07-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1262 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>目录</span>
@@ -131,10 +131,8 @@
 </nav></div>
             </div><div class="content" id="content"><p>文章简介：K3s 自带的 CA 有效期 10 年，其签发的 mTLS 证书只有 1 年，远不能满足“一次部署、长期免运维”的生产诉求。本文给出零侵入式方案，让 K3s 一次性使用 100 年有效期的 CA 与终端实体证书，真正做到“证书一生只装一次”。</p>
 <h2 id="背景">背景</h2>
-<p>K3s 默认证书策略
-CA 有效期：10 年（写死，不可通过参数调整）
-Server / Client 证书：1 年（hard-coded 365 d，可通过环境变量微调）
-对于边缘、离线或无人值守场景，1 年一换证书意味着巨大的运维风险。社区在 <a href="https://github.com/k3s-io/k3s/issues/3253" target="_blank" rel="noopener noreffer ">issue #3253</a> 中早已反馈该痛点，官方脚本已提供“自定义 CA”能力，但未给出完整百年方案。</p>
+<p>k3s 默认<a href="https://github.com/k3s-io/k3s/issues/2342" target="_blank" rel="noopener noreffer ">生成的证书 10 年 CA 证书以及 1 年的客户端证书</a>。<a href="https://github.com/k3s-io/k3s/blob/release-1.27/docs/adrs/cert-expiry-checks.md?plain=1#L15" target="_blank" rel="noopener noreffer ">如果证书的有效期少于 90 天，k3s server 在重启的时候会续签证书</a>。这就意味着我们需要定期每周或者每月重启 k3s。但是有一个致命问题 <a href="https://github.com/k3s-io/k3s/blob/release-1.27/docs/adrs/ca-cert-rotation.md" target="_blank" rel="noopener noreffer ">ca 证书不会续签，且只有 10 年有效期</a>，当前我们在使用的版本 1.21.* 版本是没有 rotate-ca 的，也就意味着 10 年到期后集群就不可用了。
+issue: <a href="https://github.com/k3s-io/k3s/issues/1868" target="_blank" rel="noopener noreffer ">How to configure my own CA for k3s</a> <a href="https://github.com/k3s-io/k3s/issues/2342#issuecomment-703879154" target="_blank" rel="noopener noreffer ">Certificate and access management for edge computing</a> ，自定义 CA 证书的问题在 <a href="https://github.com/k3s-io/k3s/pull/6615" target="_blank" rel="noopener noreffer ">此 MR</a> 中解决了，我们可以通过使用<a href="https://github.com/k3s-io/k3s/blob/release-1.27/contrib/util/generate-custom-ca-certs.sh" target="_blank" rel="noopener noreffer ">contrib/util/generate-custom-ca-certs.sh</a> 修改一下 openssl 自签 100 年证书。同时 <a href="https://github.com/k3s-io/k3s/pull/6615" target="_blank" rel="noopener noreffer ">此 MR</a> 添加了 rotate-ca 命令，用于 ca 证书<a href="https://github.com/k3s-io/k3s/blob/release-1.27/docs/adrs/ca-cert-rotation.md" target="_blank" rel="noopener noreffer ">过期后更换 ca 证书</a>。实际使用过程中发现 rotate-ca 命令貌似不可用。后使用 restore etcd snapshot 后重新自签一套新证书后启动 k3s 解决。当前版本可以直接生成 rotate-ca 证书，直接 rotate-ca 即可。旧环境可以直接升级到 1.27.x 后使用 rotate-ca 即可。</p>
 <h2 id="整体思路">整体思路</h2>
 <ol>
 <li>提前生成超长寿命 CA（100 年）</li>
@@ -265,20 +263,102 @@ Server / Client 证书：1 年（hard-coded 365 d，可通过环境变量微调�
 </div><h3 id="最终验证">最终验证</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看 CA 有效期</span>
-</span></span><span class="line"><span class="cl">openssl x509 -in /var/lib/rancher/k3s/server/tls/root-ca.pem -noout -dates
+</span></span><span class="line"><span class="cl"><span class="k">for</span> i in <span class="sb">`</span>ls /var/lib/rancher/k3s/server/tls/*.crt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$i</span><span class="p">;</span> openssl x509 -enddate -noout -in <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-admin.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-auth-proxy.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-ca.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-ca.nochain.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-controller.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-k3s-cloud-controller.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-k3s-controller.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-kube-apiserver.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-kube-proxy.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-scheduler.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/client-supervisor.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/intermediate-ca.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/request-header-ca.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:23 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/root-ca.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/server-ca.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/server-ca.nochain.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Oct <span class="m">27</span> 03:37:22 <span class="m">2126</span> GMT
+</span></span><span class="line"><span class="cl">/var/lib/rancher/k3s/server/tls/serving-kube-apiserver.crt
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># 查看 server 证书有效期</span>
 </span></span><span class="line"><span class="cl">openssl x509 -in /var/lib/rancher/k3s/server/tls/serving-kube-apiserver.crt -noout -dates
+</span></span><span class="line"><span class="cl"><span class="nv">notBefore</span><span class="o">=</span>Jul  <span class="m">8</span> 03:37:22 <span class="m">2025</span> GMT
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 03:39:24 <span class="m">2125</span> GMT
+</span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># 查看 kubelet client 证书有效期</span>
 </span></span><span class="line"><span class="cl">openssl x509 -in /var/lib/rancher/k3s/agent/client-kubelet.crt -noout -dates
+</span></span><span class="line"><span class="cl"><span class="nv">notBefore</span><span class="o">=</span>Jul  <span class="m">8</span> 03:37:22 <span class="m">2025</span> GMT
+</span></span><span class="line"><span class="cl"><span class="nv">notAfter</span><span class="o">=</span>Jun <span class="m">14</span> 17:00:14 <span class="m">2125</span> GMT
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="结语">结语</h2>
@@ -291,7 +371,8 @@ Server / Client 证书：1 年（hard-coded 365 d，可通过环境变量微调�
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2025-07-27</span>
+                <span>更新于 2025-08-05&nbsp;<a class="git-hash" href="https://github.com/exfly/HugoBlog/commit/41a822a4d7bd1788d593d7404dc42e727fc653b5" target="_blank" title="commit by exfly(exflyg@gmail.com) 41a822a4d7bd1788d593d7404dc42e727fc653b5: feat: add K3s 百年证书">
+                                    <i class="fas fa-hashtag fa-fw" aria-hidden="true"></i>41a822a</a></span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
